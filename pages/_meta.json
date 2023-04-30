@@ -1,8 +1,8 @@
 {
   "index": "Get Started",
-  "introduction": "Introduction",
-  "android-compatibility": "Android Compatibility",
-  "installation": "Installation",
+  "get-started": "Introduction",
+  "android-12": "Android Compatibility",
+  "unmodded-distros": "Installation",
   "modded-os": "Modded OS",
   "window-managers": "Window Managers",
   "desktop-environments": "Desktop Environments",

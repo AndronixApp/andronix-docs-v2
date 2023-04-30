@@ -9,10 +9,10 @@ export default function IntroComponent() {
     return (
         <div>
             <div className={"grid grid-cols-1 lg:grid-cols-2 gap-3 my-4"}>
-                <Card badgeText={"Installation"} href={"/installation/unmodded-os-installation"} className={""} title={"Install an OS with Andronix"}
+                <Card badgeText={"Installation"} href={"/unmodded-distros/unmodded-os-unmodded-distros"} className={""} title={"Install an OS with Andronix"}
                       icon={RiVipCrownFill}>Learn
                     how to install distros like Ubuntu, Debian etc. with Andronix</Card>
-                <Card badgeText={"Installation"} href={"/modded-os/modded-os-installation"} className={""} title={"Install Modded OS"}
+                <Card badgeText={"Installation"} href={"/modded-os/modded-os-unmodded-distros"} className={""} title={"Install Modded OS"}
                       icon={SiUbuntu}>Learn how to
                     install Modded OS like Ubuntu KDE, Manjaro XFCE easily with Andronix.</Card>
                 <Card badgeText={"Tutorial"} href={"/andronix-on-android-12-and-beyond"} className={""} title={"Process complete- Error Termux"}

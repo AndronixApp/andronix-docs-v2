@@ -26,7 +26,7 @@ const config: DocsThemeConfig = {
     logo: Logo,
     banner: {
         key: 'phantom-process-banner/',
-        text: <a href="/android-compatibility/andronix-on-android-12-and-beyond" target="_blank">
+        text: <a href="/android-12/andronix-on-android-12-and-beyond" target="_blank">
             🚨 Resolve <strong>Process completed (signal 9) - press Enter</strong> error now →
         </a>,
     },
