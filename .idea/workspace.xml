@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="configured theme" />
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="configured theme">
+      <change afterPath="$PROJECT_DIR$/components/logo.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/youtubeEmbed.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/android-compatibility/andronix-on-android-12-and-beyond.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/android-compatibility/andronix-on-android-12-and-beyond.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/desktop-environments/desktop-environments.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/desktop-environments/desktop-environments.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/faq/faq.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/faq/faq.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/installation/unmodded-os-installation.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/installation/unmodded-os-installation.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/modded-os/modded-os-installation.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/modded-os/modded-os-installation.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/ssh/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/ssh/_meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/window-managers/window-managers.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/window-managers/window-managers.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/theme.config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/theme.config.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -86,7 +99,7 @@
       <updated>1682694603840</updated>
       <workItem from="1682694604949" duration="21802000" />
       <workItem from="1682756431092" duration="13426000" />
-      <workItem from="1682840181670" duration="6043000" />
+      <workItem from="1682840181670" duration="11015000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>

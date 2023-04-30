@@ -27,5 +27,11 @@
     "type": "page",
     "href": "https://chat.andronix.app",
     "newWindow": true
+  },
+  "github": {
+    "title": "GitHub ↗",
+    "type": "page",
+    "href": "https://git.andronix.app",
+    "newWindow": true
   }
 }
