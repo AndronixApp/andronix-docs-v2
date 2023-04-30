@@ -1,0 +1,83 @@
+import { Callout } from 'nextra-theme-docs'
+
+# IDEs
+We love to code here, and Andronix is a portable computer. Why not use it to code anywhere? You can use full-fledged IDEs
+inside Andronix.
+
+<Callout type="warning">We have only tested VS code, IntelliJ Idea, IntelliJ DataGrip, MonoDevelop (tested GTKsharp, ASP
+NET, ASP NETCORE this last have a problem with the target framework), Mono (In console, you can compile simple console
+programs in C #) Net Core. You can test other IDEs and edit this page to add it to the list.</Callout>
+
+## IntelliJ Idea
+
+Here are the steps needed to install IntelliJ Idea on your Andronix instance
+
+<Callout type="info">The instructions assume that you have the SDK for your language already installed for the distro you are
+using.</Callout>
+
+* Download the latest tar.gz file from JetBrains
+  official [download page](https://www.jetbrains.com/idea/download/#section=linux).
+* After downloading the tar.gz, make sure that it is in your download folder and after run the following command.
+  Change `x` to the name of the tar downloaded.
+
+```bash copy
+tar -xzf ideaIU-2xxx.x.x.tar.gz -C ~/Desktop/
+```
+
+* The tar should now be unzipped in `Desktop/ideaIU-2xxx.x.x`, where 'x' stands for the year and version number.
+* Now choose the command from below and run it inside Linux terminal
+
+### Debian/ Ubuntu/ Kali Linux
+
+```bash copy
+sudo apt install openjdk-11-jdk -y
+```
+
+### Arch/Manjaro
+
+```bash copy
+sudo pacman -S jdk-openjdk
+```
+
+### Void Linux:
+
+```bash copy
+xbps-install -S openjdk
+```
+
+### Alpine:
+
+```bash copy
+apk --no-cache add openjdk11 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+```
+
+### Fedora:
+
+
+<Callout type="warning">
+Fedora is not recommended for use of Jetbrains IDE.
+</Callout>
+
+* We can now proceed to run Idea, navigate to Desktop/ideaIU-2xxx.x.x/bin and execute the idea.sh with the following
+  command-
+
+```bash copy
+./idea.sh
+```
+
+* Yay! 🎊 That's all you need to do to run IntelliJ on your device.
+
+## VS Code
+
+<Callout type="info">Andronix supports VS Code on all four of our support CPU architectures, namely ARM64(armv8), armv7,
+i686 and x86_64.</Callout>
+
+<Callout type="default">VS Code comes pre-installed with out Modded OSs.</Callout>
+
+### Debian based distros (Package Manager - apt)
+
+Please execute the following command from within the distro's shell-
+
+```bash copy
+apt install wget -y && wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/vscode_patch.sh && chmod +x vscode_patch.sh && ./vscode_patch.sh
+```

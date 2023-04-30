@@ -1,0 +1,135 @@
+import {Callout, Steps} from 'nextra-theme-docs'
+import Imagera from "../../components/imagera";
+
+
+# Andronix on Android 12 and beyond
+Android 12 and the phantom process killer issue of Termux.
+<Callout type="error">If you are encountering the **Process completed (signal 9) - press Enter** error in Termux. Please read the following article.</Callout>
+
+
+## The Problem
+
+Android 12 has added the mechanism to monitor forked child processes started by apps and kills them if more than the
+default 32 are found running. In simpler words Android now monitors the number of child process which are spawned by a
+particular app and if in any case it exceeds the number of permitted processes, it just kills them.
+
+This has lead to a lot of power apps like Termux, Tasker, Andronix, Debian NoRoot, being broken on Android 12 and 12L devices.
+There is nothing that can be done from our side since it's pushed in the Android's code.
+
+### More Information
+
+Issue on Termux's Repository:
+[Android 12 Phantom Processes Killed (Process completed (signal 9) - press Enter)](https://github.com/termux/termux-app/issues/2366)
+
+<Callout type="info">
+The good thing being that Google has included a toggle to turn off the Phantom Process Killer in Android 12L or 13 but the OEMs like **Xiaomi, Samsung etc**. have not bothered to merge this change into their Android skins.
+</Callout>
+
+[More information on the proposed solution](https://www.xda-developers.com/android-13-phantom-process-toggle)
+
+## Solutions
+
+Please follow the instructions given below for your respective Android versions.
+
+### Video Tutorial
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mjXSh3yq-I0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen></iframe>
+
+### Fix for Stock Android 12L and beyond
+
+<Callout type="info">
+This fix might not work on your device as OEM often have the choice to exclude changes pushed by Google to the Android Open-Source Project at their will. If you are using a skinned Android ROM like Samsung's OneUI, Xiaomi's MIUI, Oppo's ColorOS etc. then try the next fix.
+</Callout>
+
+#### Video Tutorial for Stock Android 12L+
+<br/>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mjXSh3yq-I0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+Please follow the steps mentioned below to turn off the Phantom process killer-
+
+<Steps>
+### Enable Developer Options
+We will first enable the **Developer Options** from the settings. To enable the same, please navigate to *Settings>
+About* Phone and find the **Build Number**.
+<Imagera src="/images/android-12-fix/1.jpeg"/>
+<Imagera src="/images/android-12-fix/2.jpeg"/>
+### You're a developer now!
+Now tap it repeatedly until you see a toast notification along the lines of *You are now x steps away from being a
+developer*.
+<Imagera src="/images/android-12-fix/3.jpeg"/>
+### Authenticate
+You might be asked to authenticate yourself, please do the same and then proceed.
+<Imagera src="/images/android-12-fix/4.jpeg"/>
+### Enable Developer Options
+Now, navigate to *Settings>System>Developer Options*. Enable the Developer Options on the next screen.
+<Imagera src="/images/android-12-fix/5.jpeg"/>
+### Find the Feature Flags
+Find the section named **Feature Flags**, enter via clicking it.
+<Imagera src="/images/android-12-fix/6.jpeg"/>
+### Turn off the Phantom Process Killer
+Find the switch to turn off **settings_enable_monitor_phantom_procs**.
+<Imagera src="/images/android-12-fix/7.jpeg"/>
+### All done!
+You are now all set! ✅
+</Steps>
+
+### Fix for OneUI, MiUi and other non-stock Android 12L and beyond
+
+#### Video Tutorial for OneUI, MIUI and other non-stock Android 12L+
+<br/>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mjXSh3yq-I0?start=117" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+Please follow the steps mentioned below to turn off the Phantom process killer-
+
+<Steps>
+### Install ADB
+Make sure you have the Android Debug Bridge (ADB) installed on your other device. You can
+follow [this guide on XDA developers](https://www.xda-developers.com/install-adb-windows-macos-linux/) to install ADB
+on Windows, macOS, or Linux.
+
+<Callout type="info">
+If you don't have a computer, you can follow the method shown in the video above to install ADB on your Android device itself.
+</Callout>
+### Check ADB Devices
+After the installation, confirm if you have your device connected via ADB
+```bash copy
+adb devices
+```
+### Run the Commands
+You should see your device listed in the output of the above command. Now run the following commands in the ADB shell
+```bash copy
+adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
+```
+```bash copy
+adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+```
+```bash copy
+adb shell settings put global settings_enable_monitor_phantom_procs false
+```
+### All done!
+    You should be all set! ✅
+</Steps>
+<br/>
+<br/>
+Credits for the discovery of the issue and the solution-
+
+[agnostic-apollo](https://github.com/agnostic-apollo)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

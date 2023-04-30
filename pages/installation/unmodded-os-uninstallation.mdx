@@ -1,0 +1,59 @@
+import {Callout, Steps} from 'nextra-theme-docs';
+import Imagera from "../../components/imagera";
+
+# How to uninstall an OS with Andronix?
+Learn how to uinstall your favourite distro easily.
+
+<Callout type="default">These instructions assume that you have **Andronix version 7.0 or beyond** installed on your
+device.</Callout>
+<Callout type="info">This is **not** a guide to uninstall a **Modded OS**. Please read the next article from this for more
+information on that.</Callout>
+
+Uninstalling your favourite distro is a breeze with Andronix. Please follow these simple steps mentioned below-
+
+## 1. Preparation 🚀
+
+<Steps>
+### Open Andronix app
+    After you open the Andronix app, you will find the option to install a **Linux Distribution**. Click the card.
+  <Imagera src="/images/install_new/install_dashboard.jpg"/>
+
+### Select Distribution
+    Now, you will see all the distributions that can be installed on your Android device.
+  <Imagera src="/images/install_new/install_distro_selection.jpg"/>
+
+</Steps>
+
+## 2. Selection ⭐
+<Steps>
+
+### Long Press on Distribution
+    **Long Press** on the distro that you would like to uninstall.
+  <Imagera src="/images/uninstall_new/distro_uninstall_bottomsheet.jpg"/>
+
+### Select Uninstall
+    Click on the **Uninstall** button to begin the process.
+</Steps>
+## 3. Termux Execution 💻
+
+
+Now comes the part where the actual uninstallation of your Linux distribution begins.
+<Callout type="default">Andronix app has copied a command to your clipboard automatically. </Callout>
+
+<Imagera src="/images/install_new/install_termux_exec.jpg"/>
+
+<Steps>
+### Termux
+    You will need to run/execute this command in Termux.
+
+<Callout type="warning">Please read this before proceeding to make sure that you're using a compatible version of Termux
+for the installation process. Make sure that you've followed this guide
+for [Migration to F-Droid](/termux/migrating-to-f-droid)</Callout>
+
+### Paste and Execute
+    Open the Termux app and **long press to paste the copied command and then hit enter to run it**.
+
+  <Imagera src="/images/uninstall_new/distro_uninstall_termux_exec.jpg"/>
+### All done!
+    You are all done ✅! You have successfully uninstalled your favourite Linux distribution from your Android device.
+</Steps>

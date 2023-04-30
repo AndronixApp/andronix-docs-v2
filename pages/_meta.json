@@ -1,0 +1,31 @@
+{
+  "index": "Get Started",
+  "introduction": "Introduction",
+  "android-compatibility": "Android Compatibility",
+  "installation": "Installation",
+  "modded-os": "Modded OS",
+  "window-managers": "Window Managers",
+  "desktop-environments": "Desktop Environments",
+  "software": "Software",
+
+
+  "ssh": "SSH Basics",
+  "termux": "Termux",
+  "vnc": "VNC",
+  "xsdl": "XSDL",
+  "security": "Security",
+  "faq": "FAQ",
+  "troubleshoot": "Troubleshoot",
+  "miscellaneous": "Miscellaneous",
+
+  "about": {
+    "title": "About",
+    "type": "page"
+  },
+  "contact": {
+    "title": "Discord ↗",
+    "type": "page",
+    "href": "https://chat.andronix.app",
+    "newWindow": true
+  }
+}

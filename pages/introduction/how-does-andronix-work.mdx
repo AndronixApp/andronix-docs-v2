@@ -1,0 +1,18 @@
+# How does this work?
+
+Andronix is simple inside the hood (well, not really, but most of it is simple to understand). Andronix uses **PRoot**
+to run your favorite Linux distribution on your Android devices.
+
+### What is PRoot?
+
+According to the official PRoot documentation
+
+> PRoot is a user-space implementation of **chroot, mount --bind, and binfmt\_misc**. This means that users don't need any privileges or set up to do things like using an arbitrary directory as the new root file system, making files accessible somewhere else in the file system hierarchy, or executing programs built for another CPU architecture transparently through QEMU user-mode.
+
+or in easier words, the benefits of enabling PRoot include running Linux operating systems in a
+Termux [chroot](https://en.m.wikipedia.org/wiki/Chroot) on an Android smartphone, tablet, and Chromebook.
+
+We use **Termux** to provide the command line and the packages that are specially compiled for Termux implemented
+inside Andronix. We also use **Proot** to run the Linux distributions inside Termux. We use **PulseAudio** to
+provide sound support for the Linux distributions. We use **XSDL** and **VNC** to provide a graphical user interface for the
+Linux distributions.

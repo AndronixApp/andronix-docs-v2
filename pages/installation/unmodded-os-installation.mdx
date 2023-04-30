@@ -1,0 +1,197 @@
+import {Callout, Steps} from 'nextra-theme-docs'
+import Imagera from "../../components/imagera"; import Badge from "../../components/badge";
+
+# How to install an OS with Andronix?
+Installing your favourite distro is a breeze with Andronix. Please follow these simple steps mentioned below-
+
+<Callout type="default">These instructions assume that you have **Andronix version 7.0 or beyond** installed on your
+    device.</Callout>
+<Callout type="info">This is **not** a guide to install a **Modded OS**. Please read the next article from this for more
+    information on that.</Callout>
+
+<br/>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Bw5hqPTQskM" title="YouTube video player"
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+
+
+
+## 1. Preparation 🚀
+<Steps>
+    ### Linux Distributions
+    After you open the Andronix app, you will find the option to install a **Linux Distribution**. Click the card.
+    <Imagera src="/images/install_new/install_dashboard.jpg"/>
+
+    ### Selection
+    Now, you will see all the distributions that can be installed on your Android device.
+    <Imagera src="/images/install_new/install_distro_selection.jpg"/>
+</Steps>
+## 2. UI Selection ⭐️
+
+<Steps>
+    ### Select
+    Click on the distro that you would like to install.
+
+    <Callout type="warning">We recommend you to get started with **Ubuntu** if you are overwhelmed by the
+        options.</Callout>
+
+    ### Select the UI
+    Here comes the **UI Selection**
+    <Imagera src="/images/install_new/install_gui_selection.jpg"/>
+    <Callout type="info">Graphical User Interface or GUI is the visual interface that you interact with to do things in
+        your
+        Linux distribution.</Callout>
+
+    <Callout type="info">Command Line Interface or CLI is the text-based interface that you interact with to execute
+        commands and perform tasks in your Linux distribution.</Callout>
+
+
+    <Steps>
+
+        ### **Desktop Environment** <Badge>GUI</Badge>
+        You can choose a Desktop Environment if you would like to use
+        your mouse as well as your
+        keyboard, or you've little or no experience with Linux. More
+        information [here](../desktop-environments/desktop-environments.md).
+        ### **Window Manager** <Badge>GUI</Badge>
+        You can choose a Window Manager if you only want to use your keyboard
+        to manage Windows and
+        other OS-level tasks. These are pretty light and fast, but do require some skill before getting productive. More
+        information [here](../window-managers/window-managers.md)
+        ### **Command Line Interface** <Badge>CLI</Badge>
+        If you don't want a Graphical User-interface, you can go ahead
+        with the **Command Line Interface**. You'll have a terminal, which is enough if you know what you're doing in
+        your session.
+    </Steps>
+    <Callout type="info">If you're confused in choosing one option, we would always recommend you to go with a Desktop
+        Manager.</Callout>
+
+
+    ### Continue
+    Based on your selection above, please follow the respective instructions below:
+
+    #### Desktop Environment
+
+    Now that you've decided to go ahead with a desktop environment, let's select what desktop environment you would like
+    to
+    install. You can read [this page of the documentation](/desktop-environments/desktop-environments) to know more
+    about different DE and then click on the one you would like to install.
+    <Imagera src="/images/install_new/install_de_selection.jpg"/>
+
+    #### Window Manager
+
+    Window Managers it is. Now select what Window Manager you would like to install. You can
+    read [this part of the documentation](/window-managers/window-managers) for more information on window managers.
+    <Imagera src="/images/install_new/install_wm_selection.jpg"/>
+
+    #### CLI
+
+    Since you've chosen the Command Line Interface, there's no extra configuration required on your part. You may
+    proceed
+    to the instructions below.
+
+</Steps>
+## 3. Termux Execution 💻
+
+Now comes the part where the actual installation of your Linux distribution begins.
+<Callout type="default">Andronix app has copied a command to your clipboard automatically. </Callout>
+
+<Imagera src="/images/install_new/install_termux_exec.jpg"/>
+
+<Steps>
+### Execute
+    You will need to run/execute this command in Termux.
+
+<Callout type="warning">Please read this before proceeding to make sure that you're using a compatible version of Termux
+    for the installation process. Make sure that you've followed this guide
+    for [Migration to F-Droid](/termux/migrating-to-f-droid)</Callout>
+
+### Paste
+    Open the Termux app and **long press to paste the copied command and then hit enter to run it**.
+
+<Imagera src="/images/termux_pkg_up.png"/>
+
+### Wait
+    The installation/downloading will take some time. Please leave the Termux app running.
+<Callout type="warning">Please read this article to disable battery optimization for Termux so that processes running
+    inside Termux don't randomly terminate.</Callout>
+  <Callout type="info">If the installation appears to be stuck on a certain step for an unusual time, please press the
+    **
+    Enter** key to resume the execution.</Callout>
+
+
+### Update the Andronix app
+    Now, click the **Command Executed** button at the bottom of the screen.
+### Finish the Process
+    After the script has been executed successfully, Click the **Execution Finished** button at the bottom.
+<Imagera src="/images/install_new/install_script_exec.jpg"/>
+</Steps>
+## 4. Starting Distribution ⚡️
+
+<Callout type="info">If you are already in the distro shell i.e. you see `root@localhost` mentioned on Termux. **Please
+    skip the next section.**</Callout>
+
+<Steps>
+### Start the Distro
+    You can now start the distro by typing the following command in Termux (Please choose your distro and execute the
+respective command) and running it-
+
+* Ubuntu 18
+    ```bash copy
+    ./start-ubuntu.sh
+    ```
+* Ubuntu 20
+    ```bash copy
+    ./start-ubuntu20.sh
+    ```
+* Debian
+    ```bash copy
+    ./start-debian.sh
+    ```
+* Manjaro
+    ```bash copy
+    ./start-manjaro.sh
+    ```
+* Arch Linux
+    ```bash copy
+    ./start-arch.sh
+    ```
+* Fedora
+    ```bash copy
+    ./start-fedora.sh
+    ```
+* Void
+    ```bash copy
+    ./start-void.sh
+    ```
+* Alpine
+    ```bash copy
+    ./start-alpine.sh
+    ```
+* Kali Linux
+    ```bash copy
+    ./start-kali.sh
+    ```
+
+### Verify
+    If you see ```root@localhost``` in the shell, you have successfully started your distro.
+</Steps>
+## 5. VNC Configuration 📺
+
+<Steps>
+
+    ### VNC Start
+
+    Now the Start VNC server page should have opened
+
+    <Imagera src="/images/install_new/install_start_vnc.jpg" />
+
+    ### VNC Server
+
+    In order for you to actually interact with the installed distribution's GUI, we will need to set up a VNC server.
+
+    Follow this [comprehensive guide](/vnc/vnc-basics) to set up a VNC server and use your distro.
+
+    <Callout type="error">If you are encountering the **Process completed (signal 9) - press Enter** error in Termux. Please read this article to resolve it- [Resolve Process 9 Error in Termux](/process-9-error-termux)</Callout>
+
+</Steps>
