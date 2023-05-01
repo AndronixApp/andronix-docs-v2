@@ -17,11 +17,6 @@
   "faq": "FAQ",
   "troubleshoot": "Troubleshoot",
   "miscellaneous": "Miscellaneous",
-
-  "about": {
-    "title": "About",
-    "type": "page"
-  },
   "contact": {
     "title": "Discord ↗",
     "type": "page",
