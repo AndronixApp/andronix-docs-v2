@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: help link to the head">
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: links on index page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/intro_component.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/intro_component.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/modded-os/modded-os-installation.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/modded-os/modded-os-installation.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,9 +18,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -90,7 +91,7 @@
       <updated>1682694603840</updated>
       <workItem from="1682694604949" duration="21802000" />
       <workItem from="1682756431092" duration="13426000" />
-      <workItem from="1682840181670" duration="14027000" />
+      <workItem from="1682840181670" duration="16475000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -134,7 +135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682960357659</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fix: links on index page">
+      <created>1682961184874</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1682961184874</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -148,6 +156,7 @@
     <MESSAGE value="add: meta tags&#10;add: banner for process killer&#10;fix: dynamic logo on the header&#10;add: YouTubeEmbed component&#10;fix: mdx errors" />
     <MESSAGE value="fix: links for backwards compatibility" />
     <MESSAGE value="add: help link to the head" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: help link to the head" />
+    <MESSAGE value="fix: links on index page" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: links on index page" />
   </component>
 </project>
