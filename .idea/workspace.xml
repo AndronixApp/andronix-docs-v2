@@ -4,20 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: meta tags&#10;add: banner for process killer&#10;fix: dynamic logo on the header&#10;add: YouTubeEmbed component&#10;fix: mdx errors">
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: links for backwards compatibility">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/intro_component.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/intro_component.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/android-compatibility/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/android-12/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/android-compatibility/andronix-on-android-12-and-beyond.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/android-12/andronix-on-android-12-and-beyond.mdx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/installation/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/unmodded-distros/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/installation/unmodded-os-installation.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/unmodded-distros/unmodded-os-installation.mdx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/installation/unmodded-os-uninstallation.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/unmodded-distros/unmodded-os-uninstallation.mdx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/introduction/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/get-started/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/introduction/how-does-andronix-work.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/get-started/how-does-andronix-work.mdx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/introduction/limitations.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/get-started/limitations.mdx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/security/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/security/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme.config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/theme.config.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +89,7 @@
       <updated>1682694603840</updated>
       <workItem from="1682694604949" duration="21802000" />
       <workItem from="1682756431092" duration="13426000" />
-      <workItem from="1682840181670" duration="11704000" />
+      <workItem from="1682840181670" duration="13275000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -130,7 +119,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682857790440</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fix: links for backwards compatibility">
+      <created>1682858434732</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1682858434732</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -142,6 +138,7 @@
     <MESSAGE value="delete pnpm-lock.yaml" />
     <MESSAGE value="configured theme" />
     <MESSAGE value="add: meta tags&#10;add: banner for process killer&#10;fix: dynamic logo on the header&#10;add: YouTubeEmbed component&#10;fix: mdx errors" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: meta tags&#10;add: banner for process killer&#10;fix: dynamic logo on the header&#10;add: YouTubeEmbed component&#10;fix: mdx errors" />
+    <MESSAGE value="fix: links for backwards compatibility" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: links for backwards compatibility" />
   </component>
 </project>

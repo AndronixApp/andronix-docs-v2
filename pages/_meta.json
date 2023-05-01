@@ -33,5 +33,11 @@
     "type": "page",
     "href": "https://git.andronix.app",
     "newWindow": true
+  },
+  "help": {
+    "title": "Need Help? ↗",
+    "type": "page",
+    "href": "https://chat.andronix.app",
+    "newWindow": true
   }
 }
