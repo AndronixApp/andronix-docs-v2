@@ -34,5 +34,12 @@
     "type": "page",
     "href": "https://chat.andronix.app",
     "newWindow": true
+  },
+  "blog": {
+    "title": "Blog",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
   }
 }

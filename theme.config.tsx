@@ -27,6 +27,11 @@ const config: DocsThemeConfig = {
         defaultMenuCollapseLevel: 1,
         toggleButton: true,
     },
+    useNextSeoProps() {
+        return {
+            titleTemplate: "%s – Andronix Docs",
+        };
+    },
     head: (
         <>
             <title>Andronix Documentation</title>
