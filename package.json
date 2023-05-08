@@ -7,10 +7,6 @@
     "build": "next build",
     "start": "next start"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shuding/nextra-docs-template.git"
-  },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
   "dependencies": {
