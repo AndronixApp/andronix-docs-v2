@@ -29,12 +29,12 @@ jobs:
           npm install -g yarn
           yarn install --frozen-lockfile
           yarn install
-          yarn run generate
+          yarn build
 
       - name: Deploy to Netlify ✅
         uses: nwtgck/actions-netlify@v1.2
         with:
-          publish-dir: './dist'
+          publish-dir: '.next'
           production-branch: master
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Deploy from GitHub Actions"
