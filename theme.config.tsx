@@ -17,13 +17,22 @@ const config: DocsThemeConfig = {
                                                              target="_blank">Andronix App</a>.
     </span>,
     },
+    sidebar: {
+        titleComponent({ title, type }) {
+            if (type === 'separator') {
+                return <span className="cursor-default">{title}</span>
+            }
+            return <>{title}</>
+        },
+        defaultMenuCollapseLevel: 1,
+        toggleButton: true,
+    },
     head: (
         <>
-
             <title>Andronix Documentation</title>
             <meta name="title" content="Andronix Documentation"/>
             <meta name="description"
-                  content="Andronix lets you install Ubuntu, Debian, and Manjaro on non-rooted Android devices. Our documentation provides step-by-step instructions and troubleshooting tips to help you set up your Linux environment quickly and easily. Experience the power of Linux on your mobile device with Andronix."/>
+                  content="Andronix lets you install Linux distributions like Ubuntu, Debian, and Manjaro on non-rooted Android devices. Read our documentation for step-by-step instructions."/>
 
             {/*FB*/}
             <meta property="og:type" content="website"/>
