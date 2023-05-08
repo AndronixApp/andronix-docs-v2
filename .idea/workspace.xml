@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: CI/CD">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +98,7 @@
       <workItem from="1682840181670" duration="19878000" />
       <workItem from="1683196227044" duration="1658000" />
       <workItem from="1683261306833" duration="596000" />
-      <workItem from="1683363701625" duration="4727000" />
+      <workItem from="1683363701625" duration="5196000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -186,7 +184,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683551400891</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="fix: CI/CD">
+      <created>1683552498764</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1683552498764</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
