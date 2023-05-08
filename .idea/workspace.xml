@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: spacing issues">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme.config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/theme.config.tsx" afterDir="false" />
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: CI/CD&#10;fix: meta tags">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,11 +62,11 @@
       <recent name="$PROJECT_DIR$/pages" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/pages" />
       <recent name="$PROJECT_DIR$/pages/miscellaneous" />
       <recent name="$PROJECT_DIR$/pages/introduction" />
       <recent name="$PROJECT_DIR$/pages/termux" />
-      <recent name="$PROJECT_DIR$/pages/xsdl" />
     </key>
   </component>
   <component name="RunManager">
@@ -102,7 +99,7 @@
       <workItem from="1682840181670" duration="19878000" />
       <workItem from="1683196227044" duration="1658000" />
       <workItem from="1683261306833" duration="596000" />
-      <workItem from="1683363701625" duration="2683000" />
+      <workItem from="1683363701625" duration="3130000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -160,7 +157,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682963787570</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add: CI/CD&#10;fix: meta tags">
+      <created>1683550483363</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1683550483363</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,6 +180,7 @@
     <MESSAGE value="add: help link to the head" />
     <MESSAGE value="fix: links on index page" />
     <MESSAGE value="fix: spacing issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: spacing issues" />
+    <MESSAGE value="add: CI/CD&#10;fix: meta tags" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: CI/CD&#10;fix: meta tags" />
   </component>
 </project>
