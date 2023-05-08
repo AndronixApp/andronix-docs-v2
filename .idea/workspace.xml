@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: links on index page">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/modded-os/modded-os-installation.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/modded-os/modded-os-installation.mdx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: upgraded node to 16.x in CI/CD">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +21,13 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -32,23 +36,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "javascript.nodejs.core.library.configured.version": "19.5.0",
-    "javascript.nodejs.core.library.typings.version": "18.16.2",
-    "last_opened_file_path": "/Users/prakharshukla/WebstormProjects/andronix-docs-v2/pages/security",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/prakharshukla/WebstormProjects/andronix-docs-v2/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;19.5.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.16.2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/prakharshukla/WebstormProjects/andronix-docs-v2/pages/security&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/prakharshukla/WebstormProjects/andronix-docs-v2/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/pages/security" />
@@ -57,11 +61,11 @@
       <recent name="$PROJECT_DIR$/pages" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/pages" />
       <recent name="$PROJECT_DIR$/pages/miscellaneous" />
       <recent name="$PROJECT_DIR$/pages/introduction" />
       <recent name="$PROJECT_DIR$/pages/termux" />
-      <recent name="$PROJECT_DIR$/pages/xsdl" />
     </key>
   </component>
   <component name="RunManager">
@@ -91,7 +95,10 @@
       <updated>1682694603840</updated>
       <workItem from="1682694604949" duration="21802000" />
       <workItem from="1682756431092" duration="13426000" />
-      <workItem from="1682840181670" duration="16475000" />
+      <workItem from="1682840181670" duration="19878000" />
+      <workItem from="1683196227044" duration="1658000" />
+      <workItem from="1683261306833" duration="596000" />
+      <workItem from="1683363701625" duration="3517000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -142,7 +149,28 @@
       <option name="project" value="LOCAL" />
       <updated>1682961184874</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix: spacing issues">
+      <created>1682963787570</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1682963787570</updated>
+    </task>
+    <task id="LOCAL-00009" summary="add: CI/CD&#10;fix: meta tags">
+      <created>1683550483363</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1683550483363</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix: upgraded node to 16.x in CI/CD">
+      <created>1683550789476</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1683550789476</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,6 +185,9 @@
     <MESSAGE value="fix: links for backwards compatibility" />
     <MESSAGE value="add: help link to the head" />
     <MESSAGE value="fix: links on index page" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: links on index page" />
+    <MESSAGE value="fix: spacing issues" />
+    <MESSAGE value="add: CI/CD&#10;fix: meta tags" />
+    <MESSAGE value="fix: upgraded node to 16.x in CI/CD" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: upgraded node to 16.x in CI/CD" />
   </component>
 </project>
