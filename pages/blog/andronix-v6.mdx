@@ -1,0 +1,73 @@
+---
+title: Andronix 6.0 - A new beginning...
+slug: v6-0
+date: August 11, 2021
+tags: Changelog
+description: Andronix 6.0 is here. A new beginning for Andronix. Read more about the changes in this blog.
+---
+
+
+import Imagera from "../../components/imagera";
+import Authors, {Author} from 'components/author'
+
+
+# Andronix 6.0 - A new beginning...
+
+<Authors date="August 11th, 2021">
+    <Author name="Prakhar Shukla" link="https://prakharshukla.dev"/>
+</Authors>
+
+
+More than a year, and here we are again. Andronix is getting updated to version 6.0.
+
+## What are the changes?
+
+Andronix has been re-written to be fast. Not only the app, but we have completely restructured our backend, our hosting, and our app pipelines.
+
+Here is a brief changelog:
+
+- We have re-imagined the user flow inside Andronix. After noticing that users find it hard to understand when we presented an overwhelming number of choices at once, Andronix has adopted a more subtle approach to delivering options throughout the app.
+
+<Imagera src={"/images/blog/v6/v6-1.gif"}/>
+<Imagera src={"/images/blog/v6/v6-2.gif"}/>
+- We have segmented each stage of the installation into different pages with help links on each page to make it easier for the users to choose.
+
+
+<Imagera src={"/images/blog/v6/v6-3.gif"}/>
+- Our documentation @ [https://docs.andronix.app](https://docs.andronix.app) has been re-written, including the entire website. It's fast now and implements **dark mode** by default. Built with [TailwindCSS](https://tailwindcss.com) and [NuxtJS](https://nuxtjs.org), it remains entirely [open-sourced](https://github.com/AndronixApp/andronix-docs-next).
+
+![](/images/blog/v6/v6-4.png)
+- Our website @ [https://andronix.app](https://andronix.app) has also obtained a much-needed overhaul and is made with [TailwindCSS](https://tailwindcss.com) and [NuxtJS](https://nuxtjs.org). It's faster and darker than ever before. We have [open-sourced](https://github.com/AndronixApp/andronix-website-base) it as well.
+
+![](/images/blog/v6/v6-5.png)
+
+- Andronix has been facing billing-related issues for a while now; we have tried our best to fix those entirely with this release.
+- Migrated the app to follow the MVVM architecture and Android's best practices, including Dependency Injection and Single Activity Principle. We also re-wrote our legacy code to use Kotlin flows for Event management.
+
+## Important
+
+Andronix 6.0 does include some significant changes. All of which are mentioned below-
+
+- This release limits the number of downloads for Modded OS. This means that you can generate the command only a specified number of times in a day and a month. We have adopted this to limit the abuse of our resources, having shifted to a scalable backend. Since Andronix offers only one-time purchases, we would not be able to sustain it with **an Unlimited number of downloads for every user.**
+- We are testing the removal of Offline downloads with a much more exciting feature in our development pipeline.
+- Since Termux has stopped publishing updates on the Google Play Store (read more about that in [this blog]()), the current release of Andronix does not work with Termux downloaded off of the Google Play Store. To fix this issue, we have introduced an in-app downloader for Termux from its F-Droid repository for the ease of our users.
+
+<Imagera src={"/images/blog/v6/v6-6.gif"}/>
+## What took so long?
+
+We will be pushing this update after more than a year. There are a few reasons for the delay-
+
+- The complete overhaul of our backends, website, and almost everything related to Andronix took a massive amount of time.
+- The year 2021 has been rough for our developers. A devastating wave of COVID-19 hit India, and one of our developers lost his close ones. The impact of this further delayed this released.
+
+## Anything more?
+
+Well, yes, Andronix is now legally owned by [**Devriz Technologies LLP**](https://devriz.com), **registered in India** . We will be moving away from the **Techriz** branding as soon as possible. Please don't get confused; it's still us.
+
+## Conclusion
+
+We hope that you will like this release.
+
+Andronix has been suffering from poor ratings on the Play Store because of Termux dropping support for Google Play Store and the devastating COVID-19 wave here in India.
+
+**Please consider rating us on the Play Store @ [https://play.andronix.app](https://play.andronix.app).** Thank you.

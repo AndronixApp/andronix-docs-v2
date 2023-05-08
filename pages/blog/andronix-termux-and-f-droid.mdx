@@ -1,0 +1,44 @@
+---
+title: Andronix, Termux and F-Droid
+slug: andronix-termux-and-f-droid
+date: July 14, 2021
+tags: Termux
+description: Information about migrating Termux from Google Play Store to F-Droid after the shut-down of Bintray, a package hosting service from Jfrog.
+---
+
+
+import Authors, {Author} from 'components/author'
+
+# Andronix, Termux and F-Droid
+
+<Authors date="July 14th, 2021">
+    <Author name="Prakhar Shukla" link="https://prakharshukla.dev"/>
+</Authors>
+
+Termux recently pinned an [issue](https://github.com/termux/termux-app/issues/2067) on their GitHub repository about the shut-down of Bintray, a package hosting service from [Jfrog](https://jfrog.com). We'll talk about that and things relating to Andronix in this post.
+
+## How does it affect Termux?
+
+Termux was using Bintray as one of it's main repository and after Jfrog announced the sunset of Bintray out of nowhere, Termux was not left with many choices other than to abandon the Google Play Store version of the app.
+
+**But why so you ask?** Much prior to this incident, Google's Android 10 made some changes in the SE-Linux policies which stopped allowing to execute binaries downloaded from elsewhere, the repositories of Termux here in this case. This caused the maintainers of Termux to make a radical change to the way that Termux worked but the end of the day, nothing came out of it and both the users and the maintainers preferred to abandon the Google Play's version all together pertaining to Google's uncertain decisions in every Android version.
+
+This combined with the shutting down of the repository made the Termux app on the Play Store, just plain unusable.
+
+## What should I do now?
+
+Termux being a Free and open-source application, was always available on [F-Droid](https://f-droid.org).
+
+F-Droid is a catalogue (and much more) for apps with FOSS licenses and no proprietary code (includes no ads, forced telemetry, or forced logging). From now
+
+> **Termux is exclusively available on only it's F-Droid repository.**
+
+Okay, but now what?
+
+Not work is required on your part. We have written a detailed guide in our documentation that you can find here - [Migrating to Termux from the F-Droid repository.](https://docs.andronix.app/termux/migrating-to-f-droid)
+
+## Is it safe?
+
+As long as you're downloading Termux, it being open-sourced and under the eyes of hundreds of developers, is relatively safe. F-Droid also provides you with the build logs and the PGP keys for you to verify your download. F-Droid is trusted by security enthusiasts as a way to prevent Google and other ad and tracking monopolies to snoop on your data.
+
+tl-dr, yes F-Droid is safe.
