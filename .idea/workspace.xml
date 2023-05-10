@@ -4,27 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="improve: meta description">
-      <change afterPath="$PROJECT_DIR$/components/author.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/blog_index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/_meta.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/andronix-termux-and-f-droid.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/andronix-v6.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/andronix-v7.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-2.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-3.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-6.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-2.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-4.png" afterDir="false" />
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: blogs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme.config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/theme.config.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +116,7 @@
       <workItem from="1683261306833" duration="596000" />
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
-      <workItem from="1683559615160" duration="7002000" />
+      <workItem from="1683559615160" duration="9870000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -240,7 +223,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683556255806</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="add: blogs">
+      <created>1683566731920</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1683566731920</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,6 +262,7 @@
     <MESSAGE value="fix: CI/CD" />
     <MESSAGE value="remove: dev CI" />
     <MESSAGE value="improve: meta description" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve: meta description" />
+    <MESSAGE value="add: blogs" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: blogs" />
   </component>
 </project>
