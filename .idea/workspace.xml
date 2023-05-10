@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: blogs">
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: toml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +114,7 @@
       <workItem from="1683261306833" duration="596000" />
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
-      <workItem from="1683559615160" duration="9870000" />
+      <workItem from="1683559615160" duration="10677000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -230,7 +228,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683566731920</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="add: toml">
+      <created>1683739016575</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1683739016575</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -263,6 +268,7 @@
     <MESSAGE value="remove: dev CI" />
     <MESSAGE value="improve: meta description" />
     <MESSAGE value="add: blogs" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: blogs" />
+    <MESSAGE value="add: toml" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: toml" />
   </component>
 </project>
