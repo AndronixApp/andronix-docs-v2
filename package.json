@@ -10,7 +10,6 @@
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
   "dependencies": {
-    "@netlify/plugin-nextjs": "4.1.1",
     "axios": "^1.4.0",
     "next": "^13.0.6",
     "nextra": "latest",
