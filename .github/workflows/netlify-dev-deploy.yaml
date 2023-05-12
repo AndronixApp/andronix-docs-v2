@@ -33,8 +33,6 @@ jobs:
           yarn install
           yarn build
           ls -a
-          echo "ls .next"
-          ls .next
           mv .next dist
 
       - name: Deploy to Netlify ✅
