@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="update: CI/CD">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: rendering normal img if images is a gif.">
       <change beforePath="$PROJECT_DIR$/components/imagera.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/imagera.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -116,7 +115,7 @@
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
       <workItem from="1683559615160" duration="11473000" />
-      <workItem from="1683863342495" duration="6636000" />
+      <workItem from="1683863342495" duration="7402000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -335,7 +334,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683871631774</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="fix: rendering normal img if images is a gif.">
+      <created>1683877391123</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1683877391123</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,6 +377,7 @@
     <MESSAGE value="update: netlify nextjs plugin" />
     <MESSAGE value="fix: CI/CD" />
     <MESSAGE value="update: CI/CD" />
-    <option name="LAST_COMMIT_MESSAGE" value="update: CI/CD" />
+    <MESSAGE value="fix: rendering normal img if images is a gif." />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: rendering normal img if images is a gif." />
   </component>
 </project>
