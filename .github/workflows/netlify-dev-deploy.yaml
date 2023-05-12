@@ -39,11 +39,6 @@ jobs:
 
       - name: Deploy to Netlify ✅
         uses: nwtgck/actions-netlify@v1.2
-        run: |
-          echo "Deploying to Netlify"
-          ls -a
-          echo "ls dist"
-          ls dist
         with:
           publish-dir: './dist'
           production-branch: master
