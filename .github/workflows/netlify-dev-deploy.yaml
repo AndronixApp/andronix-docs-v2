@@ -6,11 +6,6 @@ on:
   pull_request:
     branches:
       - master
-permissions:
-  statuses: write
-  deployments: write
-  pull-requests: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
