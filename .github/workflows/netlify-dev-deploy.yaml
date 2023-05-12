@@ -1,6 +1,9 @@
-name: Production Deploy
+name: Dev Deploy
 on:
   push:
+    branches:
+      - dev
+  pull_request:
     branches:
       - master
 jobs:
@@ -23,16 +26,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
       - name: Building 🏗
         run: |
           npm install -g yarn
           yarn install --frozen-lockfile
           yarn install
           yarn build
-          ls
-          ls .next
-
       - name: Deploy to Netlify ✅
         uses: nwtgck/actions-netlify@v1.2
         with:

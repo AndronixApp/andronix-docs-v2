@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="add: toml">
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="update: netlify nextjs plugin">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,23 +51,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "javascript.nodejs.core.library.configured.version": "19.5.0",
-    "javascript.nodejs.core.library.typings.version": "18.16.2",
-    "last_opened_file_path": "/Users/prakharshukla/WebstormProjects/andronix-docs-v2/public/images/blog/v7",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/prakharshukla/WebstormProjects/andronix-docs-v2/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;19.5.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.16.2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/prakharshukla/WebstormProjects/andronix-docs-v2/public/images/blog/v7&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/prakharshukla/WebstormProjects/andronix-docs-v2/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/public/images/blog/v7" />
@@ -114,7 +116,8 @@
       <workItem from="1683261306833" duration="596000" />
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
-      <workItem from="1683559615160" duration="10677000" />
+      <workItem from="1683559615160" duration="11473000" />
+      <workItem from="1683863342495" duration="340000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -235,7 +238,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683739016575</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="update: netlify nextjs plugin">
+      <created>1683739794649</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1683739794649</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -269,6 +279,7 @@
     <MESSAGE value="improve: meta description" />
     <MESSAGE value="add: blogs" />
     <MESSAGE value="add: toml" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: toml" />
+    <MESSAGE value="update: netlify nextjs plugin" />
+    <option name="LAST_COMMIT_MESSAGE" value="update: netlify nextjs plugin" />
   </component>
 </project>
