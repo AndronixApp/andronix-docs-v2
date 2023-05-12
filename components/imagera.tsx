@@ -10,7 +10,7 @@ export default function Imagera({
     return (
         <div>
             <br/>
-            <Image className={"mt-4"} src={src} alt={alt} width={200} height={height}/>
+            <Image className={"mt-4"} src={src} unoptimized={src.includes(".gif")} alt={alt} width={200} height={height}/>
         </div>
     )
 }
