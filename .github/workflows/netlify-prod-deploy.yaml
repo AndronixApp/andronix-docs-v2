@@ -9,15 +9,15 @@ jobs:
     name: Build
     steps:
       - name: Checking out code ⚡
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setting up NodeJS 📐
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
       - name: Caching Dependencies 💾
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn-lock.json') }}
@@ -34,7 +34,7 @@ jobs:
           mv .next dist
 
       - name: Deploy to Netlify ✅
-        uses: nwtgck/actions-netlify@v1.2
+        uses: nwtgck/actions-netlify@v2
         with:
           publish-dir: './dist'
           production-branch: master
