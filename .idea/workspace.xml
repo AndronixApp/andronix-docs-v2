@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="update: netlify nextjs plugin">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: CI/CD" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -117,7 +113,7 @@
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
       <workItem from="1683559615160" duration="11473000" />
-      <workItem from="1683863342495" duration="340000" />
+      <workItem from="1683863342495" duration="825000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -245,7 +241,21 @@
       <option name="project" value="LOCAL" />
       <updated>1683739794649</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="fix: CI/CD">
+      <created>1683863695971</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1683863695971</updated>
+    </task>
+    <task id="LOCAL-00020" summary="fix: CI/CD">
+      <created>1683863842542</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1683863842542</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,12 +284,12 @@
     <MESSAGE value="fix: spacing issues" />
     <MESSAGE value="add: CI/CD&#10;fix: meta tags" />
     <MESSAGE value="fix: upgraded node to 16.x in CI/CD" />
-    <MESSAGE value="fix: CI/CD" />
     <MESSAGE value="remove: dev CI" />
     <MESSAGE value="improve: meta description" />
     <MESSAGE value="add: blogs" />
     <MESSAGE value="add: toml" />
     <MESSAGE value="update: netlify nextjs plugin" />
-    <option name="LAST_COMMIT_MESSAGE" value="update: netlify nextjs plugin" />
+    <MESSAGE value="fix: CI/CD" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: CI/CD" />
   </component>
 </project>

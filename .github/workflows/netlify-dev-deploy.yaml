@@ -32,6 +32,9 @@ jobs:
           yarn install --frozen-lockfile
           yarn install
           yarn build
+          ls
+          ls .next
+
       - name: Deploy to Netlify ✅
         uses: nwtgck/actions-netlify@v1.2
         with:
