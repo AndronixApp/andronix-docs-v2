@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: CI/CD">
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="update: CI/CD">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-prod-deploy.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -115,7 +116,7 @@
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
       <workItem from="1683559615160" duration="11473000" />
-      <workItem from="1683863342495" duration="2834000" />
+      <workItem from="1683863342495" duration="4299000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -292,7 +293,21 @@
       <option name="project" value="LOCAL" />
       <updated>1683865580239</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="update: CI/CD">
+      <created>1683867301314</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1683867301314</updated>
+    </task>
+    <task id="LOCAL-00027" summary="update: CI/CD">
+      <created>1683868032402</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1683868032402</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -327,6 +342,7 @@
     <MESSAGE value="add: toml" />
     <MESSAGE value="update: netlify nextjs plugin" />
     <MESSAGE value="fix: CI/CD" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: CI/CD" />
+    <MESSAGE value="update: CI/CD" />
+    <option name="LAST_COMMIT_MESSAGE" value="update: CI/CD" />
   </component>
 </project>
