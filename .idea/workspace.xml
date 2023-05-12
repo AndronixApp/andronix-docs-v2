@@ -4,27 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="improve: meta description">
-      <change afterPath="$PROJECT_DIR$/components/author.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/blog_index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/_meta.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/andronix-termux-and-f-droid.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/andronix-v6.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/blog/andronix-v7.mdx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-2.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-3.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v6/v6-6.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-2.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/blog/v7/v7-4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/_meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_meta.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme.config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/theme.config.tsx" afterDir="false" />
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: CI/CD">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/netlify-dev-deploy.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,23 +49,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "javascript.nodejs.core.library.configured.version": "19.5.0",
-    "javascript.nodejs.core.library.typings.version": "18.16.2",
-    "last_opened_file_path": "/Users/prakharshukla/WebstormProjects/andronix-docs-v2/public/images/blog/v7",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/prakharshukla/WebstormProjects/andronix-docs-v2/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;19.5.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.16.2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/prakharshukla/WebstormProjects/andronix-docs-v2/public/images/blog/v7&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/prakharshukla/WebstormProjects/andronix-docs-v2/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/public/images/blog/v7" />
@@ -133,7 +114,8 @@
       <workItem from="1683261306833" duration="596000" />
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
-      <workItem from="1683559615160" duration="7002000" />
+      <workItem from="1683559615160" duration="11473000" />
+      <workItem from="1683863342495" duration="1889000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -240,7 +222,56 @@
       <option name="project" value="LOCAL" />
       <updated>1683556255806</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="add: blogs">
+      <created>1683566731920</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1683566731920</updated>
+    </task>
+    <task id="LOCAL-00017" summary="add: toml">
+      <created>1683739016575</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1683739016575</updated>
+    </task>
+    <task id="LOCAL-00018" summary="update: netlify nextjs plugin">
+      <created>1683739794649</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1683739794649</updated>
+    </task>
+    <task id="LOCAL-00019" summary="fix: CI/CD">
+      <created>1683863695971</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1683863695971</updated>
+    </task>
+    <task id="LOCAL-00020" summary="fix: CI/CD">
+      <created>1683863842542</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1683863842542</updated>
+    </task>
+    <task id="LOCAL-00021" summary="fix: CI/CD">
+      <created>1683864189029</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1683864189029</updated>
+    </task>
+    <task id="LOCAL-00022" summary="fix: CI/CD">
+      <created>1683864619417</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1683864619417</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -269,9 +300,12 @@
     <MESSAGE value="fix: spacing issues" />
     <MESSAGE value="add: CI/CD&#10;fix: meta tags" />
     <MESSAGE value="fix: upgraded node to 16.x in CI/CD" />
-    <MESSAGE value="fix: CI/CD" />
     <MESSAGE value="remove: dev CI" />
     <MESSAGE value="improve: meta description" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve: meta description" />
+    <MESSAGE value="add: blogs" />
+    <MESSAGE value="add: toml" />
+    <MESSAGE value="update: netlify nextjs plugin" />
+    <MESSAGE value="fix: CI/CD" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: CI/CD" />
   </component>
 </project>
