@@ -30,7 +30,8 @@ jobs:
           yarn install --frozen-lockfile
           yarn install
           yarn build
-          ls
+          ls -a
+          echo "ls .next"
           ls .next
 
       - name: Deploy to Netlify ✅
