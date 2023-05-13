@@ -1,5 +1,6 @@
 import {Callout, Steps} from 'nextra-theme-docs'
-import Imagera from "../../components/imagera";
+import Imagera from "../../components/imagera"; import {Button} from "nextra/components"; import AndronixButton
+    from "../../components/button";
 
 # Migrating Termux to F-Droid
 Know about the recent repository changes of Termux and migration from Google Play Store to F-Droid.
@@ -46,15 +47,19 @@ chances are that you're still running the Google Play Store version. In that cas
 
 > This will remove all the distros and other data related to Termux that you might have but is a necessary step in order to avoid version conflict. If you want to back up your data, please follow [this guide](https://wiki.termux.com/wiki/Backing_up_Termux)
 
-### Open F-Droid
-    Visit https://f-droid.org/en/packages/com.termux/ and download the APK of the latest version of Termux.
+### Download Termux
+    You can download the latest version of the Termux app from Andronix's [Termux Release Mirror](https://github.com/AndronixApp/termux-releases).
+
+    <AndronixButton link={"https://github.com/AndronixApp/termux-releases/blob/main/Releases/Termux_118/com.termux_118.apk?raw=true"}>
+        Download Termux
+    </AndronixButton>
+
+    Alternatively, you can visit https://f-droid.org/en/packages/com.termux/ and download the APK of the latest version of Termux.
    Alternatively, you can also download and install the F-Droid client to help you manage future updates and other
    stuff.
 
 
-    <Callout type="info">If the download is slow, please use Andronix's own Termux releases and download [the lastest release here](https://github.com/AndronixApp/termux-releases/blob/main/Releases/Termux_118/com.termux_118.apk?raw=true).</Callout>
-
-    <Imagera src="/images/giphy-fdroid.webp" />
+    <Callout type="info">You can read more about the security of the F-Droid APK mirrors and check their hashes at [Termux Security](/security/termux).</Callout>
 
    <Callout type="warning">Android might give you a warning that files like these might harm your device; you can safely
    ignore that. That is a generic warning triggered whenever you download an executable or installable file from
