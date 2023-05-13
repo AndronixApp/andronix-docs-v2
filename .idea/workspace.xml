@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="improved: f-droid download and install docs">
+    <list default="true" id="8a9fbe78-04cb-417c-9905-41620e3e62d1" name="Changes" comment="fix: blog re-direct links">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/blog/andronix-v6.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/blog/v6-0.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/blog/andronix-v7.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/blog/v7-0.mdx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +117,7 @@
       <workItem from="1683363701625" duration="7955000" />
       <workItem from="1683556388293" duration="851000" />
       <workItem from="1683559615160" duration="11473000" />
-      <workItem from="1683863342495" duration="15194000" />
+      <workItem from="1683863342495" duration="17778000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <created>1682843247839</created>
@@ -362,7 +364,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683952832623</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="fix: blog re-direct links">
+      <created>1683967780861</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1683967780861</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -400,6 +409,7 @@
     <MESSAGE value="update: CI/CD" />
     <MESSAGE value="fix: rendering normal img if images is a gif." />
     <MESSAGE value="improved: f-droid download and install docs" />
-    <option name="LAST_COMMIT_MESSAGE" value="improved: f-droid download and install docs" />
+    <MESSAGE value="fix: blog re-direct links" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: blog re-direct links" />
   </component>
 </project>
