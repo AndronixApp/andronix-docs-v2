@@ -9,7 +9,7 @@ export default function AndronixButton({
     return (
         <Link href={link}
               className={`${className} px-3 flex space-x-2 my-4 items-center justify-center py-2 bg-orange-500 rounded-md w-fit cursor-pointer hover:scale-105 transform transition duration-200`}>
-            <p className={'text-bold text-white'}>{children}</p>
+            <span className={'text-bold text-white'}>{children}</span>
             <FiChevronRight/>
         </Link>
     )

@@ -8,7 +8,6 @@
   "desktop-environments": "Desktop Environments",
   "software": "Software",
 
-
   "ssh": "SSH Basics",
   "termux": "Termux",
   "vnc": "VNC",
@@ -35,6 +34,11 @@
     "href": "https://chat.andronix.app",
     "newWindow": true
   },
+  "account": {
+    "title": "Account",
+    "type": "page"
+  },
+
   "blog": {
     "title": "Blog",
     "type": "page",
