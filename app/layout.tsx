@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body>
-        <RootProvider theme={{ defaultTheme: "Darl" }}>{children}</RootProvider>
+        <RootProvider theme={{ defaultTheme: "dark" }}>{children}</RootProvider>
       </body>
     </html>
   );
