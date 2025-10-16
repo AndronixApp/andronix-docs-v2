@@ -1,8 +1,7 @@
-name = "andronix-docs-v2"
 main = ".open-next/worker.js"
-compatibility_date = "2024-12-30"
+name = "andronix-docs-v2"
+compatibility_date = "2025-03-25"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".open-next"
 
 [assets]
 directory = ".open-next/assets"
