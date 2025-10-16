@@ -27,3 +27,7 @@ const config = {
 };
 
 export default withMDX(config);
+
+// Initialize OpenNext Cloudflare for development
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+initOpenNextCloudflareForDev();
