@@ -18,7 +18,6 @@ export default function Imagera({
         <ImageZoom
           className={"mt-4"}
           src={src}
-          unoptimized={src.includes(".gif")}
           alt={alt}
           width={200}
           height={height}

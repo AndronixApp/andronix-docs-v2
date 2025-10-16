@@ -1,7 +1,8 @@
 import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
 import defaultComponents from 'fumadocs-ui/mdx';
-import type { MDXComponents } from 'mdx/types';
 import Imagera from '@/components/imagera';
+
+type MDXComponents = Record<string, React.ComponentType<any>>;
 
 export function useMDXComponents(components?: MDXComponents): MDXComponents {
   return {
