@@ -4,3 +4,7 @@
 
 echo "Building with OpenNext Cloudflare adapter..."
 npx opennextjs-cloudflare build
+
+# Copy worker.js to _worker.js for Cloudflare Pages Advanced Mode
+echo "Setting up Cloudflare Pages worker..."
+cp .open-next/worker.js .open-next/_worker.js
