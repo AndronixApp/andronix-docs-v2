@@ -4,12 +4,12 @@
   "description": "Andronix Docs V2",
   "scripts": {
     "dev": "next dev",
-    "build": "npx opennextjs-cloudflare build",
-    "build:next": "next build",
+    "build": "next build",
+    "pages:build": "npx opennextjs-cloudflare build",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
-    "preview": "npm run build && wrangler pages dev .open-next/worker.js --compatibility-date=2024-12-30 --compatibility-flag=nodejs_compat",
-    "deploy": "npm run build && wrangler pages deploy .open-next",
+    "preview": "npm run pages:build && wrangler pages dev .open-next/worker.js --compatibility-date=2024-12-30 --compatibility-flag=nodejs_compat",
+    "deploy": "npm run pages:build && wrangler pages deploy .open-next",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "author": "Andronix <hello@andronix.app>",
