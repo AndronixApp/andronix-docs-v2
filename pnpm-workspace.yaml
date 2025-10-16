@@ -1,0 +1,2 @@
+patchedDependencies:
+  '@types/mdx@2.0.13': patches/@types__mdx@2.0.13.patch
