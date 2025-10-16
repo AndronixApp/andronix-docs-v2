@@ -14,6 +14,7 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
   return (
     <DocsLayout
       {...baseOptions()}
+      // @ts-expect-error - type mismatch between fumadocs-core and fumadocs-ui
       tree={source.pageTree}
       sidebar={{
         defaultOpenLevel: 1,
