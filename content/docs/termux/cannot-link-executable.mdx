@@ -1,0 +1,167 @@
+---
+title: Cannot Link Executable Error
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+Resolving the "CANNOT LINK EXECUTABLE" error for wget, curl, and other utilities in Termux.
+
+<Callout type="error">
+If you are encountering the **CANNOT LINK EXECUTABLE "wget": library "libssl.so.3"** or similar errors for curl and other commands, please read the following solutions.
+</Callout>
+
+## The Problem
+
+This error occurs when Termux utilities like `wget` or `curl` cannot find or link to the required OpenSSL library (`libssl.so.3`). This typically happens due to:
+
+- Outdated or corrupted package repositories
+- Missing OpenSSL dependencies
+- Repository mirror connection issues
+
+## Solutions
+
+Try these solutions in order. If one doesn't work, proceed to the next:
+
+### Solution 1: Change Repository Mirror
+
+The most common fix is to switch to a more reliable repository mirror.
+
+<Steps>
+<Step>
+
+### Open the repository selection tool
+
+```bash copy
+termux-change-repo
+```
+
+</Step>
+
+<Step>
+
+### Select "Main repository"
+
+Use the arrow keys to navigate and press Enter to select.
+
+</Step>
+
+<Step>
+
+### Choose "Mirror by BFSU"
+
+Select the BFSU (Beijing Foreign Studies University) mirror from the list.
+
+</Step>
+
+<Step>
+
+### Confirm and apply
+
+Press OK to apply the changes.
+
+</Step>
+
+<Step>
+
+### Restart Termux
+
+Close and restart the Termux app completely.
+
+</Step>
+
+<Step>
+
+### Test the fix
+
+Try running your command again:
+
+```bash copy
+wget --version
+```
+
+or
+
+```bash copy
+curl --version
+```
+
+</Step>
+</Steps>
+
+### Solution 2: Update and Upgrade Packages
+
+If changing the repository doesn't resolve the issue, try updating all packages.
+
+<Steps>
+<Step>
+
+### Update package lists
+
+```bash copy
+apt-get update
+```
+
+</Step>
+
+<Step>
+
+### Upgrade installed packages
+
+```bash copy
+apt-get upgrade
+```
+
+</Step>
+
+<Step>
+
+### Test the fix
+
+Try running your command again to verify it works.
+
+</Step>
+</Steps>
+
+### Solution 3: Reinstall OpenSSL
+
+If the above solutions don't work, the OpenSSL library may need to be reinstalled.
+
+<Steps>
+<Step>
+
+### Install OpenSSL
+
+```bash copy
+apt install openssl
+```
+
+This will install or reinstall the required `libssl.so.3` library.
+
+</Step>
+
+<Step>
+
+### Verify installation
+
+Test if the error is resolved:
+
+```bash copy
+wget --version
+curl --version
+```
+
+</Step>
+</Steps>
+
+## Additional Tips
+
+<Callout type="info">
+If you continue experiencing issues after trying all solutions:
+- Ensure you have a stable internet connection
+- Try switching to a different repository mirror if BFSU doesn't work
+- Consider reinstalling Termux from F-Droid (recommended) instead of the Play Store
+</Callout>
+
+## Related Pages
+
+- [Migrating Termux to F-Droid](/termux/migrating-to-f-droid)

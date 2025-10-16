@@ -1,0 +1,10 @@
+{
+  "unmodded-os-installation": {
+    "title": "Installation",
+    "icon": "Download"
+  },
+  "unmodded-os-uninstallation": {
+    "title": "Uninstallation",
+    "icon": "Trash2"
+  }
+}

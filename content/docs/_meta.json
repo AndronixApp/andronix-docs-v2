@@ -1,0 +1,49 @@
+{
+  "index": "Get Started",
+  "get-started": "Introduction",
+  "android-12": "Android Compatibility",
+  "unmodded-distros": "Installation",
+  "modded-os": "Modded OS",
+  "window-managers": "Window Managers",
+  "desktop-environments": "Desktop Environments",
+  "software": "Software",
+
+  "ssh": "SSH Basics",
+  "termux": "Termux",
+  "vnc": "VNC",
+  "xsdl": "XSDL",
+  "security": "Security",
+  "faq": "FAQ",
+  "troubleshoot": "Troubleshoot",
+  "miscellaneous": "Miscellaneous",
+  "contact": {
+    "title": "Discord ↗",
+    "type": "page",
+    "href": "https://chat.andronix.app",
+    "newWindow": true
+  },
+  "github": {
+    "title": "GitHub ↗",
+    "type": "page",
+    "href": "https://git.andronix.app",
+    "newWindow": true
+  },
+  "help": {
+    "title": "Need Help? ↗",
+    "type": "page",
+    "href": "https://chat.andronix.app",
+    "newWindow": true
+  },
+  "account": {
+    "title": "Account",
+    "type": "page"
+  },
+
+  "blog": {
+    "title": "Blog",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
+  }
+}
