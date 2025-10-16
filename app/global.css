@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+@theme {
+  /* Orange primary color for light mode */
+  --color-fd-primary: hsl(24.6, 95%, 53.1%); /* Orange-500 */
+  --color-fd-primary-foreground: hsl(0, 0%, 100%); /* White text */
+}
+
+.dark {
+  /* Orange primary color for dark mode */
+  --color-fd-primary: hsl(20.5, 90.2%, 48.2%); /* Orange-500 adjusted for dark */
+  --color-fd-primary-foreground: hsl(0, 0%, 100%); /* White text */
+}
