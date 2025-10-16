@@ -10,26 +10,28 @@
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
   "dependencies": {
+    "@orama/tokenizers": "^3.1.15",
     "@tailwindcss/postcss": "^4.1.14",
     "axios": "^1.4.0",
     "fumadocs-core": "^15.8.5",
     "fumadocs-mdx": "^12.0.3",
     "fumadocs-ui": "^15.8.5",
     "lucide-react": "^0.545.0",
-    "next": "^15.1.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "16.0.0-beta.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.8.3",
     "@tailwindcss/typography": "^0.5.19",
+    "@types/mdx": "^2.0.13",
     "@types/node": "^22.10.5",
-    "@types/react": "^19.0.6",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.8",
-    "typescript": "^5.7.3"
+    "typescript": "^5.9.3"
   }
 }
