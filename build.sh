@@ -3,4 +3,4 @@
 # This ensures OpenNext is used instead of the deprecated next-on-pages
 
 echo "Building with OpenNext Cloudflare adapter..."
-pnpm run pages:build
+npx opennextjs-cloudflare build
