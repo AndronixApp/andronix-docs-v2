@@ -20,14 +20,15 @@ export default async function Page(props: {
 
   const Title = DocsTitle as any;
   const Description = DocsDescription as any;
+  const Body = DocsBody as any;
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <Title>{page.data.title}</Title>
       <Description>{page.data.description}</Description>
-      <DocsBody>
+      <Body>
         <MDX components={useMDXComponents()} />
-      </DocsBody>
+      </Body>
     </DocsPage>
   );
 }
