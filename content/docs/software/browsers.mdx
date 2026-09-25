@@ -5,6 +5,8 @@ description: Learn how to install and run Firefox and Chromium web browsers insi
 
 This page shows you how to install Firefox and Chromium in your Andronix distro. Find your distro under each browser and run the matching command.
 
+<Callout type="info">**Firefox comes preinstalled** on every desktop install from the current installer, unless you installed with `--no-browser`. On Ubuntu, it comes from Mozilla's own repository, because Ubuntu's Firefox is a Snap and Snaps don't work in Andronix. The Firefox commands below are mainly for distros from the old installer. On new installs, you log in as a normal user, so put `sudo` in front of them.</Callout>
+
 <Callout type="warning">If you have an **armv7**-based device, browsers might fail to work for unknown reasons.</Callout>
 
 <Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the
@@ -34,7 +36,11 @@ xbps-install -S firefox
 
 ### Alpine
 
-Sadly, Alpine does not provide Firefox for ARM devices as of now.
+```bash copy
+apk add firefox
+```
+
+<Callout type="info">Old Alpine installs may not find a Firefox package. Alpine 3.24, which the current installer uses, has one.</Callout>
 
 ## Chromium
 
