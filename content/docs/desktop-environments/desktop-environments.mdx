@@ -18,29 +18,34 @@ In simpler terms, a **desktop environment is the graphical user interface (GUI) 
 
 ## What Desktop Environments does Andronix offer?
 
-Andronix supports most of the major DEs used in the Linux community today, including **XFCE**, **LXQT** and **LXDE**.
+Andronix offers three desktop environments on every free distro: **XFCE**, **LXQt** and **MATE**. You can also skip the desktop and use the **command line only**.
 
-<Callout type="warning">The availability of desktop environments varies between distros.</Callout>
+| Desktop | What it's like | Pick it if |
+|---|---|---|
+| <Badge>XFCE</Badge> | A full, familiar desktop with a panel, an app menu and a file manager (Thunar). Our recommendation. | You want something that just works. |
+| <Badge>LXQt</Badge> | A light desktop built on Qt, with a Windows-like menu and panel. | You want a lighter desktop, or prefer Qt apps. |
+| <Badge>MATE</Badge> | A classic, traditional desktop with menus at the top. | You like the classic GNOME 2 layout. |
+| <Badge>CLI only</Badge> | No desktop, just a terminal. The smallest and fastest install. | You only need the command line. |
 
-### Desktop Environment List
+Every desktop install also comes with Firefox and a VNC server, so you can open the desktop with `vncserver-start` and a VNC viewer. See [VNC Basics](/vnc/vnc-basics).
 
-- **Ubuntu** <Badge>XFCE</Badge> <Badge>LXDE</Badge> <Badge>LXQT</Badge>
+### XFCE
 
-- **Debian** <Badge>XFCE</Badge> <Badge>LXDE</Badge> <Badge>LXQT</Badge>
+![XFCE on Debian 13, with the app menu open](/images/new-installer/debian-xfce-menu.png)
 
-- **Kali** <Badge>XFCE</Badge> <Badge>LXDE</Badge> <Badge>LXQT</Badge>
+### LXQt
 
-- **Manjaro** <Badge>XFCE</Badge> <Badge>LXDE</Badge> <Badge>LXQT</Badge>
+![LXQt on Fedora 44, with the app menu open](/images/new-installer/fedora-lxqt-menu.jpg)
 
-- **Fedora** <Badge>XFCE</Badge> <Badge>LXDE</Badge> <Badge>LXQT</Badge>
+{/* TODO(docs): add a MATE screenshot. The test runs so far show MATE without desktop icons or wallpaper (caja keeps exiting under proot), so none is used yet. */}
 
-- **Void** <Badge>XFCE</Badge> <Badge>LXDE</Badge> <Badge>LXQT</Badge>
+### Availability
 
-- **Alpine** <Badge>XFCE</Badge>
+All three desktops, and the command line only, are available on every free distro: Debian, Ubuntu, Kali Linux, Fedora, Arch Linux, Manjaro ARM, Alpine and Void Linux. See [Supported Distros](/unmodded-distros/distros).
 
-- **Arch** <Badge>XFCE</Badge> <Badge>LXDE</Badge>
+<Callout type="warning">**Window managers (Awesome, i3, Openbox), LXDE and KDE are no longer offered** by the free installer. Distros you installed with them keep working. If your version of the app still shows these options, pick XFCE, LXQt or MATE instead.</Callout>
 
-<Callout type="info">KDE is only available through the [Andronix Ubuntu KDE Modded OS](/modded-os/modded-os).</Callout>
+<Callout type="info">KDE is available through the [Andronix Ubuntu KDE Modded OS](/modded-os/modded-os).</Callout>
 
 ## Which DE should I choose?
 
@@ -48,8 +53,19 @@ You can pick whichever DE you like or are most familiar with. For most people, t
 
 <Callout type="info">If you're just starting out or aren't sure, choose **XFCE**.</Callout>
 
+## Changing your desktop
+
+To try a different desktop, install the distro again with that desktop, for example from Termux:
+
+```bash copy
+andronix install debian --de lxqt --reinstall
+```
+
+<Callout type="warning">`--reinstall` deletes the distro and everything in it first. Copy anything you want to keep to `/sdcard` beforehand.</Callout>
+
+{/* TODO(docs): check whether `andronix install <distro> --de <other>` on an existing desktop install adds the second desktop without --reinstall (the bash prototype did this for none -> xfce). If it does, document that instead. */}
+
 ## Next steps
 
 - [Install a distro](/unmodded-distros/unmodded-os-installation) with the DE of your choice.
-- Prefer a keyboard-driven setup? Read about [window managers](/window-managers/window-managers).
-- Learn how to view your desktop with [VNC](/vnc/vnc-basics) or [XSDL](/xsdl/xsdl-basics).
+- Learn how to view your desktop with [VNC](/vnc/vnc-basics).

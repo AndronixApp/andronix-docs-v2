@@ -14,7 +14,9 @@ VNC lets you see and use your distro's graphical desktop from a VNC client app. 
 
 Let's learn how to operate the VNC server, including starting, stopping and debugging it.
 
-<Callout type="info">Make sure you have started your distro and are in the distro shell, i.e. you see `root@localhost` in Termux.</Callout>
+<Callout type="info">Make sure you have started your distro and are in the distro shell, i.e. you see your username followed by `@localhost` (for example `alex@localhost`) in Termux.</Callout>
+
+<Callout type="info">These steps are for distros installed with the current installer. On a Modded OS or a distro from the old installer, see [VNC on an old install](#vnc-on-an-old-install).</Callout>
 
 ### Starting a VNC server
 
@@ -23,7 +25,7 @@ Let's learn how to operate the VNC server, including starting, stopping and debu
 
 ### Start VNC Server
 
-If you are on the VNC server page in Andronix, the app has already copied the necessary command to your clipboard. Just paste it in Termux (in the distro shell, _[root@localhost]_) and run it.
+If you are on the VNC server page in Andronix, the app has already copied the necessary command to your clipboard. Just paste it in Termux (in the distro shell, where you see your username, like `alex@localhost`) and run it.
 
 ```bash copy
 vncserver-start
@@ -35,9 +37,15 @@ vncserver-start
 
 <Step>
 
-### Select Resolution
+### Pick a Screen Size
 
-If you're prompted to select a resolution, just press **Enter** to have it selected dynamically.
+You're asked to pick a screen size. Press **Enter** to pick **Auto**, which fits your VNC viewer. You can also pick HD (1280x720), Full HD (1920x1080), QHD (2560x1440) or type your own size.
+
+If you haven't set a desktop password yet, you're asked for one now (6 to 8 characters).
+
+When the desktop is up, you'll see a **Desktop is running** box with the address to connect to, `localhost:1`.
+
+<Callout type="warning">Keep this Termux session open while you use the desktop. Closing it, or typing `exit`, stops the desktop too. To use the Termux command line at the same time, open a new session from the Termux sidebar (swipe in from the left edge).</Callout>
 
 </Step>
 
@@ -86,7 +94,7 @@ You might be warned that the connection is untrusted. Tap **OK** to continue.
 
 ### Enter your VNC password
 
-When prompted, enter the password you set while installing the distro and tap **Continue**.
+When prompted, enter the desktop (VNC) password you set when you created your user, and tap **Continue**.
 
 <Imagera src="/images/install_new/real_vnc_password_input.jpg"/>
 
@@ -148,7 +156,7 @@ You should now see the GUI of your Linux distribution in high quality.
 
 You can now use your Linux distribution just like you would on a PC.
 
-<Imagera src="/images/install_new/install_complete.jpg"/>
+![Debian 13 with XFCE in a VNC viewer](/images/new-installer/debian-xfce-apps.png)
 
 </Step>
 </Steps>
@@ -164,13 +172,73 @@ Stop the VNC server whenever you're done using your distro or are about to exit 
 vncserver-stop
 ```
 
-The terminal will then ask you for a port number. Enter **1** and press **Enter**.
+It asks which display to stop. Press **Enter** to pick `:1`, the usual one. To skip the question, run `vncserver-stop 1`.
 
 ## VNC Settings
 
 <Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the Termux shell).</Callout>
 
-### Setting a desired resolution
+### Setting a screen size
+
+Pass the size you want when you start the desktop, and you won't be asked:
+
+```bash copy
+vncserver-start 1920x1080
+```
+
+<Callout type="info">You can replace 1920x1080 with any size, written as WIDTHxHEIGHT. There's no file to edit.</Callout>
+
+### Changing the desktop password
+
+Delete the saved password, then start the desktop. It asks you for a new one:
+
+```bash copy
+vncserver-stop 1
+rm ~/.config/tigervnc/passwd
+vncserver-start
+```
+
+### How to change the picture quality in VNC
+
+If you're using bVNC, you don't need to change anything; it adjusts the quality automatically.
+
+If you're using RealVNC Viewer, connect to the VNC server and tap the _(i)_ button at the top. Then change
+**Picture Quality** to **High**, or to whatever quality you prefer.
+
+## VNC on other devices
+
+<Callout type="info">You can access the distro running on your phone from any other device on your network, like a laptop or a tablet.</Callout>
+
+By default, the desktop only accepts connections from the phone it runs on. To let other devices connect, start it with `--lan`:
+
+```bash copy
+vncserver-start --lan
+```
+
+The **Desktop is running** box then says the desktop is reachable from your whole network.
+
+<Callout type="warning">With `--lan`, anyone on the same network who knows your desktop password can connect, and VNC traffic isn't encrypted. Only use it on networks you trust, like your home Wi-Fi or your own hotspot, and stop the desktop when you're done.</Callout>
+
+Make sure both devices are on the same network. If you don't have access to Wi-Fi, turn on the hotspot on the phone running Linux and connect the other device to it. Then open a new Termux session (swipe in from the left edge to open the sidebar) and type:
+
+```bash copy
+ip a
+```
+
+Copy the **WLAN IP** address (e.g. _192.168.xx.xx_). On the other device, connect your VNC viewer to this IP address with display number 1 (e.g. _192.168.xx.xx:1_).
+
+To go back to phone-only access, run `vncserver-stop`, then `vncserver-start` without `--lan`.
+
+## VNC on an old install
+
+<Callout type="warning">This section is for **Modded OS** and for distros installed with the **old installer**, which use the old VNC scripts. It doesn't apply to new installs. See [Installs from the old installer](/unmodded-distros/older-installs).</Callout>
+
+On an old install, `vncserver-start` asks for a resolution, and `vncserver-stop` asks for a port number: enter **1** and press **Enter**.
+
+
+<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the Termux shell).</Callout>
+
+### Setting a resolution on an old install
 
 To set your preferred resolution, open the VNC start script by running:
 
@@ -206,14 +274,7 @@ LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 2
 
 When you're done, press `Ctrl+X`, type `Y` and press `Enter`. The next time you start the VNC server, choose the first option, **Start vnc-server with autodetect/dynamic resolution**.
 
-### How to change the picture quality in VNC
-
-If you're using bVNC, you don't need to change anything; it adjusts the quality automatically.
-
-If you're using RealVNC Viewer, connect to the VNC server and tap the _(i)_ button at the top. Then change
-**Picture Quality** to **High**, or to whatever quality you prefer.
-
-## VNC on other devices
+### VNC on other devices (old install)
 
 <Callout type="info">You can access the distro running on your phone from any other device on your network.</Callout>
 
@@ -249,6 +310,5 @@ number 1 (e.g. _192.168.xx.xx:1_).
 
 ## Next steps
 
-- Prefer XSDL over VNC? See [XSDL Basics](/xsdl/xsdl-basics).
 - Want terminal access from another device instead? See [SSH Basics](/ssh/ssh-basics).
 - No sound in your desktop? See [Fixing Sound](/troubleshoot/sound).

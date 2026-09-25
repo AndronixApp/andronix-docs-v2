@@ -1,7 +1,13 @@
 ---
-title: XSDL Basics
-description: Use XSDL, an X11 server for Android, to display your Andronix distro's desktop, a faster alternative to VNC with a simpler interface.
+title: XSDL Basics (outdated)
+description: How XSDL was used to show an Andronix distro's desktop. Outdated: the new installer is built and tested for VNC. Kept for existing installs.
 ---
+
+<Callout type="warning" title="This page is outdated">
+These steps were written for distros from the old installer, and haven't been tested with the new installer. For new installs, use [VNC](/vnc/vnc-basics), which the installer sets up for you.
+</Callout>
+
+{/* TODO(docs): test XSDL with the new installer. The desktop start file moved from ~/.vnc/xstartup to ~/.config/tigervnc/xstartup (~/.vnc is a symlink to it). Either rewrite this page or retire it. */}
 
 XSDL is an X Window System (X11) server for Android. X11 servers are generally faster than VNC, but XSDL lacks the polished interface a VNC viewer might have. Which one you use comes down to your preference and what suits you best. This page shows how to start your distro's desktop with XSDL.
 
@@ -25,6 +31,6 @@ export DISPLAY=192.168.0.100:0 && bash ~/.vnc/xstartup &
 
 - [VNC Basics](/vnc/vnc-basics): the alternative to XSDL, with a richer viewer interface.
 - [Installing a Distro](/unmodded-distros/unmodded-os-installation): set up a distro to use with XSDL.
-- [Desktop Environments](/desktop-environments/desktop-environments) and [Window Managers](/window-managers/window-managers): choose the interface you'll see in XSDL.
+- [Desktop Environments](/desktop-environments/desktop-environments): choose the interface you'll see in XSDL.
 - [Fixing Sound](/troubleshoot/sound): get audio working in your distro.
 - [FAQ](/faq/faq): answers to common questions and errors.

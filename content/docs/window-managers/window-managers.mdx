@@ -1,12 +1,20 @@
 ---
-title: Window Managers
-description: Learn what a window manager is, which window managers Andronix offers for each distro, and whether you should use one instead of a desktop environment.
+title: Window Managers (retired)
+description: Window managers are no longer offered by the Andronix installer. Use a desktop environment instead. This page is kept for existing installs.
 ---
 
 import Badge from '@/components/badge'
 import YoutubeEmbed from "@/components/youtubeEmbed";
 
-This page explains what a window manager (WM) is, lists the WMs Andronix offers for each distro, and helps you decide whether one is right for you.
+<Callout type="warning" title="Window managers have been retired">
+The new Andronix installer no longer offers window managers (Awesome, i3 and Openbox). New installs come with a [desktop environment](/desktop-environments/desktop-environments) (XFCE, LXQt or MATE) or the command line only. If your version of the app still shows a Window Manager option, pick a desktop environment instead.
+
+Distros you already installed with a window manager keep working. This page is kept for them. See [Installs from the old installer](/unmodded-distros/older-installs).
+</Callout>
+
+{/* TODO(docs): what the app's old Window Manager buttons do after launch isn't decided (keep the old scripts, or install XFCE with a notice). Say so here once decided. */}
+
+This page explains what a window manager (WM) is and which WMs the old installer offered for each distro.
 
 According to the [Wikipedia article](https://en.wikipedia.org/wiki/Window_manager) on window managers:
 
@@ -18,11 +26,10 @@ In simpler terms, a **window manager is a program that places, removes and gener
 
 <Callout type="info">Some window managers let you manage windows with your keyboard. In this documentation, "window managers" loosely refers to these.</Callout>
 
-## What Window Managers does Andronix offer?
+## What Window Managers did Andronix offer?
 
-Andronix supports most of the major WMs used in the Linux community today, including **Awesome**, **i3** and **Openbox**.
+The old installer offered **Awesome**, **i3** and **Openbox**.
 
-<Callout type="warning">The availability of window managers varies between distros.</Callout>
 
 ### Window Manager List
 
@@ -42,11 +49,14 @@ Andronix supports most of the major WMs used in the Linux community today, inclu
 
 - **Arch** <Badge>Awesome</Badge> <Badge>i3</Badge> <Badge>Openbox</Badge>
 
-## Which WM should I choose?
+## What should I use instead?
 
-You can pick whichever WM you like or are most familiar with. However, if you're new to Andronix, we recommend starting with a [desktop environment](/desktop-environments/desktop-environments) instead, because using a WM without a physical keyboard can be unpleasant. That said, if you're ready to explore, go with **Awesome**.
+Pick a [desktop environment](/desktop-environments/desktop-environments). **XFCE** is our recommendation. If you liked a window manager for its light weight, try **LXQt**.
+
+You can still install a window manager yourself inside a distro with its package manager, for example `sudo apt install i3` on Debian, but Andronix doesn't set it up or support it.
 
 ## Next steps
 
-- [Install a distro](/unmodded-distros/unmodded-os-installation) with the WM of your choice.
-- Learn how to view your desktop with [VNC](/vnc/vnc-basics) or [XSDL](/xsdl/xsdl-basics).
+- [Desktop Environments](/desktop-environments/desktop-environments): the desktops the installer offers.
+- [Install a distro](/unmodded-distros/unmodded-os-installation) with a desktop environment.
+- [Installs from the old installer](/unmodded-distros/older-installs): what happens to your existing install.
