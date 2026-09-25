@@ -1,3 +1,7 @@
 {
-  "pages": ["internal-storage", "sound"]
+  "pages": [
+    "install-problems",
+    "internal-storage",
+    "sound"
+  ]
 }

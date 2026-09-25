@@ -1,6 +1,6 @@
 ---
 title: Accessing Internal Storage
-description: Mount your Android phone's internal storage inside an Andronix Linux distro by granting Termux storage access and editing the distro's start script.
+description: Reach your Android phone's internal storage from inside an Andronix Linux distro at /sdcard, and share other folders with the distro.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
@@ -8,7 +8,58 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 import Imagera from "@/components/imagera";
 
-This page shows how to make your phone's internal storage available inside your Linux distro. It only takes one command in Termux and a one-line edit to your distro's start script.
+This page shows how to reach your phone's internal storage from inside your Linux distro. On distros from the current installer, it's one command in Termux.
+
+## Storage on a new install
+
+Distros from the current installer share your phone's internal storage at `/sdcard` automatically. Termux just needs permission to read it.
+
+<Steps>
+<Step>
+
+### Give Termux storage access
+
+In Termux (not inside the distro), run:
+
+```bash copy
+termux-setup-storage
+```
+
+Termux will now ask for Storage permission. **Allow the Storage permission**.
+
+</Step>
+
+<Step>
+
+### Restart the distro
+
+If the distro is running, `exit` it and start it again, for example with `./start-debian.sh`.
+
+</Step>
+
+<Step>
+
+### Check
+
+Inside the distro, run `ls /sdcard`. You should see your phone's folders, like `Download` and `DCIM`.
+
+</Step>
+</Steps>
+
+### Sharing other folders
+
+To share another Termux folder with the distro, add a line to a file in `~/<distro>-binds/` in Termux, the same way as with the old installer. For example, to make Termux's `~/projects` folder appear at `/projects` in Debian:
+
+```bash copy
+mkdir -p ~/debian-binds
+echo 'command+=" -b /data/data/com.termux/files/home/projects:/projects"' > ~/debian-binds/projects.sh
+```
+
+Restart the distro for the change to take effect.
+
+## Storage on an old install
+
+<Callout type="warning">These steps are for distros installed with the **old installer**. On the current installer, the start script no longer needs editing; see [Storage on a new install](#storage-on-a-new-install).</Callout>
 
 <Steps>
 <Step>
@@ -81,6 +132,7 @@ When you're done, press `Ctrl+X`, then `Y`, and then `Enter`. Now start your Lin
 
 </Step>
 </Steps>
+
 
 ## Related pages
 

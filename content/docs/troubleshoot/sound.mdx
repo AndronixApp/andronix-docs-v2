@@ -9,6 +9,44 @@ This page shows how to get sound working in your distro, so you can listen to mu
 
 <Callout type="info">Modded OS has sound output through the phone's speakers enabled out of the box.</Callout>
 
+## Sound on a new install
+
+Distros from the current installer are already set up to send their sound to Termux. Termux only needs PulseAudio installed.
+
+<Steps>
+<Step>
+
+### Close Distro
+
+If your distro is running, stop the desktop with `vncserver-stop` and close the distro by running `exit`. _Skip this step if your distro isn't running._
+
+</Step>
+
+<Step>
+
+### Install PulseAudio
+
+Run the following command in **Termux (not inside Linux)**:
+
+```bash copy
+pkg install pulseaudio
+```
+
+</Step>
+
+<Step>
+
+### Start the distro
+
+Start your distro as usual, for example with `./start-debian.sh`. Andronix starts PulseAudio for you each time, so there's nothing else to run.
+
+</Step>
+</Steps>
+
+## Sound on an old install
+
+<Callout type="warning">These steps are for distros installed with the **old installer**.</Callout>
+
 Follow these steps in order to enable sound output:
 
 <Steps>

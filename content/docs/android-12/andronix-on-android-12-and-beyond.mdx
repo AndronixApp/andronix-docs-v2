@@ -12,6 +12,8 @@ This page explains the phantom process killer introduced in Android 12, why it b
 
 <Callout type="error">If you are seeing the **Process completed (signal 9) - press Enter** error in Termux, follow the steps on this page to fix it.</Callout>
 
+<Callout type="info">Did this happen during an install? After applying the fix, paste and run the **same install command** again. The installer continues where it stopped. See [Troubleshooting Installs](/troubleshoot/install-problems).</Callout>
+
 ## The Problem
 
 Android 12 added a mechanism that monitors forked child processes started by apps and kills them if more than the
@@ -47,6 +49,8 @@ This fix might not work on your device, as OEMs can choose to leave out changes 
 <YoutubeEmbed id={"mjXSh3yq-I0"}/>
 
 Follow the steps below to turn off the phantom process killer:
+
+<Callout type="info">On Android 14 and newer, look in *Developer Options* for a switch named **Disable child process restrictions**. Turning it on does the same thing as the steps below.</Callout>
 
 <Steps>
 <Step>
@@ -181,5 +185,6 @@ Credits for discovering the issue and the solution go to [agnostic-apollo](https
 ## Next steps
 
 - [Install a distro](/unmodded-distros/unmodded-os-installation) or a [Modded OS](/modded-os/modded-os).
+- [Troubleshooting Installs](/troubleshoot/install-problems): other install problems and fixes.
 - Make sure you're using [Termux from F-Droid](/termux/migrating-to-f-droid).
 - Still stuck? Check the [FAQ](/faq/faq).
