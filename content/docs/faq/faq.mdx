@@ -1,57 +1,73 @@
 ---
-title: Frequently Asked Questions
+title: FAQ
+description: Answers to the most common Andronix questions, including the signal 9 error, install errors, Kali, Manjaro, VNC and Firefox fixes.
 ---
 
 import Imagera from "@/components/imagera";
 
-The most commonly asked questions regarding Andronix with their solutions.
-
+This page collects the questions we get asked most often about Andronix, along with their fixes. If your problem isn't listed here, see [Still need help?](#still-need-help) at the bottom.
 
 ### 1. Process completed (signal 9) - press Enter
-We are extremely sorry for the issue you are facing. This is because of the Android's implementation of the
-phantom process killer. Please read [this page of the documentation](/android-12/andronix-on-android-12-and-beyond) to mitigate this. You can also follow the video guide (https://youtu.be/mjXSh3yq-I0) to fix it on your device.
+
+We're sorry you're running into this. The error is caused by Android's phantom process killer. Read
+[this page of the documentation](/android-12/andronix-on-android-12-and-beyond) to fix it. You can also follow the video guide (https://youtu.be/mjXSh3yq-I0) to fix it on your device.
 
 ___
 
 ### 2. Getting this error whenever I try to install any OS
+
 <Imagera src="/images/distro_error.jpg"/>
 
-**Ans.** Termux app from the Play Store has been discontinued. Please follow [this guide](/termux/migrating-to-f-droid)
-___
-### 3. Kali Linux errors out during installation.
+**Ans.** The Termux app on the Play Store has been discontinued. Follow [this guide](/termux/migrating-to-f-droid) to install Termux from F-Droid.
 
-**Ans.** We are aware of the current issues with Kali. It will be fixed soon but there's no ETA. Please consider using any other distro like Debian.
 ___
-### 4. Modded Manjaro gives repository errors whenever I try to install or update any package.
+
+### 3. Kali Linux errors out during installation
+
+**Ans.** We are aware of the current issues with Kali. It will be fixed soon, but there's no ETA. Please consider using another distro like Debian in the meantime.
+
+___
+
+### 4. Modded Manjaro gives repository errors whenever I try to install or update any package
 
 **Ans.** Follow [this guide](https://youtu.be/SAGt39yYV0Y), and you'll be good to go.
+
 ___
-### 5. AlgGr not working on VNC
+
+### 5. AltGr not working on VNC
 
 <Imagera src="/images/faq/altgr.png"/>
 
-**Ans.** You can use [bVNC](https://play.google.com/store/apps/details?id=com.iiordanov.freebVNC) instead of [RealVNC](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) and selected the highlighted option from the top menu. If that does not work either, please consider using [Android VNC](https://play.google.com/store/apps/details?id=android.androidVNC&hl)
+**Ans.** Use [bVNC](https://play.google.com/store/apps/details?id=com.iiordanov.freebVNC) instead of [RealVNC](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) and select the highlighted option from the top menu. If that doesn't work either, try [Android VNC](https://play.google.com/store/apps/details?id=android.androidVNC&hl).
+
 ___
-### 6. Vnc can’t open- usage: vncserver -display- error
+
+### 6. VNC can't open – usage: vncserver -display- error
 
 <Imagera src="/images/faq/vncError.png" alt="drawing" width="400"/>
 
-**Ans.** Most of the users face this error whilst using Modded Manjaro. Here is the fix-
-Please run this inside the Manjaro shell-
+**Ans.** Most users run into this error while using Modded Manjaro. To fix it, run this inside the Manjaro shell:
 
 ```bash copy
 sudo pacman -S wget tar sed --noconfirm && wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Pacman/tigervnc-fix.sh && sudo bash tigervnc-fix.sh
 ```
-___
-### 7. Ubuntu 20.04: Firefox shows Gah. Your tab just crashed
 
-Here's an easy fix for this error-
-1. Enter about:config in address bar
-2. Click “Accept the risk and continue”
-3. Click “Show all”
-4. Search for sandbox
-5. Change first two values to false, and change security.sandbox.content.level to 1, exactly as in this picture:
+___
+
+### 7. Ubuntu 20.04: Firefox shows "Gah. Your tab just crashed"
+
+Here's an easy fix for this error:
+
+1. Enter about:config in the address bar.
+2. Click "Accept the risk and continue".
+3. Click "Show all".
+4. Search for sandbox.
+5. Change the first two values to false, and change security.sandbox.content.level to 1, exactly as in this picture:
 <Imagera src="/images/faq/firefox.png" height={500}/>
 6. Restart Firefox.
 
+## Still need help?
 
+- Learn more about [using VNC](/vnc/vnc-basics).
+- Read about what Andronix [can't do](/get-started/limitations).
+- Ask on our [Discord](https://chat.andronix.app) or open an issue on our [GitHub repository](https://github.com/AndronixApp/AndronixOrigin/issues/new).

@@ -1,17 +1,18 @@
 ---
 title: Browsers
+description: Learn how to install and run Firefox and Chromium web browsers inside your Andronix Linux distro, with commands for each supported distro.
 ---
 
-Learn how to use your favourite browsers with Andronix
+This page shows you how to install Firefox and Chromium in your Andronix distro. Find your distro under each browser and run the matching command.
 
-<Callout type="warning">If you are having any **armv7** based device, browsers might fail to work due to unknown reasons.</Callout>
+<Callout type="warning">If you have an **armv7**-based device, browsers might fail to work for unknown reasons.</Callout>
 
-<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not a
+<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the
 Termux shell).</Callout>
 
 ## Firefox
 
-Please follow the following instruction (in accordance to the distro you're running) to install Firefox-
+Run the command for the distro you're using to install Firefox:
 
 ### Ubuntu 18/ Ubuntu 20/ Debian/ Kali Linux
 
@@ -33,12 +34,11 @@ xbps-install -S firefox
 
 ### Alpine
 
-```bash copy
-Sadly Alpine does not provide Firefox support for ARM devices as or now.
-```
+Sadly, Alpine does not provide Firefox for ARM devices as of now.
 
 ## Chromium
-Please follow the following instruction (in accordance to the distro you're running) to install Chromium-
+
+Run the command for the distro you're using to install Chromium:
 
 ### Ubuntu / Ubuntu 19 / Debian / Kali Linux
 
@@ -47,9 +47,14 @@ wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninsta
 
 ```
 
-<Callout type="info">If the Chromium does not launch from Application Menu then try the following command inside VNC terminal: </Callout>
+<Callout type="info">If Chromium doesn't launch from the application menu, try one of the following commands in a terminal inside VNC:</Callout>
+
 ```bash copy
-* chromium --no-sandbox * chromium-browser --no-sandbox
+chromium --no-sandbox
+```
+
+```bash copy
+chromium-browser --no-sandbox
 ```
 
 ### Arch / Manjaro
@@ -60,9 +65,7 @@ pacman -S chromium --noconfirm
 
 ### Void Linux
 
-```
-Sadly chromium is not available for Void Linux.
-```
+Sadly, Chromium is not available for Void Linux.
 
 ### Alpine
 
@@ -75,3 +78,7 @@ apk add chromium
 ```bash copy
 dnf install chromium 
 ```
+
+## Next steps
+
+Need a graphical desktop to run your browser in? See [VNC Basics](/vnc/vnc-basics) or [XSDL Basics](/xsdl/xsdl-basics).

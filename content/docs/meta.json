@@ -1,0 +1,28 @@
+{
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "...get-started",
+    "...android-12",
+    "---Installation---",
+    "...unmodded-distros",
+    "...modded-os",
+    "---Desktop & GUI---",
+    "...desktop-environments",
+    "...window-managers",
+    "...vnc",
+    "...xsdl",
+    "---Software---",
+    "...software",
+    "---Termux---",
+    "...termux",
+    "...ssh",
+    "...security",
+    "---Help---",
+    "...troubleshoot",
+    "...faq",
+    "...account",
+    "...miscellaneous",
+    "blog"
+  ]
+}

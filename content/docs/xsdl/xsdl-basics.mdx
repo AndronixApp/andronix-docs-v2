@@ -1,22 +1,30 @@
 ---
 title: XSDL Basics
+description: Use XSDL, an X11 server for Android, to display your Andronix distro's desktop, a faster alternative to VNC with a simpler interface.
 ---
 
-It is an X Window System / X11 server for Android. X11 servers are generally faster when compared to VNC, but XSDL lacks
-the beautiful UI which a VNC Viewer might have. So it comes to your choice and what suits you the most.
+XSDL is an X Window System (X11) server for Android. X11 servers are generally faster than VNC, but XSDL lacks the polished interface a VNC viewer might have. Which one you use comes down to your preference and what suits you best. This page shows how to start your distro's desktop with XSDL.
 
-## How to start a XSDL server?
+## How to start an XSDL server?
 
-* Download and install the XSDL app from the Play Store
-* Open XSDL and wait until you see something similar to the screenshot below
-* Now start OS and type the command inside the distro's shell-
+1. Download and install the XSDL app from the Play Store.
+2. Open XSDL and wait until it finishes starting up.
+3. Start your distro, then run this command inside the distro's shell to send its desktop to XSDL:
 
 ```bash copy
 export DISPLAY=127.0.0.1:0 && bash ~/.vnc/xstartup &
 ```
 
-If you are on a Wi-Fi network and want to access XSDL from other devices, then change the command to :
+If you're on a Wi-Fi network and want to access XSDL from other devices, use this command instead:
 
 ```bash copy
 export DISPLAY=192.168.0.100:0 && bash ~/.vnc/xstartup &
 ```
+
+## Next steps
+
+- [VNC Basics](/vnc/vnc-basics): the alternative to XSDL, with a richer viewer interface.
+- [Installing a Distro](/unmodded-distros/unmodded-os-installation): set up a distro to use with XSDL.
+- [Desktop Environments](/desktop-environments/desktop-environments) and [Window Managers](/window-managers/window-managers): choose the interface you'll see in XSDL.
+- [Fixing Sound](/troubleshoot/sound): get audio working in your distro.
+- [FAQ](/faq/faq): answers to common questions and errors.

@@ -1,63 +1,59 @@
 ---
-title: Andronix on Android 12 and beyond
+title: Android 12 and Newer
+description: Fix the "Process completed (signal 9) - press Enter" error in Termux caused by Android's phantom process killer on Android 12 and newer.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 
-
 import Imagera from "@/components/imagera";
 import YoutubeEmbed from "@/components/youtubeEmbed";
 
-Android 12 and the phantom process killer issue of Termux.
-<Callout type="error">If you are encountering the **Process completed (signal 9) - press Enter** error in Termux. Please read the following article.</Callout>
+This page explains the phantom process killer introduced in Android 12, why it breaks Termux and Andronix, and how to turn it off on your device.
 
+<Callout type="error">If you are seeing the **Process completed (signal 9) - press Enter** error in Termux, follow the steps on this page to fix it.</Callout>
 
 ## The Problem
 
-Android 12 has added the mechanism to monitor forked child processes started by apps and kills them if more than the
-default 32 are found running. In simpler words Android now monitors the number of child process which are spawned by a
-particular app and if in any case it exceeds the number of permitted processes, it just kills them.
+Android 12 added a mechanism that monitors forked child processes started by apps and kills them if more than the
+default 32 are running. In simpler words, Android now monitors the number of child processes spawned by an app, and if
+that number exceeds the permitted limit, it kills them.
 
-This has lead to a lot of power apps like Termux, Tasker, Andronix, Debian NoRoot, being broken on Android 12 and 12L devices.
-There is nothing that can be done from our side since it's pushed in the Android's code.
+This has led to a lot of power-user apps like Termux, Tasker, Andronix and Debian NoRoot breaking on Android 12 and 12L devices.
+There is nothing we can do about this on our side, since the change is part of Android's code.
 
 ### More Information
 
-Issue on Termux's Repository:
+Issue on Termux's repository:
 [Android 12 Phantom Processes Killed (Process completed (signal 9) - press Enter)](https://github.com/termux/termux-app/issues/2366)
 
 <Callout type="info">
-The good thing being that Google has included a toggle to turn off the Phantom Process Killer in Android 12L or 13 but the OEMs like **Xiaomi, Samsung etc**. have not bothered to merge this change into their Android skins.
+The good news is that Google has included a toggle to turn off the phantom process killer in Android 12L and 13, but OEMs like **Xiaomi, Samsung, etc.** have not bothered to merge this change into their Android skins.
 </Callout>
 
 [More information on the proposed solution](https://www.xda-developers.com/android-13-phantom-process-toggle)
 
 ## Solutions
 
-Please follow the instructions given below for your respective Android versions.
-
-### Video Tutorial
-<YoutubeEmbed id={"mjXSh3yq-I0"}/>
+Follow the instructions below for your Android version. If you are on stock Android, start with the first fix. If you use a skinned ROM like OneUI or MIUI, jump to the second one.
 
 ### Fix for Stock Android 12L and beyond
 
 <Callout type="info">
-This fix might not work on your device as OEM often have the choice to exclude changes pushed by Google to the Android Open-Source Project at their will. If you are using a skinned Android ROM like Samsung's OneUI, Xiaomi's MIUI, Oppo's ColorOS etc. then try the next fix.
+This fix might not work on your device, as OEMs can choose to leave out changes Google pushes to the Android Open Source Project. If you are using a skinned Android ROM like Samsung's OneUI, Xiaomi's MIUI, Oppo's ColorOS, etc., try the next fix instead.
 </Callout>
 
 #### Video Tutorial for Stock Android 12L+
-<br/>
 
 <YoutubeEmbed id={"mjXSh3yq-I0"}/>
-Please follow the steps mentioned below to turn off the Phantom process killer-
+
+Follow the steps below to turn off the phantom process killer:
 
 <Steps>
 <Step>
 
 ### Enable Developer Options
 
-We will first enable the **Developer Options** from the settings. To enable the same, please navigate to *Settings>
-About* Phone and find the **Build Number**.
+First, enable **Developer Options** in your settings. To do this, go to *Settings > About Phone* and find the **Build Number**.
 <Imagera src="/images/android-12-fix/1.jpeg"/>
 <Imagera src="/images/android-12-fix/2.jpeg"/>
 
@@ -67,7 +63,7 @@ About* Phone and find the **Build Number**.
 
 ### You're a developer now!
 
-Now tap it repeatedly until you see a toast notification along the lines of *You are now x steps away from being a
+Tap the build number repeatedly until you see a toast notification along the lines of *You are now x steps away from being a
 developer*.
 <Imagera src="/images/android-12-fix/3.jpeg"/>
 
@@ -77,16 +73,16 @@ developer*.
 
 ### Authenticate
 
-You might be asked to authenticate yourself, please do the same and then proceed.
+You might be asked to authenticate yourself. Do so, then continue.
 <Imagera src="/images/android-12-fix/4.jpeg"/>
 
 </Step>
 
 <Step>
 
-### Enable Developer Options
+### Turn On Developer Options
 
-Now, navigate to *Settings>System>Developer Options*. Enable the Developer Options on the next screen.
+Now, go to *Settings > System > Developer Options* and turn on Developer Options on the next screen.
 <Imagera src="/images/android-12-fix/5.jpeg"/>
 
 </Step>
@@ -95,7 +91,7 @@ Now, navigate to *Settings>System>Developer Options*. Enable the Developer Optio
 
 ### Find the Feature Flags
 
-Find the section named **Feature Flags**, enter via clicking it.
+Find the section named **Feature Flags** and tap it to open it.
 <Imagera src="/images/android-12-fix/6.jpeg"/>
 
 </Step>
@@ -104,7 +100,7 @@ Find the section named **Feature Flags**, enter via clicking it.
 
 ### Turn off the Phantom Process Killer
 
-Find the switch to turn off **settings_enable_monitor_phantom_procs**.
+Find the **settings_enable_monitor_phantom_procs** switch and turn it off.
 <Imagera src="/images/android-12-fix/7.jpeg"/>
 
 </Step>
@@ -118,13 +114,13 @@ You are now all set! ✅
 </Step>
 </Steps>
 
-### Fix for OneUI, MiUi and other non-stock Android 12L and beyond
+### Fix for OneUI, MIUI and other non-stock Android 12L and beyond
 
 #### Video Tutorial for OneUI, MIUI and other non-stock Android 12L+
-<br/>
 
 <YoutubeEmbed id={"mjXSh3yq-I0?start=117"}/>
-Please follow the steps mentioned below to turn off the Phantom process killer-
+
+Follow the steps below to turn off the phantom process killer using ADB from another device:
 
 <Steps>
 <Step>
@@ -132,7 +128,7 @@ Please follow the steps mentioned below to turn off the Phantom process killer-
 ### Install ADB
 
 Make sure you have the Android Debug Bridge (ADB) installed on your other device. You can
-follow [this guide on XDA developers](https://www.xda-developers.com/install-adb-windows-macos-linux/) to install ADB
+follow [this guide on XDA Developers](https://www.xda-developers.com/install-adb-windows-macos-linux/) to install ADB
 on Windows, macOS, or Linux.
 
 <Callout type="info">
@@ -145,7 +141,7 @@ If you don't have a computer, you can follow the method shown in the video above
 
 ### Check ADB Devices
 
-After the installation, confirm if you have your device connected via ADB
+After installing ADB, confirm that your device is connected:
 ```bash copy
 adb devices
 ```
@@ -156,7 +152,7 @@ adb devices
 
 ### Run the Commands
 
-You should see your device listed in the output of the above command. Now run the following commands in the ADB shell
+You should see your device listed in the output of the command above. Now run the following commands:
 ```bash copy
 adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
 ```
@@ -177,24 +173,13 @@ You should be all set! ✅
 
 </Step>
 </Steps>
-<br/>
-<br/>
-Credits for the discovery of the issue and the solution-
 
-[agnostic-apollo](https://github.com/agnostic-apollo)
+## Credits
 
+Credits for discovering the issue and the solution go to [agnostic-apollo](https://github.com/agnostic-apollo).
 
+## Next steps
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+- [Install a distro](/unmodded-distros/unmodded-os-installation) or a [Modded OS](/modded-os/modded-os).
+- Make sure you're using [Termux from F-Droid](/termux/migrating-to-f-droid).
+- Still stuck? Check the [FAQ](/faq/faq).

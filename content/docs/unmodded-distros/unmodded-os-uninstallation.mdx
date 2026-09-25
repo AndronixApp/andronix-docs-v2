@@ -1,55 +1,60 @@
 ---
-title: How to uninstall an OS with Andronix?
+title: Uninstalling a Distro
+description: Remove a Linux distro installed with Andronix from your Android device in a few steps, using the Andronix app and a single Termux command.
 ---
 
 import Imagera from "@/components/imagera";
 
-Learn how to uinstall your favourite distro easily.
+Learn how to uninstall a Linux distro you installed with Andronix. The app generates the uninstall command for you, so all you need to do is run it in Termux.
 
-<Callout type="default">These instructions assume that you have **Andronix version 7.0 or beyond** installed on your
-device.</Callout>
-<Callout type="info">This is **not** a guide to uninstall a **Modded OS**. Please read the next article from this for more
-information on that.</Callout>
-
-Uninstalling your favourite distro is a breeze with Andronix. Please follow these simple steps mentioned below-
+<Callout type="info">These instructions assume you have **Andronix version 7.0 or newer** installed on your device.</Callout>
+<Callout type="info">This is **not** a guide for uninstalling a **Modded OS**.</Callout>
 
 ## 1. Preparation 🚀
 
 ### Open Andronix app
-After you open the Andronix app, you will find the option to install a **Linux Distribution**. Click the card.
+Open the Andronix app and tap the **Linux Distribution** card on the dashboard.
+
 <Imagera src="/images/install_new/install_dashboard.jpg"/>
 
 ### Select Distribution
-Now, you will see all the distributions that can be installed on your Android device.
+You'll now see all the distributions available in Andronix.
+
 <Imagera src="/images/install_new/install_distro_selection.jpg"/>
 
 ## 2. Selection ⭐
 
 ### Long Press on Distribution
-**Long Press** on the distro that you would like to uninstall.
+**Long press** the distro you want to uninstall. This opens a menu with options for that distro.
+
 <Imagera src="/images/uninstall_new/distro_uninstall_bottomsheet.jpg"/>
 
 ### Select Uninstall
-Click on the **Uninstall** button to begin the process.
+Tap the **Uninstall** button to start the process.
 
 ## 3. Termux Execution 💻
 
-Now comes the part where the actual uninstallation of your Linux distribution begins.
-<Callout type="default">Andronix app has copied a command to your clipboard automatically. </Callout>
+This is where your Linux distribution actually gets removed.
+
+<Callout type="info">The Andronix app has automatically copied an uninstall command to your clipboard.</Callout>
 
 <Imagera src="/images/install_new/install_termux_exec.jpg"/>
 
 ### Termux
-You will need to run/execute this command in Termux.
+You'll run this command in Termux to remove the distro.
 
-<Callout type="warning">Please read this before proceeding to make sure that you're using a compatible version of Termux
-for the installation process. Make sure that you've followed this guide
-for [Migration to F-Droid](/termux/migrating-to-f-droid)</Callout>
+<Callout type="warning">Before you continue, make sure you're using a compatible version of Termux. If you haven't already, follow the [Migrating Termux to F-Droid](/termux/migrating-to-f-droid) guide.</Callout>
 
 ### Paste and Execute
-Open the Termux app and **long press to paste the copied command and then hit enter to run it**.
+Open the Termux app, **long press to paste the copied command, then press Enter to run it**.
 
 <Imagera src="/images/uninstall_new/distro_uninstall_termux_exec.jpg"/>
 
 ### All done!
-You are all done! You have successfully uninstalled your favourite Linux distribution from your Android device.
+That's it! You've successfully uninstalled the Linux distribution from your Android device.
+
+## Next steps
+
+- [Installing a Distro](/unmodded-distros/unmodded-os-installation): install a different distro.
+- [Modded OS](/modded-os/modded-os): try a pre-configured distro with a ready-to-use desktop.
+- [FAQ](/faq/faq): answers to common questions and errors.
