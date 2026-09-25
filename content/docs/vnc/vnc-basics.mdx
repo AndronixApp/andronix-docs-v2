@@ -1,5 +1,6 @@
 ---
 title: VNC Basics
+description: Learn how to start, stop and configure a VNC server in your Andronix distro, connect with a VNC client, and access it from other devices.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
@@ -7,13 +8,13 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 import Imagera from "@/components/imagera";
 
-Learn how operate a VNC server.
+VNC lets you see and use your distro's graphical desktop from a VNC client app. This page shows you how to start and stop the VNC server, connect to it, tweak its resolution and picture quality, and access it from other devices on your network.
 
 ## Operating the VNC Server
 
-Let's learn how to operate VNC servers including starting, stopping and debugging them.
+Let's learn how to operate the VNC server, including starting, stopping and debugging it.
 
-<Callout type="info">Make sure you have started your distribution and you are in your distribution shell i.e. you see `root@localhost` mentioned on Termux.</Callout>
+<Callout type="info">Make sure you have started your distro and are in the distro shell, i.e. you see `root@localhost` in Termux.</Callout>
 
 ### Starting a VNC server
 
@@ -22,8 +23,7 @@ Let's learn how to operate VNC servers including starting, stopping and debuggin
 
 ### Start VNC Server
 
-Andronix has already copied the necessary command on your clipboard if you are on the VNC server page. Just paste it in Termux (in the Distro
-shell _[root@localhost]_) and execute it
+If you are on the VNC server page in Andronix, the app has already copied the necessary command to your clipboard. Just paste it in Termux (in the distro shell, _[root@localhost]_) and run it.
 
 ```bash copy
 vncserver-start
@@ -37,7 +37,7 @@ vncserver-start
 
 ### Select Resolution
 
-If you're prompted to select a resolution, just press **Enter** to dynamically select the resolution.
+If you're prompted to select a resolution, just press **Enter** to have it selected dynamically.
 
 </Step>
 
@@ -45,7 +45,7 @@ If you're prompted to select a resolution, just press **Enter** to dynamically s
 
 ### Install a VNC Client
 
-That's it. Now install the [RealVNC app](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)
+Next, install the [RealVNC app](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android)
 from the Google Play Store (or any other VNC client).
 
 <Imagera src="/images/install_new/real_vnc_connection_add.jpg"/>
@@ -56,8 +56,7 @@ from the Google Play Store (or any other VNC client).
 
 ### Add VNC Server
 
-Now press the **Add(+)** button to add a VNC connection. Enter _localhost:1_ as the address and give it a name. Save
-the record.
+Press the **Add (+)** button to add a VNC connection. Enter _localhost:1_ as the address, give it a name and save it.
 
 <Imagera src="/images/install_new/real_vnc_connection_input.jpg"/>
 
@@ -67,7 +66,7 @@ the record.
 
 ### Select VNC Server
 
-Click the newly created VNC address
+Tap the connection you just created.
 
 <Imagera src="/images/install_new/real_vnc_connection_selection.jpg"/>
 
@@ -77,7 +76,7 @@ Click the newly created VNC address
 
 ### Continue
 
-You might be warned that the connection is untrusted. Click **OK** to continue.
+You might be warned that the connection is untrusted. Tap **OK** to continue.
 
 <Imagera src="/images/install_new/vnc_unencrypted_connection.jpg"/>
 
@@ -87,12 +86,11 @@ You might be warned that the connection is untrusted. Click **OK** to continue.
 
 ### Enter your VNC password
 
-You will be prompted to enter a password. Enter the password you set while installing the distro step and click **
-Continue**.
+When prompted, enter the password you set while installing the distro and tap **Continue**.
 
 <Imagera src="/images/install_new/real_vnc_password_input.jpg"/>
 
-<Callout type="info">You can turn "Remember the password" toggle on for your convenience.</Callout>
+<Callout type="info">You can turn on the "Remember the password" toggle for convenience.</Callout>
 
 </Step>
 
@@ -100,7 +98,7 @@ Continue**.
 
 ### Almost done
 
-You will now be able to see the GUI of your Linux distribution.
+You should now see the GUI of your Linux distribution.
 
 <Imagera src="/images/install_new/real_vnc_first_connection.jpg"/>
 
@@ -110,7 +108,7 @@ You will now be able to see the GUI of your Linux distribution.
 
 ### Let's Improve the Quality
 
-You might notice the horrible picture quality. Don't worry, we'll fix that in the next step.
+You might notice the picture quality is poor. Don't worry, we'll fix that in the next step.
 
 </Step>
 
@@ -118,7 +116,7 @@ You might notice the horrible picture quality. Don't worry, we'll fix that in th
 
 ### Click on 'i' Button
 
-Press the **i** button on the top menu bar of the VNC app to open the settings.
+Press the **i** button on the top menu bar of the VNC app to open its settings.
 
 <Imagera src="/images/install_new/real_vnc_i_button.jpg"/>
 
@@ -128,7 +126,7 @@ Press the **i** button on the top menu bar of the VNC app to open the settings.
 
 ### Select High Picture Quality
 
-You will see the settings of the VNC app. Scroll down to the **Picture Quality** section and select **High**.
+In the VNC app's settings, scroll down to the **Picture Quality** section and select **High**.
 
 <Imagera src="/images/install_new/real_vnc_picture_quality_settings.jpg"/>
 
@@ -138,7 +136,7 @@ You will see the settings of the VNC app. Scroll down to the **Picture Quality**
 
 ### Yay!
 
-Now, you will be able to see the GUI of your Linux distribution in high quality.
+You should now see the GUI of your Linux distribution in high quality.
 
 <Imagera src="/images/install_new/real_vnc_all_done.jpg"/>
 
@@ -148,7 +146,7 @@ Now, you will be able to see the GUI of your Linux distribution in high quality.
 
 ### All done!
 
-You can now use your Linux distribution as you would on a PC.
+You can now use your Linux distribution just like you would on a PC.
 
 <Imagera src="/images/install_new/install_complete.jpg"/>
 
@@ -156,101 +154,101 @@ You can now use your Linux distribution as you would on a PC.
 </Steps>
 
 
-<Callout type="warning">Always remember to **Stop the VNC** server before exiting the distro by running `vncserver-stop`.</Callout>
+<Callout type="warning">Always remember to **stop the VNC server** by running `vncserver-stop` before exiting the distro.</Callout>
 
 ### Stopping a VNC server
 
-It is necessary to stop the VNC server once you are done using your distro or exiting it. To stop the VNC server execute the following command in the distro shell-
+Stop the VNC server whenever you're done using your distro or are about to exit it. To do so, run the following command in the distro shell:
 
 ```bash copy
 vncserver-stop
 ```
 
-Once you execute it, the terminal will ask you for a port number. Enter **1** as the port number and click enter.
+The terminal will then ask you for a port number. Enter **1** and press **Enter**.
 
 ## VNC Settings
 
-<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not a
-    Termux shell).</Callout>
+<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the Termux shell).</Callout>
 
 ### Setting a desired resolution
 
-To apply your desired resolution, please execute the following command-
+To set your preferred resolution, open the VNC start script by running:
 
 ```bash copy
 nano /usr/local/bin/vncserver-start
 ```
 
-Now, you just need to change the last line of this file to-
+Then change the last line of the file to:
 
 ```bash copy
 vncserver -name remote-desktop -geometry 1920x1080 :1
 ```
 
-<Callout type="info">You can replace the 1920x1080 to your desired resolution.</Callout>
+<Callout type="info">You can replace 1920x1080 with your desired resolution.</Callout>
 
-Since you've made changes to the file, let's save it by pressing `ctrl + x` , then hit y and finally hit `Enter`.
+Save the file by pressing `ctrl + x`, then `y`, and finally `Enter`.
 
 ### How to change resolution permanently in Modded OS /Ubuntu 19
 
-To change resolution permanently execute the following command in the distro's shell-
+To change the resolution permanently, run the following command in the distro's shell:
 
 ```bash copy
 nano /usr/local/bin/vnc
 ```
 
-Once you do this, replace the second line with-
+Then replace the second line with:
 
 ```bash copy
 LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop -geometry 1920x1080 :$PORT
 ```
 
-<Callout type="info">You can replace the 1920x1080 to your desired resolution and then restart/start the VNC
-    Server.</Callout>
+<Callout type="info">You can replace 1920x1080 with your desired resolution. Then restart (or start) the VNC server.</Callout>
 
-Once you are done, just press `Ctrl+X` and then type `Y` and then hit enter. Now when you'll do just choose the first
-option i.e., **Start vnc-server with autodetect/dynamic resolution**.
+When you're done, press `Ctrl+X`, type `Y` and press `Enter`. The next time you start the VNC server, choose the first option, **Start vnc-server with autodetect/dynamic resolution**.
 
 ### How to change the picture quality in VNC
 
-If you are using bVNC then you do not need to make any changes. It will make it's required changes itself.
+If you're using bVNC, you don't need to change anything; it adjusts the quality automatically.
 
-If you are using RealVNC Viewer, then connect to the VNC Server and then click on _(i)_ button at the top. Change
-Picture Quality to **High**, or to your desired quality.
+If you're using RealVNC Viewer, connect to the VNC server and tap the _(i)_ button at the top. Then change
+**Picture Quality** to **High**, or to whatever quality you prefer.
 
 ## VNC on other devices
 
-<Callout type="default">You can access the instance running on your phone on any other device on your network.</Callout>
+<Callout type="info">You can access the distro running on your phone from any other device on your network.</Callout>
 
-Continuing with the instructions, please make sure that both of your devices are sharing the same network. If you don't
-have access to Wi-Fi, you can start the hotspot from the device having the Linux installed and connect the other device
-to the hotspot. Once both the devices are under the same network, execute the following command inside the distro's
-shell-
+First, make sure both devices are on the same network. If you don't have access to Wi-Fi, turn on the hotspot on the
+device running Linux and connect the other device to it. Once both devices are on the same network, run the following
+command inside the distro's shell:
 
 ```bash copy
 nano /usr/local/bin/vncserver-start
 ```
 
-Now edit the last line and change it to-
+Now change the last line to:
 
 ```bash copy
 vncserver -name remote-desktop -geometry 1920x1080 -localhost no :1
 ```
 
-<Callout type="warning">If you are using an Arch-based distribution like Manjaro or Arch Linux itself, please execute
-    the
-    following command instead of the command as mentioned earlier-</Callout>
+<Callout type="warning">If you're using an Arch-based distro such as Manjaro, or Arch Linux itself, use the following line instead:</Callout>
 
 ```bash copy
 vncserver -name remote-desktop -geometry 1920x1080 -localhost :1
 ```
 
-Once you are done with this open a new Termux session (drag from the left to open the sidebar for more options) and
+When you're done, open a new Termux session (swipe in from the left edge to open the sidebar for more options) and
 type:
 
 ```
 ip a
 ```
 
-Now copy then **WLAN IP** address (eg. _192.168.xx.xx_). Now use this IP Address on the other device with the port
-number as 1 (eg. _192.168.xx.xx:1_ ).  
+Copy the **WLAN IP** address (e.g. _192.168.xx.xx_). On the other device, connect to this IP address with port
+number 1 (e.g. _192.168.xx.xx:1_).
+
+## Next steps
+
+- Prefer XSDL over VNC? See [XSDL Basics](/xsdl/xsdl-basics).
+- Want terminal access from another device instead? See [SSH Basics](/ssh/ssh-basics).
+- No sound in your desktop? See [Fixing Sound](/troubleshoot/sound).

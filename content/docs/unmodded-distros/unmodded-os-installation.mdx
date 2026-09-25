@@ -1,134 +1,115 @@
 ---
-title: How to install an OS with Andronix?
+title: Installing a Distro
+description: Step-by-step guide to installing a Linux distro like Ubuntu, Debian or Manjaro on Android with the Andronix app and Termux, no root required.
 ---
 
 import Imagera from "@/components/imagera";
 import Badge from "@/components/badge";
 import YoutubeEmbed from "@/components/youtubeEmbed";
 
-Installing your favourite distro is a breeze with Andronix. Please follow these simple steps mentioned below-
+Installing your favorite Linux distro with Andronix only takes a few minutes. This guide walks you through the whole process: picking a distro, choosing an interface, running the install command in Termux, and starting your new system. Prefer video? Watch the walkthrough below, then follow the steps.
 
-<Callout type="default">These instructions assume that you have **Andronix version 7.0 or beyond** installed on your
-    device.</Callout>
-<Callout type="info">This is **not** a guide to install a **Modded OS**. Please read the next article from this for more
-    information on that.</Callout>
+<Callout type="info">These instructions assume you have **Andronix version 7.0 or newer** installed on your device.</Callout>
+<Callout type="info">This is **not** a guide for installing a **Modded OS**. For that, see [Installing Modded OS](/modded-os/modded-os-installation).</Callout>
 
-<br/>
 <YoutubeEmbed id={"Bw5hqPTQskM"}/>
 
 ## 1. Preparation 🚀
 
 ### Linux Distributions
-    After you open the Andronix app, you will find the option to install a **Linux Distribution**. Click the card.
-    <Imagera src="/images/install_new/install_dashboard.jpg"/>
+Open the Andronix app and tap the **Linux Distribution** card on the dashboard. This takes you to the list of distros you can install.
+
+<Imagera src="/images/install_new/install_dashboard.jpg"/>
 
 ### Selection
-Now, you will see all the distributions that can be installed on your Android device.
+You'll now see every distribution that can be installed on your Android device.
+
 <Imagera src="/images/install_new/install_distro_selection.jpg"/>
 
 ## 2. UI Selection ⭐️
 
 ### Select
-    Click on the distro that you would like to install.
+Tap the distro you'd like to install.
 
-    <Callout type="warning">We recommend you to get started with **Ubuntu** if you are overwhelmed by the
-        options.</Callout>
+<Callout type="warning">Not sure which one to pick? We recommend starting with **Ubuntu**.</Callout>
 
 ### Select the UI
-Here comes the **UI Selection**
-<Imagera src="/images/install_new/install_gui_selection.jpg"/>
-<Callout type="info">Graphical User Interface or GUI is the visual interface that you interact with to do things in
-    your
-    Linux distribution.</Callout>
+Next, choose the kind of interface you want. This decides how you'll interact with your distro once it's running.
 
-<Callout type="info">Command Line Interface or CLI is the text-based interface that you interact with to execute
-    commands and perform tasks in your Linux distribution.</Callout>
+<Imagera src="/images/install_new/install_gui_selection.jpg"/>
+
+<Callout type="info">A Graphical User Interface (GUI) is the visual interface, with windows, icons and a mouse pointer, that you use to get things done in your Linux distribution.</Callout>
+
+<Callout type="info">A Command Line Interface (CLI) is the text-based interface where you type commands to perform tasks in your Linux distribution.</Callout>
 
 #### **Desktop Environment** <Badge>GUI</Badge>
-You can choose a Desktop Environment if you would like to use
-your mouse as well as your
-keyboard, or you've little or no experience with Linux. More
-information [here](../desktop-environments/desktop-environments.md).
+Choose a Desktop Environment if you want to use your mouse as well as your keyboard, or if you have little or no experience with Linux. [Learn more about Desktop Environments](/desktop-environments/desktop-environments).
 
 #### **Window Manager** <Badge>GUI</Badge>
-You can choose a Window Manager if you only want to use your keyboard
-to manage Windows and
-other OS-level tasks. These are pretty light and fast, but do require some skill before getting productive. More
-information [here](../window-managers/window-managers.md)
+Choose a Window Manager if you want to manage windows and other OS-level tasks mostly with your keyboard. Window Managers are light and fast, but they take some practice before you're productive. [Learn more about Window Managers](/window-managers/window-managers).
 
 #### **Command Line Interface** <Badge>CLI</Badge>
-If you don't want a Graphical User-interface, you can go ahead
-with the **Command Line Interface**. You'll have a terminal, which is enough if you know what you're doing in
-your session.
+Choose the **Command Line Interface** if you don't need a graphical interface. You'll get a terminal, which is all you need if you know your way around Linux.
 
-<Callout type="info">If you're confused in choosing one option, we would always recommend you to go with a Desktop
-    Manager.</Callout>
+<Callout type="info">If you can't decide, we always recommend going with a Desktop Environment.</Callout>
 
 ### Continue
-Based on your selection above, please follow the respective instructions below:
+Follow the instructions below that match the option you picked.
 
 #### Desktop Environment
 
-Now that you've decided to go ahead with a desktop environment, let's select what desktop environment you would like
-to
-install. You can read [this page of the documentation](/desktop-environments/desktop-environments) to know more
-about different DE and then click on the one you would like to install.
+Select the Desktop Environment (DE) you'd like to install. If you want to compare them first, read the [Desktop Environments](/desktop-environments/desktop-environments) page, then tap the one you want.
+
 <Imagera src="/images/install_new/install_de_selection.jpg"/>
 
 #### Window Manager
 
-Window Managers it is. Now select what Window Manager you would like to install. You can
-read [this part of the documentation](/window-managers/window-managers) for more information on window managers.
+Select the Window Manager you'd like to install. For details on each option, see the [Window Managers](/window-managers/window-managers) page.
+
 <Imagera src="/images/install_new/install_wm_selection.jpg"/>
 
 #### CLI
 
-Since you've chosen the Command Line Interface, there's no extra configuration required on your part. You may
-proceed
-to the instructions below.
+No extra configuration is needed for the Command Line Interface. Continue to the next section.
 
 ## 3. Termux Execution 💻
 
-Now comes the part where the actual installation of your Linux distribution begins.
-<Callout type="default">Andronix app has copied a command to your clipboard automatically. </Callout>
+This is where the actual installation of your Linux distribution happens.
+
+<Callout type="info">The Andronix app has automatically copied an install command to your clipboard.</Callout>
 
 <Imagera src="/images/install_new/install_termux_exec.jpg"/>
 
 ### Execute
-You will need to run/execute this command in Termux.
+You'll run this command in Termux to download and set up the distro.
 
-<Callout type="warning">Please read this before proceeding to make sure that you're using a compatible version of Termux
-    for the installation process. Make sure that you've followed this guide
-    for [Migration to F-Droid](/termux/migrating-to-f-droid)</Callout>
+<Callout type="warning">Before you continue, make sure you're using a compatible version of Termux. If you haven't already, follow the [Migrating Termux to F-Droid](/termux/migrating-to-f-droid) guide.</Callout>
 
 ### Paste
-Open the Termux app and **long press to paste the copied command and then hit enter to run it**.
+Open the Termux app, **long press to paste the copied command, then press Enter to run it**.
 
 <Imagera src="/images/termux_pkg_up.png"/>
 
 ### Wait
-The installation/downloading will take some time. Please leave the Termux app running.
-<Callout type="warning">Please read this article to disable battery optimization for Termux so that processes running
-    inside Termux don't randomly terminate.</Callout>
-<Callout type="info">If the installation appears to be stuck on a certain step for an unusual time, please press the
-    **
-    Enter** key to resume the execution.</Callout>
+The download and installation will take a while. Keep the Termux app running until it finishes.
+
+<Callout type="warning">Disable battery optimization for Termux so that processes running inside it don't get terminated at random.</Callout>
+<Callout type="info">If the installation seems stuck on one step for an unusually long time, press the **Enter** key to resume it.</Callout>
 
 ### Update the Andronix app
-Now, click the **Command Executed** button at the bottom of the screen.
+Back in Andronix, tap the **Command Executed** button at the bottom of the screen. This tells the app the command has been run.
 
 ### Finish the Process
-After the script has been executed successfully, Click the **Execution Finished** button at the bottom.
+Once the script has finished successfully, tap the **Execution Finished** button at the bottom.
+
 <Imagera src="/images/install_new/install_script_exec.jpg"/>
 
 ## 4. Starting Distribution ⚡️
 
-<Callout type="info">If you are already in the distro shell i.e. you see `root@localhost` mentioned on Termux. **Please
-    skip the next section.**</Callout>
+<Callout type="info">If you're already in the distro shell (you see `root@localhost` in Termux), **skip the next section.**</Callout>
 
 ### Start the Distro
-You can now start the distro by typing the following command in Termux (Please choose your distro and execute the
-respective command) and running it-
+Start the distro by running the command for your distro in Termux:
 
 * Ubuntu 18
     ```bash copy
@@ -168,20 +149,29 @@ respective command) and running it-
     ```
 
 ### Verify
-If you see ```root@localhost``` in the shell, you have successfully started your distro.
+If you see `root@localhost` in the shell, your distro is up and running.
 
 ## 5. VNC Configuration 📺
 
+If you chose a Desktop Environment or Window Manager, you'll need a VNC server to see and use it.
+
 ### VNC Start
 
-Now the Start VNC server page should have opened
+The **Start VNC server** page should now be open in the Andronix app.
 
 <Imagera src="/images/install_new/install_start_vnc.jpg" />
 
 ### VNC Server
 
-In order for you to actually interact with the installed distribution's GUI, we will need to set up a VNC server.
+To interact with your distro's graphical interface, set up a VNC server. Follow the [VNC Basics](/vnc/vnc-basics) guide to set one up and connect to your distro.
 
-Follow this [comprehensive guide](/vnc/vnc-basics) to set up a VNC server and use your distro.
+<Callout type="error">Seeing the **Process completed (signal 9) - press Enter** error in Termux? Read [Android 12 and Newer](/android-12/andronix-on-android-12-and-beyond) to fix it.</Callout>
 
-<Callout type="error">If you are encountering the **Process completed (signal 9) - press Enter** error in Termux. Please read this article to resolve it- [Resolve Process 9 Error in Termux](/android-12/andronix-on-android-12-and-beyond)</Callout>
+## Next steps
+
+- [VNC Basics](/vnc/vnc-basics): connect to your distro's desktop with a VNC viewer.
+- [XSDL Basics](/xsdl/xsdl-basics): use an X11 server as a faster alternative to VNC.
+- [Desktop Environments](/desktop-environments/desktop-environments) and [Window Managers](/window-managers/window-managers): learn more about the interface you installed.
+- [Fixing Sound](/troubleshoot/sound): get audio working in your distro.
+- [Uninstalling a Distro](/unmodded-distros/unmodded-os-uninstallation): remove a distro you no longer need.
+- [FAQ](/faq/faq): answers to common questions and errors.

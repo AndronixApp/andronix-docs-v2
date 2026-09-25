@@ -1,23 +1,31 @@
 ---
-title: Libre-Office
+title: LibreOffice
+description: Learn how to install the LibreOffice office suite inside your Andronix Linux distro on Debian-based and Arch-based distros.
 ---
 
-You can follow the instructions mentioned down below to install Libre Office.
+LibreOffice is a free, full-featured office suite. Follow the instructions below for your distro to install it.
+
+<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the
+Termux shell).</Callout>
 
 ## Ubuntu/ Debian based Distros
-  
-  You can install Libre Office on distributions that are based on Debian like Ubuntu, Kali linux and more by executing
-  the following command-
+
+You can install LibreOffice on Debian-based distros such as Ubuntu, Kali Linux and more by running
+the following command:
 
 ```bash copy
 sudo apt update -y && sudo apt install wget -y && wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/librepatch.sh && bash librepatch.sh
 ```
 
 ## Arch Linux based Distros
-  
-  You can install Libre Office on distributions that are based on Arch like Manjaro and more by executing the following
-  command-
+
+You can install LibreOffice on Arch-based distros such as Manjaro and more by running the following
+command:
 
 ```bash copy
 wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/librepatch_arch.sh && bash librepatch_arch.sh
 ```
+
+## Next steps
+
+Need a graphical desktop to run LibreOffice in? See [VNC Basics](/vnc/vnc-basics) or [XSDL Basics](/xsdl/xsdl-basics).

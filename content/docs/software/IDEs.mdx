@@ -1,32 +1,32 @@
 ---
 title: IDEs
+description: Learn how to install and run full-fledged IDEs such as IntelliJ IDEA and VS Code inside your Andronix Linux distro and code on the go.
 ---
 
-We love to code here, and Andronix is a portable computer. Why not use it to code anywhere? You can use full-fledged IDEs
-inside Andronix.
+We love to code, and Andronix turns your phone into a portable computer, so why not use it to code anywhere? You can run full-fledged IDEs inside Andronix. This page shows you how to set up IntelliJ IDEA and VS Code.
 
-<Callout type="warning">We have only tested VS code, IntelliJ Idea, IntelliJ DataGrip, MonoDevelop (tested GTKsharp, ASP
-NET, ASP NETCORE this last have a problem with the target framework), Mono (In console, you can compile simple console
-programs in C #) Net Core. You can test other IDEs and edit this page to add it to the list.</Callout>
+<Callout type="warning">We have only tested VS Code, IntelliJ IDEA, IntelliJ DataGrip, MonoDevelop (tested with GTKsharp, ASP.NET and
+ASP.NET Core; the last has a problem with the target framework), Mono (in the console, you can compile simple console
+programs in C#) and .NET Core. You can test other IDEs and edit this page to add them to the list.</Callout>
 
-## IntelliJ Idea
+## IntelliJ IDEA
 
-Here are the steps needed to install IntelliJ Idea on your Andronix instance
+Here are the steps to install IntelliJ IDEA on your Andronix instance.
 
-<Callout type="info">The instructions assume that you have the SDK for your language already installed for the distro you are
+<Callout type="info">These instructions assume that you already have the SDK for your language installed in the distro you're
 using.</Callout>
 
-* Download the latest tar.gz file from JetBrains
+* Download the latest tar.gz file from the JetBrains
   official [download page](https://www.jetbrains.com/idea/download/#section=linux).
-* After downloading the tar.gz, make sure that it is in your download folder and after run the following command.
-  Change `x` to the name of the tar downloaded.
+* Make sure the downloaded tar.gz is in your download folder, then run the following command.
+  Replace the `x`s with the version in the name of the file you downloaded.
 
 ```bash copy
 tar -xzf ideaIU-2xxx.x.x.tar.gz -C ~/Desktop/
 ```
 
-* The tar should now be unzipped in `Desktop/ideaIU-2xxx.x.x`, where 'x' stands for the year and version number.
-* Now choose the command from below and run it inside Linux terminal
+* The archive should now be extracted to `Desktop/ideaIU-2xxx.x.x`, where the `x`s stand for the year and version number.
+* Next, pick the command for your distro below and run it in the Linux terminal.
 
 ### Debian/ Ubuntu/ Kali Linux
 
@@ -40,45 +40,48 @@ sudo apt install openjdk-11-jdk -y
 sudo pacman -S jdk-openjdk
 ```
 
-### Void Linux:
+### Void Linux
 
 ```bash copy
 xbps-install -S openjdk
 ```
 
-### Alpine:
+### Alpine
 
 ```bash copy
 apk --no-cache add openjdk11 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 ```
 
-### Fedora:
-
+### Fedora
 
 <Callout type="warning">
-Fedora is not recommended for use of Jetbrains IDE.
+Fedora is not recommended for use with JetBrains IDEs.
 </Callout>
 
-* We can now proceed to run Idea, navigate to Desktop/ideaIU-2xxx.x.x/bin and execute the idea.sh with the following
-  command-
+* You can now run IDEA. Navigate to `Desktop/ideaIU-2xxx.x.x/bin` and run `idea.sh` with the following
+  command:
 
 ```bash copy
 ./idea.sh
 ```
 
-* Yay! 🎊 That's all you need to do to run IntelliJ on your device.
+* Yay! 🎊 That's all you need to do to run IntelliJ IDEA on your device.
 
 ## VS Code
 
-<Callout type="info">Andronix supports VS Code on all four of our support CPU architectures, namely ARM64(armv8), armv7,
+<Callout type="info">Andronix supports VS Code on all four of our supported CPU architectures: ARM64 (armv8), armv7,
 i686 and x86_64.</Callout>
 
-<Callout type="default">VS Code comes pre-installed with out Modded OSs.</Callout>
+<Callout type="info">VS Code comes pre-installed with our [Modded OS](/modded-os/modded-os).</Callout>
 
 ### Debian based distros (Package Manager - apt)
 
-Please execute the following command from within the distro's shell-
+Run the following command from within the distro's shell:
 
 ```bash copy
 apt install wget -y && wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/vscode_patch.sh && chmod +x vscode_patch.sh && ./vscode_patch.sh
 ```
+
+## Next steps
+
+Need a graphical desktop to run your IDE in? See [VNC Basics](/vnc/vnc-basics) or [XSDL Basics](/xsdl/xsdl-basics).

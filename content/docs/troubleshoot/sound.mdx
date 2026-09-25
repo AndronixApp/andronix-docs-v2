@@ -1,22 +1,22 @@
 ---
-title: Sound
+title: Fixing Sound
+description: Enable audio output in your Andronix distro using PulseAudio, so sound from inside the PRoot container plays through your phone's speakers.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 
-You can use your speakers while using your distro to get all that excellent music from Spotify (or anything) while you code. We use Pulse Audio to get that sound out of the PRoot container to your phone's speakers.
+This page shows how to get sound working in your distro, so you can listen to music from Spotify (or anything else) through your phone's speakers while you code. We use PulseAudio to route sound out of the PRoot container to your phone's speakers.
 
-<Callout type="info">Modded OS have sound output through phone's speakers enabled out of the box.</Callout>
+<Callout type="info">Modded OS has sound output through the phone's speakers enabled out of the box.</Callout>
 
-Just follow these steps correctly in order to have sound output enabled-
+Follow these steps in order to enable sound output:
 
 <Steps>
 <Step>
 
 ### Close Distro
 
-Close the distro if you have it opened with running exit inside Termux. _Ignore this step if you haven't had your
-distro running in the first place_.
+If your distro is running, close it by running `exit` inside Termux. _Skip this step if your distro isn't running._
 
 ```bash copy
 exit
@@ -28,11 +28,10 @@ exit
 
 ### Run Commands
 
-Run the following command in **Termux (Not inside Linux)**
+Run the following command in **Termux (not inside Linux)**:
 
 ```bash copy
-pkg install wget && wget https://andronixos.sfo2.cdn.digitaloceanspaces.com/OS-Files/setup-audio.sh && chmod +x
-setup-audio.sh && ./setup-audio.sh
+pkg install wget && wget https://andronixos.sfo2.cdn.digitaloceanspaces.com/OS-Files/setup-audio.sh && chmod +x setup-audio.sh && ./setup-audio.sh
 ```
 
 </Step>
@@ -41,7 +40,7 @@ setup-audio.sh && ./setup-audio.sh
 
 ### Start PulseAudio Server
 
-Start the PulseAudio Server
+Start the PulseAudio server:
 
 ```bash copy
 pulseaudio --start
@@ -50,3 +49,8 @@ pulseaudio --start
 </Step>
 </Steps>
 
+## Related pages
+
+- [Accessing Internal Storage](/troubleshoot/internal-storage)
+- [Modded OS](/modded-os/modded-os)
+- [FAQ](/faq/faq)

@@ -1,0 +1,6 @@
+{
+  "title": "Blog",
+  "icon": "Newspaper",
+  "defaultOpen": false,
+  "pages": ["andronix-maintainers", "v7-0", "v6-0", "andronix-termux-and-f-droid"]
+}

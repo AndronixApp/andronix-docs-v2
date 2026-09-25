@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  rclone.js: false
+  sharp: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - fumadocs-mdx@15.4.5
+  - miniflare@5.20260923.0-alpha
+  - wrangler@4.140.0

@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import { Github, BookOpen } from "lucide-react";
+import { Github } from "lucide-react";
 
 const DiscordIcon = () => (
   <svg
@@ -18,31 +18,30 @@ export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
       title: (
-        <div className="font-bold text-lg">
-          <p className="text-[--color-fd-foreground]">
-            andronix<span className="text-orange-400">.</span>app/
-            <span className="text-orange-400">docs</span>
-          </p>
-        </div>
+        <span className="font-semibold text-[0.95rem] tracking-tight text-fd-foreground">
+          andronix<span className="text-fd-primary">.</span>app
+          <span className="text-fd-muted-foreground">/</span>
+          <span className="text-fd-primary">docs</span>
+        </span>
       ),
       url: "/",
     },
     links: [
       {
-        icon: <Github className="w-5 h-5" />,
+        type: "icon",
+        label: "GitHub",
+        icon: <Github />,
         text: "GitHub",
         url: "https://git.andronix.app",
-        active: "nested-url",
+        external: true,
       },
       {
+        type: "icon",
+        label: "Discord",
         icon: <DiscordIcon />,
         text: "Discord",
         url: "https://chat.andronix.app",
-      },
-      {
-        icon: <BookOpen className="w-5 h-5" />,
-        text: "Blog",
-        url: "/blog",
+        external: true,
       },
     ],
   };

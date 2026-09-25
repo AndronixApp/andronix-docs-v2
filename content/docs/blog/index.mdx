@@ -1,0 +1,40 @@
+---
+title: Blog
+description: Release notes, announcements and updates from the Andronix team.
+---
+
+import { Cards, Card } from 'fumadocs-ui/components/card';
+import { PenSquare, Rocket, Sparkles, Info } from 'lucide-react';
+
+Release notes, announcements and other updates from the Andronix team.
+
+<Cards>
+  <Card
+    icon={<Info />}
+    href="/blog/andronix-maintainers"
+    title="Calling for Andronix Maintainers"
+  >
+    We are looking for maintainers for Andronix. If you are interested, read this post.
+  </Card>
+  <Card
+    icon={<Sparkles />}
+    href="/blog/v7-0"
+    title="Andronix 7.0: Refresh"
+  >
+    Long time no see, and here we are again. Andronix is getting updated to version 7.0.
+  </Card>
+  <Card
+    icon={<Rocket />}
+    href="/blog/v6-0"
+    title="Andronix 6.0: A New Beginning"
+  >
+    Andronix 6.0 is here: a new beginning for Andronix. Read more about the changes in this post.
+  </Card>
+  <Card
+    icon={<PenSquare />}
+    href="/blog/andronix-termux-and-f-droid"
+    title="Andronix, Termux and F-Droid"
+  >
+    Information about migrating Termux from the Google Play Store to F-Droid after the shutdown of Bintray, a package hosting service from JFrog.
+  </Card>
+</Cards>

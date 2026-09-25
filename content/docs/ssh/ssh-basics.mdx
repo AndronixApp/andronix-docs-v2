@@ -1,29 +1,30 @@
 ---
-title: SSH Server
+title: SSH Basics
+description: Learn how to run an SSH server on your Android device with Andronix, either from Termux (recommended) or from inside your Linux distro.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 
-We recommend that you use SSH Server from Termux instead of using it in a Linux environment. Using an SSH Server from
-Termux gives you control of both your device and your Linux OS. We are providing you both the methods for the same down
-below-
+SSH lets you access your device's shell remotely. This page covers two ways to run an SSH server: from Termux and from inside your Linux distro.
+
+We recommend running the SSH server from Termux rather than from the Linux environment. An SSH server running in Termux gives you control of both your device and your Linux OS. Both methods are described below.
 
 ## SSH via Termux
 
-You can follow [this](https://glow.li/technology/2015/11/06/run-an-ssh-server-on-your-android-with-termux/) link to get
-to know the process of using SSH from Termux. This tutorial is provided officially by one of Termux developers.
+Follow [this guide](https://glow.li/technology/2015/11/06/run-an-ssh-server-on-your-android-with-termux/) to learn how
+to run an SSH server from Termux. The tutorial is officially provided by one of the Termux developers.
 
 ## SSH via Linux
 
-Since Linux is executed by using PRoot, it cannot override the default configurations of the Android connectivity, so
-the port number needs to be changed. Follow the below steps to use SSH from Termux:
+Since Linux runs through PRoot, it cannot override Android's default connectivity configuration, so the SSH port
+number needs to be changed. Follow the steps below to run SSH from Linux:
 
 <Steps>
 <Step>
 
 ### Install OpenSSH
 
-Install **openSSH** inside Linux. Choose the command for your distro accordingly from the given list:
+Install **OpenSSH** inside Linux. Pick the command for your distro from the list below:
 
 #### Ubuntu 20
 
@@ -52,13 +53,13 @@ apt install openssh-server nano -y
 #### Manjaro
 
 ```bash copy
-pacman -S openssh nano --noconfim
+pacman -S openssh nano --noconfirm
 ```
 
 #### Arch
 
 ```bash copy
-pacman -S openssh nano --noconfim
+pacman -S openssh nano --noconfirm
 ```
 
 #### Fedora
@@ -85,16 +86,16 @@ xbps-install openssh nano
 
 ### Modifications
 
-Once OpenSSH server is installed on your Linux system, we need to modify some things to make it accessible in network escaping Android limitations. Now execute-
+Once the OpenSSH server is installed, you need to change a few settings so it's reachable over the network despite Android's limitations. Open the SSH config file:
 
 ```
 nano /etc/ssh/sshd_config
 ```
 
-* Find and change the line `#Port 22` to `Port 2222`
-* Find the line `#PermitRootLogin prohibit-password`  or `#PermitRootLogin yes` and change it to `PermitRootLogin yes` .
-  If it is already `PermitRootLogin yes` then you do not need to change anything.
-* Now when you are done with all the above steps press `CTRL+X` and then type `Y` and then press `Enter`
+* Find the line `#Port 22` and change it to `Port 2222`.
+* Find the line `#PermitRootLogin prohibit-password` or `#PermitRootLogin yes` and change it to `PermitRootLogin yes`.
+  If it already says `PermitRootLogin yes`, you don't need to change anything.
+* When you're done, press `CTRL+X`, type `Y` and press `Enter` to save.
 
 </Step>
 
@@ -102,13 +103,13 @@ nano /etc/ssh/sshd_config
 
 ### Generate Keys
 
-Now run
+Next, generate the host keys by running:
 
 ```bash copy
 ssh-keygen -A
 ```
 
-and then
+and then:
 
 ```bash copy
 ssh-keygen
@@ -120,13 +121,13 @@ ssh-keygen
 
 ### Password
 
-Now we need to set password first. To set password type
+Now set a password for the root user by running:
 
 ```bash copy
 passwd
 ```
 
-and set any password.
+Enter any password you like.
 
 </Step>
 
@@ -134,13 +135,11 @@ and set any password.
 
 ### Start SSH Server
 
-Once this process is complete, just run
+Once that's done, start the SSH server by running:
 
 ```bash copy
 /usr/sbin/sshd
 ```
-
-to start the SSH server.
 
 </Step>
 
@@ -148,20 +147,23 @@ to start the SSH server.
 
 ### Connect
 
-Now just type
+Run the following command:
 
 ```bash copy
 ip a
 ```
 
-and copy the IP Address of `wlan`
-and to connect to SSH Server. To connect to SSH server type
+and copy the IP address listed under `wlan`. To connect to the SSH server, run:
 
 ```bash copy
 ssh root@localhost -p 2222
 ```
 
-and use the password to connect to the server.
+and log in with the password you set earlier.
 
 </Step>
 </Steps>
+
+## Next steps
+
+Want a graphical desktop instead? See [VNC Basics](/vnc/vnc-basics).
