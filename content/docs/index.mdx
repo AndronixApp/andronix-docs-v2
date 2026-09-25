@@ -4,10 +4,12 @@ description: Install Linux distributions like Ubuntu, Debian and Manjaro on your
 ---
 
 import { Cards, Card } from 'fumadocs-ui/components/card';
-import { RiVipCrownFill, RiTerminalBoxFill } from 'react-icons/ri';
+import { RiVipCrownFill, RiTerminalBoxFill, RiCommandFill } from 'react-icons/ri';
 import { SiUbuntu, SiAndroid } from 'react-icons/si';
 
 Welcome! Andronix is an app that lets you install Linux distributions like Ubuntu, Debian and Manjaro on your Android device, no root required.
+
+<Callout type="info">**New installer:** free distros now install with one `andronix` command, with the latest versions (Debian 13, Ubuntu 26.04 LTS, Fedora 44 and more), a choice of XFCE, LXQt or MATE, and Firefox included. The install command in the app works as before. [See what's supported](/unmodded-distros/distros).</Callout>
 
 Pick one of the guides below to get started.
 
@@ -19,7 +21,7 @@ Pick one of the guides below to get started.
     href="/unmodded-distros/unmodded-os-installation"
     title="Install an OS with Andronix"
   >
-    Learn how to install distros like Ubuntu and Debian with Andronix.
+    Learn how to install distros like Ubuntu, Debian and Fedora with Andronix.
   </Card>
   <Card
     icon={<SiUbuntu />}
@@ -27,6 +29,13 @@ Pick one of the guides below to get started.
     title="Install Modded OS"
   >
     Learn how to install a Modded OS like Ubuntu KDE or Manjaro XFCE with Andronix.
+  </Card>
+  <Card
+    icon={<RiCommandFill />}
+    href="/andronix-cli/andronix-cli"
+    title="The andronix command"
+  >
+    Install, start, back up and remove distros from Termux with one command.
   </Card>
   <Card
     icon={<RiTerminalBoxFill />}

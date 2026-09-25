@@ -1,6 +1,6 @@
 ---
 title: FAQ
-description: Answers to the most common Andronix questions, including the signal 9 error, install errors, Kali, Manjaro, VNC and Firefox fixes.
+description: Answers to the most common Andronix questions, including the signal 9 error, install errors, the new installer, Kali, Manjaro, VNC and Firefox fixes.
 ---
 
 import Imagera from "@/components/imagera";
@@ -24,7 +24,7 @@ ___
 
 ### 3. Kali Linux errors out during installation
 
-**Ans.** We are aware of the current issues with Kali. It will be fixed soon, but there's no ETA. Please consider using another distro like Debian in the meantime.
+**Ans.** The new installer installs Kali Linux rolling again. Install it from the app as usual. If it still fails, see [Troubleshooting Installs](/troubleshoot/install-problems).
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 ### 7. Ubuntu 20.04: Firefox shows "Gah. Your tab just crashed"
 
-Here's an easy fix for this error:
+This applies to Ubuntu 20.04 from the old installer. Here's an easy fix for this error:
 
 1. Enter about:config in the address bar.
 2. Click "Accept the risk and continue".
@@ -66,8 +66,27 @@ Here's an easy fix for this error:
 <Imagera src="/images/faq/firefox.png" height={500}/>
 6. Restart Firefox.
 
+___
+
+### 8. Why does my new distro ask for a username instead of logging in as root?
+
+**Ans.** Distros from the new installer create a normal user for you, like a regular Linux PC. Use `sudo` for commands that need root. If you really need a root shell, run `andronix start <distro> --root` in Termux. See [First login](/andronix-cli/andronix-cli#first-login).
+
+___
+
+### 9. Where did the window managers go?
+
+**Ans.** Window managers (Awesome, i3 and Openbox) have been retired from the free installer. Pick a desktop environment instead: XFCE, LXQt or MATE. Existing installs keep working. See [Window Managers](/window-managers/window-managers).
+
+___
+
+### 10. Can I still use my old distro?
+
+**Ans.** Yes. Distros installed with the old installer are left untouched and start with the same command as before. See [Installs from the old installer](/unmodded-distros/older-installs).
+
 ## Still need help?
 
 - Learn more about [using VNC](/vnc/vnc-basics).
+- Read [Troubleshooting Installs](/troubleshoot/install-problems).
 - Read about what Andronix [can't do](/get-started/limitations).
 - Ask on our [Discord](https://chat.andronix.app) or open an issue on our [GitHub repository](https://github.com/AndronixApp/AndronixOrigin/issues/new).
