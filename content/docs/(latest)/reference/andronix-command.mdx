@@ -72,7 +72,7 @@ vncserver-stop
 The Andronix app (10.0 or newer) sets up `andronix` for you with its install command. Without the app, this one line downloads `andronix`, checks it, and runs an install:
 
 ```bash copy
-curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
 Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. If Termux doesn't have `proot` yet, the installer installs it first. See [Install without the app](/install/without-the-app).

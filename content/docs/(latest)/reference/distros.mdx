@@ -12,7 +12,7 @@ Andronix installs these free distros. Each one comes with the desktop you pick (
 The `andronix install` commands below need `andronix` in Termux. If you haven't installed a distro with Andronix 2.0 yet, use this one line instead, with your distro and desktop:
 
 ```bash copy
-curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
 See [Installing without the app](/install/without-the-app).

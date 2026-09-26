@@ -37,7 +37,7 @@ It also fixes something we got wrong. **Modded OS downloads were broken from Jun
 The installer is rewritten from scratch as one command, `andronix`. You don't need the app to use it:
 
 ```bash copy
-curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
 It installs `proot` itself, repairs a half-upgraded Termux, and checks the checksum of every download. It works with Termux from F-Droid, GitHub and Google Play (Android 11 and newer for the Play build).
