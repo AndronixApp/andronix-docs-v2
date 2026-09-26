@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <!-- Modded OS mark, 24dp line glyph (bottom nav inactive). Tint with currentColor / iconTint. -->
+  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18.25 9.62A8 8 0 1 1 14.38 5.75"/><path fill="currentColor" d="M4.01 12.62A7 7 0 0 1 17.99 12.62A3.9 3.9 0 0 0 11 15A3.9 3.9 0 0 0 4.01 12.62ZM5.8 16A1.3 1.3 0 1 0 8.4 16A1.3 1.3 0 1 0 5.8 16ZM13.6 16A1.3 1.3 0 1 0 16.2 16A1.3 1.3 0 1 0 13.6 16ZM10 18h2l-1 1.4ZM19.6 0.7Q19.6 4.4 23.3 4.4Q19.6 4.4 19.6 8.1Q19.6 4.4 15.9 4.4Q19.6 4.4 19.6 0.7Z"/>
+</svg>

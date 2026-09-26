@@ -327,6 +327,11 @@ figure.shiki button:hover {
   padding: 8px;
 }
 
+.prose a[data-card='true'] > div:first-child:has(.mark-tile) {
+  background: transparent;
+  padding: 0;
+}
+
 .prose a[data-card='true'] h3 {
   font-weight: 700;
   font-size: 15px;
