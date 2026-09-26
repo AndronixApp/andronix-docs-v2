@@ -14,10 +14,12 @@ You don't need the Andronix app to install a free distro. One line in Termux set
 Paste this into Termux, replacing `debian` and `xfce` with the distro and desktop you want:
 
 ```bash copy
-curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
-It downloads `andronix`, checks it against its published checksum, installs it in Termux, and starts the install. If Termux doesn't have `proot` yet, the installer installs it first.
+It downloads `andronix` (retrying if the connection drops), checks it against its published checksum, installs it in Termux, and starts the install. It downloads the script first and then runs it, so the installer can still ask you questions.
+
+<Callout type="info">If `curl` itself fails with an error (common on an old Termux that was only half updated), run `pkg upgrade -y` in Termux first, then the command again. The app's own install command does this repair for you.</Callout> If Termux doesn't have `proot` yet, the installer installs it first.
 
 - **Distros:** `debian`, `ubuntu` (26.04 LTS), `ubuntu24` (24.04 LTS), `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported distros](/reference/distros).
 - **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only), or `none` for the command line only. Not sure? See [Choose a distro and desktop](/install/choose).

@@ -18,7 +18,7 @@ If the command fails with errors from `pkg` or `apt` before you see the Andronix
 `andronix` isn't installed in this Termux yet (or Termux was reinstalled). Install it with the app's install command, or with this one line from Termux:
 
 ```bash copy
-curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
 Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/install/without-the-app).
