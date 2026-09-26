@@ -135,6 +135,8 @@ Nothing is deleted outright. Every merged or moved page redirects to its new hom
 
 ## URL plan
 
+> **Update (Sept 26):** the docs are now versioned. Old URLs that were live on the old site go to their copy under `/v8` (App 8.x (Classic)), not to the new pages. See DOCS_STATUS.md, "Versioned docs". The table below is the original plan.
+
 **Rule:** new URLs follow the new folders. Every old URL gets a permanent (308) redirect in `next.config.mjs`. OpenNext passes Next's `redirects()` through on Cloudflare. Browsers keep `#anchors` across a redirect, and moved pages keep their heading names, so deep links like `#vnc-on-other-devices` still land.
 
 | Old URL | Redirects to |

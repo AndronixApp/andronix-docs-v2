@@ -1,5 +1,59 @@
 # Docs status: new installer
 
+## Versioned docs: App 10 and App 8.x (Classic) (lead, Sept 26)
+
+- **Chosen: Fumadocs' built-in versioning** (`"root": "version"`), inside this site. It works in the installed fumadocs-ui/core 16.15.14, the latest (`pnpm outdated` shows no newer fumadocs-ui, fumadocs-core or fumadocs-mdx; fumadocs-mdx 15.4.5 is also the latest). The old MDX compiled as it is, with no porting, so the separate v8.docs.andronix.app branch plan isn't needed.
+- **Layout:**
+  - `content/docs/(latest)/`: the new docs, root type `version`, titled "App 10". The `(latest)` folder group isn't part of URLs, so every new-docs URL is unchanged.
+  - `content/docs/v8/`: a copy of `master` (the live docs), root type `version`, titled "App 8.x (Classic)", served under `/v8/...`.
+    - Its `blog/` and `account/` are left out: they're shared, one copy in the latest docs.
+    - Every page has a warning callout on top: "You are reading docs for Andronix app 8.x. Update to app 10 for the new installer: Start here".
+    - Its internal links are rewritten to `/v8/...` (96 links).
+    - Otherwise the content is as it was, except for one hidden anchor span (below).
+- **Version menu:** Fumadocs shows it at the top of the sidebar. Switching keeps the same page when it exists in the other version (for example `/security/termux` and `/v8/security/termux`), and otherwise falls back to that version's index. It's styled as a surface pill.
+- **8.x notes:** callouts on the home page and on "What is Andronix" point 8.x users to App 8.x (Classic).
+- **Search:** it covers App 10 only (`app/api/search/route.ts` filters out `/v8` pages); a check of `?query=vnc` returned 91 results, none from v8.
+- **Redirects** (`lib/redirects.mjs`): every URL that was live on the old site and is gone or moved in the new docs now 308s to **the same path under `/v8`**. These replace the earlier redirects to the new pages. There are 19 such pages:
+  - `/android-12/andronix-on-android-12-and-beyond`, `/desktop-environments/desktop-environments`, `/faq/faq`;
+  - `/get-started/how-does-andronix-work`, `/get-started/limitations`;
+  - `/software/{IDEs,browsers,gimp,libre-office}`, `/ssh/ssh-basics`;
+  - `/termux/cannot-link-executable`, `/termux/migrating-to-f-droid`;
+  - `/troubleshoot/internal-storage`, `/troubleshoot/sound`;
+  - `/unmodded-distros/unmodded-os-installation`, `/unmodded-distros/unmodded-os-uninstallation`;
+  - `/vnc/vnc-basics`, `/window-managers/window-managers`, `/xsdl/xsdl-basics`.
+
+  Also, `/introduction/what-andronix-is-not-capable-of` (linked by the v8 app, already a 404 on the live site) goes to `/v8/get-started/limitations`. URLs that were never live pages (folder URLs, `/installations/*`, `/desktop/vnc`) still go to the new pages.
+- **Unchanged live URLs:** `/`, `/account/deletion`, `/blog/*`, `/miscellaneous/open-source`, `/modded-os/modded-os`, `/modded-os/modded-os-installation` and `/security/termux` stay in App 10.
+- **Checks on the built site:**
+  - `pnpm build` passes (70 static pages);
+  - the link and anchor check passes (67 pages, 0 broken);
+  - 82 of 82 redirect variants land on a 200;
+  - the v8 app's docs URLs, anchors included, resolve. The one missing anchor, `#2-selection-️` (already broken on the live site), got a hidden span in the v8 copy.
+- **v8 app (branch `8`, LinkHub.kt) docs URLs** and where they land:
+
+  | App URL | Lands on |
+  |---|---|
+  | `/` | `/` (App 10 home, with the 8.x note) |
+  | `/desktop-environments/desktop-environments` (+ `#which-de-should-i-choose`) | `/v8/desktop-environments/...` |
+  | `/window-managers/window-managers` (+ `#which-wm-should-i-choose`) | `/v8/window-managers/...` |
+  | `/unmodded-distros/unmodded-os-installation` (+ `#desktop-environment`, `#2-selection-️`, `#3-termux-execution-`, `#4-starting-distribution-️`, `#5-vnc-configuration-`) | `/v8/unmodded-distros/...` |
+  | `/modded-os/modded-os-installation` (+ the same four anchors) | unchanged (Classic flow; the anchors exist) |
+  | `/faq/faq` | `/v8/faq/faq` |
+  | `/security/termux` | unchanged |
+  | `/termux/migrating-to-f-droid#manual-method` | `/v8/termux/...` |
+  | `/android-12/andronix-on-android-12-and-beyond` | `/v8/android-12/...` |
+  | `/introduction/what-andronix-is-not-capable-of` | `/v8/get-started/limitations` |
+  | `/account/deletion` | unchanged |
+
+- **Action for android (app 10):** app 10's LinkHub (`v8.1-new-installer` and `ui-revamp`) still has some of the old constants, which would now open the 8.x docs. Repoint them:
+  - `desktop-environments/...` to `/reference/desktops` (or `/install/choose`);
+  - `window-managers/...` to `/pre-2.0/window-managers`;
+  - `unmodded-distros/unmodded-os-installation` to `/install/with-the-app`;
+  - `faq/faq` to `/troubleshooting/faq`;
+  - `introduction/what-andronix-is-not-capable-of` to `/reference/limitations`.
+- **Action for web:** the website links `/software/browsers` and `/termux/migrating-to-f-droid#manual-method`, which now open the 8.x copies. Point them to `/use/apps#browsers` and `/start-here/install-termux#manual-method`.
+- **Superseded:** the IA proposal's URL table said old URLs go to the new pages. Now the old URLs that were live go to `/v8`.
+
 ## Operator name (owner, Sept 26)
 
 - **The operator is "Amita Shukla".** The only "Devriz Technologies" mention in docs text was the "Anything more?" section of the 2021 blog post `blog/v6-0.mdx`, which is now removed. The old video thumbnail inside the collapsed "Older video" block stays, as allowed.
