@@ -27,7 +27,8 @@ Their `<AppShot>` spots render nothing until the files land.
 - `app10-desktop-picker`: KDE Plasma is below the fold (XFCE, LXQt, MATE show). Optional: scroll a little so all four show.
 
 **Noted, no reshoot:**
-- `app10-modded-classic` shows the Classic section as **"Archived — yours to keep"** (the docs now use that label). It also shows a **Fedora XFCE card, "Premium · Early access for Premium and Pass owners"**, which the docs and the 2.0 facts don't mention (they list five editions). Confirm whether Fedora XFCE early access should be documented.
+- `app10-modded-classic` shows the Classic section as **"Archived — yours to keep"** (the docs use that label).
+- **Retake `app10-modded-classic`** (lead): it also shows a "Fedora XFCE · Early access" card. That's a products-api test fixture that leaked into the dev catalog, not a real edition. Launch has five Modded 2.0 editions. The docs don't mention Fedora XFCE; early access is described only generically.
 - `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, so the app's uninstall also removes an old pre-2.0 copy.
 - `app10-premium-owner` shows a "Copy beta command" perk and `andronix update --channel stable`. `--channel stable|beta` is now in the CLI reference.
 - `app10-phantom-tip`: the tip sits on the Start the desktop step, labelled "How to fix it" (the docs text now says so).
