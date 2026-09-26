@@ -9,7 +9,7 @@ import YoutubeEmbed from "@/components/youtubeEmbed";
 
 Installing your favorite Linux distro with Andronix only takes a few minutes. This guide walks you through the whole process: picking a distro, choosing an interface, running the install command in Termux, creating your user, and starting your new system. Prefer video? Watch the walkthrough below, then follow the steps.
 
-<Callout type="info">These instructions assume you have **Andronix version 7.0 or newer** installed on your device.</Callout>
+<Callout type="info">These instructions need the **Andronix app 10.0 or newer (Andronix 2.0)**. Don't want to use the app? See [Installing without the app](#installing-without-the-app).</Callout>
 <Callout type="info">This is **not** a guide for installing a **Modded OS**. For that, see [Installing Modded OS](/modded-os/modded-os-installation).</Callout>
 
 <YoutubeEmbed id={"Bw5hqPTQskM"}/>
@@ -177,6 +177,23 @@ Press **Enter** to pick the Auto screen size. Then open a VNC viewer app and con
 ![Debian 13 with XFCE, seen in a VNC viewer](/images/new-installer/debian-xfce-desktop.png)
 
 <Callout type="error">Seeing the **Process completed (signal 9) - press Enter** error in Termux? Read [Android 12 and Newer](/android-12/andronix-on-android-12-and-beyond) to fix it.</Callout>
+
+## Installing without the app
+
+You can install any free distro straight from Termux, without the Andronix app. Paste this one line into Termux, replacing `debian` and `xfce` with the distro and desktop you want:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+It downloads the `andronix` command, checks it, and starts the install. The rest is the same as above: the install steps, [creating your user](#create-your-user), and [starting the distro](#start-the-distro).
+
+- **Distro names:** `debian`, `ubuntu` (26.04), `ubuntu24`, `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported Distros](/unmodded-distros/distros).
+- **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only) or `none` for the command line only.
+
+<Callout type="info">On a fresh Termux, install `proot` first with `pkg install proot -y`. If it's missing, the installer stops and tells you to.</Callout>
+
+Once `andronix` is installed, you can install more distros with just `andronix install <distro> --de <desktop>`.
 
 ## Next steps
 

@@ -42,6 +42,16 @@ If the command fails with errors from `pkg` or `apt` before you see the Andronix
 
 **Fix:** install Termux from F-Droid. See [Migrating Termux to F-Droid](/termux/migrating-to-f-droid).
 
+## andronix: command not found
+
+`andronix` isn't installed in this Termux yet (or Termux was reinstalled). Install it with the app's install command, or with this one line from Termux:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/unmodded-distros/unmodded-os-installation#installing-without-the-app).
+
 ## Download errors
 
 - **The download failed or timed out:** check your connection and run the same command again. The download resumes instead of starting over.
