@@ -1,5 +1,16 @@
 # Docs status: new installer
 
+## Modded OS and Premium marks (owner, Sept 26)
+
+- **Files:** `~/andronix/icon-2.0/final/marks/svg/*` copied to `public/images/marks/`.
+- **Component:** `components/marks.tsx` has `ModdedGlyph` and `PremiumGlyph` (currentColor, inlined) and `MarkTile` (the colour mark on its own tile: Modded on olive `--andronix-tertiary-container`, Premium on deep orange `--andronix-primary-container`, as the README specifies).
+- **Where the new marks are:**
+  - the home page's Modded OS card (it was the crown icon);
+  - the top of the Modded OS Editions page;
+  - the Modded OS 2.0 and Premium sections of the blog post;
+  - the unused `intro_component` (its crown is gone; the Modded card uses the glyph).
+- **What's left of the old icons:** the green shield+bolt only appears inside old app screenshots, which are already TODO for the app-redesign pass. No other crown or shield icons remain in the docs.
+
 ## Release comms (lead, Sept 26)
 
 - **Blog post "Andronix 2.0":** `content/docs/blog/andronix-2-0.mdx`, at exactly `/blog/andronix-2-0`. It returns 200, and the trailing-slash form 308-redirects to it. The app's 10.0 changelog and the website banner link here.
