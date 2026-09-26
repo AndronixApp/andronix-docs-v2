@@ -1,5 +1,10 @@
 # Docs status: new installer
 
+## Termux:X11 extra-keys bar (lead/x11, Sept 26)
+
+- **Where the line went:** Step 3 (Termux:X11 > The first time you open it) and desktop troubleshooting now say: "Andronix hides Termux:X11's extra-keys bar the first time you start a desktop so the bottom panel shows. Swipe down with three fingers in Termux:X11 to bring it back (or turn it on in Termux:X11 settings)."
+- **Installer version:** the behaviour is installer commit 8a9b1de. It's on master and `feat-x11-audio`, after the live 2.0.0 (`Version = "2.0.0-dev"`), so it arrives with the next installer build. Until then, the bar isn't hidden automatically; the three-finger swipe and the setting still apply.
+
 ## App-10 screenshot refresh: prepared, not captured (lead, Sept 26)
 
 - **Shot list:** `DOCS_SHOTS.md` has 22 app shots and 4 Termux shots. For each: file name, docs page and place, screen, account state (free / Pass / Premium / past buyer), step and alt text. It also has the capture settings: Android 16 emulator at 1080 × 1920, font 1.0, English, SystemUI demo mode, seeded accounts. The Play Store suggestion is 8 shots from the same set; 1080 × 1920 keeps them within Play's 2:1 limit.
