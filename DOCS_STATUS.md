@@ -1,5 +1,19 @@
 # Docs status: new installer
 
+## App-10 screenshot refresh: prepared, not captured (lead, Sept 26)
+
+- **Shot list:** `DOCS_SHOTS.md` has 22 app shots and 4 Termux shots. For each: file name, docs page and place, screen, account state (free / Pass / Premium / past buyer), step and alt text. It also has the capture settings: Android 16 emulator at 1080 × 1920, font 1.0, English, SystemUI demo mode, seeded accounts. The Play Store suggestion is 8 shots from the same set; 1080 × 1920 keeps them within Play's 2:1 limit.
+- **Pages:** the App 10 pages (`(latest)`) now use `<AppShot name="..." alt="..." />` (`components/app-shot.tsx`) instead of the Andronix 7 screenshots. It renders the image once `public/images/app10/<name>.png` exists. Until then it shows nothing in production and a labelled placeholder in development.
+  - Tested: with no files the pages render no shot; with a file in place it renders through next/image.
+  - The build stays green either way.
+- **Pages covered:** Install with the app, Uninstall, Installing Modded OS, Modded OS Editions, Start the desktop (Termux:X11), Install Termux, Account Deletion, Process completed (signal 9), Other ways to connect (the Termux vncserver shot), and the Andronix 2.0 blog post.
+- **Left as they are:**
+  - `content/docs/v8`;
+  - the RealVNC viewer shots;
+  - the Classic Modded wizard's Termux screenshots. Those steps' text gets rewritten in the app-flow pass (`termux-modded-first-boot` is listed).
+- **After capture:** drop the files into `public/images/app10/`, build, and check each page once. The app-flow text (button names, step wording) is rewritten in the same pass.
+
+
 ## Versioned docs: App 10 and App 8.x (Classic) (lead, Sept 26)
 
 - **Chosen: Fumadocs' built-in versioning** (`"root": "version"`), inside this site. It works in the installed fumadocs-ui/core 16.15.14, the latest (`pnpm outdated` shows no newer fumadocs-ui, fumadocs-core or fumadocs-mdx; fumadocs-mdx 15.4.5 is also the latest). The old MDX compiled as it is, with no porting, so the separate v8.docs.andronix.app branch plan isn't needed.
