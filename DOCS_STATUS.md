@@ -1,5 +1,18 @@
 # Docs status: new installer
 
+## Release comms (lead, Sept 26)
+
+- **Blog post "Andronix 2.0":** `content/docs/blog/andronix-2-0.mdx`, at exactly `/blog/andronix-2-0`. It returns 200, and the trailing-slash form 308-redirects to it. The app's 10.0 changelog and the website banner link here.
+  - Written only from the lead's shared facts file (`andronix-2.0-facts.md`), in the requested sections: what's new, free distros, the Termux:X11 desktop, Modded 2.0 / Classic / past buyers, Premium, app 10, privacy, known issues, how to upgrade.
+  - It says plainly that Modded downloads were broken from June to September 2026 and are now fixed.
+  - Images: the icon OG card, KDE on Ubuntu 26.04, XFCE in Termux:X11 on a phone, and Modded 2.0 Debian XFCE.
+  - Added as the first blog card, and first in the blog sidebar.
+- **Changelog:** `reference/changelog.mdx` (Reference > Changelog), with the 2.0.0 entries by area. It links the relevant docs pages.
+- **TODOs:**
+  - the release date: both pages say "September 2026";
+  - app 10.0 screenshots in the post, once ui's redesign is final.
+- **Author line:** the post is signed "The Andronix team" rather than a person. Change it if the owner wants their name.
+
 ## Icon 2.0, direction B: the only logo (owner, Sept 26)
 
 - **Copied from `~/andronix/icon-2.0/final/`:**
