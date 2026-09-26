@@ -1,0 +1,315 @@
+<title>Andronix Docs Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Geist+Mono:wght@500&display=swap">
+<style>
+/* Andronix 2.0 tokens (app design/tokens.css). Single dark design, like the app and docs. */
+:root {
+  color-scheme: dark;
+  --bg: #19120E; --surface: #261D17; --surface-high: #33271F; --surface-highest: #3A2D24;
+  --text: #F2DFD4; --text-2: #D6C2B5; --muted: #A8958A;
+  --primary: #FFB689; --on-primary: #4A1E00;
+  --pc: #6E3408; --on-pc: #FFDBC4;
+  --sc: #4F3A2E; --on-sc: #FFDCC8;
+  --tc: #35421F; --on-tc: #DDE7C9;
+  --wc: #4A3A07; --on-wc: #FBE08A;
+  --code-bg: #0F0A07;
+  --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font: 400 15px/1.6 var(--sans); margin: 0; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: grid; gap: 56px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1 { font: 800 clamp(28px, 4.5vw, 40px)/1.1 var(--sans); letter-spacing: -0.025em; }
+h2 { font: 800 22px/1.25 var(--sans); letter-spacing: -0.015em; }
+p { margin: 0; }
+code { font-family: var(--mono); font-weight: 500; font-size: 0.86em; background: var(--surface-highest); border-radius: 7px; padding: 0.1em 0.4em; overflow-wrap: anywhere; }
+.eyebrow { font: 700 11.5px/16px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+.lede { color: var(--text-2); max-width: 64ch; font-size: 16px; }
+header { display: grid; gap: 14px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { background: var(--surface); color: var(--text-2); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; }
+section { display: grid; gap: 18px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--text-2); max-width: 70ch; }
+
+/* sidebars */
+.sidebars { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 16px; align-items: start; }
+.sb { background: var(--surface); border-radius: 22px; padding: 18px 14px 20px; display: grid; gap: 2px; }
+.sb-title { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 8px 10px; }
+.sb-title h3 { font: 800 17px/1.3 var(--sans); }
+.sb-title span { font-size: 12.5px; color: var(--muted); }
+.sb-label { font: 700 11.5px/16px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 14px 8px 4px; display: flex; align-items: center; gap: 8px; }
+.sb-label.sb-step { color: var(--on-pc); }
+.step { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 10px; background: var(--pc); color: var(--on-pc); font-size: 11px; letter-spacing: 0; }
+.sb-item { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 5px 8px; border-radius: 999px; color: var(--text-2); font-size: 14px; }
+.sb-item.sb-top { color: var(--text); font-weight: 700; }
+.sb-item.dim { opacity: .6; }
+.sb-item .url { background: none; padding: 0; color: var(--muted); font-size: 11.5px; text-align: right; }
+.new { margin-left: 7px; background: var(--tc); color: var(--on-tc); border-radius: 999px; font: 700 10.5px/1 var(--sans); padding: 3px 7px; vertical-align: 1px; }
+.muted { color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 600; }
+
+/* journey */
+.journey { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.journey span { background: var(--surface); border-radius: 999px; padding: 7px 13px; font-size: 13.5px; font-weight: 600; color: var(--text-2); }
+.journey span.s { background: var(--pc); color: var(--on-pc); }
+.journey i { color: var(--muted); font-style: normal; }
+
+/* tables */
+.table-wrap { overflow-x: auto; border-radius: 16px; }
+table { border-collapse: separate; border-spacing: 0 2px; width: 100%; min-width: 720px; font-size: 14px; line-height: 1.5; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; }
+th { background: var(--surface-high); font-weight: 700; color: var(--text); white-space: nowrap; }
+td { background: var(--surface); color: var(--text-2); }
+td:first-child { color: var(--text); font-weight: 600; }
+th:first-child { border-top-left-radius: 16px; } th:last-child { border-top-right-radius: 16px; }
+tr:last-child td:first-child { border-bottom-left-radius: 16px; } tr:last-child td:last-child { border-bottom-right-radius: 16px; }
+.chip { display: inline-block; border-radius: 999px; padding: 3px 10px; font: 700 12px/1.4 var(--sans); white-space: nowrap; }
+.chip-keep { background: var(--surface-highest); color: var(--text-2); }
+.chip-rewrite { background: var(--pc); color: var(--on-pc); }
+.chip-merge { background: var(--sc); color: var(--on-sc); }
+.chip-archive { background: var(--wc); color: var(--on-wc); }
+.chip-new { background: var(--tc); color: var(--on-tc); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.url-table { min-width: 560px; }
+.url-table td:first-child { font-weight: 500; }
+
+ol.questions { margin: 0; padding-left: 22px; display: grid; gap: 10px; color: var(--text-2); max-width: 75ch; }
+ol.questions strong { color: var(--text); }
+.note { background: var(--surface); border-radius: 22px; padding: 16px 18px; color: var(--text-2); max-width: 80ch; }
+
+@media (max-width: 760px) {
+  .sidebars { grid-template-columns: 1fr; }
+  .wrap { padding-block: 28px 56px; gap: 44px; }
+}
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">docs.andronix.app · proposal</p>
+    <h1>A docs sidebar you can follow</h1>
+    <p class="lede">Today's docs are one flat list filed by the old site's categories. This proposal regroups every page around what a new user does, in order: get ready, install a distro, open the desktop, use it. Look-up material (troubleshooting, reference) comes after that, and the pre-2.0 material sits in a collapsed archive. No page has moved yet.</p>
+    <div class="meta">
+      <span class="pill">Andronix 2.0 · installer 2.0.0</span>
+      <span class="pill">Sept 26, 2026</span>
+      <span class="pill">11 rewrite · 11 keep · 9 new · 5 merge · 3 archive</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <h2>Sidebar, before and after</h2>
+      <p>After: four numbered steps for the beginner path, then Modded OS, Troubleshooting (by symptom), Reference, About, and the archive. Each group is a folder in Fumadocs, with its own <code>meta.json</code>.</p>
+    </div>
+    <div class="sidebars">
+      <div class="sb">
+        <div class="sb-title"><h3>Before</h3><span>35 pages, 7 headings</span></div>
+        <p class="sb-label">Getting Started</p>
+<div class="sb-item">Get Started with Andronix</div>
+<div class="sb-item">How Andronix Works</div>
+<div class="sb-item">Limitations</div>
+<div class="sb-item">Android 12 and Newer</div>
+<p class="sb-label">Installation</p>
+<div class="sb-item">Installing a Distro</div>
+<div class="sb-item">Supported Distros</div>
+<div class="sb-item">Uninstalling a Distro</div>
+<div class="sb-item">Installs from Before Andronix 2.0</div>
+<div class="sb-item">Modded OS</div>
+<div class="sb-item">Installing Modded OS</div>
+<div class="sb-item">The andronix Command</div>
+<p class="sb-label">Desktop &amp; GUI</p>
+<div class="sb-item">Desktop Environments</div>
+<div class="sb-item">Window Managers (retired)</div>
+<div class="sb-item">VNC Basics</div>
+<div class="sb-item">XSDL Basics (outdated)</div>
+<p class="sb-label">Software</p>
+<div class="sb-item">Browsers</div>
+<div class="sb-item">IDEs</div>
+<div class="sb-item">LibreOffice</div>
+<div class="sb-item">GIMP</div>
+<p class="sb-label">Termux</p>
+<div class="sb-item">Migrating Termux to F-Droid</div>
+<div class="sb-item">&quot;Cannot Link Executable&quot; Error</div>
+<div class="sb-item">SSH Basics</div>
+<div class="sb-item">Termux Security</div>
+<p class="sb-label">Help</p>
+<div class="sb-item">Troubleshooting Installs</div>
+<div class="sb-item">Accessing Internal Storage</div>
+<div class="sb-item">Fixing Sound</div>
+<div class="sb-item">FAQ</div>
+<div class="sb-item">Account Deletion</div>
+<div class="sb-item">Andronix &amp; Open Source</div>
+<div class="sb-item">Blog ›</div>
+      </div>
+      <div class="sb">
+        <div class="sb-title"><h3>After</h3><span>new URL on the right</span></div>
+        <div class="sb-item sb-top">Welcome</div>
+<p class="sb-label sb-step"><span class="step">1</span>Start here</p>
+<div class="sb-item"><span>What is Andronix</span><code class="url">/start-here/what-is-andronix</code></div>
+<div class="sb-item"><span>Requirements<span class="new">new</span></span><code class="url">/start-here/requirements</code></div>
+<div class="sb-item"><span>Install Termux</span><code class="url">/start-here/install-termux</code></div>
+<p class="sb-label sb-step"><span class="step">2</span>Install a distro</p>
+<div class="sb-item"><span>Choose a distro and desktop<span class="new">new</span></span><code class="url">/install/choose</code></div>
+<div class="sb-item"><span>Install with the app</span><code class="url">/install/with-the-app</code></div>
+<div class="sb-item"><span>Install without the app<span class="new">new</span></span><code class="url">/install/without-the-app</code></div>
+<div class="sb-item"><span>Uninstall a distro</span><code class="url">/install/uninstall</code></div>
+<p class="sb-label sb-step"><span class="step">3</span>Start the desktop</p>
+<div class="sb-item"><span>Termux:X11 (on the phone)<span class="new">new</span></span><code class="url">/desktop/termux-x11</code></div>
+<div class="sb-item"><span>VNC (phone or another device)</span><code class="url">/desktop/vnc</code></div>
+<p class="sb-label sb-step"><span class="step">4</span>Use it</p>
+<div class="sb-item"><span>Install apps</span><code class="url">/use/apps</code></div>
+<div class="sb-item"><span>Dev packs<span class="new">new</span></span><code class="url">/use/dev-packs</code></div>
+<div class="sb-item"><span>Sound</span><code class="url">/use/sound</code></div>
+<div class="sb-item"><span>Phone storage</span><code class="url">/use/storage</code></div>
+<div class="sb-item"><span>Back up and restore<span class="new">new</span></span><code class="url">/use/backups</code></div>
+<div class="sb-item"><span>Keep it updated<span class="new">new</span></span><code class="url">/use/updates</code></div>
+<div class="sb-item"><span>Make it faster<span class="new">new</span></span><code class="url">/use/performance</code></div>
+<div class="sb-item"><span>SSH</span><code class="url">/use/ssh</code></div>
+<p class="sb-label">Modded OS</p>
+<div class="sb-item"><span>Editions (Modded 2.0 and Classic)</span><code class="url">/modded-os/modded-os</code></div>
+<div class="sb-item"><span>Install Modded OS</span><code class="url">/modded-os/modded-os-installation</code></div>
+<p class="sb-label">Troubleshooting</p>
+<div class="sb-item"><span>The install fails or stops</span><code class="url">/troubleshooting/install</code></div>
+<div class="sb-item"><span>Process completed (signal 9)</span><code class="url">/troubleshooting/signal-9</code></div>
+<div class="sb-item"><span>The desktop is black, slow or closes<span class="new">new</span></span><code class="url">/troubleshooting/desktop</code></div>
+<div class="sb-item"><span>Termux errors</span><code class="url">/troubleshooting/termux</code></div>
+<div class="sb-item"><span>FAQ</span><code class="url">/troubleshooting/faq</code></div>
+<p class="sb-label">Reference</p>
+<div class="sb-item"><span>The andronix command</span><code class="url">/reference/andronix-command</code></div>
+<div class="sb-item"><span>Supported distros</span><code class="url">/reference/distros</code></div>
+<div class="sb-item"><span>Desktops</span><code class="url">/reference/desktops</code></div>
+<div class="sb-item"><span>Limitations</span><code class="url">/reference/limitations</code></div>
+<p class="sb-label">About</p>
+<div class="sb-item"><span>Account deletion</span><code class="url">/account/deletion</code></div>
+<div class="sb-item"><span>Andronix and open source</span><code class="url">/miscellaneous/open-source</code></div>
+<div class="sb-item"><span>Termux security</span><code class="url">/security/termux</code></div>
+<p class="sb-label">Pre-2.0 archive <span class="muted">· collapsed</span></p>
+<div class="sb-item dim"><span>Installs from before 2.0</span><code class="url">/pre-2.0/older-installs</code></div>
+<div class="sb-item dim"><span>Old install guides (VNC, sound, storage) /pre-2.0/old-install-guides</span><code class="url">NEW (merged sections)</code></div>
+<div class="sb-item dim"><span>Window managers</span><code class="url">/pre-2.0/window-managers</code></div>
+<div class="sb-item dim"><span>XSDL</span><code class="url">/pre-2.0/xsdl</code></div>
+<p class="sb-label">Blog <span class="muted">· collapsed</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>The path a new user follows</h2>
+      <p>Every page in Steps 1 to 4 ends with a "Next: …" card that links the next page here, plus an "or" link where the path branches.</p>
+    </div>
+    <div class="journey">
+      <span class="s">1</span><span>What is Andronix</span><i>→</i><span>Requirements</span><i>→</i><span>Install Termux</span><i>→</i>
+      <span class="s">2</span><span>Choose</span><i>→</i><span>Install with the app (or without)</span><i>→</i>
+      <span class="s">3</span><span>Termux:X11 (or VNC)</span><i>→</i>
+      <span class="s">4</span><span>Install apps</span><i>→</i><span>Dev packs</span><i>→</i><span>Sound</span><i>→</i><span>Storage</span><i>→</i><span>Backups</span><i>→</i><span>Updates</span><i>→</i><span>Make it faster</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Every page</h2>
+      <p>Nothing is deleted outright. Merged and moved pages redirect to their new home.</p>
+    </div>
+    <div class="legend">
+      <span class="chip chip-keep">keep</span><span class="chip chip-rewrite">rewrite</span><span class="chip chip-merge">merge</span><span class="chip chip-archive">archive</span><span class="chip chip-new">new</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Page today</th><th>Decision</th><th>New place</th><th>Why</th></tr></thead>
+        <tbody>
+<tr><td>Get Started with Andronix (<code>/</code>)</td><td><span class="chip chip-rewrite">rewrite</span></td><td><code>/</code></td><td>The home becomes &quot;Welcome&quot;: what Andronix is in two lines, then Step 1 to 4 cards.</td></tr>
+<tr><td>How Andronix Works</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Start here › What is Andronix</td><td>Friendlier intro: Termux, proot, the andronix command, desktops. The technical part stays short.</td></tr>
+<tr><td>Limitations</td><td><span class="chip chip-keep">keep</span></td><td>Reference › Limitations</td><td>Reference material, not a step.</td></tr>
+<tr><td>Android 12 and Newer</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Troubleshooting › Process completed (signal 9)</td><td>Named after the symptom people search for. Adds the Android 14+ switch.</td></tr>
+<tr><td>Installing a Distro</td><td><span class="chip chip-rewrite">rewrite (app flow later)</span></td><td>Step 2 › Install with the app</td><td>The app-flow parts wait for ui&#x27;s redesign (TODOs are in place). The &quot;without the app&quot; section moves out.</td></tr>
+<tr><td>Supported Distros</td><td><span class="chip chip-keep">keep</span></td><td>Reference › Supported distros</td><td>Lookup table. A short &quot;which one?&quot; moves to the new Choose page.</td></tr>
+<tr><td>Uninstalling a Distro</td><td><span class="chip chip-keep">keep (app flow later)</span></td><td>Step 2 › Uninstall a distro</td><td></td></tr>
+<tr><td>Installs from Before Andronix 2.0</td><td><span class="chip chip-archive">archive</span></td><td>Pre-2.0 › Installs from before 2.0</td><td>Only for old installs.</td></tr>
+<tr><td>Modded OS</td><td><span class="chip chip-keep">keep</span></td><td>Modded OS › Editions</td><td>Already covers Modded 2.0 and Classic.</td></tr>
+<tr><td>Installing Modded OS</td><td><span class="chip chip-keep">keep (app flow later)</span></td><td>Modded OS › Install</td><td>Classic flow, unchanged for buyers.</td></tr>
+<tr><td>The andronix Command</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Reference › The andronix command</td><td>Adds <code>desktop</code>, <code>pack</code> and <code>telemetry</code> (final in 2.0.0). The long how-to sections move to Step 4 pages and the reference links to them.</td></tr>
+<tr><td>Desktop Environments</td><td><span class="chip chip-keep">keep</span></td><td>Reference › Desktops</td><td>Availability, screenshots. The &quot;light profile&quot; section moves to Make it faster; the &quot;which one&quot; advice moves to Choose.</td></tr>
+<tr><td>Window Managers (retired)</td><td><span class="chip chip-archive">archive</span></td><td>Pre-2.0 › Window managers</td><td>Retired in 2.0; old app keys now install XFCE with a notice.</td></tr>
+<tr><td>VNC Basics</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Step 3 › VNC</td><td>The new-install part stays; &quot;VNC on an old install&quot; moves to the archive.</td></tr>
+<tr><td>XSDL Basics (outdated)</td><td><span class="chip chip-archive">archive</span></td><td>Pre-2.0 › XSDL</td><td>Untested with 2.0. Termux:X11 replaces it.</td></tr>
+<tr><td>Browsers</td><td><span class="chip chip-merge">merge</span></td><td>Step 4 › Install apps</td><td>Firefox is preinstalled now. The remaining commands (Chromium, per-distro) fit one page.</td></tr>
+<tr><td>IDEs</td><td><span class="chip chip-merge">merge</span></td><td>Step 4 › Install apps (and Dev packs)</td><td>VS Code / IntelliJ steps go into Install apps. Language toolchains are now dev packs.</td></tr>
+<tr><td>LibreOffice</td><td><span class="chip chip-merge">merge</span></td><td>Step 4 › Install apps</td><td>Two commands; not worth a page.</td></tr>
+<tr><td>GIMP</td><td><span class="chip chip-merge">merge</span></td><td>Step 4 › Install apps</td><td>Same.</td></tr>
+<tr><td>Migrating Termux to F-Droid</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Step 1 › Install Termux</td><td>&quot;Which Termux, where from&quot;, before the install. The <code>#manual-method</code> anchor is kept (the website links to it).</td></tr>
+<tr><td>&quot;Cannot Link Executable&quot; Error</td><td><span class="chip chip-merge">merge</span></td><td>Troubleshooting › Termux errors</td><td>With the other Termux errors (old <code>pkg</code>, <code>andronix: command not found</code>).</td></tr>
+<tr><td>SSH Basics</td><td><span class="chip chip-keep">keep</span></td><td>Step 4 › SSH</td><td></td></tr>
+<tr><td>Termux Security</td><td><span class="chip chip-keep">keep</span></td><td>About › Termux security (URL kept)</td><td>Not part of the journey.</td></tr>
+<tr><td>Troubleshooting Installs</td><td><span class="chip chip-rewrite">rewrite (split)</span></td><td>Troubleshooting › The install fails / The desktop is black, slow or closes</td><td>Split by symptom: install problems vs desktop problems. Adds the Android 9 black desktop, the Termux:X11 black screen, and the kernel warning.</td></tr>
+<tr><td>Accessing Internal Storage</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Step 4 › Phone storage</td><td>The new-install part stays; the old-install steps move to the archive.</td></tr>
+<tr><td>Fixing Sound</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Step 4 › Sound</td><td>Sound is automatic in 2.0.0 (andronix installs and starts PulseAudio). The old steps move to the archive.</td></tr>
+<tr><td>FAQ</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Troubleshooting › FAQ</td><td>Drops the answers now covered by symptom pages; keeps the Classic Modded ones.</td></tr>
+<tr><td>Account Deletion</td><td><span class="chip chip-keep">keep</span></td><td>About (URL kept)</td><td>Linked from the app and Play.</td></tr>
+<tr><td>Andronix &amp; Open Source</td><td><span class="chip chip-keep">keep</span></td><td>About (URL kept)</td><td></td></tr>
+<tr><td>Blog (4 posts + index)</td><td><span class="chip chip-keep">keep</span></td><td>Blog, collapsed</td><td>History. URLs kept.</td></tr>
+<tr><td><em>(new)</em> Requirements</td><td><span class="chip chip-new">new</span></td><td>Step 1</td><td>Android version, CPU, free space, RAM, which Termux, kernel note for desktops.</td></tr>
+<tr><td><em>(new)</em> Choose a distro and desktop</td><td><span class="chip chip-new">new</span></td><td>Step 2</td><td>A recommendation first (Debian or Ubuntu + XFCE), then when to pick others.</td></tr>
+<tr><td><em>(new)</em> Install without the app</td><td><span class="chip chip-new">new</span></td><td>Step 2</td><td>The <code>get.sh</code> one-liner, from the install guide&#x27;s section.</td></tr>
+<tr><td><em>(new)</em> Termux:X11</td><td><span class="chip chip-new">new</span></td><td>Step 3</td><td><code>andronix desktop</code>, the app download, stop, known limits.</td></tr>
+<tr><td><em>(new)</em> Dev packs</td><td><span class="chip chip-new">new</span></td><td>Step 4</td><td><code>andronix pack add python/node/java/go/db</code>, the PostgreSQL helper.</td></tr>
+<tr><td><em>(new)</em> Back up and restore</td><td><span class="chip chip-new">new</span></td><td>Step 4</td><td>From the CLI reference, as a task page.</td></tr>
+<tr><td><em>(new)</em> Keep it updated</td><td><span class="chip chip-new">new</span></td><td>Step 4</td><td><code>andronix update</code>, what it updates.</td></tr>
+<tr><td><em>(new)</em> Make it faster</td><td><span class="chip chip-new">new</span></td><td>Step 4</td><td>The light profile (<code>andronix tune</code>), picking a lighter desktop, Termux:X11 vs VNC.</td></tr>
+<tr><td><em>(new)</em> Old install guides</td><td><span class="chip chip-new">new (merge)</span></td><td>Pre-2.0</td><td>The &quot;on an old install&quot; sections from VNC, Sound and Storage, in one place.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>URLs and redirects</h2>
+      <p>New URLs follow the new folders. Every old URL gets a permanent (308) redirect in <code>next.config.mjs</code>, which OpenNext serves on Cloudflare. Browsers keep <code>#anchors</code> across redirects, and moved pages keep their heading names. <code>/account/deletion</code> (linked from the app), <code>/modded-os/*</code> and <code>/blog/*</code> don't move.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="url-table">
+        <thead><tr><th>Old URL</th><th>Redirects to</th></tr></thead>
+        <tbody>
+<tr><td><code>/get-started/how-does-andronix-work</code></td><td><code>/start-here/what-is-andronix</code></td></tr>
+<tr><td><code>/get-started/limitations</code></td><td><code>/reference/limitations</code></td></tr>
+<tr><td><code>/android-12/andronix-on-android-12-and-beyond</code></td><td><code>/troubleshooting/signal-9</code></td></tr>
+<tr><td><code>/unmodded-distros/unmodded-os-installation</code></td><td><code>/install/with-the-app</code></td></tr>
+<tr><td><code>/unmodded-distros/distros</code></td><td><code>/reference/distros</code></td></tr>
+<tr><td><code>/unmodded-distros/unmodded-os-uninstallation</code></td><td><code>/install/uninstall</code></td></tr>
+<tr><td><code>/unmodded-distros/older-installs</code></td><td><code>/pre-2.0/older-installs</code></td></tr>
+<tr><td><code>/andronix-cli/andronix-cli</code></td><td><code>/reference/andronix-command</code></td></tr>
+<tr><td><code>/desktop-environments/desktop-environments</code></td><td><code>/reference/desktops</code></td></tr>
+<tr><td><code>/window-managers/window-managers</code></td><td><code>/pre-2.0/window-managers</code></td></tr>
+<tr><td><code>/vnc/vnc-basics</code></td><td><code>/desktop/vnc</code></td></tr>
+<tr><td><code>/xsdl/xsdl-basics</code></td><td><code>/pre-2.0/xsdl</code></td></tr>
+<tr><td><code>/software/browsers</code>, <code>/software/IDEs</code>, <code>/software/libre-office</code>, <code>/software/gimp</code></td><td><code>/use/apps</code> (each with its section anchor)</td></tr>
+<tr><td><code>/termux/migrating-to-f-droid</code></td><td><code>/start-here/install-termux</code></td></tr>
+<tr><td><code>/termux/cannot-link-executable</code></td><td><code>/troubleshooting/termux</code></td></tr>
+<tr><td><code>/ssh/ssh-basics</code></td><td><code>/use/ssh</code></td></tr>
+<tr><td><code>/troubleshoot/install-problems</code></td><td><code>/troubleshooting/install</code></td></tr>
+<tr><td><code>/troubleshoot/internal-storage</code></td><td><code>/use/storage</code></td></tr>
+<tr><td><code>/troubleshoot/sound</code></td><td><code>/use/sound</code></td></tr>
+<tr><td><code>/faq/faq</code></td><td><code>/troubleshooting/faq</code></td></tr>
+<tr><td><code>/installations/non-modded-os</code> (old site, still linked)</td><td><code>/install/with-the-app</code></td></tr>
+<tr><td><code>/installations/modded-os</code> (old site, still linked)</td><td><code>/modded-os/modded-os-installation</code></td></tr>
+<tr><td>Folder URLs (<code>/software</code>, <code>/termux</code>, <code>/troubleshoot</code>, ...)</td><td>the folder&#x27;s first new page</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>Existing bug fixed in the same pass:</strong> <code>next.config.mjs</code> redirects <code>/blog/v7-0/</code> and <code>/blog/v6-0/</code> to pages that don't exist, so those URLs 404 today with a trailing slash. After the move, a script requests every old URL on the built site and expects a redirect to a working page.</p>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Questions for the owner</h2>
+    </div>
+    <ol class="questions">
+<li><strong>Which Termux do we recommend?</strong> F-Droid, GitHub, or the new Play Store build? The installer passes on all three (Play needs Android 11+).</li>
+<li><strong>Desktop default:</strong> should Step 3 lead with Termux:X11 (full screen, on the phone) and keep VNC for other devices? Termux:X11 has passed on the Android 16 emulator only; VNC passed everywhere except Android 9 on kernel 4.4.</li>
+<li><strong>Merging the software pages</strong> into one &quot;Install apps&quot; page: OK, or keep one page per app for search traffic? The redirects keep the old URLs working either way.</li>
+<li><strong>Step titles:</strong> &quot;Step 1 · Start here&quot; in the sidebar, or plain &quot;Start here&quot; with the number only on the page?</li>
+    </ol>
+  </section>
+</main>
