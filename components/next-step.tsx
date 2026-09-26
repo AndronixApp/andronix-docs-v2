@@ -18,6 +18,7 @@ export default function NextStep({
     <div className="not-prose my-10 flex flex-col gap-2">
       <Link
         href={href}
+        data-card=""
         className="group flex items-center gap-4 px-5 py-4 transition-colors"
         style={{ background: "var(--andronix-primary-container)", color: "var(--andronix-on-primary-container)", borderRadius: "var(--andronix-radius-card)" }}
       >
@@ -29,7 +30,7 @@ export default function NextStep({
         <ArrowRight className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5" />
       </Link>
       {or && (
-        <Link href={or.href} className="px-5 text-sm font-semibold" style={{ color: "var(--andronix-primary)" }}>
+        <Link href={or.href} data-card="" className="px-5 text-sm font-semibold" style={{ color: "var(--andronix-primary)" }}>
           or: {or.title} →
         </Link>
       )}

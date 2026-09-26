@@ -1,5 +1,48 @@
 # Docs status: new installer
 
+## Restructure and 2.0.0 content (Sept 26, lead's sequencing)
+
+- **New structure.** The docs follow `DOCS_IA_PROPOSAL.md` (HTML: `docs-ia-proposal.html`):
+  - Welcome, then Steps 1 to 4 (Start here, Install a distro, Start the desktop, Use it);
+  - Modded OS, Troubleshooting (by symptom) and Reference;
+  - an About group (URLs unchanged);
+  - a collapsed Pre-2.0 archive, and the Blog.
+
+  Folders use `meta.json` titles ("Step N · …"). Every page in Steps 1 to 4 ends with a `<NextStep>` card (`components/next-step.tsx`).
+- **Redirects.**
+  - `lib/redirects.mjs` holds 39 permanent redirects: every moved page, the old folder URLs, and the old site's `/installations/*`.
+  - A script requested all 78 variants (with and without a trailing slash) on the built site, and each one ends on a 200 at the right page.
+  - The two broken blog redirects were removed; `/blog/v7-0/` and `/blog/v6-0/` now work.
+  - Unmoved URLs: `/account/deletion` (the app links to it), `/miscellaneous/open-source`, `/security/termux`, `/modded-os/*`, `/blog/*`.
+- **New pages:** Requirements, Choose a distro and desktop, Install without the app, Termux:X11, Dev packs, Back up and restore, Keep it updated, Make it faster, The desktop is black/slow/closes, and Old install guides (the old VNC/sound/storage sections, moved into the archive).
+- **Merged:**
+  - Browsers, IDEs, LibreOffice and GIMP make one "Install apps" page, with `sudo`, the Java pack for IntelliJ, and Chromium commands.
+  - Cannot Link Executable, the old Play Termux errors and "command not found" make "Termux errors".
+- **Installer 2.0.0 content:**
+  - `andronix desktop` / `--x11` / `desktop stop` (Termux:X11);
+  - automatic PulseAudio (the Sound page is rewritten);
+  - proot installed by the installer (the "pkg install proot first" step is gone, and the step list shows "Installing proot");
+  - `andronix pack` and the `andronix-postgres` helper;
+  - telemetry: what's sent, and how to turn it off;
+  - LXDE maps to LXQt, and the WMs and Enlightenment map to XFCE;
+  - the kernel < 4.8 warning and the Android 9 / kernel 4.4 black XFCE;
+  - Play Store Termux works on Android 11 and newer.
+- **App-flow pages are not rewritten** (Install with the app, Uninstall, Modded install, the app screenshots). They keep TODOs until ui's redesign is final, as the lead asked.
+- **Checks:** `pnpm build` passes, the internal link and anchor check passes (41 pages, 0 broken), and the redirect check passes (78/78).
+
+### Unverified in the new content
+
+- **Termux:X11:** only passed on the Android 16 emulator. Real phones, LXQt/MATE/KDE on X11, and PulseAudio playback are still pending (installer STATUS).
+- **The APK name** `termux-x11-universal-debug.apk` and the nightly release link are from the installer STATUS; the page has a TODO to pin the exact APK.
+- **Dev packs:** Docker only (Debian 13 and Ubuntu 26.04 for python, node and db). java, go and the non-apt distros through the Go command are untested.
+- **Install apps:**
+  - The Chromium commands for Debian, Kali, Fedora, Arch and Alpine are from package knowledge, not tested.
+  - `vscode_patch.sh` and `librepatch*.sh` were written for pre-2.0 root installs. The page runs them with `sudo`, untested (TODOs).
+- **Telemetry wording** follows the installer's current payload, which is the client's proposal until play's schema is final.
+- **"2 GB RAM"** for the command line in Requirements is based on the a12-2g emulator first-run passing.
+- **The Android 14+ switch name** is still from general knowledge.
+
+
 Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been pushed or deployed. `pnpm build` passes (37 static pages), and a script checked every internal link and `#anchor` in `content/docs` (0 broken).
 
 ## Restyle: Andronix 2.0 design (Sept 26)

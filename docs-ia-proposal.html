@@ -89,10 +89,10 @@ ol.questions strong { color: var(--text); }
   <header>
     <p class="eyebrow">docs.andronix.app · proposal</p>
     <h1>A docs sidebar you can follow</h1>
-    <p class="lede">Today's docs are one flat list filed by the old site's categories. This proposal regroups every page around what a new user does, in order: get ready, install a distro, open the desktop, use it. Look-up material (troubleshooting, reference) comes after that, and the pre-2.0 material sits in a collapsed archive. No page has moved yet.</p>
+    <p class="lede">Today's docs are one flat list filed by the old site's categories. This proposal regroups every page around what a new user does, in order: get ready, install a distro, open the desktop, use it. Look-up material (troubleshooting, reference) comes after that, and the pre-2.0 material sits in a collapsed archive. It's now implemented on the docs branch, with every old URL redirected; the questions at the end are still open.</p>
     <div class="meta">
       <span class="pill">Andronix 2.0 · installer 2.0.0</span>
-      <span class="pill">Sept 26, 2026</span>
+      <span class="pill">Sept 26, 2026 · implemented</span>
       <span class="pill">11 rewrite · 11 keep · 9 new · 5 merge · 3 archive</span>
     </div>
   </header>
@@ -310,6 +310,10 @@ ol.questions strong { color: var(--text); }
 <li><strong>Desktop default:</strong> should Step 3 lead with Termux:X11 (full screen, on the phone) and keep VNC for other devices? Termux:X11 has passed on the Android 16 emulator only; VNC passed everywhere except Android 9 on kernel 4.4.</li>
 <li><strong>Merging the software pages</strong> into one &quot;Install apps&quot; page: OK, or keep one page per app for search traffic? The redirects keep the old URLs working either way.</li>
 <li><strong>Step titles:</strong> &quot;Step 1 · Start here&quot; in the sidebar, or plain &quot;Start here&quot; with the number only on the page?</li>
+<li>The Termux table stays neutral: F-Droid, GitHub, and Play on Android 11 and newer.</li>
+<li>Termux:X11 is listed first in Step 3, with an &quot;or: VNC&quot; link.</li>
+<li>The software pages are merged.</li>
+<li>The sidebar uses &quot;Step N · …&quot;.</li>
     </ol>
   </section>
 </main>

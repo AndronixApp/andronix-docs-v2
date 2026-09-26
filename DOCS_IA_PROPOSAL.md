@@ -1,6 +1,13 @@
 # Docs information architecture: proposal
 
-Sept 26, 2026. This is a proposal: no pages have moved yet. The HTML version, with the sidebars side by side, is `docs-ia-proposal.html` in this folder.
+Sept 26, 2026. **Implemented** on branch `docs/new-installer`, as the lead asked:
+- the structure below;
+- every redirect, all checked (78 of 78 old URLs, with and without a trailing slash, land on a working page);
+- the installer 2.0.0 content.
+
+The four questions at the end are still open, and the pages use the defaults listed there.
+
+The HTML version, with the sidebars side by side, is `docs-ia-proposal.html` in this folder.
 
 ## The problem
 
@@ -192,3 +199,9 @@ App-flow pages (screens, button names, screenshots) stay as they are, with their
 2. **Desktop default:** should Step 3 lead with Termux:X11 (full screen, on the phone) and keep VNC for other devices? Termux:X11 has passed on the Android 16 emulator only; VNC passed everywhere except Android 9 on kernel 4.4.
 3. **Merging the software pages** into one "Install apps" page: OK, or keep one page per app for search traffic? The redirects keep the old URLs working either way.
 4. **Step titles:** "Step 1 · Start here" in the sidebar, or plain "Start here" with the number only on the page?
+
+**Defaults used until you decide:**
+1. The Termux table stays neutral: F-Droid, GitHub, and Play on Android 11 and newer.
+2. Termux:X11 is listed first in Step 3, with an "or: VNC" link.
+3. The software pages are merged.
+4. The sidebar uses "Step N · …".
