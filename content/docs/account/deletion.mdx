@@ -1,18 +1,56 @@
 ---
 title: Account Deletion
-description: How to request deletion of your Andronix account and all associated data by email. Requests are processed within 30 days.
+description: How to delete your Andronix account, what gets deleted, and the purchase records we must keep (without your identity) for tax and legal reasons.
 ---
 
 import AndronixButton from "@/components/button";
 
-If you no longer want to use Andronix, you can have your account and its data removed.
+You can delete your Andronix account and its data at any time. This page explains how, what is deleted, and the little we have to keep.
 
-To request deletion, send an email to [support@andronix.app](mailto:support@andronix.app?subject=Account_Deletion), or use the button below. We will delete your account and all associated data within 30 days of receiving your request.
+## How to delete your account
+
+**In the app (Andronix 10.0 or newer):** open your account and choose **Delete account**. For safety, the app asks you to sign in again first. Your data is deleted right away.
+
+{/* TODO(docs): confirm the exact menu path in app 10.0 (android/ui) and name it here. */}
+
+**By email:** if you can't use the app, email [support@andronix.app](mailto:support@andronix.app?subject=Account%20Deletion) from the address you signed up with. We delete your account and its data within 30 days of your request.
 
 <AndronixButton link={"mailto:support@andronix.app?subject=Account Deletion"}>
-  Request Deletion
+  Request deletion by email
 </AndronixButton>
 
-### Changes to this Privacy Policy
+<Callout type="warning">Deleting your account can't be undone. Distros already installed on your phone aren't affected; they live in Termux, not in your account.</Callout>
 
-We may update our Privacy Policy from time to time, so we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes take effect immediately after they are posted on this page.
+## What we delete
+
+- **Your sign-in account** (your email and login).
+- **Your profile**, including saved commands and the Premium status from older versions of the app.
+- **Your entry on the supporter wall**, if you had one.
+- **Your purchases as linked to your account:** your Premium and Modded OS access, including access to the Classic Modded editions.
+- **Donation records** linked to your account.
+- **Download counters** we keep per account to apply the Modded download limits.
+- **Your verified Google Play purchase records** as linked to your account.
+- **Your app analytics profile:** it's queued for deletion from our self-hosted analytics database.
+
+## What we keep, and why
+
+Tax and legal rules require us to keep a record of sales. For each order you made, we keep **one purchase record**:
+
+- the order ID, the product, the purchase time, the price, currency and country;
+- **not** your email, name or account ID. The record is linked only to a one-way code that can't be turned back into your account.
+
+These records are deleted automatically after **8 years**.
+
+We also keep:
+
+- **Google Play purchase tokens**, with your account ID replaced by the same one-way code. This stops a refunded or reused purchase from being claimed twice. If you make a new account later, you can restore a Google Play purchase to it by proving the purchase again (restoring purchases in the app).
+- **A note that a deletion happened**, with the same one-way code and how many records were removed, so we can show the deletion was done.
+
+## What isn't linked to your account
+
+- **Installer telemetry** (from the `andronix` command) uses a random install ID, not your account, so there's nothing to delete. You can turn it off with `andronix telemetry off`.
+- **The documentation site** (this site) uses cookie-free analytics that don't identify you.
+
+For the full picture, read our [Privacy Policy](https://andronix.app/legal/privacy-policy).
+
+{/* TODO(docs): the retention period (8 years) is products-api's PURCHASE_RETENTION_YEARS default; confirm the production value before publishing. The website privacy draft mentions a 90-day erasure window (DPDP) while this page promises 30 days for email requests; align the two. */}
