@@ -262,6 +262,7 @@ main h1 {
 
 figure.shiki {
   background: var(--andronix-code-bg) !important;
+  color: var(--andronix-code-text);
   border: 0 !important;
   box-shadow: none !important;
   border-radius: var(--andronix-radius-card);
@@ -362,4 +363,9 @@ figure.shiki button:hover {
 .andronix-callout .andronix-callout-body :not(pre) > code {
   background: rgb(0 0 0 / 0.22);
   color: inherit;
+}
+
+/* copy button after a copy: the shared "ok" green */
+figure.shiki button[data-checked] {
+  color: var(--andronix-ok);
 }

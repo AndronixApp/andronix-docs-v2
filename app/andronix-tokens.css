@@ -37,6 +37,7 @@
   --andronix-on-tertiary-container: #DDE7C9;
 
   /* Status */
+  --andronix-ok: #8FD6A5;             /* green text/icons on dark surfaces ("Copied", success ticks) */
   --andronix-ok-container: #1F4A2C;   --andronix-on-ok-container: #B6E9C4;     /* Owned, installed */
   --andronix-warn-container: #4A3A07; --andronix-on-warn-container: #FBE08A;   /* notices */
   --andronix-error: #FFB4AB;          --andronix-on-error: #690005;
@@ -44,6 +45,13 @@
 
   /* Special */
   --andronix-code-bg: #0F0A07;    /* Termux command blocks; code text uses on-surface, prompt uses primary */
+  /* Code syntax (on --andronix-code-bg); aliases so app, docs and web match */
+  --andronix-code-text: var(--andronix-on-surface);
+  --andronix-code-prompt: var(--andronix-primary);          /* "~ $" */
+  --andronix-code-command: var(--andronix-primary);
+  --andronix-code-option: var(--andronix-secondary);        /* --de, -y */
+  --andronix-code-string: var(--andronix-tertiary);
+  --andronix-code-comment: var(--andronix-on-surface-muted);
   --andronix-logo-tile: #F3E6DC;  /* light tile behind distro logos (Debian red, Kali black stay visible) */
   --andronix-brand: #E8791E;      /* brand orange for logo/marketing art only; never text or button fill */
 
