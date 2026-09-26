@@ -70,7 +70,7 @@ Replace `debian` with the name of your distro (`ubuntu`, `ubuntu24`, `kali`, `fe
 
 The command shows what it will delete and asks you to confirm. It removes the distro and its start script. Your files in `/sdcard` are not touched.
 
-<Callout type="info">To also remove a copy of the same distro installed by the pre-2.0 installer, add `--legacy`, for example `andronix remove debian --legacy`. See [Installs from before Andronix 2.0](/pre-2.0/older-installs).</Callout>
+<Callout type="info">`--legacy` also removes a copy of the same distro left by the pre-2.0 installer (for example `~/debian-fs`), as in `andronix remove debian --legacy`. The uninstall command the app copies includes `--legacy`, so uninstalling from the app removes both. See [Installs from before Andronix 2.0](/pre-2.0/older-installs).</Callout>
 
 ## Next steps
 

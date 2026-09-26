@@ -200,6 +200,11 @@ andronix update [<distro>]
 
 Updates `andronix` itself, then the packages in every installed distro (or only the one you name). `--self` updates only `andronix`; `--no-self` only the distros. See [Keep it updated](/use/updates).
 
+**Update channel:** `andronix` updates itself from the **stable** channel (the release) by default.
+
+- **Beta builds:** `andronix update --channel beta --token '<token>'` switches to beta builds of the installer. This is a Premium early-access perk. The token comes from the app: Premium › Beta installer builds › **Copy beta command** copies the whole command. The token is only valid for a limited time; if it's refused, copy the command again.
+- **Back to the release:** `andronix update --channel stable`.
+
 ## Removing a distro
 
 ```bash
@@ -208,7 +213,7 @@ andronix remove <distro> [--yes] [--legacy]
 
 Deletes the distro, its files and its start script. Files in `/sdcard` are not touched. It asks before deleting anything unless you pass `--yes`.
 
-`--legacy` also deletes a copy of the same distro installed by the pre-2.0 installer (for example `~/debian-fs`). See [Installs from before Andronix 2.0](/pre-2.0/older-installs).
+`--legacy` also deletes a copy of the same distro left by the pre-2.0 installer (for example `~/debian-fs`). The app's uninstall command includes it. See [Installs from before Andronix 2.0](/pre-2.0/older-installs).
 
 <Callout type="warning">Stop the desktop (`vncserver-stop`) and exit every session of the distro before removing it.</Callout>
 

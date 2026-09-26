@@ -2,27 +2,27 @@
 
 ## Capture status (ui-revamp 5b2cd649, Sept 26)
 
-**Captured and committed:** 18 of 26 files, all 1080 × 1920, 24-bit, no alpha.
+**Captured and committed:** 18 of 25 files, all 1080 × 1920, 24-bit, no alpha.
 - `app10-home`, `-distro-list`, `-interface-picker`, `-desktop-picker`
 - `app10-termux-step`, `-termux-step-uninstall`, `-install-result`, `-uninstall-sheet`
 - `app10-start-desktop`, `-start-desktop-get-x11`, `-phantom-tip`
 - `app10-modded-editions`, `-modded-editions-owned`, `-modded-termux-step`
 - `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`
 
-**Not delivered yet:** 8 files.
+**Not delivered yet:** 7 files.
 - **App:** `app10-termux-sources`, `app10-modded-classic`, `app10-modded-edition-unpaid`, `app10-modded-edition-owned`.
-- **Termux:** `termux-install-running`, `termux-create-user`, `termux-modded-first-boot`, `termux-vncserver-start`.
+- **Termux:** `termux-install-running`, `termux-create-user`, `termux-modded-first-boot`. (`termux-vncserver-start` is dropped.)
 
 Their `<AppShot>` spots render nothing until the files land.
 
 **Reshoot suggested:**
-- `app10-modded-editions`: the Get pills show instead of prices (store prices probably didn't load in the test build). The alt text was changed to match; reshoot once prices load if the listing needs them.
-- `app10-premium`: it's scrolled past the price and Buy card. Fine for the docs (the alt text now says "listing what Premium includes"). For Play, reshoot from the top.
+- `app10-modded-editions`: the Get pills show instead of prices. Prices can't appear under the fake Play used for capture; they need the real Play internal-test build. **Kept for the docs**; the alt text is adjusted.
+- `app10-premium`: it's scrolled past the price and Buy card. **Kept for the docs** (the alt text now says "listing what Premium includes").
 - `app10-desktop-picker`: KDE Plasma is below the fold (XFCE, LXQt, MATE show). Optional: scroll a little so all four show.
 
 **Noted, no reshoot:**
 - `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, so the app's uninstall also removes an old pre-2.0 copy.
-- `app10-premium-owner` shows a "Copy beta command" perk and `andronix update --channel stable`. The CLI reference doesn't document `--channel` yet (to add once confirmed).
+- `app10-premium-owner` shows a "Copy beta command" perk and `andronix update --channel stable`. `--channel stable|beta` is now in the CLI reference.
 - `app10-phantom-tip`: the tip sits on the Start the desktop step, labelled "How to fix it" (the docs text now says so).
 
 For the app-10 screenshot refresh. **Don't capture until the UI freeze**: the app is still changing (M3, motion, in-button loading).
@@ -78,7 +78,7 @@ These show the installer in Termux. They don't depend on the app UI, so they can
 | `termux-install-running.png` | Install with the app (Wait); Install without the app | Termux: the installer's step list mid-install (Debian 13 + XFCE), progress bar visible | Termux, not the app; can be captured now |
 | `termux-create-user.png` | Install with the app (Create your user) | Termux: the first-boot user form (username, password, desktop password) | Termux, can be captured now |
 | `termux-modded-first-boot.png` | Installing Modded OS (steps 4) | Termux: the Modded first boot, replacing the old blue dialog screens (region, keyboard, username, password) | Termux; the page's text for these steps gets rewritten in the app-flow pass |
-| `termux-vncserver-start.png` | Other ways to connect (VNC) | Termux: `vncserver-start` with the size menu, then the 'Desktop is running' box | Termux, replaces vnc_server_start_command.jpg (old root prompt) |
+| `termux-x11-desktop.png` | (only if a page needs one; none does today: Step 3 uses `new-installer/termux-x11-xfce-phone.jpg`) | Termux:X11 showing the XFCE desktop, 1080 × 1920, demo-mode status bar | Replaces the dropped `termux-vncserver-start` (App 10 uses Termux:X11; VNC is only an "Other ways" link) |
 
 **Already current, keep:**
 - `new-installer/termux-x11-xfce-phone.jpg` (XFCE in Termux:X11, from x11's F-Droid run);
@@ -88,6 +88,8 @@ These show the installer in Termux. They don't depend on the app UI, so they can
 **Not app 10 pages:** `content/docs/v8` (App 8.x Classic) keeps its old screenshots as they are.
 
 ## Play Store listing: reuse the same set
+
+> **Update (lead):** the 8 Play Store shots will be taken later from the real Play internal-test build, where prices show. Use the list below as the plan; the docs keep the price-less captures.
 
 Suggested phone screenshots, in order. All are 1080 × 1920, so they fit Play's size and 2:1 limits:
 
