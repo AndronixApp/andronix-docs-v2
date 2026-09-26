@@ -2,6 +2,27 @@
 
 Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been pushed or deployed. `pnpm build` passes (37 static pages), and a script checked every internal link and `#anchor` in `content/docs` (0 broken).
 
+## App 10.0 and the no-app path (lead decision, Sept 26)
+
+- **App version.** The app-based install and uninstall guides now require "the Andronix app 10.0 or newer (Andronix 2.0)". Supported Distros and the CLI reference mention 10.0 too. This answers question 11.
+- **No-app path.** The one-line command is added to:
+  - the install guide, in a new "Installing without the app" section with the distro and desktop names;
+  - Supported Distros, above the per-distro commands;
+  - the CLI reference, in a new "Getting andronix" section;
+  - Troubleshooting, in a new "andronix: command not found" entry.
+
+  The command:
+
+  ```
+  curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install <distro> --de <de>
+  ```
+
+  The uninstall guide already had the no-app path, "Uninstalling from Termux" (`andronix remove`).
+- **proot caveat.** `get.sh` doesn't install proot; it only prints a tip. The installer stops with "proot is missing" if it isn't there. The docs therefore say to run `pkg install proot -y` first on a fresh Termux, next to the one-liner. Should `get.sh` run `pkg install proot` itself?
+- **Unverified:** `https://dl.andronix.app/get.sh` is taken from your message. I didn't fetch it.
+- **Pre-2.0 pages** stay as they are, marked for old installs.
+- **Deploy timing:** the docs deploy with the app 10.0 release, not before. Nothing has been pushed or deployed.
+
 ## Naming: Andronix 2.0 (owner decision, Sept 26)
 
 - **Release name.** User-facing text now says **Andronix 2.0** where it used to say "the new installer" or "the current installer". Older installs are "pre-2.0" or "before Andronix 2.0".
@@ -172,4 +193,5 @@ The Void TODO and the MATE-screenshot TODO are resolved.
 8. **Blog post:** do you want a "new installer" post in `blog/`? I didn't write one.
 9. **Modded preview image:** OK to show the test-build screenshot of the new Modded look publicly, before release?
 10. **KDE on Ubuntu 24.04:** excluded on purpose? The docs list KDE only for Debian 13, Ubuntu 26.04 and Kali, as you said.
-11. **App version in the guides:** keep "Andronix 7.0 or newer", or require app 10.0 (Andronix 2.0) for the new desktop choices?
+11. ~~App version in the guides~~ Decided: app 10.0 or newer.
+12. **proot in get.sh:** should `get.sh` install proot, so the no-app one-liner works on a fresh Termux without a separate `pkg install proot -y`?
