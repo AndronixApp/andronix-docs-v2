@@ -43,7 +43,20 @@ Leave some extra room for the download while it unpacks. If you're short on spac
 
 ## The installer warns about an old kernel
 
-Before a desktop install on a kernel older than 4.8, the installer warns that desktops may show a black screen. The command line works on these phones. You can go ahead, or install with `--de none` for the command line only. See [Requirements](/start-here/requirements#older-phones).
+Some older phones (for example Android 8 or 9 phones on a 4.4 kernel) run a Linux kernel older than 4.8. On those, **every desktop stays black**: XFCE, LXQt, MATE and KDE Plasma, in Termux:X11 and VNC alike. The command line works fully.
+
+`andronix` warns you before a desktop install, and again before `andronix desktop` and `vncserver-start`:
+
+```text
+This phone's Linux kernel (4.4.x) is older than 4.8: desktops (XFCE, LXQt, MATE, KDE) stay black on it, in Termux:X11 and VNC alike. The command line works fully: install with --de none.
+```
+
+**What to do:**
+
+- **Use the command line only.** Install with `--de none`, for example `andronix install debian --de none`, or pick **CLI Only** in the app. You can still install and run command-line software, dev packs and servers.
+- **Check your kernel:** run `uname -r` in Termux. `4.4.x` or `4.9.x`? A `4.9` kernel is fine; only versions below 4.8 are affected.
+
+There's no workaround for the desktop on these kernels. If you think your phone is wrongly flagged, tell us on [Discord](https://chat.andronix.app) with the output of `uname -r`.
 
 ## Your phone isn't supported by a distro
 
