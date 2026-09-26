@@ -30,6 +30,8 @@
 - **App-flow pages are not rewritten** (Install with the app, Uninstall, Modded install, the app screenshots). They keep TODOs until ui's redesign is final, as the lead asked.
 - **Checks:** `pnpm build` passes, the internal link and anchor check passes (41 pages, 0 broken), and the redirect check passes (78/78).
 
+- **Live (Sept 26):** installer 2.0.0 is on `dl.andronix.app`. `https://dl.andronix.app/get.sh` returns 200 (`application/x-sh`), so the docs' one-line command points at a live file. The docs have no `pkg install proot` step anywhere, because the installer installs proot itself.
+
 ### Unverified in the new content
 
 - **Termux:X11:** only passed on the Android 16 emulator. Real phones, LXQt/MATE/KDE on X11, and PulseAudio playback are still pending (installer STATUS).
