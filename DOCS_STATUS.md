@@ -6,6 +6,8 @@
 
 ## Account deletion page (lead, Sept 26)
 
+- **Links (lead, Sept 26):** the page links https://andronix.app/privacy-policy (it names the operator) and https://andronix.app/delete-account. The docs don't name an operator themselves. **Both URLs return 404 on the live site today** (checked Sept 26; they come with the website redesign). The website has to be live before the docs deploy, or these links break.
+
 - **Checked against** products-api (`products-api-wt-entitlement`, 30c2a7d):
   - `account/accountDeletion.ts`, `firebase/accountDataStore.ts`, `account/sweep.ts`, `routes/v2/account.ts`;
   - `env.ts`: `PURCHASE_RETENTION_YEARS` defaults to **8**.
