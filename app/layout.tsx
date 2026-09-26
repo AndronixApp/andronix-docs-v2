@@ -1,5 +1,6 @@
 import "./global.css";
 import { RootProvider } from "fumadocs-ui/provider/next";
+import { Analytics } from "@/components/analytics";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -44,6 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en" className={`dark ${jakarta.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body>
         <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark", enableSystem: false }}>{children}</RootProvider>
+        <Analytics clientId={process.env.OPENPANEL_WEB_CLIENT_ID} />
       </body>
     </html>
   );

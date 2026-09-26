@@ -15,6 +15,7 @@
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
   "dependencies": {
+    "@openpanel/nextjs": "^1.5.1",
     "@orama/tokenizers": "^3.1.15",
     "@tailwindcss/postcss": "^4.3.3",
     "axios": "^1.4.0",

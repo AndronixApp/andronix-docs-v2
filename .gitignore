@@ -6,3 +6,7 @@ node_modules
 .wrangler
 cloudflare-env.d.ts
 .idea/workspace.xml
+
+# local env files
+.env
+.env*.local
