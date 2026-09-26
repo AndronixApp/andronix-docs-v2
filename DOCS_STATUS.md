@@ -2,6 +2,19 @@
 
 Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been pushed or deployed. `pnpm build` passes (37 static pages), and a script checked every internal link and `#anchor` in `content/docs` (0 broken).
 
+## Naming: Andronix 2.0 (owner decision, Sept 26)
+
+- **Release name.** User-facing text now says **Andronix 2.0** where it used to say "the new installer" or "the current installer". Older installs are "pre-2.0" or "before Andronix 2.0".
+  - The Older Installs page is retitled "Installs from Before Andronix 2.0". The URL is unchanged.
+  - `andronix list`'s own output string, "from the old installer", is quoted as it is.
+- **Modded OS names.**
+  - The new lineup is **Modded 2.0**, in the `## Modded 2.0` section (anchor `#modded-20`).
+  - The four existing editions are **Classic**, in `## Classic editions` (anchor `#classic-editions`).
+  - The Modded install guide, the old-install VNC section and the sound page now say "Classic".
+- **CLI reference:** mentions Andronix 2.0 and `andronix version` (prints `andronix 2.0.0`).
+- **Docs had no "v8.1" or "0.3.0" references**, so nothing to rename there. Blog posts were left alone.
+- **App version.** The install and uninstall guides still say "Andronix version 7.0 or newer". Old app versions keep working through the shims. Should they say app 10.0 ("Andronix 2.0") instead? That depends on whether older apps show the new desktop options (KDE, no WMs). See question 11.
+
 ## Update after the lead's correction (Sept 26)
 
 The lead reported that master had moved on. Changes since the first pass:
@@ -159,3 +172,4 @@ The Void TODO and the MATE-screenshot TODO are resolved.
 8. **Blog post:** do you want a "new installer" post in `blog/`? I didn't write one.
 9. **Modded preview image:** OK to show the test-build screenshot of the new Modded look publicly, before release?
 10. **KDE on Ubuntu 24.04:** excluded on purpose? The docs list KDE only for Debian 13, Ubuntu 26.04 and Kali, as you said.
+11. **App version in the guides:** keep "Andronix 7.0 or newer", or require app 10.0 (Andronix 2.0) for the new desktop choices?
