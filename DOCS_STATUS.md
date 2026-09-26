@@ -1,5 +1,25 @@
 # Docs status: new installer
 
+## Release candidate (overnight, Sept 27)
+
+- **Every docs URL app 10 links to** (app-wt-ui 1fdc54ea and v8.1-new-installer ae3228d3, LinkHub/constants), 28 including anchors, returns 200 with its anchor present. Checked on the Next build and on the Cloudflare Worker bundle (`wrangler dev --local`).
+  - The list includes `/troubleshooting/install#the-installer-warns-about-an-old-kernel`, `/troubleshooting/signal-9#android-14-and-newer`, `/blog/andronix-2-0` and `/account/deletion`.
+  - They're 404 on the live site only because this build isn't deployed.
+- **Old kernels:** rewritten to match installer 2f71d91 (below 4.8, every desktop stays black in Termux:X11 and VNC alike; the warning shows before install, `andronix desktop` and `vncserver-start`; use `--de none`). This is on install troubleshooting, Requirements and desktop troubleshooting, and linked from the blog and changelog known issues.
+- **Signal 9:** covers Android 12/12L/13 (adb, including from the phone) and 14+ (Developer options › Apps › Disable child process restrictions, verified on Android 16).
+- **Fixed a deploy bug:** `<AppShot>` rendered nothing in the Worker build, because it checked the filesystem. It now reads `lib/app-shots.json`, written at prebuild by `scripts/app-shots-manifest.mjs` and committed. Verified in `wrangler dev`: screenshots render, and `/_next/image` returns 200.
+- **Scripts:** `deploy`, `upload` and `preview` now run the manifest and the App 10 link check first.
+- **`DEPLOY.md`:** the exact Cloudflare steps: prerequisites, the build-time `OPENPANEL_WEB_CLIENT_ID`, noting the current version, the local Worker check, staging with `pnpm run upload` (no traffic) plus a preview URL, promoting the tested version with `wrangler versions deploy <id>@100%`, a smoke test, rollback with `wrangler rollback <id>`, and the note that cached 308s survive a rollback. The wrangler and OpenNext command syntax was checked against the installed CLIs.
+- **Needs the owner:**
+  1. The `OPENPANEL_WEB_CLIENT_ID` value for the build.
+  2. The merge of `docs/new-installer` into `master`, then the deploy (docs before app 10 and the website banner).
+  3. Whether preview URLs are enabled on the `andronix-docs-v2` Worker, for staging.
+  4. The release date on the blog post and changelog (they say "September 2026").
+  5. `app10-premium` and the Play shots come from the Play internal-test build.
+  6. The open IA questions (Termux recommendation, step titles).
+- **Not documented:** `andronix doctor` (on installer master, not in `andronix help`). Add it after the owner confirms it's user-facing.
+
+
 ## Termux:X11 extra-keys bar (lead/x11, Sept 26)
 
 - **Where the line went:** Step 3 (Termux:X11 > The first time you open it) and desktop troubleshooting now say: "Andronix hides Termux:X11's extra-keys bar the first time you start a desktop so the bottom panel shows. Swipe down with three fingers in Termux:X11 to bring it back (or turn it on in Termux:X11 settings)."
