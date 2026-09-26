@@ -30,13 +30,13 @@ No computer needed.
 
 The setting stays on after a reboot.
 
-<Callout type="info">This is the wording on Pixel and stock Android. Samsung, Xiaomi and other brands may name it differently or put it elsewhere in Developer options; search the settings for "child process". Or set it with `adb`: `adb shell setprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs false`.</Callout>
+<Callout type="info">This is the wording on Pixel and stock Android. Samsung, Xiaomi and other brands may name it differently or put it elsewhere in Developer options; search the settings for "child process". If you can't find it, the `adb` commands in the next section are what Termux documents as an alternative (we haven't tested them on Android 14 and newer).</Callout>
 
 <Callout type="warning">If you turn Developer options off again, Android turns this setting off too. Leave Developer options on.</Callout>
 
 ## Android 12, 12L and 13
 
-These versions have no switch in the usual settings, so you turn the killer off with `adb` commands.
+These versions have no switch in the usual settings. Termux documents these `adb` commands to turn the killer off (they come from Termux's and agnostic-apollo's documentation, linked below; we haven't tested them ourselves):
 
 ```bash copy
 adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"

@@ -13,7 +13,9 @@
 - **Linked from** Step 3 (Termux:X11 › Good to know), from desktop troubleshooting (a new "The desktop disappears and Termux says signal 9" section), and, as before, from install troubleshooting, Requirements, the install guides, the FAQ and the sidebar banner.
 - **Android 14+ switch: verified by x11 on the Android 16 emulator (Pixel/AOSP Settings).**
   - Path: Settings > System > Developer options > Apps > "Disable child process restrictions" (the summary wording is quoted on the page).
-  - It survives a reboot: it sets `persist.sys.fflag.override.settings_enable_monitor_phantom_procs=false`, which the page also gives as the `adb setprop` alternative.
+  - It survives a reboot (it sets `persist.sys.fflag.override.settings_enable_monitor_phantom_procs=false`).
+  - **The `adb shell setprop` line is dropped:** x11 tested it and a normal adb shell fails with "Failed to set property".
+  - The `adb` commands on the page (`settings put global settings_enable_monitor_phantom_procs false`, and `device_config put activity_manager max_phantom_processes 2147483647` for 12/13) are presented as Termux's and agnostic-apollo's documented advice, which we haven't verified.
   - The page notes that other brands may name or place it differently.
 - **Still not tested by us:** the on-phone Wireless debugging route for Android 12 and 13.
 
