@@ -1,0 +1,113 @@
+---
+title: Install Apps
+description: Install browsers, IDEs like VS Code and IntelliJ IDEA, LibreOffice and GIMP inside your Andronix Linux distro, with the commands for each distro.
+---
+
+import NextStep from "@/components/next-step";
+
+Your distro can install thousands of Linux apps with its own package manager. This page covers the ones people ask about most: browsers, IDEs, LibreOffice and GIMP.
+
+<Callout type="info">Run these commands **inside the distro** (not in the Termux shell). Andronix 2.0 logs you in as your own user, so the commands use `sudo`. On Manjaro, where `sudo` doesn't work yet, open a root shell from Termux with `andronix start manjaro --root` and leave out `sudo`.</Callout>
+
+<Callout type="info">To open graphical apps, start the desktop first. See [Termux:X11](/desktop/termux-x11) or [VNC](/desktop/vnc).</Callout>
+
+## Browsers
+
+**Firefox comes preinstalled** on every desktop install from Andronix 2.0, unless you installed with `--no-browser`. On Ubuntu, it comes from Mozilla's own repository, because Ubuntu's Firefox is a Snap and Snaps don't work in Andronix.
+
+### Firefox
+
+If you skipped it, or you're on an install from before Andronix 2.0:
+
+| Distro | Command |
+|---|---|
+| Debian, Kali Linux | `sudo apt install firefox-esr` |
+| Ubuntu | Reinstall with the browser: `andronix install ubuntu --reinstall` (Ubuntu's own package is a Snap) |
+| Fedora | `sudo dnf install firefox` |
+| Arch, Manjaro | `sudo pacman -S firefox` |
+| Alpine | `sudo apk add firefox` |
+| Void Linux | `sudo xbps-install -S firefox` |
+
+<Callout type="warning">`--reinstall` deletes the distro first. Copy anything you want to keep to `/sdcard`, or [back it up](/use/backups).</Callout>
+
+### Chromium
+
+| Distro | Command |
+|---|---|
+| Debian, Kali Linux | `sudo apt install chromium` |
+| Fedora | `sudo dnf install chromium` |
+| Arch, Manjaro | `sudo pacman -S chromium` |
+| Alpine | `sudo apk add chromium` |
+| Void Linux | Not packaged for Void. |
+
+Chromium can't use its sandbox in Andronix. If it doesn't open from the app menu, start it from a terminal with:
+
+```bash copy
+chromium --no-sandbox
+```
+
+{/* TODO(docs): Ubuntu's chromium package is a Snap too; check whether a non-snap source works on 26.04/24.04 before listing Ubuntu. The old ubchromiumfix.sh script was written for the pre-2.0 root installs. */}
+
+<Callout type="warning">On 32-bit (armv7) phones, browsers may fail to start.</Callout>
+
+## IDEs
+
+### VS Code
+
+VS Code comes preinstalled with [Modded OS](/modded-os/modded-os). On a free distro based on Debian (Debian, Ubuntu, Kali Linux), run:
+
+```bash copy
+sudo apt install wget -y && wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/vscode_patch.sh && chmod +x vscode_patch.sh && sudo ./vscode_patch.sh
+```
+
+{/* TODO(docs): vscode_patch.sh was written for the pre-2.0 root installs; test it on Debian 13 / Ubuntu 26.04 as a normal user with sudo. */}
+
+### IntelliJ IDEA
+
+IntelliJ IDEA needs a Java JDK. Add one with the Java [dev pack](/use/dev-packs):
+
+```bash copy
+sudo andronix pack add java
+```
+
+Then:
+
+1. Download the latest Linux `.tar.gz` from the [JetBrains download page](https://www.jetbrains.com/idea/download/#section=linux) into your Downloads folder.
+2. Extract it, replacing the `x`s with the version in the file name:
+
+   ```bash copy
+   tar -xzf ~/Downloads/ideaIU-2xxx.x.x.tar.gz -C ~/
+   ```
+
+3. Start it:
+
+   ```bash copy
+   ~/ideaIU-2xxx.x.x/bin/idea.sh
+   ```
+
+<Callout type="info">Want Python, Node.js, Go or PostgreSQL for your projects? Each is one command with [dev packs](/use/dev-packs).</Callout>
+
+## LibreOffice
+
+LibreOffice is a free, full office suite.
+
+| Distro | Command |
+|---|---|
+| Debian, Ubuntu, Kali Linux | `sudo apt install wget -y && wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/librepatch.sh && sudo bash librepatch.sh` |
+| Arch, Manjaro | `wget https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/librepatch_arch.sh && sudo bash librepatch_arch.sh` |
+
+The scripts install LibreOffice and patch it so it starts in Andronix.
+
+{/* TODO(docs): test librepatch*.sh on the 2.0 distros (written for pre-2.0 root installs); add Fedora/Alpine/Void package commands if plain installs work. */}
+
+## GIMP
+
+GIMP is a free image editor.
+
+| Distro | Command |
+|---|---|
+| Debian, Ubuntu, Kali Linux | `sudo apt update && sudo apt install gimp` |
+| Fedora | `sudo dnf install gimp` |
+| Arch, Manjaro | `sudo pacman -Syu gimp` |
+
+<NextStep href="/use/dev-packs" title="Dev packs" description="Add Python, Node.js, Java, Go or PostgreSQL with one command." />

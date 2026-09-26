@@ -1,0 +1,11 @@
+{
+  "title": "Troubleshooting",
+  "defaultOpen": true,
+  "pages": [
+    "install",
+    "signal-9",
+    "desktop",
+    "termux",
+    "faq"
+  ]
+}

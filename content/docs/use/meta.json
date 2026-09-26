@@ -1,0 +1,14 @@
+{
+  "title": "Step 4 · Use it",
+  "defaultOpen": true,
+  "pages": [
+    "apps",
+    "dev-packs",
+    "sound",
+    "storage",
+    "backups",
+    "updates",
+    "performance",
+    "ssh"
+  ]
+}

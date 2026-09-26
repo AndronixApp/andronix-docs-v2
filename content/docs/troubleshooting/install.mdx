@@ -1,0 +1,114 @@
+---
+title: Troubleshooting Installs
+description: Fix common problems with the Andronix installer, from the signal 9 error and stopped installs to storage space, downloads, VNC and passwords.
+---
+
+This page covers the most common problems with installing and running a free distro, and how to fix them. If yours isn't here, see [Still stuck?](#still-stuck) at the bottom.
+
+## The install stopped halfway
+
+Android sometimes stops long-running apps in the background, the connection drops, or Termux gets closed by accident. None of that ruins your install.
+
+**Fix:** paste and run the **same install command** again. The installer remembers which steps finished and picks up where it stopped. You'll see those steps marked as done or skipped.
+
+<Callout type="info">While it installs, Andronix keeps your phone from putting Termux to sleep. If Android asks whether Termux can keep running in the background, tap **Allow**.</Callout>
+
+## Process completed (signal 9) - press Enter
+
+This error comes from Android's **phantom process killer** (Android 12 and newer), which kills apps that start too many processes. It can hit during an install or while you use the desktop.
+
+**Fix:** turn off the phantom process killer by following [Android 12 and Newer](/troubleshooting/signal-9). Then run the install command again; it continues where it stopped.
+
+Also disable battery optimization for Termux in your phone's settings.
+
+## Not enough storage
+
+The installer checks your free space before it starts, and warns you if it looks too low. Roughly how much a distro takes once installed:
+
+| Install | Space used |
+|---|---|
+| Command line only | 250 to 400 MB |
+| XFCE or LXQt desktop | 0.8 to 1.6 GB |
+| MATE desktop | 1.5 to 1.9 GB |
+| KDE Plasma desktop | about 2.5 GB |
+
+Leave some extra room for the download while it unpacks. If you're short on space, free some up, pick a smaller desktop, or use the command line only. Use `andronix list` to see what's installed, and [remove](/install/uninstall) distros you don't use.
+
+<Callout type="info">Distros can only be installed on your phone's internal storage, not on an SD card. See [Limitations](/reference/limitations#hardware-limitations).</Callout>
+
+## Errors before the installer starts
+
+If the command fails with errors from `pkg` or `apt` before you see the Andronix steps, your Termux is probably the old Play Store version, whose package servers no longer work.
+
+**Fix:** install Termux from F-Droid. See [Migrating Termux to F-Droid](/start-here/install-termux).
+
+## andronix: command not found
+
+`andronix` isn't installed in this Termux yet (or Termux was reinstalled). Install it with the app's install command, or with this one line from Termux:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/install/with-the-app#installing-without-the-app).
+
+## Download errors
+
+- **The download failed or timed out:** check your connection and run the same command again. The download resumes instead of starting over.
+- **The installer says your network hit the limit:** the fallback download source limits how many downloads come from one network. Wait a while and try again, or switch between Wi-Fi and mobile data.
+
+## Your phone isn't supported by a distro
+
+In its first step, the installer checks your phone's CPU. If a distro isn't available for it (for example, Fedora and Manjaro need a 64-bit phone), it tells you. Pick another distro from [Supported Distros](/reference/distros).
+
+## The desktop didn't start
+
+If `vncserver-start` says **The desktop didn't start**, stop it and start it again:
+
+```bash copy
+vncserver-stop 1
+vncserver-start
+```
+
+If it still fails, the error box shows the path of a log file (for example `/tmp/andronix-vnc-1.log`). Share it when you ask for help.
+
+## The desktop closes when I leave Termux
+
+The desktop runs inside your Termux session. Closing that session, or typing `exit` in the distro, stops the desktop too.
+
+**Fix:** keep the Termux session open while you use the desktop. Switch to your VNC viewer with the app switcher instead of closing Termux. For a second command line, open a new Termux session from the sidebar.
+
+## The desktop is slow
+
+Switch the distro to the light profile from Termux, then restart the desktop:
+
+```bash copy
+andronix tune debian --profile light
+```
+
+It turns off desktop effects, thumbnails and some background apps, and uses 16-bit colour. Phones with less than 3 GB of RAM get it automatically. On phones with less than 4 GB of RAM, pick XFCE or LXQt rather than KDE Plasma. See [Making a desktop lighter](/reference/desktops#making-a-desktop-lighter).
+
+## I can't connect from my computer
+
+By default, the desktop only accepts connections from the phone itself. Start it with `vncserver-start --lan` to allow other devices on your network. See [VNC on other devices](/desktop/vnc#vnc-on-other-devices).
+
+## I forgot my password
+
+In Termux, open a root shell in the distro and set a new password for your user:
+
+```bash copy
+andronix start debian --root
+passwd alex
+```
+
+Replace `debian` with your distro and `alex` with your username. To reset the desktop (VNC) password, see [Changing the desktop password](/desktop/vnc#changing-the-desktop-password).
+
+## sudo prints "unable to send audit message"
+
+`sudo: unable to send audit message: Operation not permitted` is harmless. Your command still runs as root.
+
+## Still stuck?
+
+- Every install, remove, backup and restore writes a log to `~/.andronix/logs/` in Termux. Include the latest one when you ask for help.
+- Ask on our [Discord](https://chat.andronix.app), or email [support@andronix.app](mailto:support@andronix.app).
+- Check the [FAQ](/troubleshooting/faq).

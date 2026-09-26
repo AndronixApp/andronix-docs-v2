@@ -1,0 +1,95 @@
+---
+title: Desktop Environments
+description: Learn what a desktop environment is, which ones Andronix offers for each distro, and which one to pick if you're just getting started.
+---
+
+import Badge from "@/components/badge";
+import YoutubeEmbed from "@/components/youtubeEmbed";
+
+This page explains what a desktop environment (DE) is, lists the DEs Andronix offers for each distro, and helps you choose one.
+
+According to the [Wikipedia article](https://en.wikipedia.org/wiki/Desktop_environment) on desktop environments:
+
+> In computing, a desktop environment (DE) is an implementation of the desktop metaphor made of a bundle of programs running on top of a computer operating system that share a common graphical user interface (GUI), sometimes described as a graphical shell. The desktop environment was seen mostly on personal computers until the rise of mobile computing. Desktop GUIs help the user to easily access and edit files, while they usually do not provide access to all of the features found in the underlying operating system. Instead, the traditional command-line interface (CLI) is still used when full control over the operating system is required.
+
+In simpler terms, a **desktop environment is the graphical user interface (GUI) you interact with**. Icons, menus, menu bars and everything else you see on screen are part of the DE.
+
+<YoutubeEmbed id={"2sBsxrWD9to"}/>
+
+## What Desktop Environments does Andronix offer?
+
+Andronix offers **XFCE**, **LXQt** and **MATE** on every free distro, and **KDE Plasma** on Debian, Ubuntu 26.04 and Kali. You can also skip the desktop and use the **command line only**.
+
+| Desktop | What it's like | Pick it if |
+|---|---|---|
+| <Badge>XFCE</Badge> | A full, familiar desktop with a panel, an app menu and a file manager (Thunar). Our recommendation. | You want something that just works. |
+| <Badge>LXQt</Badge> | A light desktop built on Qt, with a Windows-like menu and panel. | You want a lighter desktop, or prefer Qt apps. |
+| <Badge>MATE</Badge> | A classic, traditional desktop with menus at the top. | You like the classic GNOME 2 layout. |
+| <Badge>KDE Plasma</Badge> | A modern, polished desktop (Plasma 6) with Dolphin and Konsole. The heaviest of the four. | Your phone has 4 GB of RAM or more, and you want the most complete desktop. |
+| <Badge>CLI only</Badge> | No desktop, just a terminal. The smallest and fastest install. | You only need the command line. |
+
+Every desktop install also comes with Firefox and a VNC server, so you can open the desktop with `vncserver-start` and a VNC viewer. See [VNC Basics](/desktop/vnc).
+
+### XFCE
+
+![XFCE on Debian 13, with the app menu open](/images/new-installer/debian-xfce-menu.png)
+
+### LXQt
+
+![LXQt on Fedora 44, with the app menu open](/images/new-installer/fedora-lxqt-menu.jpg)
+
+### MATE
+
+![MATE on Debian 13](/images/new-installer/debian-mate-desktop.png)
+
+### KDE Plasma
+
+![KDE Plasma on Ubuntu 26.04, with the app menu open](/images/new-installer/ubuntu-kde-menu.png)
+
+KDE Plasma is set up for VNC: desktop effects, file indexing, the screen lock and KDE Wallet are turned off, because they don't work well (or at all) in Andronix. The installer warns you if your phone has less than 4 GB of RAM.
+
+### Availability
+
+| Desktop | Distros |
+|---|---|
+| XFCE, LXQt, MATE, command line only | Every free distro: Debian, Ubuntu, Kali Linux, Fedora, Arch Linux, Manjaro ARM, Alpine and Void Linux |
+| KDE Plasma | Debian 13, Ubuntu 26.04 LTS and Kali Linux |
+
+See [Supported Distros](/reference/distros).
+
+<Callout type="warning">**Window managers (Awesome, i3, Openbox) and LXDE are no longer offered** by the free installer. Distros you installed with them keep working. If your version of the app still shows these options, pick another desktop instead.</Callout>
+
+<Callout type="info">Want KDE with themes and apps already set up? Look at the [Ubuntu KDE Modded OS](/modded-os/modded-os).</Callout>
+
+## Which DE should I choose?
+
+You can pick whichever DE you like or are most familiar with. For most people, though, we recommend **XFCE** as a starting point because of its ease of use and customizability. On a phone with less than 4 GB of RAM, avoid KDE Plasma; XFCE or LXQt will feel much faster.
+
+<Callout type="info">If you're just starting out or aren't sure, choose **XFCE**.</Callout>
+
+## Making a desktop lighter
+
+On phones with less than 3 GB of RAM, Andronix sets up the desktop with a **light** profile: no desktop effects, fewer background apps, no file thumbnails, and 16-bit colour at 1280x720 over VNC. You can switch profiles yourself from Termux:
+
+```bash copy
+andronix tune debian --profile light
+```
+
+Use `--profile balanced` to go back to the normal settings, or run `andronix tune debian` to see the current profile. The change applies the next time you run `vncserver-start`. See [the andronix command](/reference/andronix-command#tuning-the-desktop).
+
+## Changing your desktop
+
+To try a different desktop, install the distro again with that desktop, for example from Termux:
+
+```bash copy
+andronix install debian --de lxqt --reinstall
+```
+
+<Callout type="warning">`--reinstall` deletes the distro and everything in it first. Copy anything you want to keep to `/sdcard` beforehand.</Callout>
+
+{/* TODO(docs): check whether `andronix install <distro> --de <other>` on an existing desktop install adds the second desktop without --reinstall (the bash prototype did this for none -> xfce). If it does, document that instead. */}
+
+## Next steps
+
+- [Install a distro](/install/with-the-app) with the DE of your choice.
+- Learn how to view your desktop with [VNC](/desktop/vnc).

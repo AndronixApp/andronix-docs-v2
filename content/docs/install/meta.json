@@ -1,0 +1,10 @@
+{
+  "title": "Step 2 · Install a distro",
+  "defaultOpen": true,
+  "pages": [
+    "choose",
+    "with-the-app",
+    "without-the-app",
+    "uninstall"
+  ]
+}

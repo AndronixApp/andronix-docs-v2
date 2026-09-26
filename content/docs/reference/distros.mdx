@@ -1,0 +1,166 @@
+---
+title: Supported Distros
+description: Every free Linux distro Andronix installs, with its version, supported CPUs, desktops, and the commands to install, start and remove it.
+---
+
+import Badge from "@/components/badge";
+
+Andronix installs these free distros. Each one comes with the desktop you pick (XFCE, LXQt, MATE, or KDE Plasma on some distros) or the command line only, a VNC server for the desktop, and Firefox. This page lists what you get with each distro and the commands to install, start and remove it.
+
+<Callout type="info">The easiest way to install is through the app (version 10.0 or newer): it copies the right command for you. See [Installing a Distro](/install/with-the-app). The commands on this page do the same thing from Termux.</Callout>
+
+The `andronix install` commands below need `andronix` in Termux. If you haven't installed a distro with Andronix 2.0 yet, use this one line instead, with your distro and desktop:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+See [Installing without the app](/install/with-the-app#installing-without-the-app).
+
+## At a glance
+
+| Distro | Version | CPU types | Package manager |
+|---|---|---|---|
+| [Debian](#debian) | 13 | arm64, arm, x86, x86_64 | `apt` |
+| [Ubuntu](#ubuntu) | 26.04 LTS and 24.04 LTS | arm64, arm, x86_64 | `apt` |
+| [Kali Linux](#kali-linux) | rolling | arm64, arm, x86, x86_64 | `apt` |
+| [Fedora](#fedora) | 44 | arm64, x86_64 | `dnf` |
+| [Arch Linux](#arch-linux) | rolling | arm64, arm, x86_64 | `pacman` |
+| [Manjaro ARM](#manjaro-arm) | stable | arm64, x86_64 | `pacman` |
+| [Alpine](#alpine) | 3.24 | arm64, arm, x86, x86_64 | `apk` |
+| [Void Linux](#void-linux) | rolling | arm64, arm, x86, x86_64 | `xbps` |
+
+Every distro offers <Badge>XFCE</Badge> <Badge>LXQt</Badge> <Badge>MATE</Badge> <Badge>CLI only</Badge>. Debian, Ubuntu 26.04 and Kali Linux also offer <Badge>KDE Plasma</Badge>.
+
+<Callout type="info">Most phones are **arm64**. The installer checks your phone's CPU in its first step and tells you if a distro doesn't support it.</Callout>
+
+In the commands below, replace `xfce` with `lxqt`, `mate`, `kde` (where offered) or `none` (command line only) to pick another desktop. See [the andronix command](/reference/andronix-command) for every option.
+
+## Debian
+
+Debian 13 "trixie", a stable, well-supported distro. A good first choice, and it runs on every CPU type.
+
+| | |
+|---|---|
+| Install | `andronix install debian --de xfce` |
+| Start | `./start-debian.sh` |
+| Remove | `andronix remove debian` |
+| Browser | Firefox ESR |
+
+![Debian 13 with XFCE](/images/new-installer/debian-xfce-desktop.png)
+
+## Ubuntu
+
+Ubuntu comes in two versions. The app's **Ubuntu 22** button installs Ubuntu 26.04 LTS, and the **Ubuntu 18** and **Ubuntu 20** buttons install Ubuntu 24.04 LTS.
+
+| | Ubuntu 26.04 LTS | Ubuntu 24.04 LTS |
+|---|---|---|
+| Install | `andronix install ubuntu --de xfce` | `andronix install ubuntu24 --de xfce` |
+| Start | `./start-ubuntu26.sh` or `./start-ubuntu22.sh` | `./start-ubuntu.sh` or `./start-ubuntu20.sh` |
+| Remove | `andronix remove ubuntu` | `andronix remove ubuntu24` |
+
+- **Firefox** is installed from Mozilla's own repository, because Ubuntu's Firefox is a Snap and Snaps can't run in Andronix. Mozilla's repository covers arm64 and x86_64, so 32-bit (arm) phones get no browser.
+- The **Ubuntu 18** and **Ubuntu 20** distros from the pre-2.0 installer are no longer offered. Existing installs keep working; see [Installs from before Andronix 2.0](/pre-2.0/older-installs).
+
+![Ubuntu 26.04 with XFCE](/images/new-installer/ubuntu-xfce-desktop.png)
+
+## Kali Linux
+
+Kali Linux rolling, the distro built for security work. You get the base system and your desktop; install the Kali tools you need with `sudo apt install`.
+
+| | |
+|---|---|
+| Install | `andronix install kali --de xfce` |
+| Start | `./start-kali.sh` |
+| Remove | `andronix remove kali` |
+| Browser | Firefox ESR |
+
+<Callout type="warning">Tools that need real network hardware, like Wi-Fi cracking or packet capture, don't work in Andronix. See [Limitations](/reference/limitations#hacking).</Callout>
+
+## Fedora
+
+Fedora 44, with up-to-date software. Only available on arm64 and x86_64.
+
+| | |
+|---|---|
+| Install | `andronix install fedora --de xfce` |
+| Start | `./start-fedora.sh` |
+| Remove | `andronix remove fedora` |
+| Browser | Firefox |
+
+The first `dnf` command downloads Fedora's package lists (about 50 MB), so it takes a minute.
+
+![Fedora 44 with XFCE](/images/new-installer/fedora-xfce-desktop.jpg)
+
+## Arch Linux
+
+Arch Linux, a rolling distro for people who like to build their own system. On phones this is **Arch Linux ARM**; on x86_64 devices, it's Arch Linux.
+
+| | |
+|---|---|
+| Install | `andronix install arch --de xfce` |
+| Start | `./start-arch.sh` |
+| Remove | `andronix remove arch` |
+| Browser | Firefox |
+
+Update with `sudo pacman -Syu` before installing anything, and avoid `pacman -Sy <package>` (a partial upgrade).
+
+## Manjaro ARM
+
+Manjaro ARM, an Arch-based distro. Only available on arm64 and x86_64.
+
+<Callout type="warning">`sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks such as installing packages, open a root shell from Termux with `andronix start manjaro --root`.</Callout>
+
+| | |
+|---|---|
+| Install | `andronix install manjaro --de xfce` |
+| Start | `./start-manjaro.sh` |
+| Remove | `andronix remove manjaro` |
+| Browser | Firefox |
+
+{/* TODO(docs): Manjaro ARM's stable branch has barely been updated since early 2024 (Firefox 123, no security updates). The installer's port notes list it as a decision for the user. Add a note here once decided. */}
+
+## Alpine
+
+Alpine 3.24, a very small distro. The smallest download of all.
+
+| | |
+|---|---|
+| Install | `andronix install alpine --de xfce` |
+| Start | `./start-alpine.sh` |
+| Remove | `andronix remove alpine` |
+| Browser | Firefox |
+
+<Callout type="info">Alpine uses musl instead of glibc, so many prebuilt programs (like VS Code or Chrome) won't run. Pick Debian or Ubuntu if you need those.</Callout>
+
+## Void Linux
+
+Void Linux (glibc), an independent rolling distro with its own package manager, `xbps`.
+
+| | |
+|---|---|
+| Install | `andronix install void --de xfce` |
+| Start | `./start-void.sh` |
+| Remove | `andronix remove void` |
+| Browser | Firefox |
+
+![Void Linux with XFCE](/images/new-installer/void-xfce-desktop.png)
+
+## Installing software
+
+Inside the distro, use its package manager with `sudo` (on Manjaro, use a root shell from `andronix start manjaro --root` and leave out `sudo`):
+
+| Distro | Update everything | Install a program |
+|---|---|---|
+| Debian, Ubuntu, Kali | `sudo apt update && sudo apt upgrade` | `sudo apt install <name>` |
+| Fedora | `sudo dnf upgrade` | `sudo dnf install <name>` |
+| Arch, Manjaro | `sudo pacman -Syu` | `sudo pacman -S <name>` |
+| Alpine | `sudo apk upgrade` | `sudo apk add <name>` |
+| Void | `sudo xbps-install -Su` | `sudo xbps-install <name>` |
+
+## Next steps
+
+- [Installing a Distro](/install/with-the-app): the step-by-step guide with the app.
+- [Desktop Environments](/reference/desktops): compare XFCE, LXQt and MATE.
+- [VNC Basics](/desktop/vnc): connect to your desktop.
+- [The andronix command](/reference/andronix-command): every command and option.
