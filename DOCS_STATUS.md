@@ -11,7 +11,11 @@
     - The Feature flags switch on some stock 12L/13 phones is mentioned.
 - **Sources:** checked against agnostic-apollo's Android-Docs page on phantom processes (linked on the page) and Termux issue #2366. The old step screenshots and the old video were removed.
 - **Linked from** Step 3 (Termux:X11 › Good to know), from desktop troubleshooting (a new "The desktop disappears and Termux says signal 9" section), and, as before, from install troubleshooting, Requirements, the install guides, the FAQ and the sidebar banner.
-- **Not verified on a device:** the Android 14+ switch name and the on-phone Wireless debugging route come from the sources, not from our own test.
+- **Android 14+ switch: verified by x11 on the Android 16 emulator (Pixel/AOSP Settings).**
+  - Path: Settings > System > Developer options > Apps > "Disable child process restrictions" (the summary wording is quoted on the page).
+  - It survives a reboot: it sets `persist.sys.fflag.override.settings_enable_monitor_phantom_procs=false`, which the page also gives as the `adb setprop` alternative.
+  - The page notes that other brands may name or place it differently.
+- **Still not tested by us:** the on-phone Wireless debugging route for Android 12 and 13.
 
 ## Modded OS and Premium marks (owner, Sept 26)
 

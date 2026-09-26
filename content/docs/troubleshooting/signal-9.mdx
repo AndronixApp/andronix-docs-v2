@@ -25,8 +25,12 @@ Android 12 added a **phantom process killer**. It stops the background processes
 No computer needed.
 
 1. Turn on **Developer options**: open **Settings › About phone** and tap **Build number** seven times.
-2. Open **Settings › System › Developer options**.
-3. Turn on **Disable child process restrictions**.
+2. Open **Settings › System › Developer options**, and scroll to the **Apps** section.
+3. Turn on **Disable child process restrictions** ("Disable restrictions on the system resource usage of the app child processes").
+
+The setting stays on after a reboot.
+
+<Callout type="info">This is the wording on Pixel and stock Android. Samsung, Xiaomi and other brands may name it differently or put it elsewhere in Developer options; search the settings for "child process". Or set it with `adb`: `adb shell setprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs false`.</Callout>
 
 <Callout type="warning">If you turn Developer options off again, Android turns this setting off too. Leave Developer options on.</Callout>
 
