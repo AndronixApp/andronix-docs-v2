@@ -6,7 +6,9 @@
 
 ## Account deletion page (lead, Sept 26)
 
-- **Links (lead, Sept 26):** the page links https://andronix.app/privacy-policy (it names the operator) and https://andronix.app/delete-account. The docs don't name an operator themselves. **Both URLs return 404 on the live site today** (checked Sept 26; they come with the website redesign). The website has to be live before the docs deploy, or these links break.
+- **Links (lead, Sept 26, final):** the page links only https://andronix.app/legal/privacy-policy, which is live today and kept by the redesign, and which names the operator. The `/delete-account` link is dropped, because the page itself explains deletion. That avoids a deploy-order cycle: **the docs can deploy first**, before app 10.0 and before the website banner, with no link to a website page that isn't live yet.
+  - **Also fixed for the same reason:** the blog post linked `https://andronix.app/supporters`, which returns 404 on the live site (it arrives with the redesign). It's now plain text: "an optional spot on the supporter wall on andronix.app".
+  - **Checked Sept 26:** every `andronix.app` link in the docs resolves on the live site. `/legal/privacy-policy` 301s to `/legal/privacy-policy/`, which returns 200.
 
 - **Checked against** products-api (`products-api-wt-entitlement`, 30c2a7d):
   - `account/accountDeletion.ts`, `firebase/accountDataStore.ts`, `account/sweep.ts`, `routes/v2/account.ts`;
