@@ -178,10 +178,13 @@ The **Start VNC server** page should now be open in the Andronix app.
 
 ### VNC Server
 
-There are two ways to open your desktop; Step 3 covers both:
+Open it full screen on the phone with the **Termux:X11** app. In Termux, run:
 
-- **[Termux:X11](/desktop/termux-x11)** shows it full screen on the phone. In Termux, run `andronix desktop`.
-- **[VNC](/desktop/vnc)** shows it in a VNC viewer app, on the phone or another device. Inside the distro, run `vncserver-start`.
+```bash copy
+andronix desktop debian
+```
+
+Replace `debian` with your distro. [Step 3](/desktop/termux-x11) covers getting the Termux:X11 app and everything else. To use the desktop from another device, see [Other ways to connect (VNC)](/reference/vnc).
 
 <Callout type="warning">Keep the Termux session open while you use the desktop. Closing it, or typing `exit`, stops the desktop too.</Callout>
 
@@ -189,4 +192,4 @@ There are two ways to open your desktop; Step 3 covers both:
 
 <Callout type="error">Seeing the **Process completed (signal 9) - press Enter** error in Termux? Read [Android 12 and Newer](/troubleshooting/signal-9) to fix it.</Callout>
 
-<NextStep href="/desktop/termux-x11" title="Start the desktop" description="Step 3: open your desktop full screen with Termux:X11, or with VNC." or={{ href: "/desktop/vnc", title: "VNC" }} />
+<NextStep href="/desktop/termux-x11" title="Start the desktop" description="Step 3: open your desktop full screen on the phone with Termux:X11." />

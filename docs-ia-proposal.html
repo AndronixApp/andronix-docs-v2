@@ -155,8 +155,7 @@ ol.questions strong { color: var(--text); }
 <div class="sb-item"><span>Install without the app<span class="new">new</span></span><code class="url">/install/without-the-app</code></div>
 <div class="sb-item"><span>Uninstall a distro</span><code class="url">/install/uninstall</code></div>
 <p class="sb-label sb-step"><span class="step">3</span>Start the desktop</p>
-<div class="sb-item"><span>Termux:X11 (on the phone)<span class="new">new</span></span><code class="url">/desktop/termux-x11</code></div>
-<div class="sb-item"><span>VNC (phone or another device)</span><code class="url">/desktop/vnc</code></div>
+<div class="sb-item"><span>Termux:X11 (the desktop path)<span class="new">new</span></span><code class="url">/desktop/termux-x11</code></div>
 <p class="sb-label sb-step"><span class="step">4</span>Use it</p>
 <div class="sb-item"><span>Install apps</span><code class="url">/use/apps</code></div>
 <div class="sb-item"><span>Dev packs<span class="new">new</span></span><code class="url">/use/dev-packs</code></div>
@@ -179,6 +178,7 @@ ol.questions strong { color: var(--text); }
 <div class="sb-item"><span>The andronix command</span><code class="url">/reference/andronix-command</code></div>
 <div class="sb-item"><span>Supported distros</span><code class="url">/reference/distros</code></div>
 <div class="sb-item"><span>Desktops</span><code class="url">/reference/desktops</code></div>
+<div class="sb-item"><span>Other ways to connect (VNC)</span><code class="url">/reference/vnc</code></div>
 <div class="sb-item"><span>Limitations</span><code class="url">/reference/limitations</code></div>
 <p class="sb-label">About</p>
 <div class="sb-item"><span>Account deletion</span><code class="url">/account/deletion</code></div>
@@ -202,7 +202,7 @@ ol.questions strong { color: var(--text); }
     <div class="journey">
       <span class="s">1</span><span>What is Andronix</span><i>→</i><span>Requirements</span><i>→</i><span>Install Termux</span><i>→</i>
       <span class="s">2</span><span>Choose</span><i>→</i><span>Install with the app (or without)</span><i>→</i>
-      <span class="s">3</span><span>Termux:X11 (or VNC)</span><i>→</i>
+      <span class="s">3</span><span>Termux:X11</span><i>→</i>
       <span class="s">4</span><span>Install apps</span><i>→</i><span>Dev packs</span><i>→</i><span>Sound</span><i>→</i><span>Storage</span><i>→</i><span>Backups</span><i>→</i><span>Updates</span><i>→</i><span>Make it faster</span>
     </div>
   </section>
@@ -232,7 +232,7 @@ ol.questions strong { color: var(--text); }
 <tr><td>The andronix Command</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Reference › The andronix command</td><td>Adds <code>desktop</code>, <code>pack</code> and <code>telemetry</code> (final in 2.0.0). The long how-to sections move to Step 4 pages and the reference links to them.</td></tr>
 <tr><td>Desktop Environments</td><td><span class="chip chip-keep">keep</span></td><td>Reference › Desktops</td><td>Availability, screenshots. The &quot;light profile&quot; section moves to Make it faster; the &quot;which one&quot; advice moves to Choose.</td></tr>
 <tr><td>Window Managers (retired)</td><td><span class="chip chip-archive">archive</span></td><td>Pre-2.0 › Window managers</td><td>Retired in 2.0; old app keys now install XFCE with a notice.</td></tr>
-<tr><td>VNC Basics</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Step 3 › VNC</td><td>The new-install part stays; &quot;VNC on an old install&quot; moves to the archive.</td></tr>
+<tr><td>VNC Basics</td><td><span class="chip chip-rewrite">rewrite</span></td><td>Reference › Other ways to connect (VNC)</td><td>Owner decision: Termux:X11 is the desktop path; VNC is for other devices. &quot;VNC on an old install&quot; moves to the archive.</td></tr>
 <tr><td>XSDL Basics (outdated)</td><td><span class="chip chip-archive">archive</span></td><td>Pre-2.0 › XSDL</td><td>Untested with 2.0. Termux:X11 replaces it.</td></tr>
 <tr><td>Browsers</td><td><span class="chip chip-merge">merge</span></td><td>Step 4 › Install apps</td><td>Firefox is preinstalled now. The remaining commands (Chromium, per-distro) fit one page.</td></tr>
 <tr><td>IDEs</td><td><span class="chip chip-merge">merge</span></td><td>Step 4 › Install apps (and Dev packs)</td><td>VS Code / IntelliJ steps go into Install apps. Language toolchains are now dev packs.</td></tr>
@@ -282,7 +282,7 @@ ol.questions strong { color: var(--text); }
 <tr><td><code>/andronix-cli/andronix-cli</code></td><td><code>/reference/andronix-command</code></td></tr>
 <tr><td><code>/desktop-environments/desktop-environments</code></td><td><code>/reference/desktops</code></td></tr>
 <tr><td><code>/window-managers/window-managers</code></td><td><code>/pre-2.0/window-managers</code></td></tr>
-<tr><td><code>/vnc/vnc-basics</code></td><td><code>/desktop/vnc</code></td></tr>
+<tr><td><code>/vnc/vnc-basics</code>, <code>/desktop/vnc</code></td><td><code>/reference/vnc</code></td></tr>
 <tr><td><code>/xsdl/xsdl-basics</code></td><td><code>/pre-2.0/xsdl</code></td></tr>
 <tr><td><code>/software/browsers</code>, <code>/software/IDEs</code>, <code>/software/libre-office</code>, <code>/software/gimp</code></td><td><code>/use/apps</code> (each with its section anchor)</td></tr>
 <tr><td><code>/termux/migrating-to-f-droid</code></td><td><code>/start-here/install-termux</code></td></tr>
@@ -307,11 +307,11 @@ ol.questions strong { color: var(--text); }
     </div>
     <ol class="questions">
 <li><strong>Which Termux do we recommend?</strong> F-Droid, GitHub, or the new Play Store build? The installer passes on all three (Play needs Android 11+).</li>
-<li><strong>Desktop default:</strong> should Step 3 lead with Termux:X11 (full screen, on the phone) and keep VNC for other devices? Termux:X11 has passed on the Android 16 emulator only; VNC passed everywhere except Android 9 on kernel 4.4.</li>
+<li>~~Desktop default~~ <strong>Decided by the owner:</strong> Termux:X11 is the desktop path. Step 3 covers Termux:X11 only, and VNC moves to Reference as &quot;Other ways to connect&quot;.</li>
 <li><strong>Merging the software pages</strong> into one &quot;Install apps&quot; page: OK, or keep one page per app for search traffic? The redirects keep the old URLs working either way.</li>
 <li><strong>Step titles:</strong> &quot;Step 1 · Start here&quot; in the sidebar, or plain &quot;Start here&quot; with the number only on the page?</li>
 <li>The Termux table stays neutral: F-Droid, GitHub, and Play on Android 11 and newer.</li>
-<li>Termux:X11 is listed first in Step 3, with an &quot;or: VNC&quot; link.</li>
+<li>(Decided) Step 3 is Termux:X11 only.</li>
 <li>The software pages are merged.</li>
 <li>The sidebar uses &quot;Step N · …&quot;.</li>
     </ol>

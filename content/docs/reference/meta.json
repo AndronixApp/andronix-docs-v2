@@ -5,6 +5,7 @@
     "andronix-command",
     "distros",
     "desktops",
+    "vnc",
     "limitations"
   ]
 }

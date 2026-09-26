@@ -4,7 +4,7 @@ description: How XSDL was used to show an Andronix distro's desktop. Outdated, b
 ---
 
 <Callout type="warning" title="This page is outdated">
-These steps were written for distros from the pre-2.0 installer, and haven't been tested with Andronix 2.0. For new installs, use [Termux:X11](/desktop/termux-x11), which does the same job (a fast X11 display on the phone) and is set up by `andronix desktop`, or [VNC](/desktop/vnc).
+These steps were written for distros from the pre-2.0 installer, and haven't been tested with Andronix 2.0. For new installs, use [Termux:X11](/desktop/termux-x11), which does the same job (a fast X11 display on the phone) and is set up by `andronix desktop`, or [VNC](/reference/vnc).
 </Callout>
 
 {/* TODO(docs): test XSDL with the new installer. The desktop start file moved from ~/.vnc/xstartup to ~/.config/tigervnc/xstartup (~/.vnc is a symlink to it). Either rewrite this page or retire it. */}
@@ -29,7 +29,7 @@ export DISPLAY=192.168.0.100:0 && bash ~/.vnc/xstartup &
 
 ## Next steps
 
-- [VNC Basics](/desktop/vnc): the alternative to XSDL, with a richer viewer interface.
+- [VNC](/reference/vnc): the alternative to XSDL, with a richer viewer interface.
 - [Installing a Distro](/install/with-the-app): set up a distro to use with XSDL.
 - [Desktop Environments](/reference/desktops): choose the interface you'll see in XSDL.
 - [Fixing Sound](/use/sound): get audio working in your distro.

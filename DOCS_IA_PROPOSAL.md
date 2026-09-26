@@ -36,8 +36,7 @@ Step 2 · Install a distro
   Install without the app                 /install/without-the-app            NEW
   Uninstall a distro                      /install/uninstall
 Step 3 · Start the desktop
-  Termux:X11 (on the phone)               /desktop/termux-x11                 NEW
-  VNC (phone or another device)           /desktop/vnc
+  Termux:X11 (the desktop path)           /desktop/termux-x11                 NEW
 Step 4 · Use it
   Install apps                            /use/apps
   Dev packs                               /use/dev-packs                      NEW
@@ -60,6 +59,7 @@ Reference
   The andronix command                    /reference/andronix-command
   Supported distros                       /reference/distros
   Desktops                                /reference/desktops
+  Other ways to connect (VNC)             /reference/vnc
   Limitations                             /reference/limitations
 About
   Account deletion                        /account/deletion                   (URL kept: linked from the app)
@@ -84,7 +84,7 @@ The path through the journey:
 
 ```
 What is Andronix → Requirements → Install Termux → Choose → Install with the app (or without)
-→ Termux:X11 (or VNC) → Install apps → Dev packs → Sound → Storage → Backups → Updates → Make it faster
+→ Termux:X11 → Install apps → Dev packs → Sound → Storage → Backups → Updates → Make it faster
 ```
 
 ## Every page: keep / merge / rewrite / archive / delete
@@ -104,7 +104,7 @@ What is Andronix → Requirements → Install Termux → Choose → Install with
 | The andronix Command | rewrite | Reference › The andronix command | Adds `desktop`, `pack` and `telemetry` (final in 2.0.0). The long how-to sections move to Step 4 pages and the reference links to them. |
 | Desktop Environments | keep | Reference › Desktops | Availability, screenshots. The "light profile" section moves to Make it faster; the "which one" advice moves to Choose. |
 | Window Managers (retired) | archive | Pre-2.0 › Window managers | Retired in 2.0; old app keys now install XFCE with a notice. |
-| VNC Basics | rewrite | Step 3 › VNC | The new-install part stays; "VNC on an old install" moves to the archive. |
+| VNC Basics | rewrite | Reference › Other ways to connect (VNC) | Owner decision: Termux:X11 is the desktop path; VNC is for other devices. "VNC on an old install" moves to the archive. |
 | XSDL Basics (outdated) | archive | Pre-2.0 › XSDL | Untested with 2.0. Termux:X11 replaces it. |
 | Browsers | merge | Step 4 › Install apps | Firefox is preinstalled now. The remaining commands (Chromium, per-distro) fit one page. |
 | IDEs | merge | Step 4 › Install apps (and Dev packs) | VS Code / IntelliJ steps go into Install apps. Language toolchains are now dev packs. |
@@ -149,7 +149,7 @@ Nothing is deleted outright. Every merged or moved page redirects to its new hom
 | `/andronix-cli/andronix-cli` | `/reference/andronix-command` |
 | `/desktop-environments/desktop-environments` | `/reference/desktops` |
 | `/window-managers/window-managers` | `/pre-2.0/window-managers` |
-| `/vnc/vnc-basics` | `/desktop/vnc` |
+| `/vnc/vnc-basics`, `/desktop/vnc` | `/reference/vnc` |
 | `/xsdl/xsdl-basics` | `/pre-2.0/xsdl` |
 | `/software/browsers`, `/software/IDEs`, `/software/libre-office`, `/software/gimp` | `/use/apps` (each with its section anchor) |
 | `/termux/migrating-to-f-droid` | `/start-here/install-termux` |
@@ -196,12 +196,12 @@ App-flow pages (screens, button names, screenshots) stay as they are, with their
 ## Questions
 
 1. **Which Termux do we recommend?** F-Droid, GitHub, or the new Play Store build? The installer passes on all three (Play needs Android 11+).
-2. **Desktop default:** should Step 3 lead with Termux:X11 (full screen, on the phone) and keep VNC for other devices? Termux:X11 has passed on the Android 16 emulator only; VNC passed everywhere except Android 9 on kernel 4.4.
+2. ~~Desktop default~~ **Decided by the owner:** Termux:X11 is the desktop path. Step 3 covers Termux:X11 only, and VNC moves to Reference as "Other ways to connect".
 3. **Merging the software pages** into one "Install apps" page: OK, or keep one page per app for search traffic? The redirects keep the old URLs working either way.
 4. **Step titles:** "Step 1 · Start here" in the sidebar, or plain "Start here" with the number only on the page?
 
 **Defaults used until you decide:**
 1. The Termux table stays neutral: F-Droid, GitHub, and Play on Android 11 and newer.
-2. Termux:X11 is listed first in Step 3, with an "or: VNC" link.
+2. (Decided) Step 3 is Termux:X11 only.
 3. The software pages are merged.
 4. The sidebar uses "Step N · …".

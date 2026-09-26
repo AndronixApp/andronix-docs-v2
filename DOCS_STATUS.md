@@ -1,5 +1,16 @@
 # Docs status: new installer
 
+## Termux:X11 is the desktop path (owner decision, Sept 26)
+
+- **Step 3 is Termux:X11 only.** `desktop/meta.json` lists just `termux-x11`. The journey pages (home, install with/without the app, What is Andronix, Install apps) point there, with `andronix desktop <distro>`. The "or: VNC" branches are removed.
+- **VNC moved to Reference** as "Other ways to connect (VNC)" (`/reference/vnc`). A callout at the top of that page says Termux:X11 is the main way. `/desktop/vnc`, `/vnc/vnc-basics` and `/vnc` redirect there; 80 of 80 redirect variants pass.
+- **Fact fix (lead):** Termux:X11 is only published on GitHub (`termux-x11-universal-debug.apk`, nightly). It isn't on F-Droid or Play (both return 404, checked Sept 26), and it works with the GitHub and Play Store builds of Termux.
+  - Install Termux no longer says to get Termux:X11 "from the same source". The same-source rule is now only for plugins like Termux:API.
+  - The Termux:X11 page names the APK.
+  - F-Droid Termux + Termux:X11 isn't tested yet (TODO).
+- **Note for android and ui:** the owner's brief says "F-Droid page matching the user's Termux source" for Termux:X11. That page doesn't exist, so the app should link the GitHub nightly release for every Termux source. App 10.0's Termux dialog (f39902b) says to use "the same source for add-ons like Termux:X11", which is wrong for Termux:X11.
+- **IA proposal md and html** are updated (question 2 is now decided).
+
 ## Release order (lead, Sept 26): deploy the docs BEFORE the app 10.0 release
 
 - **Why.** App 10.0's one-time Termux dialog opens `https://docs.andronix.app/start-here/install-termux` (android f39902b, `LinkHub.ANDRONIX_DOCS_TERMUX_INSTALL`). That page exists only on `docs/new-installer`. The live site returns 404 for it today (checked Sept 26).

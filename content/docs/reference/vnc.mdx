@@ -1,15 +1,16 @@
 ---
-title: VNC
-description: Learn how to start, stop and configure a VNC server in your Andronix distro, connect with a VNC client, and access it from other devices.
+title: Other Ways to Connect (VNC)
+description: Use your Andronix desktop from another device, or in a VNC viewer app, with vncserver-start. The main way to open the desktop is Termux:X11.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 
 import Imagera from "@/components/imagera";
-import NextStep from "@/components/next-step";
 
-VNC lets you see and use your distro's desktop in a VNC viewer app, on the phone or on another device like a laptop or tablet. (To use it full screen on the phone itself, [Termux:X11](/desktop/termux-x11) is simpler.) This page shows you how to start and stop the VNC server, connect to it, tweak its resolution and picture quality, and access it from other devices on your network.
+<Callout type="info">**The main way to open your desktop is [Termux:X11](/desktop/termux-x11)**, full screen on the phone with `andronix desktop`. Use VNC when you want the desktop on another device, like a laptop or tablet, or prefer a VNC viewer app.</Callout>
+
+VNC lets you see and use your distro's desktop in a VNC viewer app. This page shows you how to start and stop the VNC server, connect to it, tweak its resolution and picture quality, and access it from other devices on your network.
 
 {/* TODO(docs): these app screenshots show the Andronix 7 UI (incl. the retired Commands tab). Replace once ui's redesign lands; the lead will have the emulator agent shoot the new screens. Files: vnc_server_start_command.jpg (Termux; the RealVNC shots can stay) */}
 
@@ -232,4 +233,7 @@ Copy the **WLAN IP** address (e.g. _192.168.xx.xx_). On the other device, connec
 
 To go back to phone-only access, run `vncserver-stop`, then `vncserver-start` without `--lan`.
 
-<NextStep href="/use/apps" title="Install apps" description="Step 4: browsers, IDEs, LibreOffice, GIMP and more." />
+## Related pages
+
+- [Start the desktop with Termux:X11](/desktop/termux-x11)
+- [The desktop is black, slow or closes](/troubleshooting/desktop)

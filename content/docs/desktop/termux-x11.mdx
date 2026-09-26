@@ -8,8 +8,6 @@ import NextStep from "@/components/next-step";
 
 Termux:X11 is an Android app that shows your distro's desktop full screen on the phone, at the phone's own resolution. There's nothing to connect to and no desktop password to type: one command in Termux opens it.
 
-<Callout type="info">Want to use the desktop from a laptop or tablet instead? Use [VNC](/desktop/vnc). You can use both on the same install, just not at the same time on the same screen.</Callout>
-
 ## Set it up once
 
 <Steps>
@@ -17,9 +15,9 @@ Termux:X11 is an Android app that shows your distro's desktop full screen on the
 
 ### Install the Termux:X11 app
 
-Download the Termux:X11 app from its [release page on GitHub](https://github.com/termux/termux-x11/releases/tag/nightly) and install it. Pick `termux-x11-universal-debug.apk` if you're not sure which file you need. It needs Android 7 or newer.
+Termux:X11 is only published on GitHub (it isn't on F-Droid or the Play Store). Open its [nightly release page](https://github.com/termux/termux-x11/releases/tag/nightly), download **`termux-x11-universal-debug.apk`**, and install it. It needs Android 7 or newer, and works with the GitHub and Play Store builds of Termux.
 
-{/* TODO(docs): link the exact APK the installer's "app missing" box points to, once the release pins one. */}
+{/* TODO(docs): F-Droid Termux + Termux:X11 isn't in the test matrix yet; add it to the line above once tested. */}
 
 </Step>
 
@@ -75,4 +73,8 @@ ANDRONIX_X11_ARGS=-legacy-drawing andronix desktop
 
 If the colours look swapped (blue and red mixed up), use `-force-bgra` instead. More fixes: [The desktop is black, slow or closes](/troubleshooting/desktop).
 
-<NextStep href="/use/apps" title="Install apps" description="Step 4: browsers, IDEs, LibreOffice, GIMP and more." or={{ href: "/desktop/vnc", title: "Use VNC instead" }} />
+## Other ways to connect
+
+To use the desktop from a laptop or tablet, or with a VNC viewer app, see [Other ways to connect (VNC)](/reference/vnc).
+
+<NextStep href="/use/apps" title="Install apps" description="Step 4: browsers, IDEs, LibreOffice, GIMP and more." />

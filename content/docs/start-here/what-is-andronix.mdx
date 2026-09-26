@@ -13,7 +13,7 @@ Andronix puts a full Linux distro, like Debian, Ubuntu or Fedora, on your Androi
 - **Termux** is a terminal app for Android. Your distro lives and runs inside it. See [Install Termux](/start-here/install-termux).
 - **The `andronix` command** runs in Termux. It downloads the distro, sets it up, installs your desktop, and starts it. See [the andronix command](/reference/andronix-command).
 - **proot** lets the distro run inside Termux as if it had its own root filesystem, without needing root on the phone. `andronix` installs it for you.
-- **Termux:X11 or VNC** shows the distro's desktop. Termux:X11 is an Android app that shows the desktop full screen on the phone. VNC lets you connect from a VNC viewer app on the phone, or from another device.
+- **Termux:X11** is an Android app that shows the distro's desktop full screen on the phone. (To reach the desktop from another device, there's also [VNC](/reference/vnc).)
 - **PulseAudio** in Termux plays the distro's sound through the phone's speakers. `andronix` sets it up for you.
 
 ## What happens when you install a distro
@@ -21,7 +21,7 @@ Andronix puts a full Linux distro, like Debian, Ubuntu or Fedora, on your Androi
 1. The app copies an install command for the distro and desktop you picked. You paste it into Termux.
 2. The command sets up `andronix` in Termux and runs it.
 3. `andronix` downloads a ready-made image of the distro from Andronix's servers (or the distro's official image, if ours isn't available), checks it, and unpacks it.
-4. Inside the distro, it installs your desktop, a VNC server and Firefox with the distro's own package manager.
+4. Inside the distro, it installs your desktop and Firefox with the distro's own package manager.
 5. It writes a start script, like `start-debian.sh`, and asks you to create your user.
 
 The whole distro lives in `~/.andronix/distros/` inside Termux. You can [back it up](/use/backups), [update it](/use/updates) or [remove it](/install/uninstall) at any time.
