@@ -17,22 +17,24 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
     <DocsLayout
       {...baseOptions()}
       tree={source.getPageTree()}
+      themeSwitch={{ enabled: false }}
       sidebar={{
         defaultOpenLevel: 1,
         banner: (
           <Link
             key="signal-9-banner"
             href="/android-12/andronix-on-android-12-and-beyond"
-            className="group flex items-start gap-2.5 rounded-lg border border-fd-primary/25 bg-fd-primary/10 p-3 text-sm transition-colors hover:bg-fd-primary/15"
+            className="group flex items-start gap-2.5 p-3.5 text-sm"
+            style={{
+              background: "var(--andronix-warn-container)",
+              color: "var(--andronix-on-warn-container)",
+              borderRadius: "var(--andronix-radius-card)",
+            }}
           >
-            <TriangleAlert className="mt-0.5 size-4 shrink-0 text-fd-primary" />
+            <TriangleAlert className="mt-0.5 size-4 shrink-0" />
             <span className="flex flex-col gap-0.5">
-              <span className="font-medium text-fd-foreground">
-                Signal 9 error in Termux?
-              </span>
-              <span className="text-xs text-fd-muted-foreground group-hover:text-fd-primary">
-                Read the fix →
-              </span>
+              <span className="font-bold">Signal 9 error in Termux?</span>
+              <span className="text-xs opacity-85 group-hover:underline">Read the fix →</span>
             </span>
           </Link>
         ),

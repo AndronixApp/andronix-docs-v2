@@ -1,67 +1,365 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+@import './andronix-tokens.css';
 
-@theme {
-  --color-fd-primary: oklch(64.6% 0.222 41.116); /* orange-600 */
-  --color-fd-primary-foreground: oklch(100% 0 0);
-  --color-fd-ring: oklch(70.5% 0.213 47.604);
-  --color-fd-accent: oklch(95.4% 0.038 75.164 / 60%); /* orange-100 */
-  --color-fd-accent-foreground: oklch(47% 0.157 37.304);
+/* Andronix 2.0 docs theme: dark only, warm brown-black, soft tonal blocks.
+   No borders and no shadows; depth comes from bg -> surface -> surface-high.
+   Colours come from andronix-tokens.css; this file only maps them onto Fumadocs. */
+
+@theme inline {
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+:root,
 .dark {
-  /* warm, slightly lifted neutrals instead of pure grey */
-  --color-fd-background: oklch(16.5% 0.004 48);
-  --color-fd-card: oklch(19.5% 0.005 48);
-  --color-fd-popover: oklch(21% 0.006 48);
-  --color-fd-muted: oklch(22% 0.006 48);
-  --color-fd-secondary: oklch(23% 0.006 48);
-  --color-fd-border: oklch(100% 0 0 / 9%);
-  --color-fd-muted-foreground: oklch(72% 0.01 60);
+  color-scheme: dark;
 
-  --color-fd-primary: oklch(75% 0.183 55.934); /* orange-400 */
-  --color-fd-primary-foreground: oklch(18% 0.02 40);
-  --color-fd-ring: oklch(70.5% 0.213 47.604);
-  --color-fd-accent: oklch(70.5% 0.213 47.604 / 12%);
-  --color-fd-accent-foreground: oklch(90% 0.07 60);
-}
+  --color-fd-background: var(--andronix-bg);
+  --color-fd-foreground: var(--andronix-on-surface);
+  --color-fd-muted: var(--andronix-surface);
+  --color-fd-muted-foreground: var(--andronix-on-surface-variant);
+  --color-fd-popover: var(--andronix-surface-high);
+  --color-fd-popover-foreground: var(--andronix-on-surface);
+  --color-fd-card: var(--andronix-surface);
+  --color-fd-card-foreground: var(--andronix-on-surface);
+  --color-fd-border: transparent;
+  --color-fd-primary: var(--andronix-primary);
+  --color-fd-primary-foreground: var(--andronix-on-primary);
+  --color-fd-secondary: var(--andronix-surface-highest);
+  --color-fd-secondary-foreground: var(--andronix-on-surface);
+  --color-fd-accent: var(--andronix-surface-high);
+  --color-fd-accent-foreground: var(--andronix-on-surface);
+  --color-fd-ring: var(--andronix-outline);
+  --color-fd-overlay: rgb(10 6 4 / 0.7);
 
-.dark #nd-sidebar {
-  --color-fd-muted: oklch(22% 0.006 48);
-  --color-fd-secondary: oklch(23% 0.006 48);
-}
-
-:root {
   --fd-layout-width: 1440px;
 }
 
 html {
   scrollbar-gutter: stable;
+  background: var(--andronix-bg);
+}
+
+body {
+  background: var(--andronix-bg);
+  color: var(--andronix-on-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background-color: color-mix(in oklab, var(--color-fd-primary) 30%, transparent);
+  background-color: var(--andronix-primary-container);
+  color: var(--andronix-on-primary-container);
 }
 
-/* content links: subtle underline that picks up the brand colour on hover */
+:focus-visible {
+  outline: 2px solid var(--andronix-outline);
+  outline-offset: 2px;
+}
+
+/* ---------- Sidebar ---------- */
+
+#nd-sidebar,
+#nd-sidebar > * {
+  background: var(--andronix-bg);
+}
+
+#nd-sidebar {
+  --color-fd-muted: var(--andronix-surface);
+  --color-fd-secondary: var(--andronix-surface-highest);
+  --color-fd-muted-foreground: var(--andronix-on-surface-variant);
+}
+
+/* page links */
+#nd-sidebar a[data-active] {
+  border-radius: var(--andronix-radius-full);
+  padding-block: 7px;
+  font-weight: 500;
+  color: var(--andronix-on-surface-variant);
+}
+
+#nd-sidebar a[data-active]:hover {
+  background: var(--andronix-surface);
+  color: var(--andronix-on-surface);
+}
+
+#nd-sidebar a[data-active='true'],
+#nd-sidebar a[data-active='true']:hover {
+  background: var(--andronix-primary-container);
+  color: var(--andronix-on-primary-container);
+  font-weight: 700;
+}
+
+/* section separators ("Getting Started", "Installation", ...) */
+#nd-sidebar p {
+  font: var(--andronix-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--andronix-on-surface-muted);
+}
+
+/* search pill */
+button[data-search-full] {
+  background: var(--andronix-surface);
+  border-radius: var(--andronix-radius-full);
+  color: var(--andronix-on-surface-muted);
+  padding-block: 8px;
+}
+
+button[data-search-full]:hover {
+  background: var(--andronix-surface-high);
+  color: var(--andronix-on-surface-variant);
+}
+
+button[data-search-full] kbd {
+  background: var(--andronix-surface-highest);
+  border-radius: var(--andronix-radius-chip);
+  font-family: var(--font-mono);
+}
+
+/* ---------- Search dialog ---------- */
+
+[role='dialog'] {
+  border-radius: var(--andronix-radius-card);
+}
+
+[role='dialog'] input:focus-visible {
+  outline: none;
+}
+
+/* ---------- Table of contents ---------- */
+
+#nd-toc a[data-active='true'] {
+  color: var(--andronix-primary);
+}
+
+/* ---------- Page content ---------- */
+
+.prose {
+  --tw-prose-body: var(--andronix-on-surface-variant);
+  --tw-prose-headings: var(--andronix-on-surface);
+  --tw-prose-lead: var(--andronix-on-surface-variant);
+  --tw-prose-links: var(--andronix-primary);
+  --tw-prose-bold: var(--andronix-on-surface);
+  --tw-prose-counters: var(--andronix-on-surface-muted);
+  --tw-prose-bullets: var(--andronix-on-surface-muted);
+  --tw-prose-quotes: var(--andronix-on-surface-variant);
+  --tw-prose-captions: var(--andronix-on-surface-muted);
+  --tw-prose-code: var(--andronix-on-surface);
+  --tw-prose-hr: var(--andronix-surface-high);
+  line-height: 1.7;
+}
+
+.prose :where(h1, h2, h3, h4) {
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.prose :where(h2) {
+  letter-spacing: -0.02em;
+}
+
+/* page title and description */
+article > h1,
+main h1 {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+/* links */
 .prose a:not([data-card]) {
-  text-decoration-color: color-mix(in oklab, var(--color-fd-primary) 55%, transparent);
+  color: var(--andronix-primary);
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in oklab, var(--andronix-primary) 40%, transparent);
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
-  transition: text-decoration-color 150ms, color 150ms;
+  transition: text-decoration-color 150ms;
 }
 
 .prose a:not([data-card]):hover {
-  color: var(--color-fd-primary);
-  text-decoration-color: var(--color-fd-primary);
+  text-decoration-color: var(--andronix-primary);
 }
 
-/* cards: lift on hover */
-.prose a[data-card] {
-  transition: border-color 150ms, background-color 150ms, transform 150ms;
+/* inline code: a chip, like the app's version chips */
+.prose :not(pre) > code {
+  background: var(--andronix-surface-highest);
+  color: var(--andronix-on-surface);
+  border: 0;
+  border-radius: var(--andronix-radius-chip);
+  padding: 0.12em 0.4em;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.86em;
+  overflow-wrap: break-word;
 }
 
-.prose a[data-card]:hover {
-  border-color: color-mix(in oklab, var(--color-fd-primary) 45%, transparent);
-  transform: translateY(-1px);
+.prose a:not([data-card]) > code {
+  color: var(--andronix-primary);
+}
+
+/* images: soft corners, no frame */
+.prose img {
+  border-radius: var(--andronix-radius-tile);
+}
+
+/* tables: tonal rows split by a 2px gap of the page colour */
+.prose table {
+  border-collapse: separate;
+  border-spacing: 0 2px;
+  font-size: 0.9375em;
+  line-height: 1.55;
+}
+
+.prose :where(thead th, tbody td) {
+  border: 0 !important;
+  padding: 12px 16px !important;
+  vertical-align: top;
+}
+
+.prose thead th {
+  background: var(--andronix-surface-high);
+  color: var(--andronix-on-surface);
+  font-weight: 700;
+}
+
+.prose tbody td {
+  background: var(--andronix-surface);
+}
+
+.prose thead tr th:first-child {
+  border-start-start-radius: 16px;
+}
+
+.prose thead tr th:last-child {
+  border-start-end-radius: 16px;
+}
+
+.prose tbody tr:last-child td:first-child {
+  border-end-start-radius: 16px;
+}
+
+.prose tbody tr:last-child td:last-child {
+  border-end-end-radius: 16px;
+}
+
+/* tables with an empty header row (| | |): hide it and round the body instead */
+.prose thead:has(th:empty:first-child):not(:has(th:not(:empty))) {
+  display: none;
+}
+
+.prose thead:has(th:empty:first-child):not(:has(th:not(:empty))) + tbody tr:first-child td:first-child {
+  border-start-start-radius: 16px;
+}
+
+.prose thead:has(th:empty:first-child):not(:has(th:not(:empty))) + tbody tr:first-child td:last-child {
+  border-start-end-radius: 16px;
+}
+
+/* ---------- Code blocks ---------- */
+
+figure.shiki {
+  background: var(--andronix-code-bg) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: var(--andronix-radius-card);
+  font-family: var(--font-mono);
+}
+
+figure.shiki pre,
+figure.shiki code {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+figure.shiki > div:has(> pre) {
+  padding-block: 6px;
+}
+
+/* long commands wrap instead of scrolling sideways (phones), and leave room for the copy button */
+figure.shiki pre {
+  width: auto !important;
+  white-space: pre-wrap;
+}
+
+figure.shiki .line {
+  padding-inline: 20px 52px;
+  overflow-wrap: anywhere;
+}
+
+/* copy button */
+figure.shiki button {
+  border-radius: var(--andronix-radius-full);
+  color: var(--andronix-on-surface-muted);
+}
+
+figure.shiki button:hover {
+  background: var(--andronix-surface);
+  color: var(--andronix-primary);
+}
+
+/* ---------- Cards (home page) ---------- */
+
+.prose a[data-card='true'] {
+  background: var(--andronix-surface);
+  border: 0;
+  border-radius: var(--andronix-radius-card);
+  box-shadow: none;
+  padding: 20px;
+  transition: background-color 150ms;
+}
+
+.prose a[data-card='true']:hover {
+  background: var(--andronix-surface-high);
+}
+
+.prose a[data-card='true'] > div:first-child:has(svg) {
+  background: var(--andronix-primary-container);
+  color: var(--andronix-on-primary-container);
+  border: 0;
+  border-radius: var(--andronix-radius-tile);
+  box-shadow: none;
+  padding: 8px;
+}
+
+.prose a[data-card='true'] h3 {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--andronix-on-surface);
+}
+
+.prose a[data-card='true'] p {
+  color: var(--andronix-on-surface-variant);
+}
+
+/* ---------- Steps ---------- */
+
+.fd-steps {
+  border: 0;
+}
+
+.fd-step::before {
+  background: var(--andronix-surface-highest) !important;
+  color: var(--andronix-on-surface) !important;
+  font-weight: 800;
+  box-shadow: none !important;
+}
+
+/* ---------- Callouts (components/callout.tsx) ---------- */
+
+.andronix-callout .andronix-callout-body :where(strong, a:not([data-card]), a > code) {
+  color: inherit;
+}
+
+.andronix-callout .andronix-callout-body a:not([data-card]) {
+  text-decoration-color: currentColor;
+}
+
+.andronix-callout .andronix-callout-body :not(pre) > code {
+  background: rgb(0 0 0 / 0.22);
+  color: inherit;
 }

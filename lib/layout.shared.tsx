@@ -18,10 +18,16 @@ export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
       title: (
-        <span className="font-semibold text-[0.95rem] tracking-tight text-fd-foreground">
-          andronix<span className="text-fd-primary">.</span>app
-          <span className="text-fd-muted-foreground">/</span>
-          <span className="text-fd-primary">docs</span>
+        <span className="inline-flex items-center gap-2">
+          <span className="text-[1.05rem] font-extrabold tracking-[-0.01em] text-fd-foreground">
+            andronix<span style={{ color: "var(--andronix-primary)" }}>.</span>
+          </span>
+          <span
+            className="rounded-full px-2 py-0.5 text-[11.5px] font-bold uppercase tracking-[0.08em]"
+            style={{ background: "var(--andronix-primary-container)", color: "var(--andronix-on-primary-container)" }}
+          >
+            docs
+          </span>
         </span>
       ),
       url: "/",

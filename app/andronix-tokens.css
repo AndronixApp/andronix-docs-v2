@@ -1,0 +1,84 @@
+/* Copied from the app's design/tokens.css (app-wt-ui, branch ui-revamp). Keep in sync; don't edit here.
+   Docs-only mappings live in global.css. */
+/* Andronix 2.0, direction A "soft tonal". Dark only.
+   Source of truth: app/src/main/res/values/colors.xml (andronix_* colours) on branch ui-revamp.
+   Mockups: design/proposal.html. */
+:root {
+  color-scheme: dark;
+
+  /* Neutrals: three steps of warm brown, no borders, no shadows */
+  --andronix-bg: #19120E;                 /* page / window background */
+  --andronix-surface: #261D17;            /* cards, row groups, nav bar */
+  --andronix-surface-high: #33271F;       /* dialogs, sheets, menus */
+  --andronix-surface-highest: #3A2D24;    /* icon tiles, chips, grey badges */
+  --andronix-on-surface: #F2DFD4;         /* titles, body */
+  --andronix-on-surface-variant: #D6C2B5; /* secondary text */
+  --andronix-on-surface-muted: #A8958A;   /* captions */
+  --andronix-outline: #A08D82;            /* focus rings only */
+  --andronix-outline-variant: #52443C;
+
+  /* Primary: light orange = act (buttons, prices, links, switches) */
+  --andronix-primary: #FFB689;
+  --andronix-on-primary: #4A1E00;
+  /* Primary container: deep orange block (free distros, Premium, "Recommended", nav pill) */
+  --andronix-primary-container: #6E3408;
+  --andronix-on-primary-container: #FFDBC4;
+
+  /* Secondary: tonal brown buttons */
+  --andronix-secondary: #E4BFA8;
+  --andronix-on-secondary: #422B1C;
+  --andronix-secondary-container: #4F3A2E;
+  --andronix-on-secondary-container: #FFDCC8;
+
+  /* Tertiary: olive = Modded OS / Pass / Andronix Complete */
+  --andronix-tertiary: #BFD39A;
+  --andronix-on-tertiary: #1F2A0C;
+  --andronix-tertiary-container: #35421F;
+  --andronix-on-tertiary-container: #DDE7C9;
+
+  /* Status */
+  --andronix-ok-container: #1F4A2C;   --andronix-on-ok-container: #B6E9C4;     /* Owned, installed */
+  --andronix-warn-container: #4A3A07; --andronix-on-warn-container: #FBE08A;   /* notices */
+  --andronix-error: #FFB4AB;          --andronix-on-error: #690005;
+  --andronix-error-container: #93000A; --andronix-on-error-container: #FFDAD6;
+
+  /* Special */
+  --andronix-code-bg: #0F0A07;    /* Termux command blocks; code text uses on-surface, prompt uses primary */
+  --andronix-logo-tile: #F3E6DC;  /* light tile behind distro logos (Debian red, Kali black stay visible) */
+  --andronix-brand: #E8791E;      /* brand orange for logo/marketing art only; never text or button fill */
+
+  /* Type */
+  --andronix-font: "Plus Jakarta Sans", system-ui, sans-serif;  /* 400, 600, 700, 800 */
+  --andronix-font-mono: "Geist Mono", ui-monospace, monospace;  /* 500; commands and version chips only */
+  --andronix-display: 800 28px/34px var(--andronix-font);   /* screen titles; letter-spacing -0.02em */
+  --andronix-headline: 800 22px/28px var(--andronix-font);  /* section / step titles; -0.015em */
+  --andronix-title: 800 22px/27px var(--andronix-font);     /* block titles */
+  --andronix-price: 800 30px/36px var(--andronix-font);
+  --andronix-row-title: 700 15px/20px var(--andronix-font);
+  --andronix-body: 400 14px/20px var(--andronix-font);
+  --andronix-caption: 400 12.5px/17px var(--andronix-font);
+  --andronix-label: 700 11.5px/16px var(--andronix-font);   /* UPPERCASE, letter-spacing 0.08em */
+  --andronix-code: 500 12.5px/19px var(--andronix-font-mono);
+
+  /* Shape */
+  --andronix-radius-chip: 7px;     /* version chips */
+  --andronix-radius-tile: 12px;    /* logo / icon tiles */
+  --andronix-radius-card: 22px;    /* cards, row groups, banners */
+  --andronix-radius-block: 30px;   /* product blocks, offers, dialogs */
+  --andronix-radius-full: 999px;   /* buttons, badges, switches, nav pill */
+
+  /* Spacing: 4dp grid */
+  --andronix-space-1: 4px; --andronix-space-2: 8px; --andronix-space-3: 12px;
+  --andronix-space-4: 16px; --andronix-space-6: 24px; --andronix-space-8: 32px;
+  --andronix-gutter: 16px;
+}
+
+/* Rules
+   - No borders and no shadows. Depth comes from bg -> surface -> surface-high.
+     Rows inside a group are split by a 2px gap of --andronix-bg, not a line.
+   - Pairs only: text on a colour always uses its on-* partner (all pairs are 7:1 or better).
+   - One filled primary button per view; prices are primary pills, never badges.
+   - Badge meanings: primary-container = our pick ("Recommended"), ok = owned,
+     tertiary-container = in the Pass, surface-highest = archived / info.
+   - Orange block = free distros and Premium; olive block = Modded OS and the Pass.
+*/
