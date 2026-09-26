@@ -23,12 +23,20 @@ export const metadata = {
   description:
     "Andronix lets you install Linux distributions like Ubuntu, Debian, and Manjaro on non-rooted Android devices. Read our documentation for step-by-step instructions.",
   metadataBase: new URL("https://docs.andronix.app"),
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "Andronix Documentation",
     description:
       "Andronix lets you install Ubuntu, Debian, and Manjaro on non-rooted Android devices. Our documentation provides step-by-step instructions and troubleshooting tips to help you set up your Linux environment quickly and easily. Experience the power of Linux on your mobile device with Andronix.",
     url: "https://docs.andronix.app/",
-    images: "/og.png",
+    images: [{ url: "/og-image-1200x630.png", width: 1200, height: 630, alt: "Andronix 2.0: Linux on Android" }],
     type: "website",
   },
   twitter: {
@@ -36,8 +44,12 @@ export const metadata = {
     title: "Andronix Documentation",
     description:
       "Andronix lets you install Ubuntu, Debian, and Manjaro on non-rooted Android devices. Our documentation provides step-by-step instructions and troubleshooting tips to help you set up your Linux environment quickly and easily. Experience the power of Linux on your mobile device with Andronix.",
-    images: "/og.png",
+    images: [{ url: "/og-image-1200x630.png", width: 1200, height: 630, alt: "Andronix 2.0: Linux on Android" }],
   },
+};
+
+export const viewport = {
+  themeColor: "#19120E",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

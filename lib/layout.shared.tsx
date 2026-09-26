@@ -19,6 +19,8 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <span className="inline-flex items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/mark.svg" alt="" width={22} height={22} className="rounded-[6px]" />
           <span className="text-[1.05rem] font-extrabold tracking-[-0.01em] text-fd-foreground">
             andronix<span style={{ color: "var(--andronix-primary)" }}>.</span>
           </span>
