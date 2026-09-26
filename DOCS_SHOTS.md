@@ -1,5 +1,30 @@
 # App 10 screenshot shot list
 
+## Capture status (ui-revamp 5b2cd649, Sept 26)
+
+**Captured and committed:** 18 of 26 files, all 1080 × 1920, 24-bit, no alpha.
+- `app10-home`, `-distro-list`, `-interface-picker`, `-desktop-picker`
+- `app10-termux-step`, `-termux-step-uninstall`, `-install-result`, `-uninstall-sheet`
+- `app10-start-desktop`, `-start-desktop-get-x11`, `-phantom-tip`
+- `app10-modded-editions`, `-modded-editions-owned`, `-modded-termux-step`
+- `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`
+
+**Not delivered yet:** 8 files.
+- **App:** `app10-termux-sources`, `app10-modded-classic`, `app10-modded-edition-unpaid`, `app10-modded-edition-owned`.
+- **Termux:** `termux-install-running`, `termux-create-user`, `termux-modded-first-boot`, `termux-vncserver-start`.
+
+Their `<AppShot>` spots render nothing until the files land.
+
+**Reshoot suggested:**
+- `app10-modded-editions`: the Get pills show instead of prices (store prices probably didn't load in the test build). The alt text was changed to match; reshoot once prices load if the listing needs them.
+- `app10-premium`: it's scrolled past the price and Buy card. Fine for the docs (the alt text now says "listing what Premium includes"). For Play, reshoot from the top.
+- `app10-desktop-picker`: KDE Plasma is below the fold (XFCE, LXQt, MATE show). Optional: scroll a little so all four show.
+
+**Noted, no reshoot:**
+- `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, so the app's uninstall also removes an old pre-2.0 copy.
+- `app10-premium-owner` shows a "Copy beta command" perk and `andronix update --channel stable`. The CLI reference doesn't document `--channel` yet (to add once confirmed).
+- `app10-phantom-tip`: the tip sits on the Start the desktop step, labelled "How to fix it" (the docs text now says so).
+
 For the app-10 screenshot refresh. **Don't capture until the UI freeze**: the app is still changing (M3, motion, in-button loading).
 
 ## How to capture
@@ -40,7 +65,7 @@ For the app-10 screenshot refresh. **Don't capture until the UI freeze**: the ap
 | 17 | `app10-modded-termux-step.png` | Installing Modded OS (Termux Execution) | Termux step with the masked Modded command (`--token ••••`), Copy and Open Termux | Modded Pass owner | Copy the command | The Termux step for a Modded edition, with the token hidden |  |
 | 18 | `app10-premium.png` | Blog (Premium); Modded OS Editions | Premium screen: price, 30% off the Pass, early access, download limits, supporter wall | Free | Open Premium | The Premium screen with its perks and price | yes |
 | 19 | `app10-premium-owner.png` | Blog (Premium) | Premium screen for an owner: perks unlocked, supporter wall option | Premium owner | Open Premium | The Premium screen for a Premium owner |  |
-| 20 | `app10-phantom-tip.png` | Process completed (signal 9) | The phantom process tip with 'Fix this' | Free, Android 16 | Shown when signal 9 is likely | The app's tip about Android stopping Termux, with a Fix this button |  |
+| 20 | `app10-phantom-tip.png` | Process completed (signal 9) | The Android 16 signal 9 tip on the Start the desktop step, with 'How to fix it' | Free, Android 16 | Shown when signal 9 is likely | The app's tip about Android stopping Termux, with a Fix this button |  |
 | 21 | `app10-delete-account.png` | Account Deletion (How to delete) | Profile/Settings with Delete account, and the re-authentication prompt | Free | Delete account | Deleting your account from the Andronix app |  |
 | 22 | `app10-settings-analytics.png` | Account Deletion (What isn't linked); blog (Privacy) | Settings with the Share usage analytics switch | Free | Settings | The Share usage analytics switch in Settings |  |
 
