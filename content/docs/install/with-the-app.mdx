@@ -1,5 +1,5 @@
 ---
-title: Installing a Distro
+title: Install with the App
 description: Step-by-step guide to installing a Linux distro like Ubuntu, Debian or Manjaro on Android with the Andronix app and Termux, no root required.
 ---
 
@@ -7,10 +7,11 @@ import Imagera from "@/components/imagera";
 import Badge from "@/components/badge";
 import YoutubeEmbed from "@/components/youtubeEmbed";
 import Collapsed from "@/components/collapsed";
+import NextStep from "@/components/next-step";
 
 Installing your favorite Linux distro with Andronix only takes a few minutes. This guide walks you through the whole process: picking a distro, choosing an interface, running the install command in Termux, creating your user, and starting your new system.
 
-<Callout type="info">These instructions need the **Andronix app 10.0 or newer (Andronix 2.0)**. Don't want to use the app? See [Installing without the app](#installing-without-the-app).</Callout>
+<Callout type="info">These instructions need the **Andronix app 10.0 or newer (Andronix 2.0)**. Don't want to use the app? See [Install without the app](/install/without-the-app).</Callout>
 <Callout type="info">This is **not** a guide for installing a **Modded OS**. For that, see [Installing Modded OS](/modded-os/modded-os-installation).</Callout>
 
 <Collapsed title="Older video (Andronix 7)">
@@ -98,6 +99,7 @@ Open the Termux app, **long press to paste the copied command, then press Enter 
 The command sets up the `andronix` installer and runs it. You'll see a list of steps, each ticked off with a ✓ as it finishes, with a progress bar for the long ones:
 
 ```text
+✓ Installing proot          (only if Termux doesn't have it yet)
 ✓ Checking your phone
 ✓ Finding the best download
 ✓ Downloading Debian 13
@@ -159,9 +161,11 @@ You can also use `andronix start <distro>`, for example `andronix start debian`.
 ### Verify
 If you see your username followed by `@localhost` in the shell, your distro is up and running. Type `exit` to go back to Termux.
 
-## 5. VNC Configuration 📺
+## 5. Start the desktop 📺
 
-If you chose a Desktop Environment, you'll use VNC to see and use it.
+If you chose a Desktop Environment, open it next.
+
+{/* TODO(docs): app flow. The app's "Start VNC server" page and this section get rewritten with ui's redesign (Termux:X11 vs VNC in the app). */}
 
 ### VNC Start
 
@@ -171,13 +175,10 @@ The **Start VNC server** page should now be open in the Andronix app.
 
 ### VNC Server
 
-Inside the distro, start the desktop:
+There are two ways to open your desktop; Step 3 covers both:
 
-```bash copy
-vncserver-start
-```
-
-Press **Enter** to pick the Auto screen size. Then open a VNC viewer app and connect to `localhost:1` with your desktop password. Follow the [VNC Basics](/desktop/vnc) guide for the full walkthrough.
+- **[Termux:X11](/desktop/termux-x11)** shows it full screen on the phone. In Termux, run `andronix desktop`.
+- **[VNC](/desktop/vnc)** shows it in a VNC viewer app, on the phone or another device. Inside the distro, run `vncserver-start`.
 
 <Callout type="warning">Keep the Termux session open while you use the desktop. Closing it, or typing `exit`, stops the desktop too.</Callout>
 
@@ -185,31 +186,4 @@ Press **Enter** to pick the Auto screen size. Then open a VNC viewer app and con
 
 <Callout type="error">Seeing the **Process completed (signal 9) - press Enter** error in Termux? Read [Android 12 and Newer](/troubleshooting/signal-9) to fix it.</Callout>
 
-## Installing without the app
-
-You can install any free distro straight from Termux, without the Andronix app. Paste this one line into Termux, replacing `debian` and `xfce` with the distro and desktop you want:
-
-```bash copy
-curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
-```
-
-It downloads the `andronix` command, checks it, and starts the install. The rest is the same as above: the install steps, [creating your user](#create-your-user), and [starting the distro](#start-the-distro).
-
-- **Distro names:** `debian`, `ubuntu` (26.04), `ubuntu24`, `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported Distros](/reference/distros).
-- **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only) or `none` for the command line only.
-
-{/* TODO(docs): remove this proot step once x11's final gate confirms installer 2.0.0 installs proot itself (feat-proot-install, step 'Installing proot'). */}
-
-<Callout type="info">On a fresh Termux, install `proot` first with `pkg install proot -y`. If it's missing, the installer stops and tells you to.</Callout>
-
-Once `andronix` is installed, you can install more distros with just `andronix install <distro> --de <desktop>`.
-
-## Next steps
-
-- [VNC Basics](/desktop/vnc): connect to your distro's desktop with a VNC viewer.
-- [Supported Distros](/reference/distros): versions, desktops and commands for each distro.
-- [The andronix command](/reference/andronix-command): install, start, back up and remove distros from Termux.
-- [Desktop Environments](/reference/desktops): learn more about the desktop you installed.
-- [Fixing Sound](/use/sound): get audio working in your distro.
-- [Uninstalling a Distro](/install/uninstall): remove a distro you no longer need.
-- [FAQ](/troubleshooting/faq): answers to common questions and errors.
+<NextStep href="/desktop/termux-x11" title="Start the desktop" description="Step 3: open your desktop full screen with Termux:X11, or with VNC." or={{ href: "/desktop/vnc", title: "VNC" }} />

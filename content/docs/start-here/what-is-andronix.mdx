@@ -1,42 +1,33 @@
 ---
-title: How Andronix Works
-description: A quick look under the hood of Andronix, and how it uses Termux, PRoot, the andronix installer, VNC and PulseAudio to run Linux on Android without root.
+title: What is Andronix
+description: Andronix runs real Linux distros like Debian, Ubuntu and Fedora on your Android phone, without root. Here's how the pieces fit together.
 ---
 
-Andronix is simple under the hood (well, not entirely, but most of it is easy to understand). This page explains the
-building blocks Andronix uses to run your favorite Linux distribution on your Android device. The most important one is **PRoot**.
+import NextStep from "@/components/next-step";
 
-### What is PRoot?
+Andronix puts a full Linux distro, like Debian, Ubuntu or Fedora, on your Android phone or tablet. You get a real Linux command line with the distro's own packages, and a desktop (XFCE, LXQt, MATE or KDE Plasma) you can use on the phone or from another device. It doesn't need root and doesn't change anything on Android itself.
 
-According to the official PRoot documentation:
+## The pieces
 
-> PRoot is a user-space implementation of **chroot, mount --bind, and binfmt\_misc**. This means that users don't need any privileges or setup to do things like using an arbitrary directory as the new root file system, making files accessible somewhere else in the file system hierarchy, or executing programs built for another CPU architecture transparently through QEMU user-mode.
+- **The Andronix app** is where you pick a distro and a desktop. It gives you one command to paste into Termux, and it sells [Modded OS](/modded-os/modded-os), our themed editions with apps already set up.
+- **Termux** is a terminal app for Android. Your distro lives and runs inside it. See [Install Termux](/start-here/install-termux).
+- **The `andronix` command** runs in Termux. It downloads the distro, sets it up, installs your desktop, and starts it. See [the andronix command](/reference/andronix-command).
+- **proot** lets the distro run inside Termux as if it had its own root filesystem, without needing root on the phone. `andronix` installs it for you.
+- **Termux:X11 or VNC** shows the distro's desktop. Termux:X11 is an Android app that shows the desktop full screen on the phone. VNC lets you connect from a VNC viewer app on the phone, or from another device.
+- **PulseAudio** in Termux plays the distro's sound through the phone's speakers. `andronix` sets it up for you.
 
-In simpler words, PRoot lets you run Linux operating systems in a Termux [chroot](https://en.m.wikipedia.org/wiki/Chroot)
-on an Android smartphone, tablet or Chromebook.
+## What happens when you install a distro
 
-### The building blocks
-
-Here is how the pieces fit together:
-
-- **Termux** provides the command line and the packages, specially compiled for Termux, that Andronix builds on.
-- **The `andronix` command** installs and manages your distros. The command the app copies for you sets it up in Termux and runs it. See [The andronix command](/reference/andronix-command).
-- **PRoot** runs the Linux distributions inside Termux.
-- **VNC** shows the distro's desktop in a VNC viewer app on your phone (or on another device).
-- **PulseAudio** provides sound support for the Linux distributions.
-
-### What happens when you install a distro
-
-1. The app copies an install command for the distro and desktop you picked.
-2. In Termux, the command sets up `andronix` and runs it.
-3. `andronix` downloads a ready-made image of the distro from Andronix's servers, or the distro's official image if ours isn't available, checks it, and unpacks it into `~/.andronix/distros/` in Termux.
+1. The app copies an install command for the distro and desktop you picked. You paste it into Termux.
+2. The command sets up `andronix` in Termux and runs it.
+3. `andronix` downloads a ready-made image of the distro from Andronix's servers (or the distro's official image, if ours isn't available), checks it, and unpacks it.
 4. Inside the distro, it installs your desktop, a VNC server and Firefox with the distro's own package manager.
 5. It writes a start script, like `start-debian.sh`, and asks you to create your user.
 
-Everything runs as a normal app on your phone. Nothing on the Android system itself is changed, which is why Andronix doesn't need root.
+The whole distro lives in `~/.andronix/distros/` inside Termux. You can [back it up](/use/backups), [update it](/use/updates) or [remove it](/install/uninstall) at any time.
 
-## Next steps
+## What it can't do
 
-- Read about the [limitations](/reference/limitations) of running Linux this way.
-- [Install a distro](/install/with-the-app) or try a [Modded OS](/modded-os/modded-os).
-- Learn how to view your desktop with [VNC](/desktop/vnc).
+Andronix runs Linux in user space, on top of Android. So some things don't work: Snap, Flatpak and Docker, GPU acceleration, VPNs, and hardware like USB drives. See [Limitations](/reference/limitations) before you start if you have something specific in mind.
+
+<NextStep href="/start-here/requirements" title="Requirements" description="Check your phone has what Andronix needs." />

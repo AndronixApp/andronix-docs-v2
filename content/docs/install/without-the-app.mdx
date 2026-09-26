@@ -1,0 +1,57 @@
+---
+title: Install without the App
+description: Install any free Andronix distro straight from Termux with one command, without the Andronix app.
+---
+
+import NextStep from "@/components/next-step";
+
+You don't need the Andronix app to install a free distro. One line in Termux sets up the `andronix` command and runs the install.
+
+<Callout type="info">You need a current Termux first. See [Install Termux](/start-here/install-termux).</Callout>
+
+## Install
+
+Paste this into Termux, replacing `debian` and `xfce` with the distro and desktop you want:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+It downloads `andronix`, checks it against its published checksum, installs it in Termux, and starts the install. If Termux doesn't have `proot` yet, the installer installs it first.
+
+- **Distros:** `debian`, `ubuntu` (26.04 LTS), `ubuntu24` (24.04 LTS), `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported distros](/reference/distros).
+- **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only), or `none` for the command line only. Not sure? See [Choose a distro and desktop](/install/choose).
+
+## What you'll see
+
+The installer lists its steps and ticks each one off as it finishes:
+
+```text
+✓ Checking your phone
+✓ Finding the best download
+✓ Downloading Debian 13
+✓ Unpacking files
+✓ Setting up Debian 13
+✓ Refreshing package lists
+✓ Updating Debian 13
+✓ Installing XFCE desktop · 250 packages
+✓ Installing Firefox
+✓ Setting up the desktop
+✓ Writing start-debian.sh
+```
+
+Then it asks you to create your user (a username, a password, and a desktop password), and takes you into the distro. From then on, start it with `./start-debian.sh` (or the start script for your distro).
+
+<Callout type="info">If the install stops for any reason, run the same command again. It continues where it stopped. See [The install fails or stops](/troubleshooting/install).</Callout>
+
+## Install more distros
+
+Once `andronix` is installed, you don't need the long command anymore:
+
+```bash copy
+andronix install kali --de lxqt
+```
+
+See [the andronix command](/reference/andronix-command) for every option.
+
+<NextStep href="/desktop/termux-x11" title="Start the desktop" description="Step 3: open your desktop full screen with Termux:X11, or with VNC." or={{ href: "/desktop/vnc", title: "VNC" }} />

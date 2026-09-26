@@ -1,53 +1,48 @@
 ---
-title: Migrating Termux to F-Droid
-description: Why Termux left the Google Play Store, and how to replace the Play Store version with the F-Droid build so packages and Andronix keep working.
+title: Install Termux
+description: Which Termux works with Andronix (F-Droid, GitHub or the new Play Store build), how to check the one you have, and how to replace the old Play Store version.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
-
-
 import Imagera from "@/components/imagera";
 import AndronixButton from "@/components/button";
+import NextStep from "@/components/next-step";
 
-This page explains the recent changes to Termux's package repositories and walks you through moving from the Google Play Store version of Termux to the F-Droid version.
+Termux is the terminal app your distro runs in. Andronix needs a current build of Termux; the very old Play Store version from 2020 doesn't work anymore.
 
-<Callout type="warning">This guide only covers devices running Android 7 and above. **Termux dropped support for Android 6 and below on 1st January 2021.**</Callout>
+## Which Termux works
 
-## What are the recent changes made to Termux?
+| Termux build | Works with Andronix | Notes |
+|---|---|---|
+| **F-Droid** | Yes | Android 7 or newer. |
+| **GitHub** (the Termux project's releases, or our mirror below) | Yes | Android 7 or newer. The same app as F-Droid. |
+| **Google Play Store, current build** | Yes | Android 11 or newer. |
+| **Google Play Store, old build (2020, version 0.101)** | No | Its package servers are gone, so installs fail before they start. Replace it (see below). |
 
-All Termux repositories previously hosted on JFrog Bintray have been down since `1st May 2021`. This means that every repository hosted on the `dl.bintray.com` domain is no longer available. The cause is JFrog's withdrawal of the Bintray hosting service (read more about that [here](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)).
+{/* TODO(docs): owner decision pending on which build to recommend first (IA proposal, question 1). The table stays neutral until then. */}
 
+### Check which one you have
 
-> F-Droid hosts the latest stable versions of Termux, which are **no longer released** on the Play Store. That is why you should have the latest version from F-Droid installed.
+Open Termux and run:
 
-#### Okay, but what is **F-Droid**, you ask?
+```bash copy
+echo $TERMUX_APK_RELEASE
+```
 
-F-Droid is an installable catalog of FOSS (Free and Open Source Software) applications for the Android platform. In simpler terms, F-Droid is like the Play Store for open-source Android apps.
+It prints `F_DROID`, `GITHUB` or `GOOGLE_PLAY_STORE`. If it prints nothing, or Termux's **About** screen shows version 0.101, you have the old build: follow the steps below.
 
-#### Is it safe?
+## Manual method
 
-F-Droid is entirely open source, and millions of eyes monitor the source code of the apps submitted to it. It has strict compliance rules for app submissions and zero tolerance for Google APIs. Please read [Termux Security](/security/termux) for more on the safety of these binaries.
+Use these steps to install Termux from F-Droid or our mirror, or to replace the old Play Store build.
 
-## How can I migrate?
-
-There are two ways to migrate to the Termux build published on F-Droid.
-
-### Integrated Method
-
-<Callout type="warning">This method has been removed from Andronix due to a violation of Google Play policies.</Callout>
-
-
-### Manual Method
-If you haven't installed Termux through the F-Droid client, or by downloading and installing its APK file directly, chances are you're still running the Google Play Store version. In that case, follow the steps below.
+<Callout type="warning">Uninstalling Termux deletes everything in it, including any distros. If you have a distro you want to keep, [back it up](/use/backups) to your phone's storage first.</Callout>
 
 <Steps>
 <Step>
 
-### Uninstall Termux
+### Uninstall the old Termux
 
-Uninstall your current installation of Termux.
-
-> This will remove all distros and any other Termux data you might have, but it is a necessary step to avoid version conflicts. If you want to back up your data first, please follow [this guide](https://wiki.termux.com/wiki/Backing_up_Termux).
+If you have the old Play Store build, uninstall it first. Apps from different sources can't be installed over each other.
 
 </Step>
 
@@ -55,46 +50,39 @@ Uninstall your current installation of Termux.
 
 ### Download Termux
 
-You can download the latest version of the Termux app from Andronix's [Termux Release Mirror](https://github.com/AndronixApp/termux-releases).
+Download the latest Termux from F-Droid at https://f-droid.org/en/packages/com.termux/, or from Andronix's [Termux release mirror](https://github.com/AndronixApp/termux-releases):
 
 <AndronixButton link={"https://github.com/AndronixApp/termux-releases/blob/main/Releases/Termux_118/com.termux_118.apk?raw=true"}>
     Download Termux
 </AndronixButton>
 
-Alternatively, you can visit https://f-droid.org/en/packages/com.termux/ and download the APK of the latest version of Termux.
-You can also download and install the F-Droid client, which helps you manage future updates.
+{/* TODO(docs): the mirror button points at Termux 0.118; check it's still the latest release when publishing. */}
 
-<Callout type="info">You can read more about the security of the F-Droid APK mirrors and check their hashes at [Termux Security](/security/termux).</Callout>
+The F-Droid client app also keeps Termux updated for you. You can check the APK's hashes on [Termux Security](/security/termux).
 
-<Callout type="warning">Android might warn you that files like this can harm your device; you can safely ignore it. This generic warning appears whenever you download an executable or installable file from anywhere other than the Google Play Store.</Callout>
-
-</Step>
-
-<Step>
-
-### Download APK
-
-Once you've downloaded the APK, the next step is to **Allow installation from Unknown Sources**.
+<Callout type="info">Android may warn that files like this can harm your device. That generic warning shows for any app installed from outside the Play Store.</Callout>
 
 </Step>
 
 <Step>
 
-### Click on File
+### Allow installing from this source
 
-Tap the downloaded file, and you might see a popup like the one shown below:
+Tap the downloaded file. If you see a popup like this one, tap **Settings** and turn on the toggle:
 
 <Imagera src="/images/unknown_sources.png" />
 
-_If you don't see this warning, skip to the next step._ If you do, follow along.
-
-Tap the **Settings** option in the popup and **turn on** the toggle as shown below.
-
 <Imagera src="/images/allow_unknown_sources_radio.png" />
 
-P.S. You might be using a different browser than Chrome, so your screen may look slightly different.
+Then go back until you see the install dialog.
 
-Go back a few times until you see the dialog shown below.
+</Step>
+
+<Step>
+
+### Install
+
+Tap **Install**.
 
 <Imagera src="/images/install_termux.png" />
 
@@ -102,23 +90,13 @@ Go back a few times until you see the dialog shown below.
 
 <Step>
 
-### Click Install
+### Open Termux once
 
-Just tap **Install**, and that's it 🎉.
-
-</Step>
-
-<Step>
-
-### Update Mirror List
-
-You're all done! If you still have trouble downloading packages, you can change the mirror list to your liking with the help of this [guide here](https://github.com/termux/termux-app/issues/2067).
+Open Termux and wait until it shows a prompt (`~ $`). The first start sets up its own files.
 
 </Step>
 </Steps>
 
-## Next steps
+<Callout type="warning">In your phone's settings, turn off **battery optimization** for Termux, so Android doesn't stop it while it installs or runs your distro.</Callout>
 
-- [Termux Security](/security/termux): verify the APK you downloaded.
-- ["Cannot Link Executable" Error](/troubleshooting/termux): fix `wget`/`curl` errors after reinstalling.
-- [Installing a Distro](/install/with-the-app): set up Linux again in your fresh Termux.
+<NextStep href="/install/choose" title="Choose a distro and desktop" description="Step 2 starts here: what to install if you're not sure." />
