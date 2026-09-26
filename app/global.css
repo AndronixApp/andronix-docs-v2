@@ -93,11 +93,21 @@ body {
 }
 
 /* section separators ("Getting Started", "Installation", ...) */
-#nd-sidebar p {
+#nd-sidebar p:not(button p) {
   font: var(--andronix-label);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--andronix-on-surface-muted);
+}
+
+/* version menu (App 10 / App 8.x) */
+#nd-sidebar button[aria-haspopup='dialog'] {
+  background: var(--andronix-surface);
+  border-radius: var(--andronix-radius-card);
+}
+
+#nd-sidebar button[aria-haspopup='dialog']:hover {
+  background: var(--andronix-surface-high);
 }
 
 /* search pill */

@@ -1,5 +1,5 @@
 import { createMDX } from 'fumadocs-mdx/next';
-import { legacyRedirects } from './lib/redirects.mjs';
+import { legacyRedirects, v8Redirects } from './lib/redirects.mjs';
 
 const withMDX = createMDX();
 
@@ -7,7 +7,7 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   async redirects() {
-    return legacyRedirects.map(([source, destination]) => ({ source, destination, permanent: true }));
+    return [...v8Redirects, ...legacyRedirects].map(([source, destination]) => ({ source, destination, permanent: true }));
   },
 };
 
