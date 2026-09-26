@@ -18,6 +18,7 @@
   5. `app10-premium` and the Play shots come from the Play internal-test build.
   6. The open IA questions (Termux recommendation, step titles).
 - **`andronix doctor`** is documented in the CLI reference, badged "installer 2.0.1+" (it ships once feat-compat merges). It's also in the quick reference and in install troubleshooting's "Still stuck?" list. There's a TODO to drop the note after the release.
+- **Modded edition ids** (installer 2.0.1+, andronix-distros 330608e): the CLI reference has an edition-id table, "one install per distro" (`--reinstall` replaces after asking) and `andronix remove <edition-id> [--yes] [--legacy]` with the v8 folders `--legacy` deletes. The Modded install page has a "Remove a Modded OS" section and the one-install-per-distro note; uninstall links to it. Badged "installer 2.0.1+", with TODOs to drop the badges after the release.
 
 
 ## Termux:X11 extra-keys bar (lead/x11, Sept 26)
