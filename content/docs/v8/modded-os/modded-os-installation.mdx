@@ -1,0 +1,283 @@
+---
+title: Installing Modded OS
+description: Step-by-step guide to installing an Andronix Modded OS on Android, from purchase and the Termux install command to user setup and VNC.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+import Imagera from "@/components/imagera";
+import YoutubeEmbed from "@/components/youtubeEmbed";
+
+<Callout type="warning" title="Docs for Andronix app 8.x (Classic)">You are reading docs for Andronix app 8.x. Update to app 10 for the new installer: [Start here](/start-here/what-is-andronix).</Callout>
+
+Installing a Modded OS is straightforward. This guide walks you through selecting and installing your distro, running the install command in Termux, setting up your user account, and connecting to the desktop. Prefer video? Watch the walkthrough below, then follow the steps.
+
+<Callout type="info">Each account is allotted a set number of downloads per day and per month. The limit is generous and most users will never hit it, but we can always help you raise it for a valid use case. It exists strictly to curb abuse of the download system. **You can see this limit on the OS information page of each distribution.**</Callout>
+
+<YoutubeEmbed id={"DW2g-I8gKDg"}/>
+
+With that out of the way, let's install the distro.
+
+## 1. Preparation 🚀
+
+<Steps>
+<Step>
+
+### Open the app
+Open the Andronix app and tap the **Modded OS** button on the dashboard. The Modded OS section lists all the distros you can install.
+
+<Imagera src="/images/modded_install_new/modded_distro_selection.jpg"/>
+
+</Step>
+
+<Step>
+
+### Select the distro
+Tap the distro you already own or want to buy. If you haven't bought it before, the app shows its price and other details so you can complete the purchase. Once the purchase is done, continue with the next steps.
+
+**Unpaid Screen**
+<Imagera src="/images/modded_install_new/modded_os_unpaid.jpg"/>
+**Paid Screen**
+<Imagera src="/images/modded_install_new/modded_distro_proceed.jpg"/>
+
+</Step>
+
+<Step>
+
+### Continue
+The distro is now linked to your profile, so you can move on to installing it.
+
+</Step>
+</Steps>
+
+## 2. Selection ⭐️
+
+<Steps>
+<Step>
+
+### Install
+
+You'll see three buttons: **Install**, **Uninstall**, and **Download Quota**.
+
+<Imagera src="/images/modded_install_new/modded_distro_options.jpg" />
+
+</Step>
+
+<Step>
+
+### Finalize
+Tap **Install** to start installing the distro.
+
+</Step>
+</Steps>
+
+## 3. Termux Execution 📥
+
+This is where the actual installation of your Linux distribution happens.
+
+<Callout type="info">The Andronix app has automatically copied an install command to your clipboard.</Callout>
+
+<Imagera src="/images/modded_install_new/modded_termux_exec.jpg"></Imagera>
+
+<Steps>
+<Step>
+
+### Termux
+
+You'll run this command in Termux to download and set up the distro.
+
+<Callout type="warning">Before you continue, make sure you're using a compatible version of Termux. If you haven't already, follow the [Migrating Termux to F-Droid](/v8/termux/migrating-to-f-droid) guide.</Callout>
+
+</Step>
+
+<Step>
+
+### Paste
+
+Open the Termux app, **long press to paste the copied command, then press Enter to run it**.
+
+<Imagera src="/images/modded_install_new/modded_os_command_termux.jpg"/>
+
+</Step>
+
+<Step>
+
+### Wait
+
+The download and installation will take a while. Keep the Termux app running until it finishes.
+
+<Callout type="warning">Disable battery optimization for Termux so that processes running inside it don't get terminated at random.</Callout>
+<Callout type="info">Download speeds for the distro tar file may seem unusually low. This is expected: the file is extracted while it downloads, which slows the process down.</Callout>
+
+</Step>
+
+<Step>
+
+### Command Executed
+Back in Andronix, tap the **Command Executed** button at the bottom of the screen. This tells the app the command has been run.
+
+</Step>
+
+<Step>
+
+### Finish
+Once the script has finished successfully, tap the **Execution Finished** button at the bottom.
+
+</Step>
+</Steps>
+
+<Imagera src="/images/install_new/install_script_exec.jpg"/>
+
+## 4. Starting Distribution ⚡️
+
+If the installation completed without any errors at the end, you've reached the last part: configuring your installed distro. First, you need to **start the distro**.
+
+<Steps>
+<Step>
+
+### Start Command
+
+Start the distro by running the command for your distro in Termux:
+
+* Ubuntu XFCE
+
+```bash
+./start-andronix.sh
+```
+
+* Ubuntu KDE
+
+```bash
+./start-androkde.sh
+```
+
+* Debian XFCE
+
+```bash
+./start-androdebian.sh
+```
+
+* Manjaro XFCE
+
+```bash
+./start-androjaro.sh
+```
+
+This starts the post-installation process, which sets up the essential packages. Wait until it finishes.
+
+</Step>
+
+<Step>
+
+### Select Region
+
+If the post-installation setup succeeds, you'll see a menu for selecting your region. Use the **arrow keys**, as shown in the screenshot below, to move the selection, then press **Enter** to continue.
+
+<Imagera src="/images/moddedos/modded_os_region_arrow_marker.png"/>
+
+</Step>
+
+<Step>
+
+### Select City
+
+After selecting your region, choose your **City** in the next menu and continue.
+
+<Imagera src="/images/moddedos/modded_os_city.png"/>
+
+</Step>
+
+<Step>
+
+### Select Keyboard
+
+Select your keyboard layout if you use something other than the default English layout. In this example we keep the English layout, so press **Enter** to continue.
+
+<Imagera src="/images/moddedos/modded_os_keyboard.png"/>
+
+</Step>
+
+<Step>
+
+### Username
+
+If everything went well, you'll see a **blue screen** asking for a username. Enter any username that isn't a reserved keyword like admin, root, etc. (your name works fine), then press **Enter** to continue.
+
+<Callout type="info">If you can't bring up your keyboard to enter the username, press the ESC key at the bottom. This restarts the script. This time, make sure your keyboard is open (tap anywhere on the terminal) while you're in the Termux shell.</Callout>
+
+<Imagera src="/images/username_user.png"/>
+
+</Step>
+
+<Step>
+
+### Password
+
+Next, set a password for your user. It can be anything longer than six characters. Press **Enter**, re-enter the password to confirm it, and press **Enter** again to continue.
+
+<Imagera src="/images/pass_user.png"/>
+
+</Step>
+
+<Step>
+
+### Root Password
+
+Now set a root password. It can be anything longer than six characters. Press **Enter**, re-enter the root password to confirm it, and press **Enter** again to continue.
+
+</Step>
+
+<Step>
+
+### Confirm
+
+The next screen shows everything you entered. Check that the username and passwords are correct (if not, press ESC or the back button to restart the script), then press **Enter** to continue.
+
+<Imagera src="/images/confirm_user.png"/>
+
+</Step>
+
+<Step>
+
+### Wait
+
+Wait while the system creates your user. You should see something like this during setup.
+
+<Imagera src="/images/user_creation_moddedos.png"/>
+
+</Step>
+</Steps>
+
+## 5. VNC Configuration 📺
+
+<Callout type="info">That's it! Once user creation finishes, you'll see `{your_username}@localhost:~$`.</Callout>
+
+<Steps>
+<Step>
+
+### VNC Start
+
+The **Start VNC server** page should now be open in the Andronix app.
+
+<Imagera src="/images/install_new/install_start_vnc.jpg" />
+
+</Step>
+
+<Step>
+
+### VNC Server
+
+To interact with your distro's graphical interface, set up a VNC server. Follow the [VNC Basics](/v8/vnc/vnc-basics) guide to set one up and connect to your distro.
+
+<Callout type="error">Seeing the **Process completed (signal 9) - press Enter** error in Termux? Read [Android 12 and Newer](/v8/android-12/andronix-on-android-12-and-beyond) to fix it.</Callout>
+
+</Step>
+</Steps>
+
+## Next steps
+
+- [VNC Basics](/v8/vnc/vnc-basics): connect to your Modded OS desktop with a VNC viewer.
+- [XSDL Basics](/v8/xsdl/xsdl-basics): use an X11 server as a faster alternative to VNC.
+- [Fixing Sound](/v8/troubleshoot/sound): get audio working in your distro.
+- [Accessing Internal Storage](/v8/troubleshoot/internal-storage): reach your phone's files from Linux.
+- [FAQ](/v8/faq/faq): answers to common questions and errors.
