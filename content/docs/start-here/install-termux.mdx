@@ -15,11 +15,15 @@ Termux is the terminal app your distro runs in. Andronix needs a current build o
 | Termux build | Works with Andronix | Notes |
 |---|---|---|
 | **F-Droid** | Yes | Android 7 or newer. |
-| **GitHub** (the Termux project's releases, or our mirror below) | Yes | Android 7 or newer. The same app as F-Droid. |
+| **GitHub** (the Termux project's releases, or our mirror below) | Yes | Android 7 or newer. The same app as F-Droid, but signed differently, so don't mix the two. |
 | **Google Play Store, current build** | Yes | Android 11 or newer. |
 | **Google Play Store, old build (2020, version 0.101)** | No | Its package servers are gone, so installs fail before they start. Replace it (see below). |
 
 {/* TODO(docs): owner decision pending on which build to recommend first (IA proposal, question 1). The table stays neutral until then. */}
+
+Install Termux add-ons, like Termux:API or Termux:X11, from the same source as Termux itself. Apps from different sources are signed differently and can't work together.
+
+{/* TODO(docs): matches app 10.0's Termux dialog copy (android f39902b). Check against the Termux:X11 page once the X11 APK source is pinned (today: GitHub nightly). */}
 
 ### Check which one you have
 

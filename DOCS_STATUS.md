@@ -1,5 +1,19 @@
 # Docs status: new installer
 
+## Release order (lead, Sept 26): deploy the docs BEFORE the app 10.0 release
+
+- **Why.** App 10.0's one-time Termux dialog opens `https://docs.andronix.app/start-here/install-termux` (android f39902b, `LinkHub.ANDRONIX_DOCS_TERMUX_INSTALL`). That page exists only on `docs/new-installer`. The live site returns 404 for it today (checked Sept 26).
+- **On this branch** the URL returns 200, and the trailing-slash form 308-redirects to it.
+- **Every other docs link in the app's `LinkHub.kt` resolves on this branch** (checked on the built site):
+  - `/desktop-environments/...#which-de-should-i-choose` goes to `/reference/desktops`, and the anchor exists.
+  - `/window-managers/...#which-wm-should-i-choose` goes to `/pre-2.0/window-managers`. The anchor is kept with a hidden span.
+  - `/unmodded-distros/unmodded-os-installation` (plus `#desktop-environment` and `#2-selection-️`) goes to `/install/with-the-app`. Both anchors exist; the second one was already broken on the live site and is now restored.
+  - `/faq/faq` goes to `/troubleshooting/faq`.
+  - `/android-12/...` goes to `/troubleshooting/signal-9`.
+  - `/modded-os/modded-os-installation`, `/security/termux`, `/account/deletion` and `/` are unchanged.
+- **Install Termux** now says to install add-ons (Termux:API, Termux:X11) from the same source as Termux, matching the app's new dialog copy. It also notes that the F-Droid and GitHub builds are signed differently.
+
+
 ## Restructure and 2.0.0 content (Sept 26, lead's sequencing)
 
 - **New structure.** The docs follow `DOCS_IA_PROPOSAL.md` (HTML: `docs-ia-proposal.html`):
@@ -109,7 +123,7 @@ Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been 
   - After the gate, remove both, and consider adding "Installing proot" to the step lists on the install guide and the CLI page.
 - **Unverified:** `https://dl.andronix.app/get.sh` is taken from your message. I didn't fetch it.
 - **Pre-2.0 pages** stay as they are, marked for old installs.
-- **Deploy timing:** the docs deploy with the app 10.0 release, not before. Nothing has been pushed or deployed.
+- **Deploy timing:** superseded; see "Release order" at the top of this file.
 
 ## Naming: Andronix 2.0 (owner decision, Sept 26)
 
