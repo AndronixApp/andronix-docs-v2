@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RELEASE_DATE } from "@/lib/release.mjs";
 
 interface BlogPost {
     title: string;
@@ -12,7 +13,7 @@ const blogPosts: BlogPost[] = [
         title: "Andronix 2.0",
         slug: "andronix-2-0",
         description: "A new installer, nine current distros, a full-screen desktop with Termux:X11, Modded OS 2.0, and a fix for Modded downloads.",
-        date: "September 2026"
+        date: RELEASE_DATE
     },
     {
         title: "Calling for Andronix Maintainers",

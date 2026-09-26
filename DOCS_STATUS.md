@@ -14,10 +14,10 @@
   1. The `OPENPANEL_WEB_CLIENT_ID` value for the build.
   2. The merge of `docs/new-installer` into `master`, then the deploy (docs before app 10 and the website banner).
   3. Whether preview URLs are enabled on the `andronix-docs-v2` Worker, for staging.
-  4. The release date on the blog post and changelog (they say "September 2026").
+  4. The release date: set `RELEASE_DATE` in `lib/release.mjs`, the one place for the blog post, blog index and changelog. It shows as the token `RELEASE_DATE` until then, and `pnpm run deploy` refuses to run while it's the placeholder.
   5. `app10-premium` and the Play shots come from the Play internal-test build.
   6. The open IA questions (Termux recommendation, step titles).
-- **Not documented:** `andronix doctor` (on installer master, not in `andronix help`). Add it after the owner confirms it's user-facing.
+- **`andronix doctor`** is documented in the CLI reference, badged "installer 2.0.1+" (it ships once feat-compat merges). It's also in the quick reference and in install troubleshooting's "Still stuck?" list. There's a TODO to drop the note after the release.
 
 
 ## Termux:X11 extra-keys bar (lead/x11, Sept 26)

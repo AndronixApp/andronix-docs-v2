@@ -1,7 +1,9 @@
 ---
 title: The andronix Command
-description: Reference for the andronix command in Termux - install, start, desktop, update, backup, restore, tune, dev packs, remove - and the commands inside a distro.
+description: Reference for the andronix command in Termux - install, start, desktop, update, backup, restore, tune, dev packs, doctor, remove - and the commands inside a distro.
 ---
+
+import Badge from "@/components/badge";
 
 In Andronix 2.0, every free distro is installed and managed by one command, `andronix`. The install command the app copies for you sets it up in Termux, so you don't need to install anything by hand. This page lists everything `andronix` can do.
 
@@ -41,6 +43,9 @@ andronix pack add debian python
 
 # delete Debian
 andronix remove debian
+
+# check this phone and what Andronix adjusts for it (installer 2.0.1+)
+andronix doctor
 
 # show the version, e.g. andronix 2.0.0
 andronix version
@@ -249,6 +254,24 @@ andronix pack remove [<distro>] [--purge] <pack>...
 ```
 
 Packs: `python`, `node`, `java`, `go`, `db`. From Termux, name the distro; inside the distro, leave it out and use `sudo` (`sudo andronix pack add python`). `--purge` also deletes data the pack made (the `db` pack's databases). See [Dev packs](/use/dev-packs).
+
+## Checking your phone: andronix doctor
+
+<Badge>installer 2.0.1+</Badge>
+
+```bash
+andronix doctor [<distro>]
+```
+
+Shows what Andronix knows about your phone, and what it adjusts for it:
+
+- **This phone:** the Linux kernel, the Android version and ROM, the Termux build, RAM and free space, and whether Android's phantom process killer is on (see [Process completed (signal 9)](/troubleshooting/signal-9)).
+- **Syscalls under proot:** how a few system calls behave inside a distro on this phone. It tests inside the distro you name, or the first one installed; with no distro installed, this part is skipped.
+- **Fixes that apply:** the compatibility fixes Andronix uses on this phone, each with the reason. They're applied automatically when you install, resume or update a distro; `doctor` only reports them.
+
+It changes nothing, and it checks again each time you run it. When you ask for help, include its output.
+
+{/* TODO(docs): doctor ships with installer 2.0.1 once feat-compat merges (distros gating it, Sept 27). Remove this note, and the badge if wanted, after the release. */}
 
 ## Telemetry
 

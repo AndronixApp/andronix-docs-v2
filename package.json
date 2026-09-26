@@ -9,7 +9,7 @@
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "preview": "node scripts/app-shots-manifest.mjs && node scripts/check-latest-links.mjs && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "node scripts/app-shots-manifest.mjs && node scripts/check-latest-links.mjs && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "node scripts/check-release-date.mjs && node scripts/app-shots-manifest.mjs && node scripts/check-latest-links.mjs && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "node scripts/app-shots-manifest.mjs && node scripts/check-latest-links.mjs && opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
