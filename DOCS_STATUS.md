@@ -1,5 +1,17 @@
 # Docs status: new installer
 
+## Icon 2.0, direction B: the only logo (owner, Sept 26)
+
+- **Copied from `~/andronix/icon-2.0/final/`:**
+  - `web/` into `public/`: `favicon.ico` (replaces the old one), `icon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-{192,512}.png`, `icon-maskable-{192,512}.png`, `mark.svg`;
+  - `social/og-image-1200x630.png`, which replaces `og.png` (deleted).
+- **Metadata** (`app/layout.tsx`): `icons` (ICO 48, SVG, apple-touch), `manifest: /site.webmanifest` (built from the icon agent's `site.webmanifest.json`, plus a name and start URL), `viewport.themeColor #19120E`, and the OG and Twitter images with their size and alt text.
+- **Checked on the built site:** all the head tags render, and every file returns 200 with the right content type.
+- **Nav bar:** `mark.svg` (22 px) sits before "andronix. DOCS".
+- **Old logo files:** `public/logo-{dark,light}.svg` (the old "andronix.app/docs" text wordmark, unreferenced in the docs) now contain the new mark, so any outside link to them shows the new icon. The unused `components/logo.tsx` is deleted.
+- **Page images:** every non-TODO page image was checked on a contact sheet (Termux dialogs, Android settings, the Classic Modded wizard, the RealVNC app, FAQ shots). None shows the old Andronix icon. The only images that do are the old app screenshots already marked `TODO(docs)` for the app-redesign pass.
+- **Blog:** the posts' images (`images/blog/v6`, `v7`) are the history of those releases and are left as they are.
+
 ## Termux:X11 with F-Droid Termux: PASS (x11, Sept 26)
 
 - **Test:** x11 ran F-Droid Termux 0.118.3 with Termux:X11 `termux-x11-universal-debug.apk` (GitHub nightly) against the live dl.andronix.app, on the Android 16 emulator. The result was a PASS (evidence: `feat-x11-audio` 093ce53, `tests/x11/emulator-20260926-fdroid/`).
