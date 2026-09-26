@@ -9,6 +9,12 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
     {
+        title: "Andronix 2.0",
+        slug: "andronix-2-0",
+        description: "A new installer, nine current distros, a full-screen desktop with Termux:X11, Modded OS 2.0, and a fix for Modded downloads.",
+        date: "September 2026"
+    },
+    {
         title: "Calling for Andronix Maintainers",
         slug: "andronix-maintainers",
         description: "We are looking for maintainers for Andronix. If you are interested, please read this blog.",

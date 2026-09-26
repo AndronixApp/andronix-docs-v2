@@ -6,6 +6,7 @@
     "distros",
     "desktops",
     "vnc",
-    "limitations"
+    "limitations",
+    "changelog"
   ]
 }

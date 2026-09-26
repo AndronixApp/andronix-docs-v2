@@ -1,0 +1,68 @@
+---
+title: Changelog
+description: What changed in each Andronix release, starting with Andronix 2.0 (installer 2.0.0, app 10.0).
+---
+
+What changed in each release of Andronix: the `andronix` installer, the free distros, Modded OS and the app. For the story behind 2.0, read the blog post [Andronix 2.0](/blog/andronix-2-0).
+
+## Andronix 2.0
+
+Installer 2.0.0 and app 10.0 · September 2026
+
+{/* TODO(docs): set the exact release date when the owner announces it. */}
+
+### Installer
+
+- New installer, `andronix` 2.0.0, published at `dl.andronix.app`. One command installs a distro; no app needed ([Install without the app](/install/without-the-app)).
+- Works with Termux from F-Droid, GitHub and Google Play (Android 11 and newer for Play).
+- Installs `proot` itself, repairs a half-upgraded Termux, and checks the checksum of every download.
+- New commands:
+  - `andronix update` updates the installer and your distros ([Keep it updated](/use/updates)).
+  - `andronix backup` backs up a distro to phone storage ([Back up and restore](/use/backups)).
+  - `andronix pack add python|node|java|go|db` adds dev packs; PostgreSQL works under proot ([Dev packs](/use/dev-packs)).
+  - `andronix tune` switches to a lighter performance profile ([Make it faster](/use/performance)).
+- Optional, cookie-free telemetry, with `andronix telemetry off` to turn it off.
+
+### Free distros
+
+- Nine distros on current versions: Ubuntu 26.04 LTS, Ubuntu 24.04 LTS, Debian 13, Kali rolling, Fedora 44, Arch Linux ARM, Manjaro ARM, Alpine 3.24 and Void ([Supported distros](/reference/distros)).
+- Desktops: XFCE, LXQt, MATE and KDE Plasma. KDE Plasma is on Ubuntu, Debian and Kali, and needs 4 GB of RAM.
+- Firefox is included.
+- A normal user account is created at install. You no longer run as root.
+- Window managers are retired. Old window-manager installs map to XFCE.
+
+### Desktop
+
+- The desktop opens full screen with Termux:X11: `andronix desktop <distro>` ([Start the desktop](/desktop/termux-x11)). Termux:X11 comes from GitHub (the nightly release, universal-debug APK).
+- Sound works out of the box: PulseAudio is set up automatically ([Sound](/use/sound)).
+- VNC is still available ([Other ways to connect](/reference/vnc)).
+
+### Modded OS
+
+- Modded OS 2.0: five editions (Ubuntu 26.04 XFCE, Ubuntu 26.04 KDE with Plasma 6, Debian 13 XFCE, Manjaro XFCE and Kali XFCE), with one Andronix look and updates included.
+- Pricing (US; Google Play shows your local price): one edition $2.99, Modded Pass (all 5) $6.99, Andronix Complete (Premium + Pass) $7.49.
+- Classic editions: the original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro, with their original look, rebuilt on current systems. Not sold; free forever for everyone who bought them.
+- Fixed: the Modded download outage (June to September 2026).
+- Past buyers: purchases are verified with Google Play and kept on our servers, Classic editions are free, and the Modded Pass is $1.99 ($0.99 with Premium).
+
+### Premium
+
+- $2.99: 30% off the Modded Pass, early access to new Modded editions and beta installers, higher Modded download limits, and an optional spot on the supporter wall. Existing Premium owners keep everything.
+
+### App 10.0
+
+- New dark design and new icon.
+- Simpler install flow: the Termux step shows the command.
+- A notification with the install result.
+- A one-tap "Start the desktop" step with Termux:X11.
+- Account deletion in the app.
+- Optional, cookie-free analytics (OpenPanel, self-hosted), with an opt-out in Settings. No emails or names.
+- Retired: Andronix Commands (export your saved commands from the app). Removed: Andronix Auto.
+
+### Website and docs
+
+- New website and docs. The docs follow a step-by-step path (Step 1 to Step 4), and every old docs link redirects to its new page.
+
+### Known issues
+
+- On some Android 9 phones with a 4.4 kernel, desktops may show a black screen. The command line works, and the installer warns you.

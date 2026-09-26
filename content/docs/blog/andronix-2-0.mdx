@@ -1,0 +1,170 @@
+---
+title: "Andronix 2.0"
+slug: andronix-2-0
+date: September 2026
+description: A new installer, nine current distros, a real desktop with Termux:X11, Modded OS 2.0, and a fix for Modded downloads. Here's everything that changed, and what's still rough.
+---
+
+import Imagera from "@/components/imagera";
+import Authors, { Author } from '@/components/author'
+
+{/* TODO(docs): set the release date here and in the frontmatter when the owner announces it. */}
+
+<Authors date="September 2026">
+    <Author name="The Andronix team"/>
+</Authors>
+
+![Andronix 2.0: Linux on Android](/images/blog/andronix-2-0/andronix-2-0.png)
+
+Andronix 2.0 is the biggest change to Andronix since it started. The installer is new, every free distro is on a current version, the desktop runs full screen with Termux:X11, and Modded OS has five new editions. The app is version 10.0, with a new design and a new icon.
+
+It also fixes something we got wrong. **Modded OS downloads were broken from June to September 2026.** If you bought a Modded OS and couldn't install it, we're sorry. That's fixed, and past buyers get their editions back and a discount (see [Past buyers](#modded-os-20-classic-and-past-buyers)).
+
+## What's new, in short
+
+- **A new installer**, `andronix` 2.0.0: one command installs a distro, and it works with Termux from F-Droid, GitHub and Google Play.
+- **Nine free distros on current versions**, with XFCE, LXQt, MATE or KDE Plasma, and Firefox included.
+- **A full-screen desktop with Termux:X11**, with sound that works out of the box.
+- **New commands** to update, back up, add developer tools and speed up the desktop.
+- **Modded OS 2.0**: five editions with one Andronix look, and updates included. The original editions are now **Classic** and free for everyone who bought them.
+- **App 10.0**: a new dark design, a simpler install flow, and one tap to start the desktop.
+- **A new website and new docs**, with a step-by-step path.
+
+## Free distros
+
+The installer is rewritten from scratch as one command, `andronix`. You don't need the app to use it:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+It installs `proot` itself, repairs a half-upgraded Termux, and checks the checksum of every download. It works with Termux from F-Droid, GitHub and Google Play (Android 11 and newer for the Play build).
+
+Every free distro is on a current version:
+
+| Distro | Version |
+|---|---|
+| Ubuntu | 26.04 LTS and 24.04 LTS |
+| Debian | 13 |
+| Kali Linux | rolling |
+| Fedora | 44 |
+| Arch Linux ARM | rolling |
+| Manjaro ARM | stable |
+| Alpine | 3.24 |
+| Void Linux | rolling |
+
+- **Desktops:** XFCE, LXQt, MATE and KDE Plasma. KDE Plasma is available on Ubuntu, Debian and Kali, and needs 4 GB of RAM.
+- **Firefox** is included.
+- **You get a normal user account** now, instead of running everything as root.
+- **Window managers are retired.** Old window-manager installs map to XFCE.
+
+![KDE Plasma on Ubuntu 26.04](/images/new-installer/ubuntu-kde-menu.png)
+
+See [Choose a distro and desktop](/install/choose) and [Supported distros](/reference/distros).
+
+## The desktop, with Termux:X11
+
+The desktop now opens full screen on the phone with the Termux:X11 app and one command:
+
+```bash copy
+andronix desktop debian
+```
+
+It's smoother than VNC, and sound works out of the box, because Andronix sets up PulseAudio for you. Termux:X11 comes from GitHub (the `termux-x11` nightly release, the universal-debug APK). See [Start the desktop](/desktop/termux-x11).
+
+<Imagera src="/images/new-installer/termux-x11-xfce-phone.jpg" height={444} alt="Debian 13 with XFCE in Termux:X11, on a phone" />
+
+VNC is still there if you want it, for example to use the desktop from a laptop: [Other ways to connect (VNC)](/reference/vnc).
+
+## New commands
+
+| Command | What it does |
+|---|---|
+| `andronix update` | Updates the installer and your distros. |
+| `andronix backup` | Backs up a distro to your phone's storage. `andronix restore` brings it back. |
+| `andronix pack add python` | Adds a developer toolset: `python`, `node`, `java`, `go` or `db`. PostgreSQL works under proot. |
+| `andronix tune` | Switches the desktop to a lighter performance profile. |
+
+See [the andronix command](/reference/andronix-command).
+
+## Modded OS 2.0, Classic, and past buyers
+
+### Modded OS 2.0
+
+Five new editions, with one Andronix look and updates included:
+
+- Ubuntu 26.04 XFCE
+- Ubuntu 26.04 KDE (Plasma 6)
+- Debian 13 XFCE
+- Manjaro XFCE
+- Kali XFCE
+
+![Modded OS 2.0 on Debian 13 XFCE](/images/new-installer/debian-modded-xfce-desktop.png)
+
+| Option | Price (US) |
+|---|---|
+| One edition | $2.99 |
+| Modded Pass (all 5 editions) | $6.99 |
+| Andronix Complete (Premium + Modded Pass) | $7.49 |
+
+Prices shown are US prices. Google Play shows the price in your country.
+
+### Classic editions
+
+The original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro are now the **Classic** editions. They keep their original look, rebuilt on current systems. They aren't sold anymore, and they're **free forever for everyone who bought them**.
+
+### Past buyers
+
+- The Modded download outage (June to September 2026) is fixed.
+- Your purchases are verified with Google Play and kept safe on our servers.
+- Your Classic editions are free.
+- If you bought a Modded OS before, you can get the Modded Pass for **$1.99**, or **$0.99** with Premium.
+
+## Premium
+
+Premium is **$2.99** and includes:
+
+- 30% off the Modded Pass;
+- early access to new Modded editions and to beta installers;
+- higher Modded download limits;
+- an optional spot on the supporter wall at [andronix.app/supporters](https://andronix.app/supporters).
+
+If you already have Premium, you keep everything.
+
+## The app: version 10.0
+
+- A new dark design and a new icon.
+- A simpler install flow: the Termux step shows the command to run.
+- A notification with the result of your install.
+- A one-tap **Start the desktop** step with Termux:X11.
+- Account deletion inside the app.
+- **Andronix Commands is retired.** You can export your saved commands from the app.
+- **Andronix Auto is removed.**
+
+{/* TODO(docs): add screenshots of app 10.0 once ui's redesign is final and the emulator agent has shot them. */}
+
+## Privacy
+
+Andronix 2.0 adds optional, cookie-free analytics, using OpenPanel on our own servers. It doesn't collect emails or names. You can turn it off in the app's Settings, and in the installer with:
+
+```bash copy
+andronix telemetry off
+```
+
+## Known issues
+
+- On some **Android 9** phones with a **4.4 kernel**, desktops may show a black screen. The command line works, and the installer warns you before a desktop install.
+
+If you run into something else, tell us on [Discord](https://chat.andronix.app).
+
+## How to upgrade
+
+1. **Update the Andronix app** to version 10.0 from Google Play.
+2. **Install a distro** from the app, or with the one-line command above. The docs walk you through it, step by step: [start here](/start-here/what-is-andronix).
+3. **Open the desktop** with `andronix desktop <distro>` and the Termux:X11 app: [Start the desktop](/desktop/termux-x11).
+
+Already have a distro from before 2.0? See [Installs from before Andronix 2.0](/pre-2.0/older-installs).
+
+For the full list of changes, see the [Changelog](/reference/changelog).
+
+Thanks for sticking with Andronix. See you on [Discord](https://chat.andronix.app).
