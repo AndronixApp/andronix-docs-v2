@@ -5,6 +5,12 @@ description: Fix Andronix desktop problems - a black screen in Termux:X11 or VNC
 
 This page covers problems with the desktop, over [Termux:X11](/desktop/termux-x11) or [VNC](/reference/vnc).
 
+## Termux:X11 doesn't open, or a box covers the desktop
+
+- **A "send you notifications?" box** (Android 13 and newer, the first time): tap **Allow**. Your desktop is behind it.
+- **Termux says "Desktop is running" but the app doesn't come to the front:** open Termux:X11 from your app drawer.
+- **"Termux:X11 isn't installed":** download `termux-x11-universal-debug.apk` from the [Termux:X11 nightly release](https://github.com/termux/termux-x11/releases/tag/nightly) and install it. See [Start the desktop](/desktop/termux-x11).
+
 ## The screen stays black
 
 - **Termux:X11:** some phones' graphics drivers need a different drawing mode. Stop the desktop (`andronix desktop stop`), then open it with:

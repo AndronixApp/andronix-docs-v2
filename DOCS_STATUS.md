@@ -1,5 +1,13 @@
 # Docs status: new installer
 
+## Termux:X11 with F-Droid Termux: PASS (x11, Sept 26)
+
+- **Test:** x11 ran F-Droid Termux 0.118.3 with Termux:X11 `termux-x11-universal-debug.apk` (GitHub nightly) against the live dl.andronix.app, on the Android 16 emulator. The result was a PASS (evidence: `feat-x11-audio` 093ce53, `tests/x11/emulator-20260926-fdroid/`).
+- **Docs changes:**
+  - The docs now say Termux:X11 works with every current Termux build (F-Droid, GitHub, Play), and both F-Droid TODOs are gone.
+  - Step 3 has the two first-run tips: on Android 13+, tap Allow on the notifications box; if the app doesn't come to the front after "Desktop is running", open Termux:X11 from the app drawer. The same tips are on the desktop troubleshooting page.
+  - Step 3 has x11's screenshot, `termux-x11-xfce-phone.jpg` (XFCE in Termux:X11 on Android 16, portrait).
+
 ## Analytics: OpenPanel (owner request, Sept 26)
 
 - **Package:** `@openpanel/nextjs` 1.5.1, in `components/analytics.tsx`, mounted in `app/layout.tsx`.
