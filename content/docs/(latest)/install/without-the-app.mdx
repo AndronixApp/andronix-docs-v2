@@ -19,7 +19,17 @@ curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/t
 
 It downloads `andronix` (retrying if the connection drops), checks it against its published checksum, installs it in Termux, and starts the install. It downloads the script first and then runs it, so the installer can still ask you questions.
 
-<Callout type="info">If `curl` itself fails to start (common on an old Termux that was only half updated), repair Termux with `apt-get update && apt-get -y full-upgrade && apt-get -y install curl`, then run the command again. Use `apt-get`, not `pkg`: `pkg` needs a working `curl` itself. The app's own install command does this repair for you.</Callout> If Termux doesn't have `proot` yet, the installer installs it first.
+If Termux doesn't have `proot` yet, the installer installs it first.
+
+<Callout type="info">
+If `curl` itself fails to start (common on an old Termux that was only half updated), repair Termux with the same commands the app's install command uses, then run the command above again:
+
+```bash copy
+DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold full-upgrade && DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold install curl
+```
+
+Use `apt-get`, not `pkg`: `pkg` runs `curl` itself, so it fails on a broken `curl` too. The options keep the upgrade from stopping to ask about config files; files you changed are kept.
+</Callout>
 
 - **Distros:** `debian`, `ubuntu` (26.04 LTS), `ubuntu24` (24.04 LTS), `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported distros](/reference/distros).
 - **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only), or `none` for the command line only. Not sure? See [Choose a distro and desktop](/install/choose).
