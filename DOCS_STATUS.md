@@ -2,6 +2,34 @@
 
 Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been pushed or deployed. `pnpm build` passes (37 static pages), and a script checked every internal link and `#anchor` in `content/docs` (0 broken).
 
+## Restyle: Andronix 2.0 design (Sept 26)
+
+- **Tokens.** `app/andronix-tokens.css` is a verbatim copy of `app-wt-ui/design/tokens.css` (branch `ui-revamp`). `app/global.css` maps the tokens onto Fumadocs' variables. No new tokens were added.
+- **Fonts.** Plus Jakarta Sans (400-800) and Geist Mono (500), both through `next/font`.
+- **Dark only.** The theme is forced dark and the theme switch is removed.
+- **No borders or shadows.** The border colour is transparent, and depth comes from bg -> surface -> surface-high.
+- **Sidebar:** the active page is a deep-orange pill, and section labels are uppercase and muted. The search button is a surface pill.
+- **Signal 9 banner:** a warn-container block.
+- **Header:** "andronix." with a "DOCS" chip.
+- **Code blocks:**
+  - background is code-bg, radius 22, Geist Mono at 13.5px;
+  - a custom Shiki theme (`lib/shiki-andronix.ts`): commands in primary, options in secondary, strings in tertiary, comments muted;
+  - long lines wrap, so phones don't scroll sideways.
+- **Callouts:** `components/callout.tsx` replaces Fumadocs' Callout with tonal blocks, each type using a container colour and its on-* partner:
+  - info = surface
+  - warning = warn-container
+  - error = error-container
+  - success = ok-container
+  - idea = tertiary-container
+- **Other elements:**
+  - Tables: surface-high header, surface rows split by 2px page-colour gaps, rounded corners.
+  - Inline code: surface-highest chips.
+  - Cards: surface blocks with deep-orange icon tiles.
+  - Badges: primary-container.
+  - Video embeds: rounded.
+- **Content change:** the CLI quick reference now puts each comment above its command instead of in an aligned column. The column read badly once lines wrapped on phones.
+- **Screenshots:** before and after, for home, a guide and the CLI reference, at desktop and phone widths, are in the session scratchpad under `restyle-shots/`. They were taken with Chrome through playwright-core.
+
 ## App 10.0 and the no-app path (lead decision, Sept 26)
 
 - **App version.** The app-based install and uninstall guides now require "the Andronix app 10.0 or newer (Andronix 2.0)". Supported Distros and the CLI reference mention 10.0 too. This answers question 11.
