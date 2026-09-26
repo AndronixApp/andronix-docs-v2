@@ -27,6 +27,18 @@ Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been 
   - Cards: surface blocks with deep-orange icon tiles.
   - Badges: primary-container.
   - Video embeds: rounded.
+- **Shared tokens:** the vendored tokens are re-synced with ui's additions. The Shiki theme now uses `var(--andronix-code-text|command|option|string|comment)` directly, so code colours follow `tokens.css`. The copy button's "copied" state uses `--andronix-ok`.
+- **Content debt (lead, Sept 26):**
+  - The Andronix 7 walkthrough videos on Installing a Distro and Installing Modded OS are now under a closed "Older video (Andronix 7)" block (`components/collapsed.tsx`).
+  - App screenshots showing the Andronix 7 UI, including the retired Commands tab, are marked with a `TODO(docs)` listing the files, on:
+    - Installing a Distro
+    - Uninstalling a Distro
+    - Installing Modded OS
+    - VNC Basics
+
+    The emulator agent will shoot the new screens once ui's redesign lands.
+  - The docs text has no mentions of "Andronix Commands" or "Andronix Auto". They only appear inside the old screenshots.
+  - Videos left as they are: Android 12 (phone settings, still valid), Desktop Environments (a general explainer) and Window Managers (a retired page).
 - **Content change:** the CLI quick reference now puts each comment above its command instead of in an aligned column. The column read badly once lines wrapped on phones.
 - **Screenshots:** before and after, for home, a guide and the CLI reference, at desktop and phone widths, are in the session scratchpad under `restyle-shots/`. They were taken with Chrome through playwright-core.
 
