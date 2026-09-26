@@ -1,57 +1,47 @@
 ---
-title: Get Started with Andronix
-description: Install Linux distributions like Ubuntu, Debian and Manjaro on your Android device without root. Start here to set up Andronix.
+title: Welcome to Andronix
+description: Run Linux distros like Debian, Ubuntu and Fedora on your Android phone, without root. Follow four steps to go from Termux to a full desktop.
 ---
 
 import { Cards, Card } from 'fumadocs-ui/components/card';
-import { RiVipCrownFill, RiTerminalBoxFill, RiCommandFill } from 'react-icons/ri';
-import { SiUbuntu, SiAndroid } from 'react-icons/si';
+import { RiRocket2Fill, RiDownload2Fill, RiComputerFill, RiApps2Fill, RiVipCrownFill, RiLifebuoyFill, RiCommandFill } from 'react-icons/ri';
 
-Welcome! Andronix is an app that lets you install Linux distributions like Ubuntu, Debian and Manjaro on your Android device, no root required.
+Andronix runs a full Linux distro, like Debian, Ubuntu or Fedora, on your Android phone or tablet, with a real desktop and no root. New here? Follow the four steps below, in order.
 
-<Callout type="info">**Andronix 2.0:** free distros now install with one `andronix` command, with the latest versions (Debian 13, Ubuntu 26.04 LTS, Fedora 44 and more), a choice of XFCE, LXQt, MATE or KDE Plasma, and Firefox included. The install command in the app works as before. [See what's supported](/reference/distros).</Callout>
+<Callout type="info">**Andronix 2.0:** free distros install with one command, with the latest versions (Debian 13, Ubuntu 26.04 LTS, Fedora 44 and more), a choice of XFCE, LXQt, MATE or KDE Plasma, Firefox included, and a full-screen desktop with Termux:X11. [See what's supported](/reference/distros).</Callout>
 
-Pick one of the guides below to get started.
-
-<Callout type="info">Get paid up to $100 to maintain a distribution for Andronix. Read more in [Calling for Maintainers](/blog/andronix-maintainers).</Callout>
+## Get started
 
 <Cards>
-  <Card
-    icon={<RiVipCrownFill />}
-    href="/install/with-the-app"
-    title="Install an OS with Andronix"
-  >
-    Learn how to install distros like Ubuntu, Debian and Fedora with Andronix.
+  <Card icon={<RiRocket2Fill />} href="/start-here/what-is-andronix" title="Step 1 · Start here">
+    What Andronix is, what your phone needs, and the right Termux.
   </Card>
-  <Card
-    icon={<SiUbuntu />}
-    href="/modded-os/modded-os-installation"
-    title="Install Modded OS"
-  >
-    Learn how to install a Modded OS like Ubuntu KDE or Manjaro XFCE with Andronix.
+  <Card icon={<RiDownload2Fill />} href="/install/choose" title="Step 2 · Install a distro">
+    Choose a distro and desktop, then install it with the app or one command.
   </Card>
-  <Card
-    icon={<RiCommandFill />}
-    href="/reference/andronix-command"
-    title="The andronix command"
-  >
-    Install, start, back up and remove distros from Termux with one command.
+  <Card icon={<RiComputerFill />} href="/desktop/termux-x11" title="Step 3 · Start the desktop">
+    Open it full screen with Termux:X11, or from any device with VNC.
   </Card>
-  <Card
-    icon={<RiTerminalBoxFill />}
-    href="/troubleshooting/signal-9"
-    title="Fix the 'Process completed (signal 9)' error"
-  >
-    Learn how to resolve the "Process completed (signal 9) - press Enter" error in Termux.
-  </Card>
-  <Card
-    icon={<SiAndroid />}
-    href="/start-here/install-termux"
-    title="How to install Termux"
-  >
-    Learn how to install the Termux app from F-Droid to ensure compatibility.
+  <Card icon={<RiApps2Fill />} href="/use/apps" title="Step 4 · Use it">
+    Apps, dev packs, sound, phone storage, backups and updates.
   </Card>
 </Cards>
+
+## Also here
+
+<Cards>
+  <Card icon={<RiVipCrownFill />} href="/modded-os/modded-os" title="Modded OS">
+    Themed editions with apps already set up.
+  </Card>
+  <Card icon={<RiLifebuoyFill />} href="/troubleshooting/install" title="Troubleshooting">
+    Fixes for failed installs, signal 9, black screens and Termux errors.
+  </Card>
+  <Card icon={<RiCommandFill />} href="/reference/andronix-command" title="The andronix command">
+    Every command and option, in one place.
+  </Card>
+</Cards>
+
+<Callout type="info">Get paid up to $100 to maintain a distribution for Andronix. Read more in [Calling for Maintainers](/blog/andronix-maintainers).</Callout>
 
 ## Need help?
 

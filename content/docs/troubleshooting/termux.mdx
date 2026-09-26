@@ -1,9 +1,29 @@
 ---
-title: '"Cannot Link Executable" Error'
-description: Fix the "CANNOT LINK EXECUTABLE" libssl.so.3 error for wget, curl and other Termux utilities by switching mirrors, upgrading packages or reinstalling OpenSSL.
+title: Termux Errors
+description: "Fix Termux errors that stop Andronix - pkg errors on the old Play Store Termux, \"andronix: command not found\", and \"CANNOT LINK EXECUTABLE\" for wget and curl."
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+These errors come from Termux itself, before or around the Andronix installer.
+
+## Errors before the installer starts
+
+If the command fails with errors from `pkg` or `apt` before you see the Andronix steps, your Termux is probably the old Play Store build from 2020 (version 0.101), whose package servers no longer work.
+
+**Fix:** replace it with a current Termux. See [Install Termux](/start-here/install-termux).
+
+## andronix: command not found
+
+`andronix` isn't installed in this Termux yet (or Termux was reinstalled). Install it with the app's install command, or with this one line from Termux:
+
+```bash copy
+curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/install/without-the-app).
+
+## "CANNOT LINK EXECUTABLE"
 
 This page shows how to resolve the "CANNOT LINK EXECUTABLE" error for `wget`, `curl` and other utilities in Termux. Work through the solutions in order, starting with the most common fix.
 
@@ -11,7 +31,7 @@ This page shows how to resolve the "CANNOT LINK EXECUTABLE" error for `wget`, `c
 If you see **CANNOT LINK EXECUTABLE "wget": library "libssl.so.3"** or a similar error for `curl` and other commands, follow the solutions below.
 </Callout>
 
-## The Problem
+### The Problem
 
 This error occurs when Termux utilities like `wget` or `curl` cannot find or link to the required OpenSSL library (`libssl.so.3`). This typically happens because of:
 
@@ -19,7 +39,7 @@ This error occurs when Termux utilities like `wget` or `curl` cannot find or lin
 - Missing OpenSSL dependencies
 - Repository mirror connection issues
 
-## Solutions
+### Solutions
 
 Try these solutions in order. If one doesn't work, move on to the next.
 
@@ -154,7 +174,7 @@ curl --version
 </Step>
 </Steps>
 
-## Additional Tips
+### Additional Tips
 
 <Callout type="info">
 If the issue persists after trying all the solutions:
@@ -163,7 +183,7 @@ If the issue persists after trying all the solutions:
 - Consider reinstalling Termux from F-Droid (recommended) instead of the Play Store
 </Callout>
 
-## Related Pages
+### Related Pages
 
 - [Migrating Termux to F-Droid](/start-here/install-termux)
 - [Termux Security](/security/termux)

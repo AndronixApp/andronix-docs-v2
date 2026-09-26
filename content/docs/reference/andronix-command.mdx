@@ -1,6 +1,6 @@
 ---
 title: The andronix Command
-description: Reference for the andronix command in Termux. Install, start, remove, list, back up and restore Linux distros, and control the desktop from inside them.
+description: Reference for the andronix command in Termux - install, start, desktop, update, backup, restore, tune, dev packs, remove - and the commands inside a distro.
 ---
 
 In Andronix 2.0, every free distro is installed and managed by one command, `andronix`. The install command the app copies for you sets it up in Termux, so you don't need to install anything by hand. This page lists everything `andronix` can do.
@@ -18,6 +18,9 @@ andronix install debian --de xfce
 # open Debian (same as ./start-debian.sh)
 andronix start debian
 
+# open Debian's desktop full screen in Termux:X11
+andronix desktop debian
+
 # what's installed, and what you can install
 andronix list
 
@@ -32,6 +35,9 @@ andronix restore
 
 # make the desktop lighter
 andronix tune debian --profile light
+
+# add a dev pack (python, node, java, go, db)
+andronix pack add debian python
 
 # delete Debian
 andronix remove debian
@@ -61,9 +67,7 @@ The Andronix app (10.0 or newer) sets up `andronix` for you with its install com
 curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
-{/* TODO(docs): remove this proot step once x11's final gate confirms installer 2.0.0 installs proot itself (feat-proot-install, step 'Installing proot'). */}
-
-Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. On a fresh Termux, run `pkg install proot -y` first.
+Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. If Termux doesn't have `proot` yet, the installer installs it first. See [Install without the app](/install/without-the-app).
 
 `andronix update` keeps it up to date.
 
@@ -101,6 +105,8 @@ andronix install <distro> [--de <desktop>] [options]
 | `--de kde` | KDE Plasma, the most complete desktop. Debian, Ubuntu 26.04 and Kali only; needs 4 GB of RAM or more. |
 | `--de none` | Command line only, no desktop |
 
+`--de kde` on another distro stops with a message naming the distros that offer it. For old app buttons and commands, `--de lxde` installs LXQt, and the retired window managers (`i3`, `awesome`, `openbox`) and Enlightenment install XFCE, each with a notice.
+
 Other options:
 
 | Option | What it does |
@@ -114,6 +120,7 @@ Other options:
 The installer shows each step with a ✓ as it finishes:
 
 ```text
+✓ Installing proot          (only if Termux doesn't have it yet)
 ✓ Checking your phone
 ✓ Finding the best download
 ✓ Downloading Debian 13
@@ -157,9 +164,25 @@ andronix start <distro> [--root] [-- command...]
 
 - `andronix start debian` opens a shell as your user. `./start-debian.sh` does exactly the same.
 - `--root` opens a root shell instead.
+- `--x11` opens the distro's desktop in Termux:X11 instead of a shell (same as `andronix desktop debian`).
 - Anything after `--` runs inside the distro and then returns to Termux, for example `andronix start debian -- uname -a`. The old form `./start-debian.sh uname -a` works too.
 
 Type `exit` to leave the distro and go back to Termux.
+
+Each interactive start also makes sure Termux's PulseAudio is running, so [sound](/use/sound) works. One-off commands (after `--`) never install anything.
+
+## Opening the desktop on Termux:X11
+
+```bash
+andronix desktop [<distro>]
+andronix desktop stop
+```
+
+- Opens the distro's desktop full screen in the Termux:X11 app, as your user. With only one desktop install, the distro name is optional.
+- Installs Termux's `termux-x11` package the first time. The Termux:X11 app itself comes from its GitHub release page; if it's missing, the command shows the link.
+- `andronix desktop stop` (from another Termux session) stops it.
+
+See [Termux:X11](/desktop/termux-x11).
 
 ## Listing distros
 
@@ -175,12 +198,7 @@ Shows what's installed (with its desktop and start script), any distros from the
 andronix update [<distro>]
 ```
 
-- Updates `andronix` itself to the latest version.
-- Then updates the packages in every installed distro, or only the one you name, with the same progress display as an install.
-
-Options: `--self` updates only `andronix`; `--no-self` updates only the distros.
-
-<Callout type="info">Exit the distro and stop its desktop before updating it.</Callout>
+Updates `andronix` itself, then the packages in every installed distro (or only the one you name). `--self` updates only `andronix`; `--no-self` only the distros. See [Keep it updated](/use/updates).
 
 ## Removing a distro
 
@@ -201,12 +219,10 @@ andronix backup <distro> [file] [--to storage]
 andronix restore [file]
 ```
 
-- `backup` saves the whole distro to one file.
-  - With `--to storage`, the file goes to your phone's storage, in `Andronix/backups`. It's safe there even if you uninstall Termux, and you can see it in your file manager. If Termux doesn't have storage access yet, Android asks you for it.
-  - Without it, the file goes to Termux's home folder, `~/andronix-<distro>-<date>.tar.gz`. That folder is deleted if you uninstall Termux or clear its data.
-- `restore` brings a backup back. Without a file name, it lists the backups it finds in your phone's storage and in Termux's home folder, newest first, and lets you pick one. If the distro is already installed, it asks before replacing it.
+- `backup` saves the whole distro to one file: with `--to storage`, in `Andronix/backups` in your phone's storage; otherwise in Termux's home folder, or at the file name you give.
+- `restore` brings a backup back. Without a file name, it lists the backups it finds and lets you pick one.
 
-Backups can be restored on another phone. Exit the distro before you back it up, so no files change while it's being saved.
+See [Back up and restore](/use/backups).
 
 ## Tuning the desktop
 
@@ -214,10 +230,28 @@ Backups can be restored on another phone. Exit the distro before you back it up,
 andronix tune <distro> [--profile light|balanced]
 ```
 
-- **light:** no desktop effects, fewer background apps, no file thumbnails, and 16-bit colour at 1280x720 over VNC. Uses less memory and feels faster on slower phones.
+- **light:** no desktop effects, fewer background apps, no file thumbnails, and 16-bit colour at 1280x720 over VNC. Automatic on phones with less than 3 GB of RAM.
 - **balanced:** the normal settings.
 
-Without `--profile`, it shows the distro's current profile and your phone's RAM. Desktop installs on phones with less than 3 GB of RAM start with the light profile. A change applies the next time you run `vncserver-start`.
+Without `--profile`, it shows the current profile and your phone's RAM. See [Make it faster](/use/performance).
+
+## Dev packs
+
+```bash
+andronix pack list   [<distro>]
+andronix pack add    [<distro>] <pack>...
+andronix pack remove [<distro>] [--purge] <pack>...
+```
+
+Packs: `python`, `node`, `java`, `go`, `db`. From Termux, name the distro; inside the distro, leave it out and use `sudo` (`sudo andronix pack add python`). `--purge` also deletes data the pack made (the `db` pack's databases). See [Dev packs](/use/dev-packs).
+
+## Telemetry
+
+To see which distros and phones installs fail on, `andronix` sends anonymous usage events. It says so the first time it runs.
+
+- **Sent:** when an install starts and how it ended (success or the failed step, the distro, desktop, and how long it took), and when you start, update or add a pack. Each event also carries the CPU type, Android version, Termux build, `andronix` version and a random install ID.
+- **Never sent:** file paths, user names, passwords, tokens, or the commands you run. Nothing is sent from inside a distro.
+- **Turn it off:** `andronix telemetry off` (and `on` or `status`), or set `ANDRONIX_NO_TELEMETRY=1` or `DO_NOT_TRACK=1`.
 
 ## Inside the distro
 
@@ -229,15 +263,16 @@ These commands are installed inside every desktop install.
 | `vncserver-start 1920x1080` | Start the desktop at that size without asking. |
 | `vncserver-start --lan` | Let other devices on your network connect (by default only this phone can). |
 | `vncserver-stop` | Stop the desktop. |
+| `sudo andronix pack add python` | Add a [dev pack](/use/dev-packs). |
 
-See [VNC Basics](/desktop/vnc) for how to connect.
+See [VNC](/desktop/vnc) for how to connect.
 
 ## Where things live
 
 | Path (in Termux) | What |
 |---|---|
 | `~/.andronix/distros/<distro>/` | The installed distro |
-| `~/.andronix/logs/` | Logs from every install, remove, backup and restore. Include the latest one when you ask for help. |
+| `~/.andronix/logs/` | Logs from every install, remove, backup and restore, plus `termux.log` (PulseAudio, Termux:X11). Include the latest one when you ask for help. |
 | `Andronix/backups` in your phone's storage | Backups made with `--to storage` |
 | `~/start-<distro>.sh` | The start script. It just runs `andronix start <distro>`. |
 | `~/<distro>-binds/` | Optional extra folders to share with the distro, as in the pre-2.0 installer |
@@ -249,9 +284,9 @@ See [VNC Basics](/desktop/vnc) for how to connect.
 - `vncserver-start` and `vncserver-stop` keep their names and use the same address, `localhost:1`.
 - Distros installed with the pre-2.0 installer are left alone. See [Installs from before Andronix 2.0](/pre-2.0/older-installs).
 
-## Next steps
+## Related pages
 
-- [Installing a Distro](/install/with-the-app): the step-by-step guide with the app.
-- [Supported Distros](/reference/distros): versions, desktops and commands for each distro.
-- [VNC Basics](/desktop/vnc): connect to your desktop.
-- [Troubleshooting installs](/troubleshooting/install): what to do if an install fails.
+- [Install without the app](/install/without-the-app)
+- [Supported distros](/reference/distros)
+- [Termux:X11](/desktop/termux-x11) and [VNC](/desktop/vnc)
+- [The install fails or stops](/troubleshooting/install)

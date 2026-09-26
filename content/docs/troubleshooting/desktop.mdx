@@ -1,0 +1,54 @@
+---
+title: The Desktop Is Black, Slow or Closes
+description: Fix Andronix desktop problems - a black screen in Termux:X11 or VNC, a desktop that won't start, closes, runs slowly, or can't be reached from another device.
+---
+
+This page covers problems with the desktop, over [Termux:X11](/desktop/termux-x11) or [VNC](/desktop/vnc).
+
+## The screen stays black
+
+- **Termux:X11:** some phones' graphics drivers need a different drawing mode. Stop the desktop (`andronix desktop stop`), then open it with:
+
+  ```bash copy
+  ANDRONIX_X11_ARGS=-legacy-drawing andronix desktop
+  ```
+
+  If the colours look swapped, use `-force-bgra` instead.
+- **Old kernels:** on kernels older than 4.8 (run `uname -r` in Termux to check), desktops may stay black. On **Android 9 with kernel 4.4**, XFCE stays black; this is a known issue. The command line works on these phones.
+- **Installed before an update:** run `andronix update` in Termux. It applies Andronix's latest fixes to the desktop session.
+
+## The desktop didn't start (VNC)
+
+If `vncserver-start` says **The desktop didn't start**, stop it and start it again:
+
+```bash copy
+vncserver-stop 1
+vncserver-start
+```
+
+If it still fails, the error box shows the path of a log file (for example `/tmp/andronix-vnc-1.log`). Share it when you ask for help.
+
+## The desktop closes when I leave Termux
+
+The desktop runs inside your Termux session. Closing that session, or typing `exit` in the distro, stops the desktop too.
+
+**Fix:** keep the Termux session open while you use the desktop. Switch to your VNC viewer with the app switcher instead of closing Termux. For a second command line, open a new Termux session from the sidebar.
+
+## The desktop is slow
+
+Switch the distro to the light profile from Termux, then restart the desktop:
+
+```bash copy
+andronix tune debian --profile light
+```
+
+It turns off desktop effects, thumbnails and some background apps, and uses 16-bit colour. Phones with less than 3 GB of RAM get it automatically. On phones with less than 4 GB of RAM, pick XFCE or LXQt rather than KDE Plasma. See [Making a desktop lighter](/reference/desktops#making-a-desktop-lighter).
+
+## I can't connect from my computer
+
+By default, the desktop only accepts connections from the phone itself. Start it with `vncserver-start --lan` to allow other devices on your network. See [VNC on other devices](/desktop/vnc#vnc-on-other-devices).
+
+## Still stuck?
+
+- Every install, remove, backup and restore writes a log to `~/.andronix/logs/` in Termux. Include the latest one when you ask for help.
+- Ask on our [Discord](https://chat.andronix.app), or email [support@andronix.app](mailto:support@andronix.app).
