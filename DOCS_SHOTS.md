@@ -2,18 +2,23 @@
 
 ## Capture status (ui-revamp 5b2cd649, Sept 26)
 
-**Captured and committed:** 18 of 25 files, all 1080 × 1920, 24-bit, no alpha.
+**Captured and committed:** 18 of 22 files, all 1080 × 1920, 24-bit, no alpha.
 - `app10-home`, `-distro-list`, `-interface-picker`, `-desktop-picker`
 - `app10-termux-step`, `-termux-step-uninstall`, `-install-result`, `-uninstall-sheet`
 - `app10-start-desktop`, `-start-desktop-get-x11`, `-phantom-tip`
 - `app10-modded-editions`, `-modded-editions-owned`, `-modded-termux-step`
 - `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`
 
-**Not delivered yet:** 7 files.
-- **App:** `app10-termux-sources`, `app10-modded-classic`, `app10-modded-edition-unpaid`, `app10-modded-edition-owned`.
+**Still to come:** 4 files.
+- **App:** `app10-modded-classic`.
 - **Termux:** `termux-install-running`, `termux-create-user`, `termux-modded-first-boot`. (`termux-vncserver-start` is dropped.)
 
 Their `<AppShot>` spots render nothing until the files land.
+
+**Dropped** (the screens don't exist in the frozen UI, lead):
+- `app10-termux-sources`: the Termux dialog was removed (android fcd7f13).
+- `app10-modded-edition-unpaid` and `app10-modded-edition-owned`: Modded 2.0 has no edition detail page. An unowned card opens the Google Play purchase sheet; an owned card goes straight to the Termux step.
+- `termux-vncserver-start`: dropped earlier.
 
 **Reshoot suggested:**
 - `app10-modded-editions`: the Get pills show instead of prices. Prices can't appear under the fake Play used for capture; they need the real Play internal-test build. **Kept for the docs**; the alt text is adjusted.
@@ -56,12 +61,9 @@ For the app-10 screenshot refresh. **Don't capture until the UI freeze**: the ap
 | 8 | `app10-start-desktop-get-x11.png` | Start the desktop (Termux:X11, Set it up once) | Start the desktop step before Termux:X11 is installed: 'Get Termux:X11 · From GitHub' | Free, Termux:X11 not installed | Get the Termux:X11 app | The Start the desktop step asking you to get Termux:X11 from GitHub |  |
 | 9 | `app10-uninstall-sheet.png` | Uninstall (Long press on distribution) | Long-press sheet on a distro with Uninstall | Free, Debian installed | Long-press the distro | The long-press sheet for Debian with the Uninstall option |  |
 | 10 | `app10-termux-step-uninstall.png` | Uninstall (Paste and Execute) | Termux step in uninstall mode (the remove command) | Free, Debian installed | Copy the uninstall command | The Termux step with the uninstall command |  |
-| 11 | `app10-termux-sources.png` | Install Termux (Which Termux works) | The one-time Termux dialog: F-Droid, GitHub or Google Play (Android 11+) | Free, first launch | First launch | The app's dialog explaining where to get Termux |  |
 | 12 | `app10-modded-editions.png` | Modded OS Editions; blog | Modded tab: the 5 Modded 2.0 editions with prices, Pass offer | Free | Browse editions | The Modded tab with the five Modded 2.0 editions and their prices | yes |
 | 13 | `app10-modded-editions-owned.png` | Modded OS Editions (Modded 2.0) | Modded tab with Owned badges on all 5 editions | Modded Pass owner | Browse editions | The Modded tab for a Modded Pass owner, every edition marked Owned | yes |
 | 14 | `app10-modded-classic.png` | Modded OS Editions (Classic editions) | Classic section: the 4 Classic editions, free for past buyers | Past buyer (Classic Ubuntu XFCE) | Browse editions | The Classic Modded editions for a past buyer |  |
-| 15 | `app10-modded-edition-unpaid.png` | Installing Modded OS (Select the distro, unpaid) | Edition detail with price pill and Pass offer | Free | Pick an edition | A Modded 2.0 edition's page with its price and the Modded Pass offer |  |
-| 16 | `app10-modded-edition-owned.png` | Installing Modded OS (Select the distro, paid; Install) | Edition detail, owned: Install, Uninstall, download limits | Modded Pass owner | Pick an owned edition | A Modded 2.0 edition the user owns, with the Install button |  |
 | 17 | `app10-modded-termux-step.png` | Installing Modded OS (Termux Execution) | Termux step with the masked Modded command (`--token ••••`), Copy and Open Termux | Modded Pass owner | Copy the command | The Termux step for a Modded edition, with the token hidden |  |
 | 18 | `app10-premium.png` | Blog (Premium); Modded OS Editions | Premium screen: price, 30% off the Pass, early access, download limits, supporter wall | Free | Open Premium | The Premium screen with its perks and price | yes |
 | 19 | `app10-premium-owner.png` | Blog (Premium) | Premium screen for an owner: perks unlocked, supporter wall option | Premium owner | Open Premium | The Premium screen for a Premium owner |  |

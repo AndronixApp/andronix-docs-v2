@@ -1,287 +1,122 @@
 ---
 title: Installing Modded OS
-description: Step-by-step guide to installing an Andronix Modded OS on Android, from purchase and the Termux install command to user setup and VNC.
+description: How to buy and install a Modded OS edition with the Andronix app 10 - pick an edition, buy it on Google Play, run one command in Termux, and open the desktop.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
-
-import Imagera from "@/components/imagera";
 import YoutubeEmbed from "@/components/youtubeEmbed";
 import Collapsed from "@/components/collapsed";
+import NextStep from "@/components/next-step";
 
-Installing a Modded OS is straightforward. This guide walks you through selecting and installing your distro, running the install command in Termux, setting up your user account, and connecting to the desktop. A video of the same steps in the Andronix 7 app is below.
+This guide covers installing a Modded OS edition with the **Andronix app 10 (Andronix 2.0)**: the five Modded 2.0 editions, and the Classic editions for people who bought them before. It takes a few taps in the app and one command in Termux.
 
-<Callout type="info">This guide is for the **Classic** Modded OS editions. Andronix 2.0 brings a new installer for the **free** distros, but buying and installing a Classic edition works exactly as described on this page. The new **Modded 2.0** editions are coming; see [Modded OS](/modded-os/modded-os).</Callout>
-
-<Callout type="info">Each account is allotted a set number of downloads per day and per month. The limit is generous and most users will never hit it, but we can always help you raise it for a valid use case. It exists strictly to curb abuse of the download system. **You can see this limit on the OS information page of each distribution.**</Callout>
-
-<Collapsed title="Older video (Andronix 7)">
-<YoutubeEmbed id={"DW2g-I8gKDg"}/>
-</Collapsed>
-
-With that out of the way, let's install the distro.
+<Callout type="info">Using the Andronix app 8.x? Its guide is in the [App 8.x (Classic) docs](/v8/modded-os/modded-os-installation).</Callout>
 
 {/* App 10 screenshots: see DOCS_SHOTS.md. <AppShot> renders nothing until public/images/app10/<name>.png exists. */}
 
-## 1. Preparation 🚀
+## Before you start
 
-<Steps>
-<Step>
+- **Sign in** to the Andronix app. Your purchases are linked to your account.
+- **A 64-bit phone:** Modded OS isn't available on 32-bit phones; the app tells you if yours is one.
+- **Termux** from F-Droid, GitHub or Google Play. See [Install Termux](/start-here/install-termux).
+- **Download limits:** each account can download a Modded OS a set number of times per day and per month. Most people never reach the limit, and Premium raises it. If you need more for a good reason, [contact us](mailto:support@andronix.app).
 
-### Open the app
-Open the Andronix app and tap the **Modded OS** button on the dashboard. The Modded OS section lists all the distros you can install.
+## 1. Pick an edition
+
+Open the **Modded OS** tab. It lists the Modded 2.0 editions, the Modded Pass and Andronix Complete. If you bought a Modded OS before Andronix 2.0, your **Classic** editions are listed too.
 
 <AppShot name="app10-modded-editions" alt="The Modded tab with Andronix Complete, the Modded Pass and the Modded 2.0 editions" />
 
-</Step>
+{/* Old anchors the app links to (LinkHub ANDRONIX_DOCS_MODDED_*); keep them. */}
+<span id="2-selection-️" />
 
-<Step>
+## 2. Buy it (if you don't own it yet)
 
-### Select the distro
-Tap the distro you already own or want to buy. If you haven't bought it before, the app shows its price and other details so you can complete the purchase. Once the purchase is done, continue with the next steps.
+Tap an edition you don't own, or the **Modded Pass** or **Andronix Complete** offer. The Google Play purchase sheet opens; pay there as you would for any app. When the purchase is done, the edition shows as **Owned**.
 
-**Unpaid Screen**
-<AppShot name="app10-modded-edition-unpaid" alt="A Modded 2.0 edition's page with its price and the Modded Pass offer" />
-**Paid Screen**
-<AppShot name="app10-modded-edition-owned" alt="A Modded 2.0 edition the user owns, with the Install button" />
+<AppShot name="app10-modded-editions-owned" alt="The Modded tab for a Modded Pass owner, with the editions marked Owned" />
 
-</Step>
+Already own it? Skip to the next step.
 
-<Step>
+{/* Old anchors the app links to (LinkHub ANDRONIX_DOCS_MODDED_*); keep them. */}
+<span id="3-termux-execution-" />
 
-### Continue
-The distro is now linked to your profile, so you can move on to installing it.
-
-</Step>
-</Steps>
-
-## 2. Selection ⭐️
+## 3. Install it
 
 <Steps>
 <Step>
 
-### Install
+### Tap your edition
 
-You'll see three buttons: **Install**, **Uninstall**, and **Download Quota**.
-
-
-
-</Step>
-
-<Step>
-
-### Finalize
-Tap **Install** to start installing the distro.
-
-</Step>
-</Steps>
-
-## 3. Termux Execution 📥
-
-This is where the actual installation of your Linux distribution happens.
-
-<Callout type="info">The Andronix app has automatically copied an install command to your clipboard.</Callout>
+Tap an edition marked **Owned**. The app goes straight to the Termux step and copies the install command for you. The command includes a download token, so the app hides it on screen; tap **Show full command** to see it with the token masked.
 
 <AppShot name="app10-modded-termux-step" alt="The Termux step for a Modded edition, with the token hidden" />
 
-<Steps>
+</Step>
+
 <Step>
 
-### Termux
+### Run it in Termux
 
-You'll run this command in Termux to download and set up the distro.
+Tap **Open Termux**, long-press to paste the command, and press **Enter**. If you copied something else in the meantime, tap **Recopy Command** first.
 
-<Callout type="warning">Before you continue, make sure you're using a compatible version of Termux. If you haven't already, follow the [Migrating Termux to F-Droid](/start-here/install-termux) guide.</Callout>
+The installer shows its steps and ticks each one off. The first run also updates Termux and can take a few minutes, so keep Termux open.
+
+<Callout type="warning">Android may ask whether Termux can keep running in the background. Tap **Allow**, and turn off battery optimization for Termux, so Android doesn't stop the install.</Callout>
 
 </Step>
 
 <Step>
 
-### Paste
+### Back in the app
 
-Open the Termux app, **long press to paste the copied command, then press Enter to run it**.
-
-
-
-</Step>
-
-<Step>
-
-### Wait
-
-The download and installation will take a while. Keep the Termux app running until it finishes.
-
-<Callout type="warning">Disable battery optimization for Termux so that processes running inside it don't get terminated at random.</Callout>
-<Callout type="info">Download speeds for the distro tar file may seem unusually low. This is expected: the file is extracted while it downloads, which slows the process down.</Callout>
-
-</Step>
-
-<Step>
-
-### Command Executed
-Back in Andronix, tap the **Command Executed** button at the bottom of the screen. This tells the app the command has been run.
-
-</Step>
-
-<Step>
-
-### Finish
-Once the script has finished successfully, tap the **Execution Finished** button at the bottom.
-
-</Step>
-</Steps>
+Tap **Next**. The app waits while the install runs in Termux, then shows the result.
 
 <AppShot name="app10-install-result" alt="The install result: Debian 13 with XFCE installed" />
 
-## 4. Starting Distribution ⚡️
-
-If the installation completed without any errors at the end, you've reached the last part: configuring your installed distro. First, you need to **start the distro**.
-
-<Steps>
-<Step>
-
-### Start Command
-
-Start the distro by running the command for your distro in Termux:
-
-* Ubuntu XFCE
-
-```bash
-./start-andronix.sh
-```
-
-* Ubuntu KDE
-
-```bash
-./start-androkde.sh
-```
-
-* Debian XFCE
-
-```bash
-./start-androdebian.sh
-```
-
-* Manjaro XFCE
-
-```bash
-./start-androjaro.sh
-```
-
-This starts the post-installation process, which sets up the essential packages. Wait until it finishes.
-
 </Step>
 
 <Step>
 
-### Select Region
+### Create your user
 
-If the post-installation setup succeeds, you'll see a menu for selecting your region. Use the **arrow keys**, as shown in the screenshot below, to move the selection, then press **Enter** to continue.
+When the install finishes, Termux asks you to create your user: a username, a password, and a desktop password.
 
-<Imagera src="/images/moddedos/modded_os_region_arrow_marker.png"/>
+<AppShot name="termux-modded-first-boot" alt="Creating your user in Termux after installing a Modded OS" />
 
-</Step>
-
-<Step>
-
-### Select City
-
-After selecting your region, choose your **City** in the next menu and continue.
-
-<Imagera src="/images/moddedos/modded_os_city.png"/>
-
-</Step>
-
-<Step>
-
-### Select Keyboard
-
-Select your keyboard layout if you use something other than the default English layout. In this example we keep the English layout, so press **Enter** to continue.
-
-<Imagera src="/images/moddedos/modded_os_keyboard.png"/>
-
-</Step>
-
-<Step>
-
-### Username
-
-If everything went well, you'll see a **blue screen** asking for a username. Enter any username that isn't a reserved keyword like admin, root, etc. (your name works fine), then press **Enter** to continue.
-
-<Callout type="info">If you can't bring up your keyboard to enter the username, press the ESC key at the bottom. This restarts the script. This time, make sure your keyboard is open (tap anywhere on the terminal) while you're in the Termux shell.</Callout>
-
-<Imagera src="/images/username_user.png"/>
-
-</Step>
-
-<Step>
-
-### Password
-
-Next, set a password for your user. It can be anything longer than six characters. Press **Enter**, re-enter the password to confirm it, and press **Enter** again to continue.
-
-<Imagera src="/images/pass_user.png"/>
-
-</Step>
-
-<Step>
-
-### Root Password
-
-Now set a root password. It can be anything longer than six characters. Press **Enter**, re-enter the root password to confirm it, and press **Enter** again to continue.
-
-</Step>
-
-<Step>
-
-### Confirm
-
-The next screen shows everything you entered. Check that the username and passwords are correct (if not, press ESC or the back button to restart the script), then press **Enter** to continue.
-
-<Imagera src="/images/confirm_user.png"/>
-
-</Step>
-
-<Step>
-
-### Wait
-
-Wait while the system creates your user. You should see something like this during setup.
-
-<Imagera src="/images/user_creation_moddedos.png"/>
+{/* TODO(docs): confirm whether Modded editions ask anything beyond the free first-boot form (keyboard layout, time zone) once the termux-modded-first-boot shot lands, and describe it here. */}
 
 </Step>
 </Steps>
 
-## 5. VNC Configuration 📺
+<Callout type="info">If the install stops, run the same command again; it continues where it stopped. See [The install fails or stops](/troubleshooting/install). Seeing **Process completed (signal 9)**? See [Process completed (signal 9)](/troubleshooting/signal-9).</Callout>
 
-<Callout type="info">That's it! Once user creation finishes, you'll see `{your_username}@localhost:~$`.</Callout>
+{/* Old anchors the app links to (LinkHub ANDRONIX_DOCS_MODDED_*); keep them. */}
+<span id="4-starting-distribution-️" />
+<span id="5-vnc-configuration-" />
 
-<Steps>
-<Step>
+## 4. Start the desktop
 
-### VNC Start
+The app moves on to **Start the desktop**. Open your Modded desktop full screen with Termux:X11, using the distro your edition is built on, for example:
 
-The **Start VNC server** page should now be open in the Andronix app.
+```bash copy
+andronix desktop debian
+```
 
 <AppShot name="app10-start-desktop" alt="The Start the desktop step, with Termux:X11 installed and the andronix desktop command" />
 
-</Step>
+See [Start the desktop](/desktop/termux-x11) for getting the Termux:X11 app and everything else.
 
-<Step>
+## Classic editions
 
-### VNC Server
+The Classic editions (the original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro) install the same way: tap the edition in the **Classic** section, then follow steps 3 and 4. They're free for everyone who bought them before, and aren't sold anymore.
 
-To interact with your distro's graphical interface, set up a VNC server. Follow the [VNC](/reference/vnc) guide to connect to your distro, and see [VNC on an old install](/pre-2.0/old-install-guides#vnc-on-an-old-install) for the settings that apply to the Classic editions.
+<AppShot name="app10-modded-classic" alt="The Classic Modded editions for a past buyer" />
 
-<Callout type="error">Seeing the **Process completed (signal 9) - press Enter** error in Termux? Read [Android 12 and Newer](/troubleshooting/signal-9) to fix it.</Callout>
+<Collapsed title="Older video (Andronix 7)">
+This walkthrough shows the Andronix 7 app and the Classic setup screens from before Andronix 2.0.
 
-</Step>
-</Steps>
+<YoutubeEmbed id={"DW2g-I8gKDg"}/>
+</Collapsed>
 
-## Next steps
-
-- [VNC](/reference/vnc): connect to your Modded OS desktop with a VNC viewer.
-- [Fixing Sound](/use/sound): get audio working in your distro.
-- [Accessing Internal Storage](/use/storage): reach your phone's files from Linux.
-- [FAQ](/troubleshooting/faq): answers to common questions and errors.
+<NextStep href="/use/apps" title="Use it" description="Install apps, add dev packs, and back up your Modded OS." />
