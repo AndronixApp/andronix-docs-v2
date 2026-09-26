@@ -1,5 +1,9 @@
 # Docs status: new installer
 
+## Operator name (owner, Sept 26)
+
+- **The operator is "Amita Shukla".** The only "Devriz Technologies" mention in docs text was the "Anything more?" section of the 2021 blog post `blog/v6-0.mdx`, which is now removed. The old video thumbnail inside the collapsed "Older video" block stays, as allowed.
+
 ## Account deletion page (lead, Sept 26)
 
 - **Checked against** products-api (`products-api-wt-entitlement`, 30c2a7d):
@@ -28,7 +32,7 @@
 - **TODOs:**
   - the exact in-app menu path;
   - confirm the production value of `PURCHASE_RETENTION_YEARS`;
-  - align the 30-day email promise with the website privacy draft's 90-day erasure wording.
+  - ~~align 30 vs 90 days~~ **Owner decided: 30 days everywhere.** The page already says 30 days.
 
 ## Signal 9 page (owner question, Sept 26)
 
