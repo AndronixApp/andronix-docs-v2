@@ -18,7 +18,10 @@ Sept 26, 2026. Branch `docs/new-installer`, committed locally. Nothing has been 
   ```
 
   The uninstall guide already had the no-app path, "Uninstalling from Termux" (`andronix remove`).
-- **proot caveat.** `get.sh` doesn't install proot; it only prints a tip. The installer stops with "proot is missing" if it isn't there. The docs therefore say to run `pkg install proot -y` first on a fresh Termux, next to the one-liner. Should `get.sh` run `pkg install proot` itself?
+- **proot step, pending.** Installer 2.0.0 installs proot itself: the visible step "Installing proot", from `feat-proot-install`, which is merging into `release/2.0.0`. `get.sh` doesn't need to.
+  - The docs keep "run `pkg install proot -y` first on a fresh Termux" until x11's final gate confirms it.
+  - A `TODO(docs)` marks both places: the install guide's "Installing without the app" and the CLI reference's "Getting andronix".
+  - After the gate, remove both, and consider adding "Installing proot" to the step lists on the install guide and the CLI page.
 - **Unverified:** `https://dl.andronix.app/get.sh` is taken from your message. I didn't fetch it.
 - **Pre-2.0 pages** stay as they are, marked for old installs.
 - **Deploy timing:** the docs deploy with the app 10.0 release, not before. Nothing has been pushed or deployed.
@@ -178,6 +181,7 @@ These are MDX comments, `{/* TODO(docs): ... */}`, so readers don't see them. Se
 6. **Desktop Environments:** does `install --de <other>` add a second desktop without `--reinstall`?
 7. **Installing a Distro:** the YouTube video and the app's DE-selection screenshot show the old installer.
 8. **XSDL:** test it with the new installer, then rewrite or retire the page. Termux:X11 may replace it once it lands.
+9. **proot pre-step** (install guide, CLI reference): remove after x11's final gate confirms the installer installs proot.
 
 The Void TODO and the MATE-screenshot TODO are resolved.
 
@@ -194,4 +198,4 @@ The Void TODO and the MATE-screenshot TODO are resolved.
 9. **Modded preview image:** OK to show the test-build screenshot of the new Modded look publicly, before release?
 10. **KDE on Ubuntu 24.04:** excluded on purpose? The docs list KDE only for Debian 13, Ubuntu 26.04 and Kali, as you said.
 11. ~~App version in the guides~~ Decided: app 10.0 or newer.
-12. **proot in get.sh:** should `get.sh` install proot, so the no-app one-liner works on a fresh Termux without a separate `pkg install proot -y`?
+12. ~~proot in get.sh~~ Decided: the installer installs proot. The docs step comes out after x11's final gate.

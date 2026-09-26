@@ -191,6 +191,8 @@ It downloads the `andronix` command, checks it, and starts the install. The rest
 - **Distro names:** `debian`, `ubuntu` (26.04), `ubuntu24`, `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported Distros](/unmodded-distros/distros).
 - **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only) or `none` for the command line only.
 
+{/* TODO(docs): remove this proot step once x11's final gate confirms installer 2.0.0 installs proot itself (feat-proot-install, step 'Installing proot'). */}
+
 <Callout type="info">On a fresh Termux, install `proot` first with `pkg install proot -y`. If it's missing, the installer stops and tells you to.</Callout>
 
 Once `andronix` is installed, you can install more distros with just `andronix install <distro> --de <desktop>`.

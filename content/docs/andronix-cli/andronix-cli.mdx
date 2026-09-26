@@ -39,6 +39,8 @@ The Andronix app (10.0 or newer) sets up `andronix` for you with its install com
 curl -fsSL https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
+{/* TODO(docs): remove this proot step once x11's final gate confirms installer 2.0.0 installs proot itself (feat-proot-install, step 'Installing proot'). */}
+
 Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. On a fresh Termux, run `pkg install proot -y` first.
 
 `andronix update` keeps it up to date.
