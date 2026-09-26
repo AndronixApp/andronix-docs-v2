@@ -11,26 +11,26 @@ Learn how to uninstall a Linux distro you installed with Andronix. The app gener
 <Callout type="info">This is **not** a guide for uninstalling a **Modded OS**.</Callout>
 <Callout type="warning">Uninstalling deletes everything inside the distro. Copy anything you want to keep to `/sdcard` first, or make a backup with [`andronix backup`](/reference/andronix-command#backing-up-and-restoring).</Callout>
 
-{/* TODO(docs): these app screenshots show the Andronix 7 UI (incl. the retired Commands tab). Replace once ui's redesign lands; the lead will have the emulator agent shoot the new screens. Files: install_dashboard.jpg, install_distro_selection.jpg, distro_uninstall_bottomsheet.jpg, install_termux_exec.jpg, distro_uninstall_termux_exec.jpg */}
+{/* App 10 screenshots: see DOCS_SHOTS.md. <AppShot> renders nothing until public/images/app10/<name>.png exists. */}
 
 ## 1. Preparation 🚀
 
 ### Open Andronix app
 Open the Andronix app and tap the **Linux Distribution** card on the dashboard.
 
-<Imagera src="/images/install_new/install_dashboard.jpg"/>
+<AppShot name="app10-home" alt="The Andronix app's Home screen, with the Linux Distribution block" />
 
 ### Select Distribution
 You'll now see all the distributions available in Andronix.
 
-<Imagera src="/images/install_new/install_distro_selection.jpg"/>
+<AppShot name="app10-distro-list" alt="The list of free Linux distros in the Andronix app" />
 
 ## 2. Selection ⭐
 
 ### Long Press on Distribution
 **Long press** the distro you want to uninstall. This opens a menu with options for that distro.
 
-<Imagera src="/images/uninstall_new/distro_uninstall_bottomsheet.jpg"/>
+<AppShot name="app10-uninstall-sheet" alt="The long-press sheet for Debian with the Uninstall option" />
 
 ### Select Uninstall
 Tap the **Uninstall** button to start the process.
@@ -41,7 +41,7 @@ This is where your Linux distribution actually gets removed.
 
 <Callout type="info">The Andronix app has automatically copied an uninstall command to your clipboard.</Callout>
 
-<Imagera src="/images/install_new/install_termux_exec.jpg"/>
+<AppShot name="app10-termux-step" alt="The Termux step, showing the andronix install command with Copy and Open Termux buttons" />
 
 ### Termux
 You'll run this command in Termux to remove the distro.
@@ -51,7 +51,7 @@ You'll run this command in Termux to remove the distro.
 ### Paste and Execute
 First, stop the desktop (`vncserver-stop`) and `exit` the distro if it's running. Then, in Termux, **long press to paste the copied command, then press Enter to run it**.
 
-<Imagera src="/images/uninstall_new/distro_uninstall_termux_exec.jpg"/>
+<AppShot name="app10-termux-step-uninstall" alt="The Termux step with the uninstall command" />
 
 {/* TODO(docs): which command the app's Uninstall button copies for distros from the new installer isn't decided yet (the installer's design suggests `andronix remove <distro> --yes`). Update this section and its screenshot once it is. */}
 

@@ -22,19 +22,19 @@ This walkthrough shows the Andronix 7 app and the pre-2.0 installer (root login,
 
 {/* TODO(docs): replace with an Andronix 2.0 walkthrough video when one is recorded. */}
 
-{/* TODO(docs): these app screenshots show the Andronix 7 UI (incl. the retired Commands tab). Replace once ui's redesign lands; the lead will have the emulator agent shoot the new screens. Files: install_dashboard.jpg, install_distro_selection.jpg, install_gui_selection.jpg, install_de_selection.jpg, install_termux_exec.jpg, install_script_exec.jpg, install_start_vnc.jpg */}
+{/* App 10 screenshots: see DOCS_SHOTS.md. <AppShot> renders nothing until public/images/app10/<name>.png exists. */}
 
 ## 1. Preparation 🚀
 
 ### Linux Distributions
 Open the Andronix app and tap the **Linux Distribution** card on the dashboard. This takes you to the list of distros you can install.
 
-<Imagera src="/images/install_new/install_dashboard.jpg"/>
+<AppShot name="app10-home" alt="The Andronix app's Home screen, with the Linux Distribution block" />
 
 ### Selection
 You'll now see every distribution that can be installed on your Android device.
 
-<Imagera src="/images/install_new/install_distro_selection.jpg"/>
+<AppShot name="app10-distro-list" alt="The list of free Linux distros in the Andronix app" />
 
 {/* Kept for the app's link (LinkHub ANDRONIX_DOCS_UNMODDED_DISTRO_SELECTION). */}
 <span id="2-selection-️" />
@@ -49,7 +49,7 @@ Tap the distro you'd like to install.
 ### Select the UI
 Next, choose the kind of interface you want. This decides how you'll interact with your distro once it's running.
 
-<Imagera src="/images/install_new/install_gui_selection.jpg"/>
+<AppShot name="app10-interface-picker" alt="Choosing between a desktop and the command line for Debian" />
 
 <Callout type="info">A Graphical User Interface (GUI) is the visual interface, with windows, icons and a mouse pointer, that you use to get things done in your Linux distribution.</Callout>
 
@@ -72,9 +72,8 @@ Follow the instructions below that match the option you picked.
 
 Select the Desktop Environment (DE) you'd like to install: **XFCE**, **LXQt**, **MATE**, or **KDE Plasma** (Debian, Ubuntu 26.04 and Kali only). If you want to compare them first, read the [Desktop Environments](/reference/desktops) page. If you're not sure, pick **XFCE**.
 
-<Imagera src="/images/install_new/install_de_selection.jpg"/>
+<AppShot name="app10-desktop-picker" alt="Choosing XFCE, LXQt, MATE or KDE Plasma for Debian" />
 
-{/* TODO(docs): this app screenshot shows the old list of desktops. Replace it once the app's buttons for the new installer are final. */}
 
 #### CLI
 
@@ -86,7 +85,7 @@ This is where the actual installation of your Linux distribution happens.
 
 <Callout type="info">The Andronix app has automatically copied an install command to your clipboard.</Callout>
 
-<Imagera src="/images/install_new/install_termux_exec.jpg"/>
+<AppShot name="app10-termux-step" alt="The Termux step, showing the andronix install command with Copy and Open Termux buttons" />
 
 ### Execute
 You'll run this command in Termux to download and set up the distro.
@@ -116,6 +115,8 @@ The command sets up the `andronix` installer and runs it. You'll see a list of s
 ✓ Writing start-debian.sh
 ```
 
+<AppShot name="termux-install-running" alt="The andronix installer in Termux, ticking off its install steps" />
+
 A desktop install usually takes a few minutes, depending on your phone and connection. Keep Termux open until it finishes.
 
 <Callout type="warning">Android may ask whether Termux can keep running in the background. Tap **Allow**, and disable battery optimization for Termux, so Android doesn't stop the install.</Callout>
@@ -130,6 +131,8 @@ When the install finishes, it asks you to set up your user:
 
 <Callout type="info">Free distros no longer log you in as `root`. Your user can run any command as root with `sudo`, for example `sudo apt install nano`. On Manjaro, where `sudo` doesn't work yet, use `andronix start manjaro --root` from Termux instead.</Callout>
 
+<AppShot name="termux-create-user" alt="Creating your user in Termux: username, password and desktop password" />
+
 When it's done, the installer takes you straight into your new distro.
 
 ### Update the Andronix app
@@ -138,7 +141,7 @@ Back in Andronix, tap the **Command Executed** button at the bottom of the scree
 ### Finish the Process
 Once the script has finished successfully, tap the **Execution Finished** button at the bottom.
 
-<Imagera src="/images/install_new/install_script_exec.jpg"/>
+<AppShot name="app10-install-result" alt="The install result: Debian 13 with XFCE installed" />
 
 ## 4. Starting Distribution ⚡️
 
@@ -174,7 +177,7 @@ If you chose a Desktop Environment, open it next.
 
 The **Start VNC server** page should now be open in the Andronix app.
 
-<Imagera src="/images/install_new/install_start_vnc.jpg" />
+<AppShot name="app10-start-desktop" alt="The Start the desktop step, with Termux:X11 installed and the andronix desktop command" />
 
 ### VNC Server
 

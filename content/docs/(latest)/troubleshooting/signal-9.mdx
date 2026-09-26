@@ -13,6 +13,10 @@ Termux suddenly shows:
 
 Your distro, its desktop and any install that was running stop at that moment. It happens most often with a desktop open, because a desktop starts many processes.
 
+The Andronix app also shows a tip with a **Fix this** button when it looks like Android stopped Termux:
+
+<AppShot name="app10-phantom-tip" alt="The app's tip about Android stopping Termux, with a Fix this button" />
+
 ## Why it happens
 
 Android 12 added a **phantom process killer**. It stops the background processes an app starts once there are more than 32 of them, or when they use a lot of CPU. Andronix runs your whole distro as Termux's child processes, so Android can kill it.

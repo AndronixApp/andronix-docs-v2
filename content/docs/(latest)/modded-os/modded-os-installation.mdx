@@ -21,7 +21,7 @@ Installing a Modded OS is straightforward. This guide walks you through selectin
 
 With that out of the way, let's install the distro.
 
-{/* TODO(docs): these app screenshots show the Andronix 7 UI (incl. the retired Commands tab). Replace once ui's redesign lands; the lead will have the emulator agent shoot the new screens. Files: modded_install_new/*.jpg, install_script_exec.jpg, install_start_vnc.jpg */}
+{/* App 10 screenshots: see DOCS_SHOTS.md. <AppShot> renders nothing until public/images/app10/<name>.png exists. */}
 
 ## 1. Preparation 🚀
 
@@ -31,7 +31,7 @@ With that out of the way, let's install the distro.
 ### Open the app
 Open the Andronix app and tap the **Modded OS** button on the dashboard. The Modded OS section lists all the distros you can install.
 
-<Imagera src="/images/modded_install_new/modded_distro_selection.jpg"/>
+<AppShot name="app10-modded-editions" alt="The Modded tab with the five Modded 2.0 editions and their prices" />
 
 </Step>
 
@@ -41,9 +41,9 @@ Open the Andronix app and tap the **Modded OS** button on the dashboard. The Mod
 Tap the distro you already own or want to buy. If you haven't bought it before, the app shows its price and other details so you can complete the purchase. Once the purchase is done, continue with the next steps.
 
 **Unpaid Screen**
-<Imagera src="/images/modded_install_new/modded_os_unpaid.jpg"/>
+<AppShot name="app10-modded-edition-unpaid" alt="A Modded 2.0 edition's page with its price and the Modded Pass offer" />
 **Paid Screen**
-<Imagera src="/images/modded_install_new/modded_distro_proceed.jpg"/>
+<AppShot name="app10-modded-edition-owned" alt="A Modded 2.0 edition the user owns, with the Install button" />
 
 </Step>
 
@@ -64,7 +64,7 @@ The distro is now linked to your profile, so you can move on to installing it.
 
 You'll see three buttons: **Install**, **Uninstall**, and **Download Quota**.
 
-<Imagera src="/images/modded_install_new/modded_distro_options.jpg" />
+
 
 </Step>
 
@@ -82,7 +82,7 @@ This is where the actual installation of your Linux distribution happens.
 
 <Callout type="info">The Andronix app has automatically copied an install command to your clipboard.</Callout>
 
-<Imagera src="/images/modded_install_new/modded_termux_exec.jpg"></Imagera>
+<AppShot name="app10-modded-termux-step" alt="The Termux step for a Modded edition, with the token hidden" />
 
 <Steps>
 <Step>
@@ -101,7 +101,7 @@ You'll run this command in Termux to download and set up the distro.
 
 Open the Termux app, **long press to paste the copied command, then press Enter to run it**.
 
-<Imagera src="/images/modded_install_new/modded_os_command_termux.jpg"/>
+
 
 </Step>
 
@@ -131,7 +131,7 @@ Once the script has finished successfully, tap the **Execution Finished** button
 </Step>
 </Steps>
 
-<Imagera src="/images/install_new/install_script_exec.jpg"/>
+<AppShot name="app10-install-result" alt="The install result: Debian 13 with XFCE installed" />
 
 ## 4. Starting Distribution ⚡️
 
@@ -264,7 +264,7 @@ Wait while the system creates your user. You should see something like this duri
 
 The **Start VNC server** page should now be open in the Andronix app.
 
-<Imagera src="/images/install_new/install_start_vnc.jpg" />
+<AppShot name="app10-start-desktop" alt="The Start the desktop step, with Termux:X11 installed and the andronix desktop command" />
 
 </Step>
 

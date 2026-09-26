@@ -3,6 +3,7 @@ import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
 import defaultComponents from 'fumadocs-ui/mdx';
 import Imagera from '@/components/imagera';
 import { Callout } from '@/components/callout';
+import AppShot from '@/components/app-shot';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -10,6 +11,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     img: (props) => <ImageZoom {...(props as any)} />,
     Imagera,
     Callout,
+    AppShot,
     ...components,
   };
 }

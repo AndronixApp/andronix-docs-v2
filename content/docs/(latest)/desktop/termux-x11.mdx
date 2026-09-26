@@ -29,6 +29,8 @@ Termux:X11 shows a desktop, so the distro needs one (XFCE, LXQt, MATE or KDE Pla
 </Step>
 </Steps>
 
+<AppShot name="app10-start-desktop-get-x11" alt="The Start the desktop step asking you to get Termux:X11 from GitHub" />
+
 `andronix` installs the Termux side (the `termux-x11` package) by itself the first time you open the desktop.
 
 ## Open the desktop
@@ -38,6 +40,10 @@ In **Termux** (not inside the distro), run:
 ```bash copy
 andronix desktop
 ```
+
+In the app, the **Start the desktop** step shows this command with a Copy button:
+
+<AppShot name="app10-start-desktop" alt="The Start the desktop step, with Termux:X11 installed and the andronix desktop command" />
 
 If you have more than one distro with a desktop, name it: `andronix desktop debian`. You can also add `--x11` to the usual start command: `./start-debian.sh --x11`.
 
