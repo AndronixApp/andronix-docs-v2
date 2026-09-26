@@ -4,6 +4,7 @@
   "description": "Andronix Docs V2",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-latest-links.mjs",
     "build": "next build",
     "start": "next start",
     "postinstall": "fumadocs-mdx",

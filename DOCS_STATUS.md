@@ -51,7 +51,10 @@
   - `unmodded-distros/unmodded-os-installation` to `/install/with-the-app`;
   - `faq/faq` to `/troubleshooting/faq`;
   - `introduction/what-andronix-is-not-capable-of` to `/reference/limitations`.
-- **Action for web:** the website links `/software/browsers` and `/termux/migrating-to-f-droid#manual-method`, which now open the 8.x copies. Point them to `/use/apps#browsers` and `/start-here/install-termux#manual-method`.
+- ~~Action for web~~ **Correction:** `/software/browsers` and `/termux/migrating-to-f-droid#manual-method` don't come from the website. They come from the v8.0 app's LinkHub (branch `8`), and sending 8.x users to `/v8` is correct.
+  - App 10 content (`(latest)`, blog included) has **no** links to any removed or moved URL: a grep for every redirect source and old path found 0.
+- **Build guard:** `scripts/check-latest-links.mjs` runs as `prebuild` and fails `pnpm build` if an App 10 page links to a path that only exists under `/v8`, or to an old URL that redirects there. Deliberate `/v8` links are allowed.
+  - Tested: it passes on the real content (43 pages). A test link to `/software/browsers` fails the build with the file and the fix.
 - **Superseded:** the IA proposal's URL table said old URLs go to the new pages. Now the old URLs that were live go to `/v8`.
 
 ## Operator name (owner, Sept 26)
