@@ -2,16 +2,16 @@
 
 ## Capture status (ui-revamp 5b2cd649, Sept 26)
 
-**Captured and committed:** 18 of 22 files, all 1080 × 1920, 24-bit, no alpha.
+**Captured and committed:** 20 of 22 files, all 1080 × 1920, 24-bit, no alpha.
 - `app10-home`, `-distro-list`, `-interface-picker`, `-desktop-picker`
 - `app10-termux-step`, `-termux-step-uninstall`, `-install-result`, `-uninstall-sheet`
 - `app10-start-desktop`, `-start-desktop-get-x11`, `-phantom-tip`
 - `app10-modded-editions`, `-modded-editions-owned`, `-modded-termux-step`
-- `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`
+- `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`, `-modded-classic`
+- `termux-install-running`
 
-**Still to come:** 4 files.
-- **App:** `app10-modded-classic`.
-- **Termux:** `termux-install-running`, `termux-create-user`, `termux-modded-first-boot`. (`termux-vncserver-start` is dropped.)
+**Still to come:** 2 files.
+- **Termux:** `termux-create-user`, `termux-modded-first-boot`. (`termux-vncserver-start` is dropped.)
 
 Their `<AppShot>` spots render nothing until the files land.
 
@@ -21,11 +21,13 @@ Their `<AppShot>` spots render nothing until the files land.
 - `termux-vncserver-start`: dropped earlier.
 
 **Reshoot suggested:**
+- `termux-install-running` (**before deploy**): the banner reads "Linux on Android · dev" (a dev build), and the command is `--reinstall`, so a "Reinstall Debian 13?" box shows. Retake a fresh install with the release build: `andronix install debian --de xfce`, banner showing the version.
 - `app10-modded-editions`: the Get pills show instead of prices. Prices can't appear under the fake Play used for capture; they need the real Play internal-test build. **Kept for the docs**; the alt text is adjusted.
 - `app10-premium`: it's scrolled past the price and Buy card. **Kept for the docs** (the alt text now says "listing what Premium includes").
 - `app10-desktop-picker`: KDE Plasma is below the fold (XFCE, LXQt, MATE show). Optional: scroll a little so all four show.
 
 **Noted, no reshoot:**
+- `app10-modded-classic` shows the Classic section as **"Archived — yours to keep"** (the docs now use that label). It also shows a **Fedora XFCE card, "Premium · Early access for Premium and Pass owners"**, which the docs and the 2.0 facts don't mention (they list five editions). Confirm whether Fedora XFCE early access should be documented.
 - `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, so the app's uninstall also removes an old pre-2.0 copy.
 - `app10-premium-owner` shows a "Copy beta command" perk and `andronix update --channel stable`. `--channel stable|beta` is now in the CLI reference.
 - `app10-phantom-tip`: the tip sits on the Start the desktop step, labelled "How to fix it" (the docs text now says so).
