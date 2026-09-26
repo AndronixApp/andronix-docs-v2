@@ -1,39 +1,32 @@
 # App 10 screenshot shot list
 
-## Capture status (ui-revamp 5b2cd649, Sept 26)
+## Capture status (ui-revamp 5b2cd649, installer v2.0.1, Sept 26)
 
-**Captured and committed:** 20 of 22 files, all 1080 × 1920, 24-bit, no alpha.
-- `app10-home`, `-distro-list`, `-interface-picker`, `-desktop-picker`
-- `app10-termux-step`, `-termux-step-uninstall`, `-install-result`, `-uninstall-sheet`
-- `app10-start-desktop`, `-start-desktop-get-x11`, `-phantom-tip`
-- `app10-modded-editions`, `-modded-editions-owned`, `-modded-termux-step`
-- `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`, `-modded-classic`
-- `termux-install-running`
+**Committed:** every shot the App 10 pages use, all 1080 × 1920, 24-bit, no alpha.
+- **App:**
+  - `app10-home`, `-distro-list`, `-interface-picker`, `-desktop-picker` (retake, now with KDE Plasma)
+  - `app10-termux-step`, `-termux-step-uninstall`, `-install-result`, `-uninstall-sheet`
+  - `app10-start-desktop`, `-start-desktop-get-x11`, `-phantom-tip`
+  - `app10-modded-editions`, `-modded-editions-owned`, `-modded-classic` (retake: Classic editions only)
+  - `app10-modded-termux-step`, `app10-premium`, `-premium-owner`, `-delete-account`, `-settings-analytics`
+- **Termux:**
+  - `termux-install-running`: retake, release v2.0.1 banner, fresh install.
+  - `termux-create-user`.
+  - `termux-x11-desktop`: XFCE full screen in Termux:X11 with the extra-keys bar hidden. It now replaces `new-installer/termux-x11-xfce-phone.jpg` on Step 3 and in the blog post.
 
-**Still to come:** 2 files.
-- **Termux:** `termux-create-user`, `termux-modded-first-boot`. (`termux-vncserver-start` is dropped.)
+**Kept on purpose:**
+- `app10-premium` is the earlier, scrolled capture. The unscrolled retake's hero reads "Test purchase (fake Play)" and isn't used. Retake from the Play internal-test build (with the Play Store shots).
+- `app10-modded-editions` shows Get pills instead of prices (fake Play). It's fine for the docs; the Play shots come from the internal-test build.
 
-Their `<AppShot>` spots render nothing until the files land.
+**Dropped:**
+- `termux-modded-first-boot`: it needs a real bucket. Its spot is removed; the page points to the free Create your user step instead.
+- `app10-termux-sources`, `app10-modded-edition-unpaid`, `app10-modded-edition-owned`: those screens don't exist in the frozen UI.
+- `termux-vncserver-start`: App 10 uses Termux:X11.
 
-**Dropped** (the screens don't exist in the frozen UI, lead):
-- `app10-termux-sources`: the Termux dialog was removed (android fcd7f13).
-- `app10-modded-edition-unpaid` and `app10-modded-edition-owned`: Modded 2.0 has no edition detail page. An unowned card opens the Google Play purchase sheet; an owned card goes straight to the Termux step.
-- `termux-vncserver-start`: dropped earlier.
-
-**Reshoot suggested:**
-- `termux-install-running` (**before deploy**): the banner reads "Linux on Android · dev" (a dev build), and the command is `--reinstall`, so a "Reinstall Debian 13?" box shows. Retake a fresh install with the release build: `andronix install debian --de xfce`, banner showing the version.
-- `app10-modded-editions`: the Get pills show instead of prices. Prices can't appear under the fake Play used for capture; they need the real Play internal-test build. **Kept for the docs**; the alt text is adjusted.
-- `app10-premium`: it's scrolled past the price and Buy card. **Kept for the docs** (the alt text now says "listing what Premium includes").
-- `app10-desktop-picker`: KDE Plasma is below the fold (XFCE, LXQt, MATE show). Optional: scroll a little so all four show.
-
-**Noted, no reshoot:**
-- `app10-modded-classic` shows the Classic section as **"Archived — yours to keep"** (the docs use that label).
-- **Retake `app10-modded-classic`** (lead): it also shows a "Fedora XFCE · Early access" card. That's a products-api test fixture that leaked into the dev catalog, not a real edition. Launch has five Modded 2.0 editions. The docs don't mention Fedora XFCE; early access is described only generically.
-- `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, so the app's uninstall also removes an old pre-2.0 copy.
-- `app10-premium-owner` shows a "Copy beta command" perk and `andronix update --channel stable`. `--channel stable|beta` is now in the CLI reference.
-- `app10-phantom-tip`: the tip sits on the Start the desktop step, labelled "How to fix it" (the docs text now says so).
-
-For the app-10 screenshot refresh. **Don't capture until the UI freeze**: the app is still changing (M3, motion, in-button loading).
+**Noted:**
+- `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, which is intentional and documented.
+- `app10-premium-owner` shows `andronix update --channel stable`, which is documented.
+- `app10-phantom-tip` says "How to fix it", which the docs text matches.
 
 ## How to capture
 
@@ -82,7 +75,6 @@ These show the installer in Termux. They don't depend on the app UI, so they can
 |---|---|---|---|
 | `termux-install-running.png` | Install with the app (Wait); Install without the app | Termux: the installer's step list mid-install (Debian 13 + XFCE), progress bar visible | Termux, not the app; can be captured now |
 | `termux-create-user.png` | Install with the app (Create your user) | Termux: the first-boot user form (username, password, desktop password) | Termux, can be captured now |
-| `termux-modded-first-boot.png` | Installing Modded OS (steps 4) | Termux: the Modded first boot, replacing the old blue dialog screens (region, keyboard, username, password) | Termux; the page's text for these steps gets rewritten in the app-flow pass |
 | `termux-x11-desktop.png` | (only if a page needs one; none does today: Step 3 uses `new-installer/termux-x11-xfce-phone.jpg`) | Termux:X11 showing the XFCE desktop, 1080 × 1920, demo-mode status bar | Replaces the dropped `termux-vncserver-start` (App 10 uses Termux:X11; VNC is only an "Other ways" link) |
 
 **Already current, keep:**
