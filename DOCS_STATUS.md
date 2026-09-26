@@ -1,5 +1,24 @@
 # Docs status: new installer
 
+## Analytics: OpenPanel (owner request, Sept 26)
+
+- **Package:** `@openpanel/nextjs` 1.5.1, in `components/analytics.tsx`, mounted in `app/layout.tsx`.
+- **Endpoints:** `apiUrl` is `https://events.andronix.app/api`. The SDK script loads from our own `https://events.andronix.app/op1.js` (it returns 200), not from openpanel.dev.
+- **Client ID:** from the build environment, `OPENPANEL_WEB_CLIENT_ID` (the same "web" client as andronix.app; the owner is creating it). See `.env.example`. With no ID set, the docs build and run with no analytics code path.
+  - It's read at build time: the pages are static.
+  - **Set it in the Cloudflare build environment before deploying.**
+- **Tracked:** screen views and outgoing links (the SDK's own), plus two custom events:
+  - `copy_code`: `path`, `block` (the code block's position on the page) and `command` (the block's first non-comment line, up to 120 characters);
+  - `docs_search`: `query` (lower-cased, up to 80 characters, sent once typing pauses for 1.2 s), `results` (how many showed) and `path`.
+- **No feedback event:** the docs have no feedback widget, so there's nothing to send.
+- **Privacy:**
+  - Cookie-less: checked, 0 cookies after a session.
+  - With Do Not Track or Global Privacy Control, nothing loads: checked, no script and no requests.
+  - No user IDs or `identify` calls.
+- **How it was tested:** a local build with a dummy client ID. Playwright intercepted every request to events.andronix.app, so nothing was sent for real. The run saw `screen_view`, `copy_code` and `docs_search` with the payloads above, and nothing went to openpanel.dev.
+- **Privacy policy:** the draft is the web agent's `website-wt-redesign/design/legal-drafts.md` (outside this worktree). I sent web the paragraph below to add:
+  > **Documentation site.** docs.andronix.app uses the same self-hosted OpenPanel analytics as andronix.app to see which pages are read, which commands are copied and what people search for, so we can improve the docs. It sets no cookies. It records page views, links you follow to other sites, the first line of a code block when you copy it, and the words you type into the docs search. It doesn't identify you. If your browser sends Do Not Track or Global Privacy Control, no analytics are loaded.
+
 ## Termux:X11 is the desktop path (owner decision, Sept 26)
 
 - **Step 3 is Termux:X11 only.** `desktop/meta.json` lists just `termux-x11`. The journey pages (home, install with/without the app, What is Andronix, Install apps) point there, with `andronix desktop <distro>`. The "or: VNC" branches are removed.
