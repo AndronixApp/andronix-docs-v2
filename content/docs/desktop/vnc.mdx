@@ -1,5 +1,5 @@
 ---
-title: VNC Basics
+title: VNC
 description: Learn how to start, stop and configure a VNC server in your Andronix distro, connect with a VNC client, and access it from other devices.
 ---
 
@@ -7,8 +7,9 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 
 import Imagera from "@/components/imagera";
+import NextStep from "@/components/next-step";
 
-VNC lets you see and use your distro's graphical desktop from a VNC client app. This page shows you how to start and stop the VNC server, connect to it, tweak its resolution and picture quality, and access it from other devices on your network.
+VNC lets you see and use your distro's desktop in a VNC viewer app, on the phone or on another device like a laptop or tablet. (To use it full screen on the phone itself, [Termux:X11](/desktop/termux-x11) is simpler.) This page shows you how to start and stop the VNC server, connect to it, tweak its resolution and picture quality, and access it from other devices on your network.
 
 {/* TODO(docs): these app screenshots show the Andronix 7 UI (incl. the retired Commands tab). Replace once ui's redesign lands; the lead will have the emulator agent shoot the new screens. Files: vnc_server_start_command.jpg (Termux; the RealVNC shots can stay) */}
 
@@ -18,7 +19,7 @@ Let's learn how to operate the VNC server, including starting, stopping and debu
 
 <Callout type="info">Make sure you have started your distro and are in the distro shell, i.e. you see your username followed by `@localhost` (for example `alex@localhost`) in Termux.</Callout>
 
-<Callout type="info">These steps are for distros installed with Andronix 2.0. On a Classic Modded OS or a distro from before Andronix 2.0, see [VNC on an old install](#vnc-on-an-old-install).</Callout>
+<Callout type="info">These steps are for distros installed with Andronix 2.0. On a Classic Modded OS or a distro from before Andronix 2.0, see [VNC on an old install](/pre-2.0/old-install-guides#vnc-on-an-old-install).</Callout>
 
 ### Starting a VNC server
 
@@ -231,86 +232,4 @@ Copy the **WLAN IP** address (e.g. _192.168.xx.xx_). On the other device, connec
 
 To go back to phone-only access, run `vncserver-stop`, then `vncserver-start` without `--lan`.
 
-## VNC on an old install
-
-<Callout type="warning">This section is for the **Classic** Modded OS editions and for distros installed with the **pre-2.0 installer**, which use the old VNC scripts. It doesn't apply to new installs. See [Installs from before Andronix 2.0](/pre-2.0/older-installs).</Callout>
-
-On an old install, `vncserver-start` asks for a resolution, and `vncserver-stop` asks for a port number: enter **1** and press **Enter**.
-
-
-<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the Termux shell).</Callout>
-
-### Setting a resolution on an old install
-
-To set your preferred resolution, open the VNC start script by running:
-
-```bash copy
-nano /usr/local/bin/vncserver-start
-```
-
-Then change the last line of the file to:
-
-```bash copy
-vncserver -name remote-desktop -geometry 1920x1080 :1
-```
-
-<Callout type="info">You can replace 1920x1080 with your desired resolution.</Callout>
-
-Save the file by pressing `ctrl + x`, then `y`, and finally `Enter`.
-
-### How to change resolution permanently in Modded OS /Ubuntu 19
-
-To change the resolution permanently, run the following command in the distro's shell:
-
-```bash copy
-nano /usr/local/bin/vnc
-```
-
-Then replace the second line with:
-
-```bash copy
-LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop -geometry 1920x1080 :$PORT
-```
-
-<Callout type="info">You can replace 1920x1080 with your desired resolution. Then restart (or start) the VNC server.</Callout>
-
-When you're done, press `Ctrl+X`, type `Y` and press `Enter`. The next time you start the VNC server, choose the first option, **Start vnc-server with autodetect/dynamic resolution**.
-
-### VNC on other devices (old install)
-
-<Callout type="info">You can access the distro running on your phone from any other device on your network.</Callout>
-
-First, make sure both devices are on the same network. If you don't have access to Wi-Fi, turn on the hotspot on the
-device running Linux and connect the other device to it. Once both devices are on the same network, run the following
-command inside the distro's shell:
-
-```bash copy
-nano /usr/local/bin/vncserver-start
-```
-
-Now change the last line to:
-
-```bash copy
-vncserver -name remote-desktop -geometry 1920x1080 -localhost no :1
-```
-
-<Callout type="warning">If you're using an Arch-based distro such as Manjaro, or Arch Linux itself, use the following line instead:</Callout>
-
-```bash copy
-vncserver -name remote-desktop -geometry 1920x1080 -localhost :1
-```
-
-When you're done, open a new Termux session (swipe in from the left edge to open the sidebar for more options) and
-type:
-
-```
-ip a
-```
-
-Copy the **WLAN IP** address (e.g. _192.168.xx.xx_). On the other device, connect to this IP address with port
-number 1 (e.g. _192.168.xx.xx:1_).
-
-## Next steps
-
-- Want terminal access from another device instead? See [SSH Basics](/use/ssh).
-- No sound in your desktop? See [Fixing Sound](/use/sound).
+<NextStep href="/use/apps" title="Install apps" description="Step 4: browsers, IDEs, LibreOffice, GIMP and more." />

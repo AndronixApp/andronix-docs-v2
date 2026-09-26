@@ -1,94 +1,33 @@
 ---
-title: Fixing Sound
-description: Enable audio output in your Andronix distro using PulseAudio, so sound from inside the PRoot container plays through your phone's speakers.
+title: Sound
+description: Sound from your Andronix distro plays through the phone's speakers automatically. How it works, and what to check if you hear nothing.
 ---
 
-import { Steps, Step } from 'fumadocs-ui/components/steps';
+import NextStep from "@/components/next-step";
 
-This page shows how to get sound working in your distro, so you can listen to music from Spotify (or anything else) through your phone's speakers while you code. We use PulseAudio to route sound out of the PRoot container to your phone's speakers.
+Sound works out of the box in Andronix 2.0. Anything that plays audio in your distro, like a browser or a music player, plays through the phone's speakers or headphones.
 
-<Callout type="info">The Classic Modded OS editions have sound output through the phone's speakers enabled out of the box.</Callout>
+## How it works
 
-## Sound on a new install
+Your distro sends its sound to **PulseAudio**, a sound server that runs in Termux. Each time you start the distro (`./start-debian.sh`, `andronix start` or `andronix desktop`), Andronix makes sure PulseAudio is running, and installs it in Termux the first time if it's missing. There's nothing to set up.
 
-Distros from Andronix 2.0 are already set up to send their sound to Termux. Termux only needs PulseAudio installed.
+PulseAudio only accepts connections from the phone itself (127.0.0.1), not from your network.
 
-<Steps>
-<Step>
+<Callout type="info">With [VNC](/desktop/vnc), the sound plays on the **phone**, even when you're viewing the desktop from another device. VNC doesn't carry sound.</Callout>
 
-### Close Distro
+## No sound?
 
-If your distro is running, stop the desktop with `vncserver-stop` and close the distro by running `exit`. _Skip this step if your distro isn't running._
+1. **Start the distro once from a Termux session** (not with a one-off command like `./start-debian.sh ls`). One-off commands never install packages, so PulseAudio only gets installed by an interactive start.
+2. **Check PulseAudio is running.** In Termux, run:
 
-</Step>
+   ```bash copy
+   pulseaudio --check && echo running
+   ```
 
-<Step>
+   If it prints nothing, exit the distro and start it again.
+3. **Check the volume** in the desktop's sound settings, and on the phone.
+4. **Look at the log:** what Andronix did with PulseAudio is in `~/.andronix/logs/termux.log`. Include it when you [ask for help](/troubleshooting/install#still-stuck).
 
-### Install PulseAudio
+<Callout type="info">The Classic Modded OS editions set up sound their own way. For them and for installs from before Andronix 2.0, see [Sound on an old install](/pre-2.0/old-install-guides#sound-on-an-old-install).</Callout>
 
-Run the following command in **Termux (not inside Linux)**:
-
-```bash copy
-pkg install pulseaudio
-```
-
-</Step>
-
-<Step>
-
-### Start the distro
-
-Start your distro as usual, for example with `./start-debian.sh`. Andronix starts PulseAudio for you each time, so there's nothing else to run.
-
-</Step>
-</Steps>
-
-## Sound on an old install
-
-<Callout type="warning">These steps are for distros installed with the **pre-2.0 installer**.</Callout>
-
-Follow these steps in order to enable sound output:
-
-<Steps>
-<Step>
-
-### Close Distro
-
-If your distro is running, close it by running `exit` inside Termux. _Skip this step if your distro isn't running._
-
-```bash copy
-exit
-```
-
-</Step>
-
-<Step>
-
-### Run Commands
-
-Run the following command in **Termux (not inside Linux)**:
-
-```bash copy
-pkg install wget && wget https://andronixos.sfo2.cdn.digitaloceanspaces.com/OS-Files/setup-audio.sh && chmod +x setup-audio.sh && ./setup-audio.sh
-```
-
-</Step>
-
-<Step>
-
-### Start PulseAudio Server
-
-Start the PulseAudio server:
-
-```bash copy
-pulseaudio --start
-```
-
-</Step>
-</Steps>
-
-## Related pages
-
-- [Accessing Internal Storage](/use/storage)
-- [Modded OS](/modded-os/modded-os)
-- [FAQ](/troubleshooting/faq)
+<NextStep href="/use/storage" title="Phone storage" description="Reach your phone's files from inside the distro at /sdcard." />

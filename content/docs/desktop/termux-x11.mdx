@@ -1,0 +1,78 @@
+---
+title: Termux:X11
+description: Open your Andronix desktop full screen on your phone with the Termux:X11 app and one command, andronix desktop.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import NextStep from "@/components/next-step";
+
+Termux:X11 is an Android app that shows your distro's desktop full screen on the phone, at the phone's own resolution. There's nothing to connect to and no desktop password to type: one command in Termux opens it.
+
+<Callout type="info">Want to use the desktop from a laptop or tablet instead? Use [VNC](/desktop/vnc). You can use both on the same install, just not at the same time on the same screen.</Callout>
+
+## Set it up once
+
+<Steps>
+<Step>
+
+### Install the Termux:X11 app
+
+Download the Termux:X11 app from its [release page on GitHub](https://github.com/termux/termux-x11/releases/tag/nightly) and install it. Pick `termux-x11-universal-debug.apk` if you're not sure which file you need. It needs Android 7 or newer.
+
+{/* TODO(docs): link the exact APK the installer's "app missing" box points to, once the release pins one. */}
+
+</Step>
+
+<Step>
+
+### Install a distro with a desktop
+
+Termux:X11 shows a desktop, so the distro needs one (XFCE, LXQt, MATE or KDE Plasma). See [Step 2](/install/choose).
+
+</Step>
+</Steps>
+
+`andronix` installs the Termux side (the `termux-x11` package) by itself the first time you open the desktop.
+
+## Open the desktop
+
+In **Termux** (not inside the distro), run:
+
+```bash copy
+andronix desktop
+```
+
+If you have more than one distro with a desktop, name it: `andronix desktop debian`. You can also add `--x11` to the usual start command: `./start-debian.sh --x11`.
+
+Andronix starts Termux:X11, switches to the app, and opens your desktop there, logged in as your user. Sound plays through the phone's speakers.
+
+<Callout type="warning">Keep the Termux session that ran `andronix desktop` open while you use the desktop. Switch between the apps with Android's app switcher instead of closing Termux.</Callout>
+
+If the Termux:X11 app isn't installed, the command says so and shows the download link.
+
+## Stop the desktop
+
+Any of these works:
+
+- Log out from the desktop's menu.
+- Press **Ctrl + C** in the Termux session that started it.
+- From another Termux session: `andronix desktop stop`.
+
+## Good to know
+
+- **Screen size:** the desktop uses the phone's screen size. Change the resolution, orientation and touch behaviour in the Termux:X11 app's preferences.
+- **One at a time:** you can have one Termux:X11 desktop open at a time.
+- **No GPU acceleration:** the desktop is drawn in software, as with VNC.
+- **Opening an app from Termux:** while the desktop is open, another session can start an app on it, for example `./start-debian.sh 'DISPLAY=:0 mousepad'`.
+
+## If the screen stays black
+
+Some phones' graphics drivers need a different drawing mode. Stop the desktop, then open it with:
+
+```bash copy
+ANDRONIX_X11_ARGS=-legacy-drawing andronix desktop
+```
+
+If the colours look swapped (blue and red mixed up), use `-force-bgra` instead. More fixes: [The desktop is black, slow or closes](/troubleshooting/desktop).
+
+<NextStep href="/use/apps" title="Install apps" description="Step 4: browsers, IDEs, LibreOffice, GIMP and more." or={{ href: "/desktop/vnc", title: "Use VNC instead" }} />

@@ -1,5 +1,5 @@
 ---
-title: Accessing Internal Storage
+title: Phone Storage
 description: Reach your Android phone's internal storage from inside an Andronix Linux distro at /sdcard, and share other folders with the distro.
 ---
 
@@ -7,6 +7,7 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 
 import Imagera from "@/components/imagera";
+import NextStep from "@/components/next-step";
 
 This page shows how to reach your phone's internal storage from inside your Linux distro. On distros from Andronix 2.0, it's one command in Termux.
 
@@ -57,85 +58,6 @@ echo 'command+=" -b /data/data/com.termux/files/home/projects:/projects"' > ~/de
 
 Restart the distro for the change to take effect.
 
-## Storage on an old install
+<Callout type="info">Installed before Andronix 2.0? See [Storage on an old install](/pre-2.0/old-install-guides#storage-on-an-old-install).</Callout>
 
-<Callout type="warning">These steps are for distros installed with the **pre-2.0 installer**. On Andronix 2.0, the start script no longer needs editing; see [Storage on a new install](#storage-on-a-new-install).</Callout>
-
-<Steps>
-<Step>
-
-### Termux Session
-
-First, open a new Termux session (swipe from the left edge to the right) and type:
-
-```bash copy
-termux-setup-storage
-```
-
-Termux will now ask for Storage permission. **Allow the Storage permission**.
-
-</Step>
-
-<Step>
-
-### Open Start File
-
-Once that's done, type:
-
-```bash copy
-nano start-(distroname).sh
-```
-
-<Callout type="warning">Make sure to replace **(distroname)** with your specific distro name.</Callout>
-
-</Step>
-
-<Step>
-
-### Search
-
-Now look for this line:
-
-```bash copy
-#command+=" -b /sdcard"
-```
-
-</Step>
-
-<Step>
-
-### Edit
-
-If you find it, remove the leading `#` so the line reads:
-
-```bash copy
-command+=" -b /sdcard"
-```
-
-</Step>
-
-<Step>
-
-### Add the line
-
-If you can't find the line, add the line above as shown in the screenshot below.
-
-<Imagera src="/images/strorage_ss.png"/>
-
-</Step>
-
-<Step>
-
-### Save
-
-When you're done, press `Ctrl+X`, then `Y`, and then `Enter`. Now start your Linux system and run `cd /`. You should see a folder named `sdcard`, which means you have successfully mounted your internal storage.
-
-</Step>
-</Steps>
-
-
-## Related pages
-
-- [Installing a Distro](/install/with-the-app)
-- [Fixing Sound](/use/sound)
-- [FAQ](/troubleshooting/faq)
+<NextStep href="/use/backups" title="Back up and restore" description="Save your whole distro to one file, and bring it back." />
