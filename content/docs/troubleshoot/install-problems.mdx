@@ -30,6 +30,7 @@ The installer checks your free space before it starts, and warns you if it looks
 | Command line only | 250 to 400 MB |
 | XFCE or LXQt desktop | 0.8 to 1.6 GB |
 | MATE desktop | 1.5 to 1.9 GB |
+| KDE Plasma desktop | about 2.5 GB |
 
 Leave some extra room for the download while it unpacks. If you're short on space, free some up, pick a smaller desktop, or use the command line only. Use `andronix list` to see what's installed, and [remove](/unmodded-distros/unmodded-os-uninstallation) distros you don't use.
 
@@ -66,6 +67,16 @@ If it still fails, the error box shows the path of a log file (for example `/tmp
 The desktop runs inside your Termux session. Closing that session, or typing `exit` in the distro, stops the desktop too.
 
 **Fix:** keep the Termux session open while you use the desktop. Switch to your VNC viewer with the app switcher instead of closing Termux. For a second command line, open a new Termux session from the sidebar.
+
+## The desktop is slow
+
+Switch the distro to the light profile from Termux, then restart the desktop:
+
+```bash copy
+andronix tune debian --profile light
+```
+
+It turns off desktop effects, thumbnails and some background apps, and uses 16-bit colour. Phones with less than 3 GB of RAM get it automatically. On phones with less than 4 GB of RAM, pick XFCE or LXQt rather than KDE Plasma. See [Making a desktop lighter](/desktop-environments/desktop-environments#making-a-desktop-lighter).
 
 ## I can't connect from my computer
 
