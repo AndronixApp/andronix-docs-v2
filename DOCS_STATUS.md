@@ -1,5 +1,35 @@
 # Docs status: new installer
 
+## Account deletion page (lead, Sept 26)
+
+- **Checked against** products-api (`products-api-wt-entitlement`, 30c2a7d):
+  - `account/accountDeletion.ts`, `firebase/accountDataStore.ts`, `account/sweep.ts`, `routes/v2/account.ts`;
+  - `env.ts`: `PURCHASE_RETENTION_YEARS` defaults to **8**.
+- **URL unchanged** (`/account/deletion`; the app's LinkHub links it).
+- **How to delete:**
+  - In the app (10.0+): it re-authenticates (10-minute recent sign-in), then deletes immediately.
+  - By email: within 30 days, as before.
+- **Deleted:**
+  - the Auth user;
+  - `users/{uid}` with saved commands, and the 4.x Premium flag (`users/properties/{uid}`);
+  - the `supporters/{uid}` wall entry;
+  - premiumID docs;
+  - RTDB `os/*_users` legacy Modded grants;
+  - donations;
+  - the tokens-analytics and offline-analytics download counters;
+  - `verifiedPurchases/{uid}`.
+
+  The OpenPanel profile is queued for erasure (`analyticsErasures`).
+- **Kept without identity** (keyed by sha256(uid + pepper)):
+  - one `retainedPurchases` row per order (order ID, product, time, price, currency, country) until `retainUntil`, 8 years; the nightly sweep deletes expired rows;
+  - `playTokens`, with the uid swapped for the hash, so a purchase can be re-linked by proving it again;
+  - an `accountDeletions` log entry (hash + counts).
+- **Also stated on the page:** installer telemetry and docs analytics aren't linked to an account.
+- **TODOs:**
+  - the exact in-app menu path;
+  - confirm the production value of `PURCHASE_RETENTION_YEARS`;
+  - align the 30-day email promise with the website privacy draft's 90-day erasure wording.
+
 ## Signal 9 page (owner question, Sept 26)
 
 - **Kept, and rewritten short.** `/troubleshooting/signal-9` goes: the symptom first (`[Process completed (signal 9) - press Enter]`), why it happens, then one section per Android version:
