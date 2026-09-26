@@ -8,11 +8,11 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 import Imagera from "@/components/imagera";
 
-This page shows how to reach your phone's internal storage from inside your Linux distro. On distros from the current installer, it's one command in Termux.
+This page shows how to reach your phone's internal storage from inside your Linux distro. On distros from Andronix 2.0, it's one command in Termux.
 
 ## Storage on a new install
 
-Distros from the current installer share your phone's internal storage at `/sdcard` automatically. Termux just needs permission to read it.
+Distros from Andronix 2.0 share your phone's internal storage at `/sdcard` automatically. Termux just needs permission to read it.
 
 <Steps>
 <Step>
@@ -48,7 +48,7 @@ Inside the distro, run `ls /sdcard`. You should see your phone's folders, like `
 
 ### Sharing other folders
 
-To share another Termux folder with the distro, add a line to a file in `~/<distro>-binds/` in Termux, the same way as with the old installer. For example, to make Termux's `~/projects` folder appear at `/projects` in Debian:
+To share another Termux folder with the distro, add a line to a file in `~/<distro>-binds/` in Termux, the same way as with the pre-2.0 installer. For example, to make Termux's `~/projects` folder appear at `/projects` in Debian:
 
 ```bash copy
 mkdir -p ~/debian-binds
@@ -59,7 +59,7 @@ Restart the distro for the change to take effect.
 
 ## Storage on an old install
 
-<Callout type="warning">These steps are for distros installed with the **old installer**. On the current installer, the start script no longer needs editing; see [Storage on a new install](#storage-on-a-new-install).</Callout>
+<Callout type="warning">These steps are for distros installed with the **pre-2.0 installer**. On Andronix 2.0, the start script no longer needs editing; see [Storage on a new install](#storage-on-a-new-install).</Callout>
 
 <Steps>
 <Step>

@@ -3,7 +3,7 @@ title: The andronix Command
 description: Reference for the andronix command in Termux. Install, start, remove, list, back up and restore Linux distros, and control the desktop from inside them.
 ---
 
-Every free distro in Andronix is installed and managed by one command, `andronix`. The install command the app copies for you sets it up in Termux, so you don't need to install anything by hand. This page lists everything `andronix` can do.
+In Andronix 2.0, every free distro is installed and managed by one command, `andronix`. The install command the app copies for you sets it up in Termux, so you don't need to install anything by hand. This page lists everything `andronix` can do.
 
 <Callout type="info">You'll usually never type most of these. The app copies the right install command, and `./start-<distro>.sh` still starts your distro. This page is for when you want more control.</Callout>
 
@@ -20,6 +20,7 @@ andronix backup debian --to storage # save Debian to your phone's storage
 andronix restore                    # pick a backup and bring it back
 andronix tune debian --profile light  # make the desktop lighter
 andronix remove debian              # delete Debian
+andronix version                    # show the version, e.g. andronix 2.0.0
 andronix help                       # show help
 ```
 
@@ -130,7 +131,7 @@ Type `exit` to leave the distro and go back to Termux.
 andronix list
 ```
 
-Shows what's installed (with its desktop and start script), any distros from the old installer, and every distro and desktop you can install.
+Shows what's installed (with its desktop and start script), any distros from the pre-2.0 installer, and every distro and desktop you can install.
 
 ## Updating
 
@@ -153,7 +154,7 @@ andronix remove <distro> [--yes] [--legacy]
 
 Deletes the distro, its files and its start script. Files in `/sdcard` are not touched. It asks before deleting anything unless you pass `--yes`.
 
-`--legacy` also deletes a copy of the same distro installed by the **old** Andronix installer (for example `~/debian-fs`). See [Installs from the old installer](/unmodded-distros/older-installs).
+`--legacy` also deletes a copy of the same distro installed by the pre-2.0 installer (for example `~/debian-fs`). See [Installs from before Andronix 2.0](/unmodded-distros/older-installs).
 
 <Callout type="warning">Stop the desktop (`vncserver-stop`) and exit every session of the distro before removing it.</Callout>
 
@@ -203,14 +204,14 @@ See [VNC Basics](/vnc/vnc-basics) for how to connect.
 | `~/.andronix/logs/` | Logs from every install, remove, backup and restore. Include the latest one when you ask for help. |
 | `Andronix/backups` in your phone's storage | Backups made with `--to storage` |
 | `~/start-<distro>.sh` | The start script. It just runs `andronix start <distro>`. |
-| `~/<distro>-binds/` | Optional extra folders to share with the distro, as in the old installer |
+| `~/<distro>-binds/` | Optional extra folders to share with the distro, as in the pre-2.0 installer |
 
 ## Old commands still work
 
 - The install commands the Andronix app copies keep working. They now set up `andronix` and run it for you.
 - `./start-debian.sh`, `./start-ubuntu.sh`, `./start-kali.sh` and the other start scripts keep their names.
 - `vncserver-start` and `vncserver-stop` keep their names and use the same address, `localhost:1`.
-- Distros installed with the old installer are left alone. See [Installs from the old installer](/unmodded-distros/older-installs).
+- Distros installed with the pre-2.0 installer are left alone. See [Installs from before Andronix 2.0](/unmodded-distros/older-installs).
 
 ## Next steps
 
