@@ -1,20 +1,15 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
+import shots from "@/lib/app-shots.json";
 
 // A screenshot of the Andronix app 10 (see DOCS_SHOTS.md for the shot list).
-// Files live in public/images/app10/<name>.png, captured at 1080x1920 after the UI freeze.
-// Until a file exists, nothing is rendered in production (so the page never shows a broken image),
-// and a labelled placeholder is shown in development.
+// Files live in public/images/app10/<name>.png, captured at 1080x1920.
+// lib/app-shots.json (written by scripts/app-shots-manifest.mjs at prebuild) lists the files that exist.
+// Until a file is listed, nothing is rendered in production (no broken image) and a labelled
+// placeholder is shown in development.
+const available = new Set<string>(shots as string[]);
+
 export default function AppShot({ name, alt }: { name: string; alt: string }) {
-  const src = `/images/app10/${name}.png`;
-  let exists = false;
-  try {
-    exists = existsSync(join(process.cwd(), "public", src));
-  } catch {
-    exists = false;
-  }
-  if (!exists) {
+  if (!available.has(name)) {
     if (process.env.NODE_ENV === "production") return null;
     return (
       <div
@@ -29,7 +24,7 @@ export default function AppShot({ name, alt }: { name: string; alt: string }) {
   }
   return (
     <div className="my-4">
-      <ImageZoom src={src} alt={alt} width={200} height={356} />
+      <ImageZoom src={`/images/app10/${name}.png`} alt={alt} width={200} height={356} />
     </div>
   );
 }
