@@ -23,7 +23,7 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
         banner: (
           <Link
             key="signal-9-banner"
-            href="/android-12/andronix-on-android-12-and-beyond"
+            href="/troubleshooting/signal-9"
             className="group flex items-start gap-2.5 p-3.5 text-sm"
             style={{
               background: "var(--andronix-warn-container)",
