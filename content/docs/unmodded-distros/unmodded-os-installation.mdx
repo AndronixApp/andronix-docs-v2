@@ -50,7 +50,7 @@ Choose a Desktop Environment if you want to use your mouse as well as your keybo
 #### **Command Line Interface** <Badge>CLI</Badge>
 Choose the **Command Line Interface** if you don't need a graphical interface. You'll get a terminal, which is all you need if you know your way around Linux. You can add a desktop later with [`andronix install`](/andronix-cli/andronix-cli#installing).
 
-<Callout type="warning">**Window managers have been retired.** The new installer offers desktop environments (XFCE, LXQt, MATE) and the command line only. If your version of the app still shows a Window Manager option, pick a Desktop Environment instead. [Read more](/window-managers/window-managers).</Callout>
+<Callout type="warning">**Window managers have been retired.** The new installer offers desktop environments (XFCE, LXQt, MATE, and KDE Plasma on some distros) and the command line only. If your version of the app still shows a Window Manager option, pick a Desktop Environment instead. [Read more](/window-managers/window-managers).</Callout>
 
 <Callout type="info">If you can't decide, we always recommend going with a Desktop Environment.</Callout>
 
@@ -59,7 +59,7 @@ Follow the instructions below that match the option you picked.
 
 #### Desktop Environment
 
-Select the Desktop Environment (DE) you'd like to install: **XFCE**, **LXQt** or **MATE**. If you want to compare them first, read the [Desktop Environments](/desktop-environments/desktop-environments) page. If you're not sure, pick **XFCE**.
+Select the Desktop Environment (DE) you'd like to install: **XFCE**, **LXQt**, **MATE**, or **KDE Plasma** (Debian, Ubuntu 26.04 and Kali only). If you want to compare them first, read the [Desktop Environments](/desktop-environments/desktop-environments) page. If you're not sure, pick **XFCE**.
 
 <Imagera src="/images/install_new/install_de_selection.jpg"/>
 
@@ -116,7 +116,7 @@ When the install finishes, it asks you to set up your user:
 2. **Password**: used to log in and for `sudo`.
 3. **Desktop (VNC) password**: 6 to 8 characters. If your password is 6 to 8 characters long, you can reuse it.
 
-<Callout type="info">Free distros no longer log you in as `root`. Your user can run any command as root with `sudo`, for example `sudo apt install nano`.</Callout>
+<Callout type="info">Free distros no longer log you in as `root`. Your user can run any command as root with `sudo`, for example `sudo apt install nano`. On Manjaro, where `sudo` doesn't work yet, use `andronix start manjaro --root` from Termux instead.</Callout>
 
 When it's done, the installer takes you straight into your new distro.
 

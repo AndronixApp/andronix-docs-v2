@@ -5,7 +5,7 @@ description: Every free Linux distro Andronix installs, with its version, suppor
 
 import Badge from "@/components/badge";
 
-Andronix installs these free distros. Each one comes with the desktop you pick (XFCE, LXQt or MATE) or the command line only, a VNC server for the desktop, and Firefox. This page lists what you get with each distro and the commands to install, start and remove it.
+Andronix installs these free distros. Each one comes with the desktop you pick (XFCE, LXQt, MATE, or KDE Plasma on some distros) or the command line only, a VNC server for the desktop, and Firefox. This page lists what you get with each distro and the commands to install, start and remove it.
 
 <Callout type="info">The easiest way to install is through the app: it copies the right command for you. See [Installing a Distro](/unmodded-distros/unmodded-os-installation). The commands on this page do the same thing from Termux.</Callout>
 
@@ -22,11 +22,11 @@ Andronix installs these free distros. Each one comes with the desktop you pick (
 | [Alpine](#alpine) | 3.24 | arm64, arm, x86, x86_64 | `apk` |
 | [Void Linux](#void-linux) | rolling | arm64, arm, x86, x86_64 | `xbps` |
 
-Every distro offers the same desktops: <Badge>XFCE</Badge> <Badge>LXQt</Badge> <Badge>MATE</Badge> <Badge>CLI only</Badge>
+Every distro offers <Badge>XFCE</Badge> <Badge>LXQt</Badge> <Badge>MATE</Badge> <Badge>CLI only</Badge>. Debian, Ubuntu 26.04 and Kali Linux also offer <Badge>KDE Plasma</Badge>.
 
 <Callout type="info">Most phones are **arm64**. The installer checks your phone's CPU in its first step and tells you if a distro doesn't support it.</Callout>
 
-In the commands below, replace `xfce` with `lxqt`, `mate` or `none` (command line only) to pick another desktop. See [the andronix command](/andronix-cli/andronix-cli) for every option.
+In the commands below, replace `xfce` with `lxqt`, `mate`, `kde` (where offered) or `none` (command line only) to pick another desktop. See [the andronix command](/andronix-cli/andronix-cli) for every option.
 
 ## Debian
 
@@ -101,6 +101,8 @@ Update with `sudo pacman -Syu` before installing anything, and avoid `pacman -Sy
 
 Manjaro ARM, an Arch-based distro. Only available on arm64 and x86_64.
 
+<Callout type="warning">`sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks such as installing packages, open a root shell from Termux with `andronix start manjaro --root`.</Callout>
+
 | | |
 |---|---|
 | Install | `andronix install manjaro --de xfce` |
@@ -134,13 +136,11 @@ Void Linux (glibc), an independent rolling distro with its own package manager, 
 | Remove | `andronix remove void` |
 | Browser | Firefox |
 
-{/* TODO(docs): Void can't install packages under proot on Linux 6.6+ kernels (fchmodat2, see the installer's docs/ports/void.md). How it's handled (proot fix or refusing Void on those phones) isn't decided. Add a note here once it is. */}
-
 ![Void Linux with XFCE](/images/new-installer/void-xfce-desktop.png)
 
 ## Installing software
 
-Inside the distro, use its package manager with `sudo`:
+Inside the distro, use its package manager with `sudo` (on Manjaro, use a root shell from `andronix start manjaro --root` and leave out `sudo`):
 
 | Distro | Update everything | Install a program |
 |---|---|---|

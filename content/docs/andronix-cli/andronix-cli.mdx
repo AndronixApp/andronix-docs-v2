@@ -15,8 +15,10 @@ Run these in **Termux** (not inside the distro):
 andronix install debian --de xfce   # install Debian 13 with the XFCE desktop
 andronix start debian               # open Debian (same as ./start-debian.sh)
 andronix list                       # what's installed, and what you can install
-andronix backup debian              # save Debian to a file
-andronix restore <file>             # bring a backup back
+andronix update                     # update andronix and every installed distro
+andronix backup debian --to storage # save Debian to your phone's storage
+andronix restore                    # pick a backup and bring it back
+andronix tune debian --profile light  # make the desktop lighter
 andronix remove debian              # delete Debian
 andronix help                       # show help
 ```
@@ -59,6 +61,7 @@ andronix install <distro> [--de <desktop>] [options]
 | `--de xfce` | XFCE, our recommended desktop |
 | `--de lxqt` | LXQt, a light Qt desktop |
 | `--de mate` | MATE, a classic desktop |
+| `--de kde` | KDE Plasma, the most complete desktop. Debian, Ubuntu 26.04 and Kali only; needs 4 GB of RAM or more. |
 | `--de none` | Command line only, no desktop |
 
 Other options:
@@ -105,6 +108,8 @@ Free distros no longer log you in as `root`. The first time you start a distro, 
 
 After that, the distro always logs you in as that user, and your prompt looks like `alex@localhost`. Use `sudo` for anything that needs root, for example `sudo apt install nano`.
 
+<Callout type="info">**Manjaro:** `sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks, open a root shell from Termux with `andronix start manjaro --root`.</Callout>
+
 <Callout type="warning">Forgot your password? In Termux, run `andronix start <distro> --root` to get a root shell, then `passwd <username>` to set a new one.</Callout>
 
 ## Starting a distro
@@ -127,6 +132,19 @@ andronix list
 
 Shows what's installed (with its desktop and start script), any distros from the old installer, and every distro and desktop you can install.
 
+## Updating
+
+```bash
+andronix update [<distro>]
+```
+
+- Updates `andronix` itself to the latest version.
+- Then updates the packages in every installed distro, or only the one you name, with the same progress display as an install.
+
+Options: `--self` updates only `andronix`; `--no-self` updates only the distros.
+
+<Callout type="info">Exit the distro and stop its desktop before updating it.</Callout>
+
 ## Removing a distro
 
 ```bash
@@ -142,14 +160,27 @@ Deletes the distro, its files and its start script. Files in `/sdcard` are not t
 ## Backing up and restoring
 
 ```bash
-andronix backup <distro> [file]
-andronix restore <file>
+andronix backup <distro> [file] [--to storage]
+andronix restore [file]
 ```
 
-- `backup` saves the whole distro to one file. Without a file name, it writes `~/andronix-<distro>-<date>.tar.gz`.
-- `restore` brings a backup back. If the distro is already installed, it asks before replacing it.
+- `backup` saves the whole distro to one file.
+  - With `--to storage`, the file goes to your phone's storage, in `Andronix/backups`. It's safe there even if you uninstall Termux, and you can see it in your file manager. If Termux doesn't have storage access yet, Android asks you for it.
+  - Without it, the file goes to Termux's home folder, `~/andronix-<distro>-<date>.tar.gz`. That folder is deleted if you uninstall Termux or clear its data.
+- `restore` brings a backup back. Without a file name, it lists the backups it finds in your phone's storage and in Termux's home folder, newest first, and lets you pick one. If the distro is already installed, it asks before replacing it.
 
-Exit the distro before you back it up, so no files change while it's being saved. Backups are saved in Termux's home folder, which is deleted if you uninstall Termux or clear its data. To keep one safe, copy it to your phone's storage, for example `cp ~/andronix-debian-*.tar.gz /sdcard/`.
+Backups can be restored on another phone. Exit the distro before you back it up, so no files change while it's being saved.
+
+## Tuning the desktop
+
+```bash
+andronix tune <distro> [--profile light|balanced]
+```
+
+- **light:** no desktop effects, fewer background apps, no file thumbnails, and 16-bit colour at 1280x720 over VNC. Uses less memory and feels faster on slower phones.
+- **balanced:** the normal settings.
+
+Without `--profile`, it shows the distro's current profile and your phone's RAM. Desktop installs on phones with less than 3 GB of RAM start with the light profile. A change applies the next time you run `vncserver-start`.
 
 ## Inside the distro
 
@@ -170,6 +201,7 @@ See [VNC Basics](/vnc/vnc-basics) for how to connect.
 |---|---|
 | `~/.andronix/distros/<distro>/` | The installed distro |
 | `~/.andronix/logs/` | Logs from every install, remove, backup and restore. Include the latest one when you ask for help. |
+| `Andronix/backups` in your phone's storage | Backups made with `--to storage` |
 | `~/start-<distro>.sh` | The start script. It just runs `andronix start <distro>`. |
 | `~/<distro>-binds/` | Optional extra folders to share with the distro, as in the old installer |
 
