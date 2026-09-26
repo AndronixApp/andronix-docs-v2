@@ -1,5 +1,18 @@
 # Docs status: new installer
 
+## Signal 9 page (owner question, Sept 26)
+
+- **Kept, and rewritten short.** `/troubleshooting/signal-9` goes: the symptom first (`[Process completed (signal 9) - press Enter]`), why it happens, then one section per Android version:
+  - **Android 11 and older:** not affected.
+  - **Android 14+:** Developer options > **Disable child process restrictions**. No PC needed. Turning Developer options off turns this off again.
+  - **Android 12, 12L and 13:** the `adb` commands (`device_config set_sync_disabled_for_tests persistent`, `device_config put activity_manager max_phantom_processes 2147483647`, and `settings put global settings_enable_monitor_phantom_procs false` for 12L and 13), plus how to undo them.
+    - The page includes a caveat about what disabling config sync does.
+    - It says where to run the commands: from a computer, or from the phone with Wireless debugging, using Termux's `android-tools` `adb pair`/`connect` or LADB/Shizuku (named neutrally).
+    - The Feature flags switch on some stock 12L/13 phones is mentioned.
+- **Sources:** checked against agnostic-apollo's Android-Docs page on phantom processes (linked on the page) and Termux issue #2366. The old step screenshots and the old video were removed.
+- **Linked from** Step 3 (Termux:X11 › Good to know), from desktop troubleshooting (a new "The desktop disappears and Termux says signal 9" section), and, as before, from install troubleshooting, Requirements, the install guides, the FAQ and the sidebar banner.
+- **Not verified on a device:** the Android 14+ switch name and the on-phone Wireless debugging route come from the sources, not from our own test.
+
 ## Modded OS and Premium marks (owner, Sept 26)
 
 - **Files:** `~/andronix/icon-2.0/final/marks/svg/*` copied to `public/images/marks/`.
