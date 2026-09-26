@@ -12,23 +12,45 @@ In Andronix 2.0, every free distro is installed and managed by one command, `and
 Run these in **Termux** (not inside the distro):
 
 ```bash
-andronix install debian --de xfce   # install Debian 13 with the XFCE desktop
-andronix start debian               # open Debian (same as ./start-debian.sh)
-andronix list                       # what's installed, and what you can install
-andronix update                     # update andronix and every installed distro
-andronix backup debian --to storage # save Debian to your phone's storage
-andronix restore                    # pick a backup and bring it back
-andronix tune debian --profile light  # make the desktop lighter
-andronix remove debian              # delete Debian
-andronix version                    # show the version, e.g. andronix 2.0.0
-andronix help                       # show help
+# install Debian 13 with the XFCE desktop
+andronix install debian --de xfce
+
+# open Debian (same as ./start-debian.sh)
+andronix start debian
+
+# what's installed, and what you can install
+andronix list
+
+# update andronix and every installed distro
+andronix update
+
+# save Debian to your phone's storage
+andronix backup debian --to storage
+
+# pick a backup and bring it back
+andronix restore
+
+# make the desktop lighter
+andronix tune debian --profile light
+
+# delete Debian
+andronix remove debian
+
+# show the version, e.g. andronix 2.0.0
+andronix version
+
+# show help
+andronix help
 ```
 
 Run these **inside the distro**:
 
 ```bash
-vncserver-start        # start the desktop
-vncserver-stop         # stop the desktop
+# start the desktop
+vncserver-start
+
+# stop the desktop
+vncserver-stop
 ```
 
 ## Getting andronix
