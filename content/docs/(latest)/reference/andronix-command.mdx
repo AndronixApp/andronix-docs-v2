@@ -317,9 +317,17 @@ Shows what Andronix knows about your phone, and what it adjusts for it:
 - **Syscalls under proot:** how a few system calls behave inside a distro on this phone. It tests inside the distro you name, or the first one installed; with no distro installed, this part is skipped.
 - **Fixes that apply:** the compatibility fixes Andronix uses on this phone, each with the reason. They're applied automatically when you install, resume or update a distro; `doctor` only reports them.
 
-It changes nothing, and it checks again each time you run it. When you ask for help, include its output.
+It changes nothing, and it checks again each time you run it. When you ask for help, include its output, or paste it into the app's [Report a problem](/troubleshooting/report-a-problem) form.
 
 {/* TODO(docs): doctor ships with installer 2.0.1 once feat-compat merges (distros gating it, Sept 27). Remove this note, and the badge if wanted, after the release. */}
+
+## Reporting a problem: andronix report
+
+<Badge>installer 2.0.2+</Badge>
+
+Sends a problem report from Termux, with the failing command, the installer's log and your phone's details. It shows what it will send and asks first, then prints a report ID like `AX-7K3Q9M`. Until then, use the app's form. See [Report a problem](/troubleshooting/report-a-problem).
+
+{/* TODO(docs): planned for installer 2.0.2 (support-desk reports-v1 contract). Confirm the version and the exact usage with distros. */}
 
 ## Telemetry
 
