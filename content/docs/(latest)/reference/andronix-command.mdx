@@ -1,6 +1,6 @@
 ---
 title: The andronix Command
-description: Reference for the andronix command in Termux - install, start, desktop, update, backup, restore, tune, dev packs, doctor, remove - and the commands inside a distro.
+description: Reference for the andronix command in Termux - install, start, desktop, update, backup, restore, tune, dev packs, doctor, report, remove - and the commands inside a distro.
 ---
 
 import Badge from "@/components/badge";
@@ -49,6 +49,9 @@ andronix remove ubuntu-kde
 
 # check this phone and what Andronix adjusts for it (installer 2.0.1+)
 andronix doctor
+
+# report a failed command to Andronix; shows everything first (installer 2.0.2+)
+andronix report
 
 # show the version, e.g. andronix 2.0.0
 andronix version
@@ -325,9 +328,24 @@ It changes nothing, and it checks again each time you run it. When you ask for h
 
 <Badge>installer 2.0.2+</Badge>
 
-Sends a problem report from Termux, with the failing command, the installer's log and your phone's details. It shows what it will send and asks first, then prints a report ID like `AX-7K3Q9M`. Until then, use the app's form. See [Report a problem](/troubleshooting/report-a-problem).
+```bash
+andronix report [--message "<text>"] [--dry-run]
+andronix report --open <AX-ID>
+```
 
-{/* TODO(docs): planned for installer 2.0.2 (support-desk reports-v1 contract). Confirm the version and the exact usage with distros. */}
+Sends a problem report to Andronix: the last command that failed (its step, error and log), your phone's facts (as in `andronix doctor`) and the installer version. Tokens, signed links, email addresses, passwords, user names and home folder paths are removed first. It prints the whole report and asks before sending, then opens the Andronix app's **Report a problem** form with the details attached, where you add a description and photos. Without the app it prints the report ID and a link, and offers to send it as it is. Every failed command's error box ends with a reminder to run it.
+
+| Option | What it does |
+|---|---|
+| `--dry-run` | Print the report (redacted) and send nothing. |
+| `--message "<text>"` | A line about what happened, up to 300 characters. Used when you send without the app. |
+| `--open <AX-ID>` | In Termux: open a waiting report in the Andronix app, for example one made inside a distro. Reports wait 24 hours. |
+
+Exit status: `0` when the report was sent or handed to the app, when you answer no, and for `--dry-run`; `1` when it couldn't be sent or opened (no connection, too many reports, an expired or unknown ID); `130` if you press Ctrl+C.
+
+See [Report a problem](/troubleshooting/report-a-problem) for the whole flow and what's collected.
+
+{/* Source: andronix-distros next-2.0.2 (internal/app/problem.go, 4171afe). Drop the badge after the release. */}
 
 ## Telemetry
 

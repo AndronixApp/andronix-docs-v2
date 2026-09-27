@@ -100,3 +100,8 @@ Suggested phone screenshots, in order. All are 1080 × 1920, so they fit Play's 
 8. `app10-premium`.
 
 Play allows 2 to 8 phone screenshots, JPEG or 24-bit PNG without alpha, with each side between 320 and 3840 px and the long side no more than twice the short side. Check the Play Console's current rules when uploading. Captions and a device frame, if wanted, come from the listing design, not these raw files.
+
+## Report a problem (added Sept 27)
+
+- `app10-report-installer-attached.png`: ui's `test-results/report-10-12-handoff.png`, cropped to 1080 × 1920 (rows 90–2010, status bar dropped), 24-bit.
+- `app10-report-sent.png`: ui's `test-results/report-10-16-handoff-real-sent.png`, same crop.
