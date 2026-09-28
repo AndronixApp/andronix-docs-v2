@@ -18,6 +18,7 @@ pnpm exec wrangler whoami                # logged in to the Andronix Cloudflare 
 
 - **Build from the release commit.** Merge `docs/new-installer` into `master` first (reviewed PR), then deploy from `master` so the live site matches the default branch.
 - **Release date.** Set `RELEASE_DATE` in `lib/release.mjs` (for example `'October 2, 2026'`). It fills in the blog post, the blog index and the changelog. While it's still the placeholder `RELEASE_DATE`, `pnpm run deploy` refuses to run (`scripts/check-release-date.mjs`). `pnpm build` and `pnpm run upload` still work, for staging.
+- **Early bird end date.** Set `EARLY_BIRD_END` in `lib/release.mjs` too (when the Modded Pass early-bird price ends, 4 days after launch). It fills in the Modded OS Prices table, the blog post and the changelog. `pnpm run deploy` refuses to run while it's still `{EARLY_BIRD_END}`.
 - **Analytics client ID (build time).** The pages are built ahead of time, so the ID must be in the environment when you build. Without it the site has no analytics, which is safe but probably not what you want.
   ```sh
   export OPENPANEL_WEB_CLIENT_ID=<the "web" client id from events.andronix.app>

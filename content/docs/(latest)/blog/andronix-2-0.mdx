@@ -9,6 +9,7 @@ import Imagera from "@/components/imagera";
 import Authors, { Author } from '@/components/author'
 import { MarkTile } from '@/components/marks'
 import { RELEASE_DATE } from '@/lib/release.mjs'
+import EarlyBirdEnd from '@/components/early-bird-end'
 
 {/* Release date: set it once in lib/release.mjs. */}
 
@@ -20,7 +21,7 @@ import { RELEASE_DATE } from '@/lib/release.mjs'
 
 Andronix 2.0 is the biggest change to Andronix since it started. The installer is new, every free distro is on a current version, the desktop runs full screen with Termux:X11, and Modded OS has five new editions. The app is version 10.0, with a new design and a new icon.
 
-It also fixes something we got wrong. **Modded OS downloads were broken from June to September 2026.** If you bought a Modded OS and couldn't install it, we're sorry. That's fixed, and past buyers get their editions back and a discount (see [Past buyers](#modded-os-20-classic-and-past-buyers)).
+It also fixes something we got wrong. **Modded OS downloads were broken from June to September 2026.** If you bought a Modded OS and couldn't install it, we're sorry. That's fixed, and past buyers keep their four Classic editions (see [Past buyers](#modded-os-20-classic-and-past-buyers)).
 
 ## What's new, in short
 
@@ -28,8 +29,9 @@ It also fixes something we got wrong. **Modded OS downloads were broken from Jun
 - **Nine free distros on current versions**, with XFCE, LXQt, MATE or KDE Plasma, and Firefox included.
 - **A full-screen desktop with Termux:X11**, with sound that works out of the box.
 - **New commands** to update, back up, add developer tools and speed up the desktop.
-- **Modded OS 2.0**: five editions with one Andronix look, and updates included. The original editions are now **Classic** and free for everyone who bought them.
+- **Modded OS 2.0**: five editions with one Andronix look, and updates included. The Modded Pass has an **early bird price for the first 4 days**. The original editions are now **Classic**: archived in the app, and yours to keep if you bought them.
 - **App 10.0**: a new dark design, a simpler install flow, and one tap to start the desktop.
+- **Report a problem**, in the app or from Termux with `andronix report`, with the details we need already filled in.
 - **A new website and new docs**, with a step-by-step path.
 
 ## Free distros
@@ -105,24 +107,27 @@ Five new editions, with one Andronix look and updates included:
 
 ![Modded OS 2.0 on Debian 13 XFCE](/images/new-installer/debian-modded-xfce-desktop.png)
 
-| Option | Price (US) |
+| Option | Price |
 |---|---|
 | One edition | $2.99 |
-| Modded Pass (all 5 editions) | $6.99 |
-| Andronix Complete (Premium + Modded Pass) | $7.49 |
+| Modded Pass (all 5 editions) | $6.99 (₹449) |
+| Modded Pass, **early bird** (first 4 days after launch, until <EarlyBirdEnd />) | $4.49 (₹299) |
+| Andronix Complete (Premium + Modded Pass), **best value** | $7.49 |
 
-Prices shown are US prices. Google Play shows the price in your country.
+Premium owners and owners of a Modded 2.0 edition pay less for the Modded Pass: see [Prices](/modded-os/modded-os#prices).
+
+Prices shown are US prices unless marked. Google Play shows the price in your country.
 
 ### Classic editions
 
-The original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro are now the **Classic** editions. They keep their original look, rebuilt on current systems. They aren't sold anymore, and they're **free forever for everyone who bought them**.
+The original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro are now the **Classic** editions. They keep their original look, rebuilt on current systems. They aren't sold anymore. If you bought them, they stay in the app as **Archived: yours to keep**.
 
 ### Past buyers
 
 - The Modded download outage (June to September 2026) is fixed.
 - Your purchases are verified with Google Play and kept safe on our servers.
-- Your Classic editions are free.
-- If you bought a Modded OS before, you can get the Modded Pass for **$1.99**, or **$0.99** with Premium.
+- Your four Classic editions stay yours, free, in the app's Archived section.
+- Owning Classic editions doesn't give a discount on Modded OS 2.0: you pay the regular or early bird price.
 
 ## Premium
 
@@ -132,7 +137,7 @@ The original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro are now the **Cl
 
 Premium is **$2.99** and includes:
 
-- 30% off the Modded Pass;
+- a lower price on the Modded Pass (see [Prices](/modded-os/modded-os#prices));
 - early access to new Modded editions and to beta installers;
 - higher Modded download limits;
 - an optional spot on the supporter wall on andronix.app.
@@ -166,11 +171,23 @@ And in the installer with:
 andronix telemetry off
 ```
 
+## Report a problem
+
+If something goes wrong, open **Report a problem** in the app. The report includes the device and install details we need, and you can add up to three screenshots or photos (the app removes location and other metadata first).
+
+If an install fails in Termux, run:
+
+```bash copy
+andronix report
+```
+
+`andronix report` comes with installer 2.0.2. It shows exactly what will be sent and uploads it only if you agree. Then it opens the app with the report already filled in, so you only add what you were doing. See [Report a problem](/troubleshooting/report-a-problem).
+
 ## Known issues
 
 - On some **Android 9** phones with a **4.4 kernel**, desktops may show a black screen. The command line works, and the installer warns you before a desktop install. See [The installer warns about an old kernel](/troubleshooting/install#the-installer-warns-about-an-old-kernel).
 
-If you run into something else, tell us on [Discord](https://chat.andronix.app).
+If you run into something else, use **Report a problem** in the app, or tell us on [Discord](https://chat.andronix.app).
 
 ## How to upgrade
 
