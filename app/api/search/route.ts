@@ -8,4 +8,6 @@ const currentDocs: typeof source = {
   getPages: (...args: Parameters<typeof source.getPages>) => source.getPages(...args).filter((page) => page.slugs[0] !== 'v8'),
 };
 
-export const { GET } = createFromSource(currentDocs);
+// Built once into out/api/search as a static index; the browser searches it (no server).
+export const revalidate = false;
+export const { staticGET: GET } = createFromSource(currentDocs);

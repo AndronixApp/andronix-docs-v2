@@ -2,6 +2,7 @@
 
 ## Release candidate (overnight, Sept 27)
 
+- **Static export (Sept 28, after Error 1027):** the OpenNext build ran a Worker for every page view, and Next 16's segment prefetch (`Next-Router-Segment-Prefetch: /_tree`) looped against it, about 190 requests a second per open tab (11,684 requests from one local page view in 30 s). That used up the Free plan's 100k Worker requests a day, and lead rolled back to the old docs. The docs are now a static export (`output: 'export'`, `out/`) served only by Workers Static Assets: no Worker script, static search index (browser-side), redirects in `public/_redirects` (generated from lib/redirects.mjs), `html_handling = auto-trailing-slash`, `404-page`. Locally: 3 visits made 280 requests, all static, 0 Worker invocations, and the loop is gone. `@opennextjs/cloudflare` and `open-next.config.ts` are unused now; remove them once the static setup is live.
 - **Every docs URL app 10 links to** (app-wt-ui 1fdc54ea and v8.1-new-installer ae3228d3, LinkHub/constants), 28 including anchors, returns 200 with its anchor present. Checked on the Next build and on the Cloudflare Worker bundle (`wrangler dev --local`).
   - The list includes `/troubleshooting/install#the-installer-warns-about-an-old-kernel`, `/troubleshooting/signal-9#android-14-and-newer`, `/blog/andronix-2-0` and `/account/deletion`.
   - They're 404 on the live site only because this build isn't deployed.

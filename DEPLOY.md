@@ -1,8 +1,8 @@
 # Deploying docs.andronix.app
 
-The docs are a Next.js 16 + Fumadocs site. They run on **Cloudflare Workers** through **OpenNext** (`@opennextjs/cloudflare` 1.20.6, wrangler 4).
-- Worker: `andronix-docs-v2` (`wrangler.toml`).
-- Static files: Workers Static Assets (`.open-next/assets`).
+The docs are a Next.js 16 + Fumadocs site, built as a **static export** (`out/`) and served entirely by **Workers Static Assets** (wrangler 4).
+- Worker: `andronix-docs-v2` (`wrangler.toml`). It has no script: every page, prefetch file, the search index (`/api/search`, searched in the browser) and the redirects (`out/_redirects`, written from `lib/redirects.mjs`) are static assets, so visits never count as Worker requests.
+- Why: the earlier OpenNext build ran a Worker for every page view, and Next 16's segment prefetch looped against it (about 190 requests a second per open tab), which used up the Free plan's 100k daily Worker requests (Error 1027).
 - The custom domain `docs.andronix.app` is attached to the Worker in the Cloudflare dashboard; it isn't in `wrangler.toml`.
 
 **Release order:** deploy the docs **before** app 10.0 and before the website's Andronix 2.0 banner. Both link to docs pages that only exist in this build (for example `/start-here/install-termux`, `/troubleshooting/signal-9`, `/blog/andronix-2-0`). The docs link only to website pages that are already live (`/legal/privacy-policy`), so there's no cycle.
@@ -36,16 +36,15 @@ Write down the version ID of the active deployment. That's what you roll back to
 ## 2. Build and check locally
 
 ```sh
-pnpm build                               # runs the prebuild checks: screenshot manifest + App 10 links
-pnpm exec opennextjs-cloudflare build    # the Worker bundle
+pnpm build                               # prebuild checks (screenshots, App 10 links, _redirects), then the export into out/
 pnpm exec wrangler dev --port 8799 --local
 ```
 
 Then, in another terminal, run the smoke test (section 5) against `http://localhost:8799`. Stop `wrangler dev` when it passes.
 
-The `pnpm run deploy` (plus the release-date check), `pnpm run upload` and `pnpm run preview` scripts (always with `run`: plain `pnpm deploy` is a different, built-in pnpm command) run the same checks (`scripts/app-shots-manifest.mjs`, `scripts/check-latest-links.mjs`) before building. The build fails if an App 10 page links to a URL that only exists in the App 8.x docs.
+The `pnpm run deploy` (plus the release-date check), `pnpm run upload` and `pnpm run preview` scripts (always with `run`: plain `pnpm deploy` is a different, built-in pnpm command) run `pnpm build`, so the same checks (`scripts/app-shots-manifest.mjs`, `scripts/check-latest-links.mjs`, `scripts/write-redirects.mjs`) run before every build. The build fails if an App 10 page links to a URL that only exists in the App 8.x docs.
 
-While someone reviews on a local `next dev`, build checks into a separate folder so the dev server isn't disturbed: `NEXT_DIST_DIR=.next-check pnpm build` (and `NEXT_DIST_DIR=.next-check pnpm exec next start` to serve it). Deploy builds use the default `.next`.
+While someone reviews on a local `next dev`, build with `NEXT_DIST_DIR=.next-check pnpm build` so the dev server's `.next` isn't disturbed; the export still lands in `out/`. Serve it with `pnpm exec wrangler dev --port 8799 --local` (`next start` doesn't serve a static export).
 
 ## 3. Staging: upload without going live
 
@@ -53,7 +52,7 @@ While someone reviews on a local `next dev`, build checks into a separate folder
 pnpm run upload
 ```
 
-This builds and uploads a **new version without routing traffic to it** (`opennextjs-cloudflare upload`, which runs `wrangler versions upload`). It prints the version ID and, if preview URLs are enabled on the Worker, a preview URL like `https://<id-prefix>-andronix-docs-v2.<account>.workers.dev`.
+This builds and uploads a **new version without routing traffic to it** (`wrangler versions upload`). It prints the version ID and, if preview URLs are enabled on the Worker, a preview URL like `https://<id-prefix>-andronix-docs-v2.<account>.workers.dev`.
 
 Run the smoke test (section 5) against the preview URL, and look at the pages with the owner.
 
@@ -100,12 +99,12 @@ All 200s, and all old URLs 308 to their `/v8/...` page. The full redirect list i
 pnpm exec wrangler rollback <version-id-from-step-1> --name andronix-docs-v2
 ```
 
-Or in the dashboard: Workers & Pages › `andronix-docs-v2` › Deployments › the previous version › Rollback. This restores that version's code and static files at once.
+Or in the dashboard: Workers & Pages › `andronix-docs-v2` › Deployments › the previous version › Rollback. This restores that version's code and static files at once. Rolling back to a version from before the static export (for example the first 2.0 OpenNext version) brings back the Worker script and its prefetch loop; roll back only to static versions, or to the pre-2.0 site.
 
 **Rollback can't undo cached redirects.** Visitors' browsers cache the new site's permanent (308) redirects. After a rollback, someone who already visited an old URL may keep being sent to `/v8/...`, which doesn't exist on the old site, until they clear their cache. If a rollback is likely, stage longer (section 3) before going live.
 
 ## 7. After the deploy
 
 - Tell the lead: the app 10 release and the website banner can go ahead.
-- Watch the Worker's errors for a day: Workers & Pages › `andronix-docs-v2` › Logs, or `pnpm exec wrangler tail --name andronix-docs-v2`.
+- Check that the Worker's request count stays near zero for a day (Workers & Pages › `andronix-docs-v2` › Metrics): asset requests don't count toward the Workers request limit.
 - Watch analytics at events.andronix.app (if the client ID was set): page views should appear within minutes.

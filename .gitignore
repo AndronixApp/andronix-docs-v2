@@ -12,3 +12,7 @@ cloudflare-env.d.ts
 .env
 .env*.local
 .claude/
+
+# static export and its generated redirects
+/out
+/public/_redirects

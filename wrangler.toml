@@ -1,8 +1,13 @@
-main = ".open-next/worker.js"
+# docs.andronix.app: a static site (Next.js static export in out/), served
+# entirely by Workers Static Assets. There is no Worker script, so page views,
+# prefetches, search and redirects (out/_redirects) never count as Worker
+# requests. The custom domain is attached in the Cloudflare dashboard.
 name = "andronix-docs-v2"
 compatibility_date = "2025-03-25"
-compatibility_flags = ["nodejs_compat"]
 
 [assets]
-directory = ".open-next/assets"
-binding = "ASSETS"
+directory = "out"
+# /path serves /path.html (and /path/ redirects to /path).
+html_handling = "auto-trailing-slash"
+# Unknown URLs get out/404.html with a 404 status.
+not_found_handling = "404-page"

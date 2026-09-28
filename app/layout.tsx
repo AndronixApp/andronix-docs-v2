@@ -56,7 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`dark ${jakarta.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body>
-        <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark", enableSystem: false }}>{children}</RootProvider>
+        <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark", enableSystem: false }} search={{ options: { type: "static" } }}>{children}</RootProvider>
         <Analytics clientId={process.env.OPENPANEL_WEB_CLIENT_ID} />
       </body>
     </html>
