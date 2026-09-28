@@ -1,0 +1,6 @@
+#!/bin/sh
+# Stand-in for Termux's termux-x11 (the same as andronix-distros
+# tests/x11/fake-termux-x11): Xvfb on the display andronix asks for.
+display=$1
+shift
+exec Xvfb "$display" -screen 0 1280x720x24 -nolisten tcp "$@"

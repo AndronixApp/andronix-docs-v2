@@ -47,6 +47,9 @@ andronix remove debian
 # delete a Modded OS edition, by its edition id (installer 2.0.1+)
 andronix remove ubuntu-kde
 
+# free the space of leftover downloads (installer 2.0.1+)
+andronix clean
+
 # check this phone and what Andronix adjusts for it (installer 2.0.1+)
 andronix doctor
 
@@ -272,6 +275,20 @@ It removes the old copy even if the edition was never installed with Andronix 2.
 {/* TODO(docs): edition ids for remove/start/desktop etc. ship with installer 2.0.1 (andronix-distros 330608e). Remove the badges after the release. */}
 
 <Callout type="warning">Stop the desktop (`vncserver-stop`) and exit every session of the distro before removing it.</Callout>
+
+## Freeing space: andronix clean
+
+<Badge>installer 2.0.1+</Badge>
+
+```bash
+andronix clean
+```
+
+Empties the download cache (`~/.andronix/cache`), for example a download left behind when an install stopped halfway, and prints how much space it freed. Your installed distros aren't touched. A download that's still running is kept.
+
+You rarely need it: a finished install deletes its download, and `andronix remove` deletes the distro's leftover downloads.
+
+<TerminalDemo name="clean" command="andronix clean" />
 
 ## Backing up and restoring
 
