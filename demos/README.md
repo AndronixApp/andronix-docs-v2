@@ -26,3 +26,13 @@ The box's user is `user`, its hostname `android`, and the prompt is Termux's `~ 
 ## Look
 
 `settings.tape` sets it for every demo: the Andronix theme (background `#19120E`, cursor `#E8791E`, text and ANSI colours from `app/andronix-tokens.css`), Geist Mono at 22 px, 940 × 1000: 60 columns by 28 rows, like Termux on a phone. 24 fps.
+
+## App tutorial GIFs
+
+App 10's tutorial card (`CardTutorialGifViewer`, URLs from Remote Config) shows cuts of the same recordings as GIFs. The app loads them with Coil, which animates WebP only on Android 9+ (API 24 to 27 get `GifDecoder`), so they're GIFs: 540 px wide, 12 fps, sped up to about 15 s, looping. They go to `demos/out/app/` (not committed; the lead uploads them):
+
+```sh
+for spec in install:1.6 desktop:1.5; do n=${spec%%:*}; sp=${spec##*:}
+  ffmpeg -y -i public/demos/$n.mp4 -vf "setpts=PTS/$sp,fps=12,scale=540:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=64:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" -loop 0 demos/out/app/$n.gif
+done
+```
