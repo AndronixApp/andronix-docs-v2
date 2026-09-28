@@ -10,5 +10,9 @@ if (EARLY_BIRD_END === EARLY_BIRD_END_PLACEHOLDER) {
   console.error('check-release-date: set EARLY_BIRD_END in lib/release.mjs before deploying (it is still the placeholder).');
   bad = true;
 }
+if (!bad && Number.isNaN(new Date(EARLY_BIRD_END).getTime())) {
+  console.error(`check-release-date: EARLY_BIRD_END must be an ISO time such as 2026-10-06T23:59:00Z (got "${EARLY_BIRD_END}").`);
+  bad = true;
+}
 if (bad) process.exit(1);
 console.log(`check-release-date: ${RELEASE_DATE}, early bird until ${EARLY_BIRD_END}`);
