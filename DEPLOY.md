@@ -45,6 +45,8 @@ Then, in another terminal, run the smoke test (section 5) against `http://localh
 
 The `pnpm run deploy` (plus the release-date check), `pnpm run upload` and `pnpm run preview` scripts (always with `run`: plain `pnpm deploy` is a different, built-in pnpm command) run the same checks (`scripts/app-shots-manifest.mjs`, `scripts/check-latest-links.mjs`) before building. The build fails if an App 10 page links to a URL that only exists in the App 8.x docs.
 
+While someone reviews on a local `next dev`, build checks into a separate folder so the dev server isn't disturbed: `NEXT_DIST_DIR=.next-check pnpm build` (and `NEXT_DIST_DIR=.next-check pnpm exec next start` to serve it). Deploy builds use the default `.next`.
+
 ## 3. Staging: upload without going live
 
 ```sh
