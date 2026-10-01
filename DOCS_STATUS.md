@@ -531,3 +531,9 @@ The Void TODO and the MATE-screenshot TODO are resolved.
 10. **KDE on Ubuntu 24.04:** excluded on purpose? The docs list KDE only for Debian 13, Ubuntu 26.04 and Kali, as you said.
 11. ~~App version in the guides~~ Decided: app 10.0 or newer.
 12. ~~proot in get.sh~~ Decided: the installer installs proot. The docs step comes out after x11's final gate.
+
+## SEO pass (seo agent, Oct 1, branch seo/2026-10)
+
+- **Technical:** self-canonical on every page; each `/v8/...` page's canonical points at the current page on the same topic (`lib/seo.ts`, e.g. the old Android 12 page → `/troubleshooting/signal-9`). Redirects are unchanged. `out/sitemap.xml` (current docs only, `lastmod` from each page's last git commit), `public/robots.txt` with the Sitemap line, `/blog/rss.xml`, JSON-LD (WebSite on home, BreadcrumbList, BlogPosting on posts), per-page OG/Twitter (og:url was the home URL on every page). `metaTitle` frontmatter sets a search title without changing the H1 (source.config.ts uses `pageSchema.loose()`).
+- **Content:** four guides in the blog (Ubuntu, Kali, Termux:X11, Android Linux Terminal vs Termux), written from these docs and installer v2.0.1; Blog moved out of Archive in the sidebar; alt text on current pages' images; links from distros, Termux:X11 and What is Andronix to the guides.
+- **Note:** with `NEXT_DIST_DIR=.next-check`, Next 16 writes the export into `.next-check/`, not `out/`. Serve that folder, or build without it, when checking.
