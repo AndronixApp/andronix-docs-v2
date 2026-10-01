@@ -2,7 +2,8 @@ import type { MetadataRoute } from 'next';
 import { source } from '@/lib/source';
 import { absoluteUrl, isV8, lastModified } from '@/lib/seo';
 
-// Written once at build time into out/sitemap.xml.
+// Written once at build time into out/sitemap.xml. Search engines and the support desk's nightly
+// docs index (it reads https://docs.andronix.app/sitemap.xml and skips /v8 and /blog) both use it.
 export const dynamic = 'force-static';
 
 // Current docs only: the /v8 pages point their canonical at the current pages (lib/seo.ts).
