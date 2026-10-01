@@ -1,12 +1,47 @@
 ---
 title: Blog
-description: Release notes, announcements and updates from the Andronix team.
+description: Guides, release notes and announcements from the Andronix team, about running Linux on Android without root.
 ---
 
 import { Cards, Card } from 'fumadocs-ui/components/card';
-import { PenSquare, Rocket, Sparkles, Info } from 'lucide-react';
+import { PenSquare, Rocket, Sparkles, Info, BookOpen } from 'lucide-react';
 
-Release notes, announcements and other updates from the Andronix team.
+Guides, release notes and announcements from the Andronix team.
+
+## Guides
+
+<Cards>
+  <Card
+    icon={<BookOpen />}
+    href="/blog/ubuntu-on-android-without-root"
+    title="How to Install Ubuntu on Android without Root"
+  >
+    Ubuntu 26.04 or 24.04 LTS with a full desktop, from Termux to Termux:X11, step by step.
+  </Card>
+  <Card
+    icon={<BookOpen />}
+    href="/blog/kali-linux-on-android-without-root"
+    title="Kali Linux on Android without Root"
+  >
+    Install Kali with a desktop, what security tools can and can't do without root, and how it compares with NetHunter Rootless.
+  </Card>
+  <Card
+    icon={<BookOpen />}
+    href="/blog/termux-x11-linux-desktop-on-android"
+    title="Termux:X11: A Full-Screen Linux Desktop on Android"
+  >
+    Where to get Termux:X11, how it compares with VNC, and how to fix a black screen.
+  </Card>
+  <Card
+    icon={<BookOpen />}
+    href="/blog/android-linux-terminal-vs-termux"
+    title="Android's Linux Terminal vs Termux and Andronix"
+  >
+    Which phones have Google's Linux Terminal, how it differs from proot, and when to use each.
+  </Card>
+</Cards>
+
+## Releases and news
 
 <Cards>
   <Card

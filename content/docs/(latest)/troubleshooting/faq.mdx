@@ -16,7 +16,7 @@ ___
 
 ### 2. Getting this error whenever I try to install any OS
 
-<Imagera src="/images/distro_error.jpg"/>
+<Imagera src="/images/distro_error.jpg" alt="Termux pkg update failing with 403 Forbidden errors from the old Bintray package servers"/>
 
 **Ans.** You probably have the old Play Store build of Termux from 2020, whose package servers are gone. Replace it with a current Termux; see [Install Termux](/start-here/install-termux).
 
@@ -36,7 +36,7 @@ ___
 
 ### 5. AltGr not working on VNC
 
-<Imagera src="/images/faq/altgr.png"/>
+<Imagera src="/images/faq/altgr.png" alt="bVNC menu option that fixes the AltGr key"/>
 
 **Ans.** Use [bVNC](https://play.google.com/store/apps/details?id=com.iiordanov.freebVNC) instead of [RealVNC](https://play.google.com/store/apps/details?id=com.realvnc.viewer.android) and select the highlighted option from the top menu. If that doesn't work either, try [Android VNC](https://play.google.com/store/apps/details?id=android.androidVNC&hl).
 
@@ -44,7 +44,7 @@ ___
 
 ### 6. VNC can't open – usage: vncserver -display- error
 
-<Imagera src="/images/faq/vncError.png" alt="drawing" width="400"/>
+<Imagera src="/images/faq/vncError.png" alt="vncserver usage error shown in the Manjaro shell" width="400"/>
 
 **Ans.** Most users run into this error while using Modded Manjaro. To fix it, run this inside the Manjaro shell:
 
@@ -63,7 +63,7 @@ This applies to Ubuntu 20.04 from the pre-2.0 installer. Here's an easy fix for 
 3. Click "Show all".
 4. Search for sandbox.
 5. Change the first two values to false, and change security.sandbox.content.level to 1, exactly as in this picture:
-<Imagera src="/images/faq/firefox.png" height={500}/>
+<Imagera src="/images/faq/firefox.png" alt="Firefox about:config sandbox settings changed to fix tab crashes" height={500}/>
 6. Restart Firefox.
 
 ___

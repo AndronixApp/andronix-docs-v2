@@ -1,0 +1,127 @@
+---
+title: "Kali Linux on Android without Root: What Works and How to Install It"
+metaTitle: "Kali Linux on Android without Root (2026): Install Guide - Andronix"
+date: 2026-10-01
+description: Install Kali Linux rolling on an unrooted Android phone with a full desktop, see what security tools can and can't do without root, and how it compares with Kali NetHunter Rootless.
+---
+
+import Authors, { Author } from '@/components/author'
+
+<Authors date="October 1, 2026">
+    <Author name="The Andronix team"/>
+</Authors>
+
+Kali Linux runs on an unrooted Android phone, with its own `apt` repositories and a full desktop. It's a good way to learn Linux and security tooling on a device you always have with you. But without root, Android keeps some doors closed, and it's better to know which ones before you start.
+
+This guide covers what works, how to install Kali with the free `andronix` installer, and how that compares with Kali's own NetHunter Rootless.
+
+<Callout type="warning">Only scan or test networks and systems that you own, or that you have written permission to test. Testing other people's systems without permission is illegal in most countries.</Callout>
+
+## What works without root, and what doesn't
+
+Kali runs inside Termux with **proot**, which makes Kali believe it has its own root filesystem and root user. That "root" is only pretend: the Android kernel still treats Kali as an ordinary app, with an ordinary app's permissions.
+
+**Works:**
+
+- Kali's `apt` repositories: install the tools you need with `sudo apt install`.
+- Command-line tools that use normal network connections: web and HTTP tools, DNS lookups, SSH, scripting with Python, password-hash tools that only use the CPU, and so on.
+- A desktop (XFCE, LXQt, MATE or KDE Plasma) with Firefox ESR, full screen on the phone.
+- Your phone's storage at `/sdcard`, to share files with Android.
+
+**Doesn't work without root:**
+
+- **Wi-Fi monitor mode and packet injection.** The phone's Wi-Fi chip is controlled by Android, and an app can't switch it into monitor mode. (Full Kali NetHunter does this with a rooted phone, a custom kernel, and often an external USB Wi-Fi adapter.)
+- **Packet capture and raw packets.** Android doesn't let apps capture traffic or send raw packets without root, so tools and scan types that need them fail. Prefer modes that use normal connections.
+- **USB adapters and other hardware**, VPN interfaces, and anything else that changes the network. See [Limitations](/reference/limitations).
+
+If your goal is wireless auditing, you need rooted hardware. If your goal is learning Linux, scripting, web security or CTF-style work, an unrooted phone does a lot.
+
+## What you need
+
+- **Android 7 or newer**, no root. Kali runs on arm64 (most phones), 32-bit arm, x86 and x86_64.
+- **Termux**, current build, from F-Droid, GitHub or the Google Play Store (the Play build needs Android 11 or newer). See [Install Termux](/start-here/install-termux).
+- **Free storage:** 0.5 GB for the command line, 1.5 to 2 GB with a desktop, plus room for the tools you add. Kali's big tool collections take several more gigabytes.
+- **Termux:X11** if you want the desktop on the phone (below).
+
+## Install Kali
+
+Paste this into Termux:
+
+```bash copy
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install kali --de xfce
+```
+
+It installs the `andronix` installer, then Kali Linux rolling with XFCE and Firefox ESR. Use `--de lxqt` for a lighter desktop, `--de kde` for KDE Plasma (4 GB of RAM or more), or `--de none` for the command line only. If `andronix` is already installed, `andronix install kali --de xfce` is enough.
+
+When it finishes, create your user (a username, a password, and a desktop password), and you're in Kali. You get the base system and your desktop; add tools as you need them:
+
+```bash copy
+sudo apt update
+sudo apt install nmap sqlmap hydra
+```
+
+<Callout type="info">On phones with an older kernel (before 5.8), Kali's systemd packages failed to configure under proot, which left `sudo` and the desktop half set up. Installer 2.0.1 fixes this. If you installed Kali earlier, run `andronix update` in Termux, then `andronix install kali` again to finish the setup.</Callout>
+
+## Open the Kali desktop
+
+1. Install **Termux:X11**: download `termux-x11-universal-debug.apk` from its [nightly release on GitHub](https://github.com/termux/termux-x11/releases/tag/nightly).
+2. In Termux (not inside Kali), run:
+
+```bash copy
+andronix desktop kali
+```
+
+The desktop opens full screen in Termux:X11, logged in as your user, with sound. To reach it from a laptop instead, use [VNC](/reference/vnc). Details: [Start the desktop](/desktop/termux-x11).
+
+On **Android 12 and newer**, Android may stop Kali with `[Process completed (signal 9) - press Enter]`, especially with a desktop and several tools open. Turn that off once: [Process completed (signal 9)](/troubleshooting/signal-9).
+
+## Day to day
+
+| To | Run |
+|---|---|
+| Start Kali (in Termux) | `./start-kali.sh` or `andronix start kali` |
+| A root shell, if you really need one | `andronix start kali --root` |
+| Update Kali | `sudo apt update && sudo apt full-upgrade` |
+| Back up Kali to phone storage | `andronix backup kali --to storage` |
+| Remove Kali | `andronix remove kali` |
+
+## Andronix or Kali NetHunter Rootless?
+
+Kali's own project publishes **NetHunter Rootless**, which also runs Kali in Termux without root. Both are good options. They differ in how you install and view the desktop:
+
+| | Andronix | Kali NetHunter Rootless |
+|---|---|---|
+| Made by | Andronix | The Kali project, by OffSec (official) |
+| Termux from | F-Droid, GitHub or Google Play | The NetHunter Store (per Kali's docs) |
+| Install | One `andronix install kali` command | Kali's `install-nethunter-termux` script |
+| Desktop on the phone | Termux:X11, full screen, or VNC | NetHunter KeX (a VNC-based desktop) |
+| Other distros with the same commands | Debian, Ubuntu, Fedora, Arch and more | Kali only |
+| Root-only features (monitor mode, injection) | No | No; those need full NetHunter on a rooted phone |
+
+Choose **NetHunter Rootless** if you want Kali's official build and the NetHunter app ecosystem. Choose **Andronix** if you'd like the Termux:X11 full-screen desktop, sound out of the box, and the same commands for Kali and your other distros. Either way, the limits above are Android's, not the tool's.
+
+Source for NetHunter Rootless: Kali's [NetHunter Rootless documentation](https://www.kali.org/docs/nethunter/nethunter-rootless/).
+
+## Common questions
+
+### Is Kali on Android legal?
+
+Installing and learning with Kali is legal. What matters is what you do with it: only test systems you own or have permission to test.
+
+### Can I use Kali Linux on Android to hack Wi-Fi?
+
+Not without root. Monitor mode and packet injection need direct control of the Wi-Fi hardware, which Android doesn't give to apps.
+
+### Why does Kali ask for a username instead of logging in as root?
+
+Andronix 2.0 creates a normal user, like a regular Kali install. Use `sudo` for admin commands, or `andronix start kali --root` for a root shell.
+
+### I installed Kali with the old Andronix app. Does it still work?
+
+Yes. Installs from before Andronix 2.0 keep working with the same start command. To move to the current Kali, see [Installs from before Andronix 2.0](/pre-2.0/older-installs).
+
+## Next steps
+
+- [Supported distros](/reference/distros#kali-linux): Kali's details and commands.
+- [Install apps](/use/apps) and [Dev packs](/use/dev-packs): browsers, IDEs, Python and more.
+- [Ubuntu on Android without root](/blog/ubuntu-on-android-without-root): the same steps for Ubuntu.

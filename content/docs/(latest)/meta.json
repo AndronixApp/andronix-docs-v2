@@ -11,12 +11,12 @@
     "modded-os",
     "troubleshooting",
     "reference",
+    "blog",
     "---About---",
     "account/deletion",
     "miscellaneous/open-source",
     "security/termux",
     "---Archive---",
-    "pre-2.0",
-    "blog"
+    "pre-2.0"
   ]
 }

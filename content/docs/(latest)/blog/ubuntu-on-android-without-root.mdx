@@ -1,0 +1,173 @@
+---
+title: "How to Install Ubuntu on Android without Root (2026)"
+metaTitle: "Install Ubuntu on Android without Root (2026 Guide) - Andronix"
+date: 2026-10-01
+description: Run Ubuntu 26.04 LTS or 24.04 LTS on your Android phone without root, with a full XFCE or KDE desktop, using Termux, the free andronix installer and Termux:X11.
+---
+
+import Authors, { Author } from '@/components/author'
+
+<Authors date="October 1, 2026">
+    <Author name="The Andronix team"/>
+</Authors>
+
+You can run a real Ubuntu system on an Android phone or tablet without rooting it. Ubuntu runs inside Termux, next to Android, with its own `apt` packages, a normal user account with `sudo`, and a desktop you open full screen on the phone. Nothing on Android itself is changed, and you can remove it at any time.
+
+This guide uses the free `andronix` installer (Andronix 2.0). It takes one command, and the app is optional.
+
+![Ubuntu 26.04 LTS with the XFCE desktop, installed with Andronix](/images/new-installer/ubuntu-xfce-desktop.png)
+
+## What you get
+
+- **Ubuntu 26.04 LTS** ("Resolute Raccoon"), or **Ubuntu 24.04 LTS** if your software isn't ready for 26.04 yet.
+- **A desktop** of your choice: XFCE, LXQt, MATE or KDE Plasma (KDE Plasma on Ubuntu 26.04 only), or the command line only.
+- **Firefox**, installed from Mozilla's own repository. Ubuntu's own Firefox package is a Snap, and Snaps can't run on Android, so Andronix uses Mozilla's build instead.
+- **Sound** through the phone's speakers, set up for you.
+- **A normal user**, not root. Use `sudo` for admin commands, like on a Linux PC.
+
+## What you need
+
+| | |
+|---|---|
+| **Android** | 7 or newer. No root. |
+| **CPU** | arm64 (most phones), 32-bit arm or x86_64 |
+| **Free storage** | About 0.5 GB for the command line only, 1.5 to 2 GB with a desktop (about 3 GB for KDE Plasma) |
+| **RAM** | 3 GB or more is comfortable for a desktop; 4 GB or more for KDE Plasma |
+| **Apps** | Termux, and Termux:X11 for the desktop. Both are free. |
+
+Full details: [Requirements](/start-here/requirements).
+
+## Step 1: Install Termux
+
+Termux is the terminal app Ubuntu runs in. Install a current build from **F-Droid**, from the Termux project's **GitHub** releases, or from the **Google Play Store** (the Play build needs Android 11 or newer). The very old Play Store Termux from 2020 (version 0.101) doesn't work anymore.
+
+Open Termux once and wait for the `~ $` prompt. Then, in your phone's settings, turn off **battery optimization** for Termux.
+
+More: [Install Termux](/start-here/install-termux).
+
+## Step 2: Install Ubuntu
+
+Paste this one line into Termux and press Enter:
+
+```bash copy
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install ubuntu --de xfce
+```
+
+It downloads the `andronix` installer, checks it against its published checksum, and installs Ubuntu 26.04 LTS with XFCE. To choose something else, change the end of the command:
+
+| You want | Use |
+|---|---|
+| Ubuntu 24.04 LTS instead of 26.04 | `install ubuntu24 --de xfce` |
+| A lighter desktop | `--de lxqt` |
+| A classic desktop with menus at the top | `--de mate` |
+| KDE Plasma (Ubuntu 26.04, 4 GB of RAM or more) | `--de kde` |
+| No desktop, just the command line | `--de none` |
+
+Prefer tapping to typing? The [Andronix app](https://play.google.com/store/apps/details?id=studio.com.techriz.andronix) lets you pick Ubuntu and a desktop, then copies the same command for you. See [Install with the app](/install/with-the-app).
+
+The installer ticks off each step as it goes: checking your phone, downloading Ubuntu, unpacking it, updating it, and installing the desktop and Firefox. A desktop install usually takes a few minutes, depending on your phone and connection.
+
+<TerminalDemo name="install" command="andronix install debian --de xfce" label="The same installer installing Debian; Ubuntu looks the same." />
+
+<Callout type="info">If the install stops for any reason (a dropped connection, or Termux closed in the background), run the **same command** again. It continues where it stopped. See [The install fails or stops](/troubleshooting/install).</Callout>
+
+## Step 3: Create your user
+
+When the install finishes, it asks for:
+
+1. a **username**, in lower-case letters and numbers;
+2. a **password**, for logging in and for `sudo`;
+3. a **desktop (VNC) password**, 6 to 8 characters, used only if you connect over VNC.
+
+Then it takes you into Ubuntu. You'll see your username followed by `@localhost` in the prompt. Try it:
+
+```bash copy
+cat /etc/os-release
+sudo apt update
+```
+
+Type `exit` to go back to Termux.
+
+## Step 4: Open the Ubuntu desktop
+
+The desktop opens full screen on the phone in **Termux:X11**, a free Android app from the Termux project.
+
+1. Download `termux-x11-universal-debug.apk` from the [Termux:X11 nightly release](https://github.com/termux/termux-x11/releases/tag/nightly) on GitHub and install it. (It isn't on F-Droid or the Play Store.)
+2. In **Termux** (not inside Ubuntu), run:
+
+```bash copy
+andronix desktop ubuntu
+```
+
+Andronix starts Termux:X11, switches to it, and opens your Ubuntu desktop, logged in as your user. The first time, Android 13 and newer ask whether Termux:X11 may send notifications: tap **Allow**, because your desktop is behind that box.
+
+Keep the Termux session open while you use the desktop, and switch between the apps with Android's app switcher. To stop the desktop, log out from its menu, or press **Ctrl + C** in Termux.
+
+More: [Start the desktop with Termux:X11](/desktop/termux-x11). To use the desktop from a laptop or tablet instead, see [VNC](/reference/vnc).
+
+![KDE Plasma on Ubuntu 26.04, installed with --de kde](/images/new-installer/ubuntu-kde-menu.png)
+
+## Step 5: Stop Android from closing Ubuntu (Android 12 and newer)
+
+Android 12 added a "phantom process killer" that stops apps which start many background processes. A Linux desktop starts a lot of them, so Termux may suddenly show:
+
+```text
+[Process completed (signal 9) - press Enter]
+```
+
+On **Android 14 and newer**, turn on **Settings › System › Developer options › Disable child process restrictions** once. Android 12 and 13 need a few `adb` commands instead. Both are explained in [Process completed (signal 9)](/troubleshooting/signal-9).
+
+## Using Ubuntu day to day
+
+| To | Run |
+|---|---|
+| Start Ubuntu again later (in Termux) | `./start-ubuntu26.sh` or `andronix start ubuntu` |
+| Open the desktop | `andronix desktop ubuntu` |
+| Update Ubuntu's packages | `sudo apt update && sudo apt upgrade` |
+| Install a program | `sudo apt install <name>` |
+| Update the installer and your distros (in Termux) | `andronix update` |
+| Back up Ubuntu to your phone's storage | `andronix backup ubuntu --to storage` |
+| Remove Ubuntu | `andronix remove ubuntu` |
+
+For Ubuntu 24.04, use `ubuntu24` in the `andronix` commands, and `./start-ubuntu.sh` to start it. Your phone's internal storage is at `/sdcard` inside Ubuntu ([Phone storage](/use/storage)).
+
+Want VS Code, LibreOffice or GIMP? See [Install apps](/use/apps). Python, Node.js, Java, Go and PostgreSQL are one command each: [Dev packs](/use/dev-packs).
+
+## What doesn't work
+
+Ubuntu runs in user space with proot, on top of Android's own kernel, so some things are out of reach without root:
+
+- **Snap, Flatpak and Docker** don't run. Use `apt` packages instead (Firefox already comes from Mozilla's repository for this reason).
+- **No GPU acceleration.** The desktop is drawn in software. Office apps, browsers and IDEs are fine; 3D games aren't.
+- **No VPNs, USB drives or other hardware access.** Android manages the network and hardware, not Ubuntu.
+- **32-bit arm phones get no browser**, because Mozilla's repository only covers arm64 and x86_64.
+
+The full list: [Limitations](/reference/limitations).
+
+## Common questions
+
+### Is this the same as Ubuntu Touch?
+
+No. Ubuntu Touch, from the UBports project, is a separate mobile operating system that **replaces** Android on a short list of supported phones. Andronix runs regular Ubuntu **inside** Termux, next to Android, on almost any phone, and your apps and data stay as they are.
+
+### Do I need root, or to unlock the bootloader?
+
+No. Nothing is flashed and nothing on Android is modified. Ubuntu lives in Termux's own folder, `~/.andronix/distros/`, and `andronix remove ubuntu` deletes it.
+
+### Ubuntu 26.04 or 24.04?
+
+Pick **26.04 LTS** unless a program you need only supports 24.04. Both are long-term support releases. If you had Ubuntu 18, 20 or 22 from the old app, its buttons now install a current version: the old **Ubuntu 22** button installs 26.04, and **Ubuntu 18** and **20** install 24.04. Old installs keep working; see [Installs from before Andronix 2.0](/pre-2.0/older-installs).
+
+### Is it slow?
+
+On a mid-range phone, a light desktop like XFCE or LXQt is usable for browsing, coding and office work. If it feels slow, `andronix tune ubuntu --profile light` turns off effects and thumbnails. See [Make it faster](/use/performance).
+
+### Can I use it without the Andronix app?
+
+Yes. The command in Step 2 is all you need, and every free distro works this way. The app adds a guided setup, and sells the optional [Modded OS](/modded-os/modded-os) editions with a themed desktop and apps already set up.
+
+## Next steps
+
+- [Choose a distro and desktop](/install/choose): Debian, Kali, Fedora, Arch and more install the same way.
+- [The andronix command](/reference/andronix-command): every command and option.
+- Stuck? [Report a problem](/troubleshooting/report-a-problem) or ask on [Discord](https://chat.andronix.app).

@@ -3,6 +3,11 @@
   "icon": "Newspaper",
   "defaultOpen": false,
   "pages": [
+    "ubuntu-on-android-without-root",
+    "kali-linux-on-android-without-root",
+    "termux-x11-linux-desktop-on-android",
+    "android-linux-terminal-vs-termux",
+    "---Releases---",
     "andronix-2-0",
     "andronix-maintainers",
     "v7-0",
