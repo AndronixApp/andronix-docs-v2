@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
 import { getMDXComponents } from '@/mdx-components';
-import { OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, canonicalPath, frontmatter, isBlogPost, lastModified } from '@/lib/seo';
+import { OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, canonicalPath, frontmatter } from '@/lib/seo';
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -33,11 +33,10 @@ export default async function Page(props: {
   );
 }
 
-// Structured data (schema.org): the site name on the home page, breadcrumbs on every page,
-// and Article on blog posts. Server-rendered into the static HTML.
+// Structured data (schema.org): the site name on the home page and breadcrumbs on every page.
+// Server-rendered into the static HTML. (The blog and its BlogPosting data are on andronix.app/blog.)
 function JsonLd({ page }: { page: NonNullable<ReturnType<typeof source.getPage>> }) {
   const items: object[] = [];
-  const url = absoluteUrl(canonicalPath(page));
 
   if (page.url === '/') {
     items.push({
@@ -63,24 +62,6 @@ function JsonLd({ page }: { page: NonNullable<ReturnType<typeof source.getPage>>
     }
   }
 
-  if (isBlogPost(page)) {
-    const { date } = frontmatter(page);
-    const modified = lastModified(page);
-    items.push({
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: page.data.title,
-      description: page.data.description,
-      url,
-      mainEntityOfPage: url,
-      image: [`${SITE_URL}${OG_IMAGE.url}`],
-      ...(date && { datePublished: date.toISOString() }),
-      ...(date && modified && modified > date && { dateModified: modified.toISOString() }),
-      author: { '@type': 'Organization', name: 'Andronix', url: 'https://andronix.app' },
-      publisher: { '@type': 'Organization', name: 'Andronix', url: 'https://andronix.app', logo: { '@type': 'ImageObject', url: `${SITE_URL}/icon-512.png` } },
-    });
-  }
-
   if (items.length === 0) return null;
   return (
     <script
@@ -102,7 +83,7 @@ export async function generateMetadata(props: {
 
   if (!page) notFound();
 
-  const { date, metaTitle } = frontmatter(page);
+  const { metaTitle } = frontmatter(page);
   const canonical = canonicalPath(page);
   const title = metaTitle ?? page.data.title;
   const description = page.data.description;
@@ -117,9 +98,7 @@ export async function generateMetadata(props: {
       url: canonical,
       siteName: SITE_NAME,
       images: [OG_IMAGE],
-      ...(isBlogPost(page)
-        ? { type: 'article', ...(date && { publishedTime: date.toISOString() }) }
-        : { type: 'website' }),
+      type: 'website',
     },
     twitter: { card: 'summary_large_image', title, description, images: [OG_IMAGE] },
   };

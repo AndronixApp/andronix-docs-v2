@@ -36,9 +36,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  alternates: {
-    types: { "application/rss+xml": [{ url: "/blog/rss.xml", title: "Andronix blog" }] },
-  },
   openGraph: {
     title: "Andronix Docs: Linux on Android without root",
     description: DESCRIPTION,

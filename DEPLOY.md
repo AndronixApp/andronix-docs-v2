@@ -5,7 +5,7 @@ The docs are a Next.js 16 + Fumadocs site, built as a **static export** (`out/`)
 - Why: the earlier OpenNext build ran a Worker for every page view, and Next 16's segment prefetch looped against it (about 190 requests a second per open tab), which used up the Free plan's 100k daily Worker requests (Error 1027).
 - The custom domain `docs.andronix.app` is attached to the Worker in the Cloudflare dashboard; it isn't in `wrangler.toml`.
 
-**Release order:** deploy the docs **before** app 10.0 and before the website's Andronix 2.0 banner. Both link to docs pages that only exist in this build (for example `/start-here/install-termux`, `/troubleshooting/signal-9`, `/blog/andronix-2-0`). The docs link only to website pages that are already live (`/legal/privacy-policy`), so there's no cycle.
+**Release order (blog move, Oct 2026):** deploy the website with `/blog` **before** the docs build that 301s `/blog/*` to andronix.app. Earlier: deploy the docs **before** app 10.0 and before the website's Andronix 2.0 banner. Both link to docs pages that only exist in this build (for example `/start-here/install-termux`, `/troubleshooting/signal-9`, `/blog/andronix-2-0`). The docs link only to website pages that are already live (`/legal/privacy-policy`), so there's no cycle.
 
 ## 0. Before you start
 
@@ -80,18 +80,26 @@ BASE=https://docs.andronix.app   # or http://localhost:8799, or the preview URL
 for p in / /start-here/install-termux /start-here/requirements /install/with-the-app /install/without-the-app \
   /desktop/termux-x11 /reference/desktops /reference/vnc /reference/limitations /reference/andronix-command \
   /modded-os/modded-os-installation /pre-2.0/window-managers /security/termux /troubleshooting/faq \
-  /troubleshooting/install /troubleshooting/signal-9 /account/deletion /blog/andronix-2-0 /v8 \
+  /troubleshooting/install /troubleshooting/signal-9 /account/deletion /v8 /sitemap.xml /robots.txt \
   /images/app10/app10-home.png /og-image-1200x630.png "/api/search?query=termux"; do
   printf '%s %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$BASE$p")" "$p"
 done
 # Old URLs that the v8.x app and search engines use: expect 308 to /v8/...
+# (except /android-12/andronix-on-android-12-and-beyond: 308 to /troubleshooting/signal-9)
 for p in /unmodded-distros/unmodded-os-installation /faq/faq /android-12/andronix-on-android-12-and-beyond \
   /termux/migrating-to-f-droid /desktop-environments/desktop-environments /window-managers/window-managers; do
   printf '%s %s -> %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$BASE$p")" "$p" "$(curl -s -o /dev/null -w '%{redirect_url}' "$BASE$p")"
 done
 ```
 
-All 200s, and all old URLs 308 to their `/v8/...` page. The full redirect list is `lib/redirects.mjs`. Also open two or three pages in a browser and check that screenshots load and that the sidebar version menu switches between App 10 and App 8.x.
+```sh
+# The blog moved to the website: expect 301 to https://andronix.app/blog/...
+for p in /blog /blog/andronix-2-0 /blog/rss.xml; do
+  printf '%s %s -> %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$BASE$p")" "$p" "$(curl -s -o /dev/null -w '%{redirect_url}' "$BASE$p")"
+done
+```
+
+All 200s, all old URLs 308 to their `/v8/...` page (the Android 12 page to `/troubleshooting/signal-9`), and the blog URLs 301 to andronix.app. The full redirect list is `lib/redirects.mjs`. Also open two or three pages in a browser and check that screenshots load and that the sidebar version menu switches between App 10 and App 8.x.
 
 ## 6. Rollback
 

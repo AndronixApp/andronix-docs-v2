@@ -40,7 +40,6 @@ const V8_CANONICAL: Record<string, string> = {
 };
 
 export const isV8 = (page: Page) => page.slugs[0] === 'v8';
-export const isBlogPost = (page: Page) => page.slugs[0] === 'blog' && page.slugs.length > 1;
 
 /** The URL search engines should index for this page (a path, resolved against metadataBase). */
 export function canonicalPath(page: Page): string {
@@ -51,16 +50,9 @@ export function canonicalPath(page: Page): string {
 export const absoluteUrl = (p: string) => (p === '/' ? `${SITE_URL}/` : `${SITE_URL}${p}`);
 
 /** Extra frontmatter kept by the loose schema in source.config.ts. */
-export function frontmatter(page: Page): { date?: Date; metaTitle?: string } {
+export function frontmatter(page: Page): { metaTitle?: string } {
   const data = page.data as Record<string, unknown>;
-  const raw = data.date;
-  // YAML turns 2026-10-01 into a Date (UTC midnight); read text dates like "July 14, 2021" as UTC too.
-  const parsed = typeof raw === 'string' ? new Date(raw) : undefined;
-  const date = raw instanceof Date ? raw : parsed && new Date(Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()));
-  return {
-    date: date && !Number.isNaN(date.getTime()) ? date : undefined,
-    metaTitle: typeof data.metaTitle === 'string' ? data.metaTitle : undefined,
-  };
+  return { metaTitle: typeof data.metaTitle === 'string' ? data.metaTitle : undefined };
 }
 
 const lastModCache = new Map<string, Date | undefined>();

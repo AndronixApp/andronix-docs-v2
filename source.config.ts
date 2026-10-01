@@ -12,7 +12,7 @@ export default defineConfig({
 
 export const docs = defineDocs({
   dir: 'content/docs',
-  // loose() keeps the extra frontmatter keys lib/seo.ts reads: `date` (blog posts) and
-  // `metaTitle` (a search-result title that differs from the page heading).
+  // loose() keeps the extra frontmatter key lib/seo.ts reads: `metaTitle` (a search-result
+  // title that differs from the page heading).
   docs: { schema: pageSchema.loose() },
 });
