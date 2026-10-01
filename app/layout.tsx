@@ -2,6 +2,8 @@ import "./global.css";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { Analytics } from "@/components/analytics";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import type { Metadata } from "next";
+import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -15,14 +17,17 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-export const metadata = {
+const DESCRIPTION =
+  "Guides for Andronix 2.0: install Debian, Ubuntu, Kali, Fedora, Arch and more on Android without root, open a full desktop with Termux:X11, and fix common errors.";
+
+export const metadata: Metadata = {
   title: {
     template: "%s - Andronix Docs",
-    default: "Andronix Documentation",
+    default: "Andronix Docs: Linux on Android without root",
   },
-  description:
-    "Andronix lets you install Linux distributions like Ubuntu, Debian, and Manjaro on non-rooted Android devices. Read our documentation for step-by-step instructions.",
-  metadataBase: new URL("https://docs.andronix.app"),
+  description: DESCRIPTION,
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "48x48" },
@@ -31,20 +36,22 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
+  alternates: {
+    types: { "application/rss+xml": [{ url: "/blog/rss.xml", title: "Andronix blog" }] },
+  },
   openGraph: {
-    title: "Andronix Documentation",
-    description:
-      "Andronix lets you install Ubuntu, Debian, and Manjaro on non-rooted Android devices. Our documentation provides step-by-step instructions and troubleshooting tips to help you set up your Linux environment quickly and easily. Experience the power of Linux on your mobile device with Andronix.",
-    url: "https://docs.andronix.app/",
-    images: [{ url: "/og-image-1200x630.png", width: 1200, height: 630, alt: "Andronix 2.0: Linux on Android" }],
+    title: "Andronix Docs: Linux on Android without root",
+    description: DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    images: [OG_IMAGE],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Andronix Documentation",
-    description:
-      "Andronix lets you install Ubuntu, Debian, and Manjaro on non-rooted Android devices. Our documentation provides step-by-step instructions and troubleshooting tips to help you set up your Linux environment quickly and easily. Experience the power of Linux on your mobile device with Andronix.",
-    images: [{ url: "/og-image-1200x630.png", width: 1200, height: 630, alt: "Andronix 2.0: Linux on Android" }],
+    title: "Andronix Docs: Linux on Android without root",
+    description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
 };
 
