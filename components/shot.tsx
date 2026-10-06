@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 // Sizes are the files' pixel sizes, so the layout doesn't jump while they load.
 const SIZES: Record<string, [number, number]> = {
   "standalone/black-gpu-off": [1400, 646],
+  "standalone/gpu-off-banner-beta8": [1400, 646],
   "standalone/black-safe-mode": [1400, 646],
   "standalone/black-vnc": [1400, 646],
   "standalone/desktop-size": [1600, 1000],
