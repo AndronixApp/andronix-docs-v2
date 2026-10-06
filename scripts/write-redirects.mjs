@@ -11,7 +11,7 @@ import { externalRedirects, legacyRedirects, v8Redirects } from '../lib/redirect
 const internal = [...v8Redirects, ...legacyRedirects];
 const sources = new Set([...internal, ...externalRedirects].map(([from]) => from));
 const slash = (rules, status) => rules
-  .filter(([from]) => !from.includes('*') && !sources.has(from + '/'))
+  .filter(([from]) => !from.includes('*') && !from.endsWith('/') && !sources.has(from + '/'))
   .map(([from, to]) => `${from}/ ${to} ${status}`);
 
 const root = 'content/docs';
