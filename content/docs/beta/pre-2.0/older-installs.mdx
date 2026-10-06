@@ -3,6 +3,8 @@ title: Installs from Before Andronix 2.0
 description: What happens to distros installed before Andronix 2.0, how to find and remove them, and how to move to the Andronix 2.0 versions.
 ---
 
+<Callout type="info">**Upgrading from an older Modded OS?** If you installed a Modded OS with the old Andronix app (8.x or earlier), see [Upgrading from an older Modded OS](/beta/modded-os/upgrade): back up your files, uninstall the old version, then install the new one.</Callout>
+
 Andronix 2.0 brings a new installer for the free distros. If you installed a distro before Andronix 2.0, this page explains what happens to that install and how to move to the new one.
 
 <Callout type="info">**Nothing changes for your existing install.** Andronix 2.0 never modifies or deletes a distro installed by the old one, unless you ask it to.</Callout>
@@ -66,6 +68,14 @@ andronix remove debian --legacy
 Replace `debian` with the name of your distro. `--legacy` removes the old install's folder, its start script and its `~/<distro>-binds` folder. If the same distro is also installed with Andronix 2.0, that's removed too, so only use this when you want both gone.
 
 You can also keep using the app's **Uninstall** button, as before. See [Uninstalling a Distro](/beta/install/uninstall).
+
+**The old uninstall scripts still work**, if you'd rather use them. Each removes one old free distro's folders from Termux's home. For example, for Ubuntu:
+
+```bash copy
+cd ~ && curl -fsSL https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/master/Uninstall/Ubuntu/UNI-ubuntu.sh -o UNI-ubuntu.sh && bash UNI-ubuntu.sh
+```
+
+The others are in the same place, one folder per distro: `Alpine/UNI-alpine.sh`, `Arch/UNI-arch.sh`, `Debian/UNI-debian.sh`, `Fedora/UNI-fedora.sh`, `Kali/UNI-kali.sh`, `Manjaro/UNI-manjaro.sh`, `Parrot/UNI-parrot.sh`, `Ubuntu19/UNI-ubuntu19.sh`, `Ubuntu20/UNI-ubuntu20.sh`, `Ubuntu22/UNI-ubuntu22.sh` and `Void/UNI-void.sh`. Run them in Termux's home folder (`cd ~` first). They leave Andronix 2.0's distros in `~/.andronix` alone, but they also delete the start script (for example `start-debian.sh`), which Andronix 2.0 uses too: if you have the same distro from 2.0, run `andronix install debian` afterwards to write it again. For an old **Modded OS**, see [Upgrading from an older Modded OS](/beta/modded-os/upgrade#3-uninstall-the-old-version).
 
 ## Older guides
 

@@ -1,0 +1,73 @@
+---
+title: Install in Termux, without the App
+description: Install any free Andronix distro straight from Termux with one command, without the Andronix app.
+---
+
+import NextStep from "@/components/next-step";
+
+<Callout type="info">This is the **Termux** way. To run Linux in the app instead, without Termux, see [Install in the app](/beta/install/in-the-app).</Callout>
+
+You don't need the Andronix app to install a free distro. One line in Termux sets up the `andronix` command and runs the install.
+
+<Callout type="info">You need a current Termux first. See [Install Termux](/beta/start-here/install-termux).</Callout>
+
+## Install
+
+Paste this into Termux, replacing `debian` and `xfce` with the distro and desktop you want:
+
+```bash copy
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+It downloads `andronix` (retrying if the connection drops, and trying again over IPv4 if IPv6 is broken on your network), checks it against its published checksum, installs it in Termux, and starts the install. It downloads the script first and then runs it, so the installer can still ask you questions.
+
+If Termux doesn't have `proot` yet, the installer installs it first.
+
+<Callout type="info">
+If `curl` itself fails to start (common on an old Termux that was only half updated), repair Termux with the same commands the app's install command uses, then run the command above again:
+
+```bash copy
+DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold full-upgrade && DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold install curl
+```
+
+Use `apt-get`, not `pkg`: `pkg` runs `curl` itself, so it fails on a broken `curl` too. The options keep the upgrade from stopping to ask about config files; files you changed are kept.
+</Callout>
+
+- **Distros:** `debian`, `ubuntu` (26.04 LTS), `ubuntu24` (24.04 LTS), `kali`, `fedora`, `arch`, `manjaro`, `alpine`, `void`. See [Supported distros](/beta/reference/distros).
+- **Desktops:** `xfce`, `lxqt`, `mate`, `kde` (Debian, Ubuntu 26.04 and Kali only), or `none` for the command line only. Not sure? See [Choose a distro and desktop](/beta/install/choose).
+
+## What you'll see
+
+<TerminalDemo name="install" command="andronix install debian --de xfce" />
+
+The installer lists its steps and ticks each one off as it finishes:
+
+```text
+✓ Checking your phone
+✓ Finding the best download
+✓ Downloading Debian 13
+✓ Unpacking files
+✓ Setting up Debian 13
+✓ Refreshing package lists
+✓ Updating Debian 13
+✓ Installing XFCE desktop · 250 packages
+✓ Installing Firefox
+✓ Setting up the desktop
+✓ Writing start-debian.sh
+```
+
+Then it asks you to create your user (a username, a password, and a desktop password), and takes you into the distro. From then on, start it with `./start-debian.sh` (or the start script for your distro).
+
+<Callout type="info">If the install stops for any reason, run the same command again. It continues where it stopped. See [The install fails or stops](/beta/troubleshooting/install).</Callout>
+
+## Install more distros
+
+Once `andronix` is installed, you don't need the long command anymore:
+
+```bash copy
+andronix install kali --de lxqt
+```
+
+See [the andronix command](/beta/reference/andronix-command) for every option.
+
+<NextStep href="/beta/desktop/termux-x11" title="Start the desktop" description="Step 3: open your desktop full screen on the phone with Termux:X11." />
