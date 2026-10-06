@@ -7,14 +7,18 @@ import Imagera from "@/components/imagera";
 
 This page collects the questions we get asked most often about Andronix, along with their fixes. If your problem isn't listed here, see [Still need help?](#still-need-help) at the bottom.
 
-### 1. Process completed (signal 9) - press Enter
+### 1. How do I upgrade or uninstall my old Modded OS?
+
+Installing the new version doesn't remove or update a Modded OS from the old Andronix app (8.x or earlier). Back up your files, uninstall the old version (for example `andronix remove legacy-ubuntu-kde --legacy`, or by hand), then install the new one from the app. Step by step: [Upgrading from an older Modded OS](/modded-os/upgrade).
+
+### 2. Process completed (signal 9) - press Enter
 
 We're sorry you're running into this. The error is caused by Android's phantom process killer. Read
 [this page of the documentation](/troubleshooting/signal-9) to fix it. You can also follow the video guide (https://youtu.be/mjXSh3yq-I0) to fix it on your device.
 
 ___
 
-### 2. Getting this error whenever I try to install any OS
+### 3. Getting this error whenever I try to install any OS
 
 <Imagera src="/images/distro_error.jpg" alt="Termux pkg update failing with 403 Forbidden errors from the old Bintray package servers"/>
 
@@ -22,19 +26,19 @@ ___
 
 ___
 
-### 3. Kali Linux errors out during installation
+### 4. Kali Linux errors out during installation
 
 **Ans.** Andronix 2.0 installs Kali Linux rolling again. Install it from the app as usual. If it still fails, see [The install fails or stops](/troubleshooting/install).
 
 ___
 
-### 4. Modded Manjaro gives repository errors whenever I try to install or update any package
+### 5. Modded Manjaro gives repository errors whenever I try to install or update any package
 
 **Ans.** Follow [this guide](https://youtu.be/SAGt39yYV0Y), and you'll be good to go.
 
 ___
 
-### 5. AltGr not working on VNC
+### 6. AltGr not working on VNC
 
 <Imagera src="/images/faq/altgr.png" alt="bVNC menu option that fixes the AltGr key"/>
 
@@ -42,7 +46,7 @@ ___
 
 ___
 
-### 6. VNC can't open – usage: vncserver -display- error
+### 7. VNC can't open – usage: vncserver -display- error
 
 <Imagera src="/images/faq/vncError.png" alt="vncserver usage error shown in the Manjaro shell" width="400"/>
 
@@ -54,7 +58,7 @@ sudo pacman -S wget tar sed --noconfirm && wget https://raw.githubusercontent.co
 
 ___
 
-### 7. Ubuntu 20.04: Firefox shows "Gah. Your tab just crashed"
+### 8. Ubuntu 20.04: Firefox shows "Gah. Your tab just crashed"
 
 This applies to Ubuntu 20.04 from the pre-2.0 installer. Here's an easy fix for this error:
 
@@ -68,23 +72,23 @@ This applies to Ubuntu 20.04 from the pre-2.0 installer. Here's an easy fix for 
 
 ___
 
-### 8. Why does my new distro ask for a username instead of logging in as root?
+### 9. Why does my new distro ask for a username instead of logging in as root?
 
 **Ans.** Distros from Andronix 2.0 create a normal user for you, like a regular Linux PC. Use `sudo` for commands that need root (on Manjaro, where `sudo` doesn't work yet, use a root shell instead). If you really need a root shell, run `andronix start <distro> --root` in Termux. See [First login](/reference/andronix-command#first-login).
 
 ___
 
-### 9. Where did the window managers go?
+### 10. Where did the window managers go?
 
 **Ans.** Window managers (Awesome, i3 and Openbox) have been retired from the free installer. Pick a desktop environment instead: XFCE, LXQt, MATE or KDE Plasma. Existing installs keep working. See [Window Managers](/pre-2.0/window-managers).
 
 ___
 
-### 10. Can I still use my old distro?
+### 11. Can I still use my old distro?
 
 **Ans.** Yes. Distros installed with the pre-2.0 installer are left untouched and start with the same command as before. See [Installs from before Andronix 2.0](/pre-2.0/older-installs).
 
-### 11. How much does Modded OS cost, and do I pay again for my old Modded OS?
+### 12. How much does Modded OS cost, and do I pay again for my old Modded OS?
 
 The Modded Pass is $6.99, or $4.49 during the launch early bird (until October 8, 2026, 23:59 UTC). Premium owners get 30% off the Modded Pass, and owners of a Modded 2.0 edition 40% off. Prices vary by region, and discounts are applied to your local price; Google Play shows your final price before you buy. See [Prices](/modded-os/modded-os#prices). If you bought a Modded OS before Andronix 2.0, those Classic editions stay yours for free under **Archived — yours to keep** in the app. They don't lower the price of Modded 2.0.
 

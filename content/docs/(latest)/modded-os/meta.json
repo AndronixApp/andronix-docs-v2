@@ -3,6 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "modded-os",
+    "upgrade",
     "modded-os-installation"
   ]
 }

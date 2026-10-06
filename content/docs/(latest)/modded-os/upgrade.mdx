@@ -1,0 +1,107 @@
+---
+title: Upgrading from an Older Modded OS
+metaTitle: "Upgrade or Uninstall an Old Modded OS (Andronix 8.x to 2.0) - Andronix Docs"
+description: "Upgrade an old Modded OS from the Andronix 8.x app to Modded 2.0: check which one you have, back up your files, uninstall the old version, install the new one and bring your files back."
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import NextStep from "@/components/next-step";
+
+You installed a Modded OS with an older Andronix app (8.x or earlier) and want the new version? This page takes you through it in five steps: check what you have, back up your files, uninstall the old version, install the new one, and bring your files back.
+
+<Callout type="info">The old and the new Modded OS live in different folders, so installing the new one doesn't remove or update the old one. Your old one keeps working until you uninstall it.</Callout>
+
+## 1. Check which one you have
+
+Open Termux and run:
+
+```bash copy
+ls ~
+```
+
+| You see | You have |
+|---|---|
+| `andronix-fs` and `start-andronix.sh` | An old **Modded Ubuntu (XFCE)** |
+| `androkde-fs` and `start-androkde.sh` | An old **Modded Ubuntu KDE** |
+| `androdeb-fs` and `start-androdeb.sh` | An old **Modded Debian** |
+| `androjaro-fs` and `start-androjaro.sh` | An old **Modded Manjaro** |
+| `.andronix` (run `ls -a ~`) and a script like `start-ubuntu.sh` | A distro or Modded OS from **Andronix 2.0**. `andronix list` shows which. |
+
+Old Modded OS log you in as `root`; Andronix 2.0 logs you in as your own user. Free distros from the old app (folders like `~/ubuntu-fs`) are covered in [Installs from before Andronix 2.0](/pre-2.0/older-installs).
+
+## 2. Back up your files
+
+Uninstalling deletes everything inside the old Modded OS, so copy your files to your phone's storage first. In Termux:
+
+```bash copy
+termux-setup-storage
+```
+
+Allow the storage permission when Android asks. Then set `OLD` to the folder name from step 1 (`andronix`, `androkde`, `androdeb` or `androjaro`) and pack the home folders into one file in your phone's **Download** folder:
+
+```bash copy
+OLD=androkde
+cd ~/$OLD-fs && tar -czf /sdcard/Download/$OLD-home.tar.gz root $(ls -d home 2>/dev/null)
+```
+
+This saves `/root` (where the old Modded OS kept your files) and `/home`, if there is one. Check the file is there: `ls -lh /sdcard/Download/$OLD-home.tar.gz`. Programs you installed aren't saved; you install them again in the new version.
+
+## 3. Uninstall the old version
+
+Pick one way:
+
+**With the andronix command** (installer 2.0.1 or newer). It deletes the old folder, its `-binds` folder and its start script, and nothing else:
+
+| Old Modded OS | Command |
+|---|---|
+| Modded Ubuntu (XFCE) | `andronix remove legacy-ubuntu-xfce --legacy` |
+| Modded Ubuntu KDE | `andronix remove legacy-ubuntu-kde --legacy` |
+| Modded Debian | `andronix remove legacy-debian --legacy` |
+| Modded Manjaro | `andronix remove legacy-manjaro --legacy` |
+
+It shows what it will delete, with the sizes, and asks first.
+
+If Termux says `andronix: command not found`, get the command first (this installs only `andronix`, no distro), then run the line from the table:
+
+```bash copy
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh
+```
+
+<Callout type="warning">Already installed the **same** Classic edition with Andronix 2.0? Then `andronix remove legacy-… --legacy` removes that new copy too. Use the manual way below instead, which only touches the old folders.</Callout>
+
+**In the app (10.0 or newer):** on the **Modded OS** tab, touch and hold your edition under **Archived — yours to keep**. The app copies the same command; paste it into Termux.
+
+**By hand**, with the folder name from step 1 (`OLD=androkde` as above):
+
+```bash copy
+chmod -R u+w ~/$OLD-fs; rm -rf ~/$OLD-fs ~/$OLD-binds ~/start-$OLD.sh
+```
+
+<Callout type="warning">There was never a separate uninstall script for Modded OS; the old app copied a command like these. The uninstall scripts for old **free** distros (`UNI-ubuntu.sh` and others) are still online: see [Installs from before Andronix 2.0](/pre-2.0/older-installs#removing-an-old-install).</Callout>
+
+### Removing a Modded OS from Andronix 2.0
+
+For a Modded OS you installed with Andronix 2.0, use its edition id, for example `andronix remove ubuntu-kde`. See [Remove a Modded OS](/modded-os/modded-os-installation#remove-a-modded-os). To keep its files, back it up first with `andronix backup ubuntu-kde --to storage` ([Back up and restore](/use/backups)).
+
+## 4. Install the new version
+
+In the Andronix app, open the **Modded OS** tab and pick:
+
+- **Your old edition, rebuilt:** if you bought a Modded OS before, it's under **Archived — yours to keep**, free. These Classic editions keep their original look, on current systems.
+- **Or a Modded 2.0 edition:** the new lineup. See [Prices](/modded-os/modded-os#prices).
+
+Then follow [Installing Modded OS](/modded-os/modded-os-installation). It takes a few taps in the app and one command in Termux, and you create your own user at the end.
+
+## 5. Bring your files back
+
+Start the new Modded OS (for example `./start-ubuntu.sh`, or open its desktop), then unpack the backup into a folder in your home:
+
+```bash copy
+mkdir -p ~/old-modded && tar -xzf /sdcard/Download/androkde-home.tar.gz -C ~/old-modded
+```
+
+Use your backup's file name. Your old files are now in `~/old-modded/root` (and `~/old-modded/home`). Move what you want to keep, for example `mv ~/old-modded/root/Projects ~/`. When you're done, delete `~/old-modded` and the backup file.
+
+<Callout type="info">The new version shares your phone's storage at `/sdcard` once Termux has the storage permission (step 2). See [Phone storage](/use/storage).</Callout>
+
+<NextStep href="/modded-os/modded-os-installation" title="Installing Modded OS" description="Install the new version from the app." />
