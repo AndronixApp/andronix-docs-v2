@@ -21,7 +21,7 @@ pnpm exec wrangler whoami                # logged in to the Andronix Cloudflare 
 - **Early bird end date.** Set `EARLY_BIRD_END` in `lib/release.mjs` too (when the Modded Pass early-bird price ends, 4 days after launch). It fills in the Modded OS Prices table, the blog post and the changelog. `pnpm run deploy` refuses to run while it's still `{EARLY_BIRD_END}`.
 - **Analytics client ID (build time).** The pages are built ahead of time, so the ID must be in the environment when you build. Without it the site has no analytics, which is safe but probably not what you want.
   ```sh
-  export OPENPANEL_WEB_CLIENT_ID=<the "web" client id from events.andronix.app>
+  export OPENPANEL_WEB_CLIENT_ID=b798ebe6-278f-4cd0-beb3-8759abd175f1  # the public "web" client on events.andronix.app, shared with andronix.app
   ```
   If the Worker is built by Cloudflare Workers Builds (git integration) instead of locally, set the same variable under Worker › Settings › Build › Variables.
 

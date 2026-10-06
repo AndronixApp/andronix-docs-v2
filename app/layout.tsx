@@ -1,6 +1,7 @@
 import "./global.css";
 import { RootProvider } from "fumadocs-ui/provider/next";
-import { Analytics } from "@/components/analytics";
+import { OpenPanelComponent } from "@openpanel/nextjs";
+import { DocsEvents } from "@/components/analytics";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
@@ -52,6 +53,14 @@ export const metadata: Metadata = {
   },
 };
 
+// Analytics: our self-hosted OpenPanel (events.andronix.app), the same 'web' client as
+// andronix.app, through OpenPanel's official Next.js component. Cookie-less (the SDK sets no
+// cookies). Left out when the build has no client id. With Do Not Track or Global Privacy
+// Control on, the filter drops every event, so nothing is sent.
+const OPENPANEL_CLIENT_ID = process.env.OPENPANEL_WEB_CLIENT_ID;
+const RESPECT_OPT_OUT =
+  "function(){var n=navigator;return !(n.doNotTrack==='1'||window.doNotTrack==='1'||n.globalPrivacyControl===true)}";
+
 export const viewport = {
   themeColor: "#19120E",
 };
@@ -61,7 +70,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en" className={`dark ${jakarta.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body>
         <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark", enableSystem: false }} search={{ options: { type: "static" } }}>{children}</RootProvider>
-        <Analytics clientId={process.env.OPENPANEL_WEB_CLIENT_ID} />
+        {OPENPANEL_CLIENT_ID && (
+          <>
+            <OpenPanelComponent
+              apiUrl="https://events.andronix.app/api"
+              scriptUrl="https://events.andronix.app/op1.js"
+              clientId={OPENPANEL_CLIENT_ID}
+              trackScreenViews
+              trackOutgoingLinks
+              filter={RESPECT_OPT_OUT}
+            />
+            <DocsEvents />
+          </>
+        )}
       </body>
     </html>
   );

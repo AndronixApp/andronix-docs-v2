@@ -1,41 +1,14 @@
 "use client";
 
-import { OpenPanelComponent, useOpenPanel } from "@openpanel/nextjs";
+import { useOpenPanel } from "@openpanel/nextjs";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-// Docs analytics: our self-hosted OpenPanel (events.andronix.app), the same
-// 'web' client as andronix.app. Cookie-less (the SDK sets no cookies), and
-// skipped entirely when the build has no client id or the browser sends
-// Do Not Track / Global Privacy Control. Custom events: docs_search,
-// copy_code and play_store_click. Nothing typed into pages is sent except search queries.
+// The docs' own events, sent through the OpenPanel component in app/layout.tsx: docs_search,
+// copy_code and play_store_click (page views and link_out come from the component itself).
+// Nothing typed into pages is sent except search queries.
 
-type Nav = Navigator & { globalPrivacyControl?: boolean };
-
-function optedOut() {
-  const nav = navigator as Nav;
-  return nav.doNotTrack === "1" || (window as Window & { doNotTrack?: string }).doNotTrack === "1" || nav.globalPrivacyControl === true;
-}
-
-export function Analytics({ clientId }: { clientId?: string }) {
-  const [enabled, setEnabled] = useState(false);
-  useEffect(() => setEnabled(Boolean(clientId) && !optedOut()), [clientId]);
-  if (!enabled || !clientId) return null;
-  return (
-    <>
-      <OpenPanelComponent
-        apiUrl="https://events.andronix.app/api"
-        scriptUrl="https://events.andronix.app/op1.js"
-        clientId={clientId}
-        trackScreenViews
-        trackOutgoingLinks
-      />
-      <DocsEvents />
-    </>
-  );
-}
-
-function DocsEvents() {
+export function DocsEvents() {
   const op = useOpenPanel();
   const path = usePathname();
 
