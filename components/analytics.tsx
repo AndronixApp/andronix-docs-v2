@@ -27,12 +27,16 @@ export function DocsEvents() {
       });
     };
 
-    // play_store_click: a link to the Andronix app on Google Play (the store page or the
-    // beta opt-in), with the page and the link text, like the website's event
+    // play_store_click: a link to the Andronix app on Google Play (play.andronix.app, the store
+    // page or the beta opt-in), with the page and the link text, like the website's event
     const onPlayClick = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest?.("a");
       const href = a?.getAttribute("href") || "";
-      if (!href.includes("play.google.com/store/apps/details?id=studio.com.techriz.andronix") && !href.startsWith("https://play.google.com/apps/testing/studio.com.techriz.andronix")) return;
+      const play =
+        href.startsWith("https://play.andronix.app") ||
+        href.includes("play.google.com/store/apps/details?id=studio.com.techriz.andronix") ||
+        href.startsWith("https://play.google.com/apps/testing/studio.com.techriz.andronix");
+      if (!play) return;
       op.track("play_store_click", { path: location.pathname, label: (a?.textContent || "").trim().slice(0, 60) });
     };
 

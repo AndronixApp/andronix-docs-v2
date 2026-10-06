@@ -5,6 +5,7 @@ import Imagera from '@/components/imagera';
 import { Callout } from '@/components/callout';
 import AppShot from '@/components/app-shot';
 import TerminalDemo from '@/components/terminal-demo';
+import PlayLink from '@/components/play-link';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -14,6 +15,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Callout,
     AppShot,
     TerminalDemo,
+    PlayLink,
     ...components,
   };
 }
