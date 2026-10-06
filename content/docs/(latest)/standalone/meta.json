@@ -1,0 +1,17 @@
+{
+  "title": "Standalone (beta)",
+  "description": "Linux in the app, without Termux",
+  "pages": [
+    "index",
+    "requirements",
+    "first-start",
+    "desktop",
+    "files",
+    "shortcuts",
+    "gpu",
+    "black-screen",
+    "tablets",
+    "termux",
+    "troubleshooting"
+  ]
+}

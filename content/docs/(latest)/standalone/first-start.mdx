@@ -1,0 +1,76 @@
+---
+title: Install and First Start
+description: Install a distro in the Andronix app, set up your user, and open the desktop for the first time. Standalone mode, beta.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import NextStep from "@/components/next-step";
+import { Shot, Shots } from "@/components/shot";
+
+<Steps>
+<Step>
+
+### Choose "In the app"
+
+On Home, tap **Install Linux**. The first time, the app asks **How should Linux run?**
+
+- **In the app** (Recommended): Andronix runs Linux and its desktop itself. The desktop opens right here, with sound, and there's nothing else to install.
+- **In Termux**: the classic way. You install Termux and paste one command, and the desktop opens in the Termux:X11 app.
+
+**In the app** is already selected if you're new to Andronix and your device can run it. If you already use Termux, the app keeps Termux selected. Tap **Continue**. You can change this later in [Settings](/standalone/termux#switch-between-them).
+
+</Step>
+
+<Step>
+
+### Pick a distro and a desktop
+
+Choose the distro and the desktop, as you would for Termux. Not sure which? See [Choose a distro and desktop](/install/choose).
+
+</Step>
+
+<Step>
+
+### Set up your user
+
+Enter a **User name** (lower-case letters and numbers) and a **Password** (at least 4 characters), then tap **Continue**. The root account stays locked; use `sudo` with this password for admin work. (On Void, `sudo` doesn't ask for a password; on Manjaro, use the root terminal for admin work.)
+
+</Step>
+
+<Step>
+
+### Wait for the install
+
+The app shows each step as it goes: checking your device, downloading and unpacking the distro, installing the desktop and a web browser, and setting up your user. It usually takes **5 to 30 minutes**, depending on your phone and your connection.
+
+The install keeps going if you leave the app. While Linux is working, Android shows a **Linux is running** notification with a **Stop** button.
+
+</Step>
+
+<Step>
+
+### Open the desktop
+
+When the install is done, tap **Open the desktop**. A loading screen shows the steps (**Starting Linux**, **Starting the desktop**, **Almost ready**) and stays up until the desktop has really drawn. The first start can take a minute; later starts take a few seconds.
+
+<Shots>
+<Shot name="standalone/loading-1" alt="Loading screen: Starting Linux" />
+<Shot name="standalone/loading-2" alt="Loading screen: Starting the desktop" />
+<Shot name="standalone/loading-3" alt="Loading screen: Almost ready" />
+</Shots>
+
+</Step>
+</Steps>
+
+## Later starts
+
+Your distro is listed on Home under **Your Linux**. Tap its row to open the desktop. While it runs, the row shows **Running** and an **Open** pill, with **Stop** and a **⋮** menu at the end.
+
+<Shot name="standalone/your-linux" alt="Home, Your Linux: Debian running with an Open pill, Kali Modded and Void below" />
+
+- **Leave the desktop:** press Back. Linux keeps running in the background with the notification; open it again from Home or the notification.
+- **Stop it:** tap **Stop** (on the toolbar, on Home or in the notification). Apps on the desktop close and anything unsaved is lost.
+- **One at a time:** one distro runs at a time. Opening another one asks you to stop the running one first.
+- **Terminal:** the terminal button opens Andronix's own terminal for that distro. Command-line installs (without a desktop) open there.
+
+<NextStep href="/standalone/desktop" title="The desktop" description="Toolbar, keyboard, mouse modes and hardware keyboards." />

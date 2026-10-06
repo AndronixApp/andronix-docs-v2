@@ -1,0 +1,35 @@
+---
+title: Requirements
+description: Standalone mode needs a phone with a 64-bit ARM processor and Android 8 or newer, and enough free space for the distro.
+---
+
+import NextStep from "@/components/next-step";
+
+## What your device needs
+
+- **A 64-bit ARM processor (arm64).** Almost every phone from the last few years has one. The app checks your device's main processor type, so x86 phones and x86 Chromebooks use Termux, even if they can run ARM apps.
+- **Android 8.0 or newer.** The app installs from Android 7, but on Android 7 Linux runs in Termux only.
+- **Free space for the distro.** The installer works out how much the distro and its desktop need and tells you before it starts. As a guide: about 1.3 GB for Alpine, 1.6 GB for Debian with XFCE, 1.8 GB for Ubuntu, and 3 GB for Arch or Manjaro.
+- **Memory:** there's no minimum, but KDE Plasma needs about 4 GB of RAM. On a device with less, the app warns you and suggests XFCE, which is lighter.
+
+The phone doesn't need to be rooted, and you don't need Termux.
+
+## How the app checks
+
+The first time, the app runs a short self-check (about a tenth of a second) to make sure Linux can run inside it on your device. It runs again after each app update.
+
+If your device can't run Linux in the app, **In the app** is dimmed on the install-mode screen with the reason:
+
+| The app says | What it means |
+|---|---|
+| Needs a device with a 64-bit ARM processor. | Your device's main processor isn't arm64. Use Termux. |
+| Needs Android 8 or newer. | Your device runs Android 7. Use Termux. |
+| Linux can't run in the app on this device. | The self-check failed. Use Termux, and please [report it](/standalone/troubleshooting#report-a-problem). |
+| Not available right now; new installs use Termux. | We've switched standalone mode off for new installs while we fix a problem. Distros you already installed in the app still open. |
+| Paused while we fix a problem. | We've paused standalone mode. Your distros and files stay on your device, and Termux still works. |
+
+## Older Linux kernels
+
+On devices with a Linux kernel older than 4.8 (some Android 8 and 9 phones), desktops install but may stay black. The terminal always works. See [The installer warns about an old kernel](/troubleshooting/install#the-installer-warns-about-an-old-kernel). Modded OS needs kernel 4.8 or newer.
+
+<NextStep href="/standalone/first-start" title="Install and first start" description="Install a distro in the app and open its desktop." />

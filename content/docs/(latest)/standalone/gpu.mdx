@@ -1,0 +1,31 @@
+---
+title: GPU Acceleration
+description: The experimental GPU acceleration setting for Linux in the Andronix app - what it does, when it's faster and when it's slower, and how it turns itself off. Standalone mode, beta.
+---
+
+import NextStep from "@/components/next-step";
+import { Shot } from "@/components/shot";
+
+**GPU acceleration** lets Linux apps draw with your device's graphics chip instead of the processor. It's **experimental** and **off by default**.
+
+## Turn it on
+
+Open **Settings › Linux** and switch on **GPU acceleration**. The row shows your device's graphics chip, for example "This device: Adreno 740". It applies to every distro in the app, from the next time a desktop starts.
+
+<Shot name="standalone/settings-linux" alt="Settings, Linux: Run Linux, Android files in Linux, and GPU acceleration marked Experimental" />
+
+## When it helps, and when it doesn't
+
+- **It can make 3D faster on devices with a slower processor**: 3D apps, games and anything that uses OpenGL.
+- **On fast devices, software drawing can be quicker.** Try both and keep what feels better.
+- **Some apps may glitch, or the desktop may not start.** That's why it's experimental.
+
+Linux draws through VirGL, which passes OpenGL calls to the phone's graphics driver.
+
+## If the desktop stays black
+
+If the desktop is black with GPU acceleration on, Andronix turns it off by itself, restarts the desktop with software drawing, and tells you. The setting then reads "Turned off after a black screen. Turn it on to try again." See [Black screen and safe mode](/standalone/black-screen).
+
+GPU acceleration is never used in safe mode or in the VNC fallback.
+
+<NextStep href="/standalone/black-screen" title="Black screen and safe mode" description="How Andronix fixes a desktop that stays black." />

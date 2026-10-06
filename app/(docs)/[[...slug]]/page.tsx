@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
 import { getMDXComponents } from '@/mdx-components';
-import { OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, canonicalPath, frontmatter } from '@/lib/seo';
+import { OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, canonicalPath, frontmatter, isUnlisted } from '@/lib/seo';
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -92,6 +92,8 @@ export async function generateMetadata(props: {
     title: metaTitle ? { absolute: metaTitle } : page.data.title,
     description,
     alternates: { canonical },
+    // Not launched yet (lib/seo.ts): keep it out of search engines.
+    ...(isUnlisted(page) && { robots: { index: false, follow: false } }),
     openGraph: {
       title,
       description,
