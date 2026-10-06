@@ -21,7 +21,7 @@ const SIZES: Record<string, [number, number]> = {
   "standalone/pin-dialog": [720, 1560],
   "standalone/pin-launched": [720, 1560],
   "standalone/safe-mode-sheet": [720, 1560],
-  "standalone/settings-linux": [654, 640],
+  "standalone/settings-linux": [1080, 1270],
   "standalone/tablet-home": [1600, 1000],
   "standalone/toolbar-hardware-keyboard": [1400, 646],
   "standalone/your-linux": [720, 1560],
