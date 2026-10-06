@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 // Docs analytics: our self-hosted OpenPanel (events.andronix.app), the same
 // 'web' client as andronix.app. Cookie-less (the SDK sets no cookies), and
 // skipped entirely when the build has no client id or the browser sends
-// Do Not Track / Global Privacy Control. Custom events: docs_search and
-// copy_code. Nothing typed into pages is sent except search queries.
+// Do Not Track / Global Privacy Control. Custom events: docs_search,
+// copy_code and play_store_click. Nothing typed into pages is sent except search queries.
 
 type Nav = Navigator & { globalPrivacyControl?: boolean };
 
@@ -54,6 +54,15 @@ function DocsEvents() {
       });
     };
 
+    // play_store_click: a link to the Andronix app on Google Play (the store page or the
+    // beta opt-in), with the page and the link text, like the website's event
+    const onPlayClick = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.("a");
+      const href = a?.getAttribute("href") || "";
+      if (!href.includes("play.google.com/store/apps/details?id=studio.com.techriz.andronix") && !href.startsWith("https://play.google.com/apps/testing/studio.com.techriz.andronix")) return;
+      op.track("play_store_click", { path: location.pathname, label: (a?.textContent || "").trim().slice(0, 60) });
+    };
+
     // docs_search: the query once typing pauses, with how many results showed
     let timer: ReturnType<typeof setTimeout> | undefined;
     let last = "";
@@ -71,9 +80,11 @@ function DocsEvents() {
     };
 
     document.addEventListener("click", onClick, true);
+    document.addEventListener("click", onPlayClick, true);
     document.addEventListener("input", onInput, true);
     return () => {
       document.removeEventListener("click", onClick, true);
+      document.removeEventListener("click", onPlayClick, true);
       document.removeEventListener("input", onInput, true);
       clearTimeout(timer);
     };
