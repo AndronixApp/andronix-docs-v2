@@ -1,0 +1,14 @@
+{
+  "title": "Troubleshooting",
+  "defaultOpen": true,
+  "pages": [
+    "in-the-app",
+    "black-screen",
+    "install",
+    "signal-9",
+    "desktop",
+    "termux",
+    "faq",
+    "report-a-problem"
+  ]
+}

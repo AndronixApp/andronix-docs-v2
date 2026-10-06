@@ -1,0 +1,64 @@
+---
+title: Limitations
+metaTitle: Limitations of Linux on Android without Root (proot) - Andronix Docs
+description: What Andronix can't do and why, from gaming and containers to hardware access, networking and hardware acceleration on Android.
+---
+
+Many users are looking for a reliable way to use Linux on their Android devices without rooting their devices.
+Andronix is a viable option for this, but it comes with some limitations. We do our best to provide a complete Linux PC 💻
+experience, but some things are out of our hands due to restrictions imposed by the Android layer, its SELinux 🔐
+policies, and the process we use to run Linux on Android devices.
+
+This page summarizes what Andronix can't do and why, so you know what to expect before you start.
+
+## Gaming
+
+Andronix cannot run **Steam 🎮**, PC games, or emulate other architectures using Wine/PlayOnLinux on any of its Linux
+systems. The main reason is that Steam only supports Intel/AMD-based CPUs and not mobile CPUs, i.e.,
+aarch64, armv8, arm64, arm, armv7, arm32, etc.
+
+## Architectural Limitations
+
+* If you are using an **Android device** running **Android 7** or above with an **arm64/armv8/aarch64** chipset, Andronix can only run software compiled for the **arm64/armv8/aarch64** architecture. Not every distro is available for every architecture; see [Supported Distros](/beta/reference/distros). You can check your device's architecture using [**CPUZ**](https://play.google.com/store/apps/details?id=com.cpuid.cpu_z). If you are using a device with an Android layer, such as a **Chromebook**, Andronix will only run software made for your architecture, which may be **i386/i686/x86 or x86\_64.**
+
+## PRoot Limitations
+
+* Andronix does not claim that it will run all software, even if the software meets all the conditions mentioned above.
+  If the software requires Linux kernel or hardware support that is not present in the ⚠ **PRoot environment**,
+  it might fail to run. Andronix uses the PRoot environment, which has certain unavoidable limitations that can make some software unusable.
+
+## Development Environments
+
+* Andronix does not support compiling large chunks of code 👩‍💻, such as building an Android app, large software projects, or kernels. Compilation sometimes requires specific hardware that is not present in the PRoot environment, which leads to errors. Reports about such errors on any of our support channels won't be addressed.
+
+## Hacking
+
+* You won't be able to use penetration testing tools for **hacking/cracking purposes**, e.g., Wi-Fi hacking or packet capture. These require real hardware support for features like packet capturing, which is not natively available on Android phones.
+
+## Hardware Limitations
+
+* The Linux environment cannot mount or read hardware such as drives or adapters 🖨. This is because FUSE mounts
+  cannot be used under PRoot.
+
+* Linux cannot be installed on external storage, as Android does not permit writing to external storage such as SD cards or USB devices.
+
+## Container Applications
+
+* **SNAP/Docker/Flatpak** packages cannot be installed in any Linux environment. The primary reason is that all three require kernel and bus modules that are unavailable in the PRoot environment. Secondly, they are mainly focused on
+  Intel/AMD-based architectures, not on ARM.
+
+## Networking and Init Systems
+
+* You can't use VPNs or anything else that changes the properties of the network, because the network used inside the Linux container is managed by Android, not by Linux itself. As a result, Linux does not have access to modify any network properties.
+
+## Hardware acceleration
+
+* None of the available distros are **hardware accelerated**, because Termux doesn't support hardware acceleration.
+  The day Termux adds hardware acceleration to their app, we will support it too. For more questions about
+  hardware acceleration, go [here](https://gitter.im/termux/termux).
+
+## Next steps
+
+- Learn [how Andronix works](/beta/start-here/what-is-andronix) under the hood.
+- Ready to go? [Install a distro](/beta/install/with-the-app).
+- Check the [FAQ](/beta/troubleshooting/faq) for common problems and fixes.

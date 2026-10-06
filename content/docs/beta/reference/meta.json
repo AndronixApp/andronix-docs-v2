@@ -1,0 +1,12 @@
+{
+  "title": "Reference",
+  "defaultOpen": true,
+  "pages": [
+    "andronix-command",
+    "distros",
+    "desktops",
+    "vnc",
+    "limitations",
+    "changelog"
+  ]
+}

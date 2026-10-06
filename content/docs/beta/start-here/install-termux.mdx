@@ -1,0 +1,109 @@
+---
+title: Install Termux
+metaTitle: 'Install Termux for Andronix: F-Droid, GitHub or Play Store - Andronix Docs'
+description: Which Termux works with Andronix (F-Droid, GitHub or the new Play Store build), how to check the one you have, and how to replace the old Play Store version.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import Imagera from "@/components/imagera";
+import AndronixButton from "@/components/button";
+import NextStep from "@/components/next-step";
+
+<Callout type="info">You need Termux only to run Linux **in Termux**. To run it in the app, skip this page: see [Install in the app](/beta/install/in-the-app).</Callout>
+
+Termux is the terminal app your distro runs in. Andronix needs a current build of Termux; the very old Play Store version from 2020 doesn't work anymore.
+
+## Which Termux works
+
+| Termux build | Works with Andronix | Notes |
+|---|---|---|
+| **F-Droid** | Yes | Android 7 or newer. |
+| **GitHub** (the Termux project's releases, or our mirror below) | Yes | Android 7 or newer. The same app as F-Droid, but signed differently, so don't mix the two. |
+| **Google Play Store, current build** | Yes | Android 11 or newer. |
+| **Google Play Store, old build (2020, version 0.101)** | No | Its package servers are gone, so installs fail before they start. Replace it (see below). |
+
+{/* TODO(docs): owner decision pending on which build to recommend first (IA proposal, question 1). The table stays neutral until then. */}
+
+Termux plugins that share Termux's data, like Termux:API, must come from the same source as Termux itself, because apps from different sources are signed differently.
+
+**Termux:X11 is different:** it's only published on GitHub, and it works with every current Termux build: F-Droid, GitHub and Play Store. You'll get it in [Step 3](/beta/desktop/termux-x11).
+
+### Check which one you have
+
+Open Termux and run:
+
+```bash copy
+echo $TERMUX_APK_RELEASE
+```
+
+It prints `F_DROID`, `GITHUB` or `GOOGLE_PLAY_STORE`. If it prints nothing, or Termux's **About** screen shows version 0.101, you have the old build: follow the steps below.
+
+## Manual method
+
+Use these steps to install Termux from F-Droid or our mirror, or to replace the old Play Store build.
+
+<Callout type="warning">Uninstalling Termux deletes everything in it, including any distros. If you have a distro you want to keep, [back it up](/beta/use/backups) to your phone's storage first.</Callout>
+
+<Steps>
+<Step>
+
+### Uninstall the old Termux
+
+If you have the old Play Store build, uninstall it first. Apps from different sources can't be installed over each other.
+
+</Step>
+
+<Step>
+
+### Download Termux
+
+Download the latest Termux from F-Droid at https://f-droid.org/en/packages/com.termux/, or from Andronix's [Termux release mirror](https://github.com/AndronixApp/termux-releases):
+
+<AndronixButton link={"https://github.com/AndronixApp/termux-releases/blob/main/Releases/Termux_118/com.termux_118.apk?raw=true"}>
+    Download Termux
+</AndronixButton>
+
+{/* TODO(docs): the mirror button points at Termux 0.118; check it's still the latest release when publishing. */}
+
+The F-Droid client app also keeps Termux updated for you. You can check the APK's hashes on [Termux Security](/beta/security/termux).
+
+<Callout type="info">Android may warn that files like this can harm your device. That generic warning shows for any app installed from outside the Play Store.</Callout>
+
+</Step>
+
+<Step>
+
+### Allow installing from this source
+
+Tap the downloaded file. If you see a popup like this one, tap **Settings** and turn on the toggle:
+
+<Imagera src="/images/unknown_sources.png" alt="Android popup blocking installs from unknown sources, with a Settings button" />
+
+<Imagera src="/images/allow_unknown_sources_radio.png" alt="The Allow from this source toggle in Android settings" />
+
+Then go back until you see the install dialog.
+
+</Step>
+
+<Step>
+
+### Install
+
+Tap **Install**.
+
+<Imagera src="/images/install_termux.png" alt="Android install dialog for the Termux app" />
+
+</Step>
+
+<Step>
+
+### Open Termux once
+
+Open Termux and wait until it shows a prompt (`~ $`). The first start sets up its own files.
+
+</Step>
+</Steps>
+
+<Callout type="warning">In your phone's settings, turn off **battery optimization** for Termux, so Android doesn't stop it while it installs or runs your distro.</Callout>
+
+<NextStep href="/beta/install/choose" title="Choose a distro and desktop" description="Step 2 starts here: what to install if you're not sure." />

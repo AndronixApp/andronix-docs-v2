@@ -1,0 +1,63 @@
+---
+title: Phone Storage
+description: Reach your Android phone's internal storage from inside an Andronix Linux distro at /sdcard, and share other folders with the distro.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+
+import Imagera from "@/components/imagera";
+import NextStep from "@/components/next-step";
+
+This page shows how to reach your phone's internal storage from inside your Linux distro. On distros from Andronix 2.0, it's one command in Termux.
+
+## Storage on a new install
+
+Distros from Andronix 2.0 share your phone's internal storage at `/sdcard` automatically. Termux just needs permission to read it.
+
+<Steps>
+<Step>
+
+### Give Termux storage access
+
+In Termux (not inside the distro), run:
+
+```bash copy
+termux-setup-storage
+```
+
+Termux will now ask for Storage permission. **Allow the Storage permission**.
+
+</Step>
+
+<Step>
+
+### Restart the distro
+
+If the distro is running, `exit` it and start it again, for example with `./start-debian.sh`.
+
+</Step>
+
+<Step>
+
+### Check
+
+Inside the distro, run `ls /sdcard`. You should see your phone's folders, like `Download` and `DCIM`.
+
+</Step>
+</Steps>
+
+### Sharing other folders
+
+To share another Termux folder with the distro, add a line to a file in `~/<distro>-binds/` in Termux, the same way as with the pre-2.0 installer. For example, to make Termux's `~/projects` folder appear at `/projects` in Debian:
+
+```bash copy
+mkdir -p ~/debian-binds
+echo 'command+=" -b /data/data/com.termux/files/home/projects:/projects"' > ~/debian-binds/projects.sh
+```
+
+Restart the distro for the change to take effect.
+
+<Callout type="info">Installed before Andronix 2.0? See [Storage on an old install](/beta/pre-2.0/old-install-guides#storage-on-an-old-install).</Callout>
+
+<NextStep href="/beta/use/backups" title="Back up and restore" description="Save your whole distro to one file, and bring it back." />

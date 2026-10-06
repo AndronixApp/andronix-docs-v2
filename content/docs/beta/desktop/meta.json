@@ -1,0 +1,9 @@
+{
+  "title": "Step 3 · Start the desktop",
+  "defaultOpen": true,
+  "pages": [
+    "in-the-app",
+    "tablets",
+    "termux-x11"
+  ]
+}

@@ -1,10 +1,29 @@
 ---
-title: Standalone and Termux
-description: Use Linux in the app and in Termux side by side, choose where new installs go, and move a distro from Termux into the app. Standalone mode, beta.
+title: Linux in the App and in Termux
+description: Use Linux in the app and in Termux side by side, choose where new installs go, and move a distro from Termux into the app.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 import NextStep from "@/components/next-step";
+
+## How they compare
+
+| | In the app | In Termux |
+|---|---|---|
+| What you install | Only the Andronix app | Andronix, Termux and Termux:X11 |
+| How you install a distro | Tap through the app | Paste one command into Termux |
+| Where the desktop shows | In the Andronix app | In the Termux:X11 app |
+| Sound | Built in | Set up by Andronix in Termux |
+| Installer updates | Come with app updates | `andronix update` |
+| Devices | arm64, Android 8 or newer | Android 7 or newer, more CPU types |
+
+## Join the beta
+
+{/* TODO(docs): the owner decides how the public beta is distributed. Fill in ONE of these, with the final link from the lead:
+  - "Join the beta on Google Play: open <Play testing link> on your phone, tap Become a tester, then update Andronix from Google Play."
+  - "Turn it on in the app: Settings > <setting name>." */}
+
+Joining the beta is not open yet. This section will say how to join.
 
 ## Both work side by side
 
@@ -53,4 +72,4 @@ There's no move the other way: to go back to Termux, install the distro in Termu
 - **Inside a distro, everything is the same:** dev packs (`andronix pack`), `vncserver-start` and `andronix report` work as in Termux.
 - **Where Linux lives:** in the app's private storage. Uninstalling Andronix deletes your distros, so back up first.
 
-<NextStep href="/standalone/troubleshooting" title="Troubleshooting and reporting" description="Known limits in the beta, and how to tell us about a problem." />
+<NextStep href="/beta/troubleshooting/in-the-app" title="Troubleshooting and reporting" description="Known limits in the beta, and how to tell us about a problem." />

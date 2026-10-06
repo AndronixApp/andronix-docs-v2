@@ -1,0 +1,101 @@
+---
+title: Modded OS Editions
+description: Andronix Modded OS are paid, performance-tuned Linux distros with themes and essential software preinstalled, so you can skip setup and start working.
+---
+
+import EarlyBirdEnd from "@/components/early-bird-end";
+import PlanRow from "@/components/plan-row";
+import Badge from "@/components/badge";
+import { MarkTile } from "@/components/marks";
+
+<MarkTile kind="modded" size={64} />
+
+Modded OS are Linux distros that our team has modified for maximum performance. Each one ships with the essential software preinstalled, and the themes and icons are chosen to match every element of the system. This page explains what Modded OS offer, when to pick one, and how to get started.
+
+<Callout type="info" title="Modded 2.0">
+With the Andronix app 10 (Andronix 2.0), there are five new **Modded 2.0** editions on top of the Andronix 2.0 free distros; see [Modded 2.0](#modded-20) below. The original editions are now the [Classic editions](#classic-editions), free for everyone who bought them.
+</Callout>
+
+{/* TODO(docs): this page assumes Modded 2.0 is on sale when app 10 ships (facts file). If Modded 2.0 launches later than the docs deploy, restore a "coming soon" note. */}
+
+## When should you choose Modded OS?
+
+Choose Modded OS whenever you don't want to spend your time optimizing things, fixing theming issues, or hunting down the right PPA to install a working version of some software. In short, it lets you enjoy Linux without having to set everything up yourself.
+
+## Why should you choose Modded OS?
+
+- Preinstalled themes and a customized UI give you a ready-to-go experience. If you use it for work, the customized UI makes for an easy, smooth workflow.
+- Everyday software such as a browser, GIMP, file managers, Visual Studio Code, a music player, Sticky Notes and LibreOffice comes included, along with preconfigured repositories and an up-to-date system.
+- Optimized for better performance compared to a regular distro.
+- A separate channel for Modded OS users on our Discord server.
+
+## What do they look like?
+
+Take a look at our [Modded OS Gallery](https://next.andronix.app/products/modded-os).
+
+## Modded 2.0
+
+The Modded 2.0 lineup is built on the same up-to-date distros as the free installer, with one shared Andronix look, themes and a full set of apps:
+
+* Ubuntu XFCE <Badge>v26.04 LTS</Badge>
+* Ubuntu KDE <Badge>v26.04 LTS</Badge>
+* Debian XFCE <Badge>v13</Badge>
+* Manjaro XFCE <Badge>ARM</Badge>
+* Kali Linux XFCE <Badge>rolling</Badge>
+
+New editions arrive early for Premium and Modded Pass owners.
+
+<AppShot name="app10-modded-editions" alt="The Modded tab with Andronix Complete, the Modded Pass and the Modded 2.0 editions" />
+
+![Preview of the Modded 2.0 look, on Debian 13 XFCE](/images/new-installer/debian-modded-xfce-desktop.png)
+
+With the Modded Pass, every edition shows as **Owned**:
+
+<AppShot name="app10-modded-editions-owned" alt="The Modded tab for a Modded Pass owner, with the editions marked Owned" />
+
+
+
+## Prices
+
+<PlanRow plan="pass">**Modded Pass** (all 5 Modded 2.0 editions): $6.99\*</PlanRow>
+
+<PlanRow plan="pass">**Early bird:** $4.49 until <EarlyBirdEnd />.</PlanRow>
+
+<PlanRow plan="complete">**Andronix Complete** (Modded Pass + Premium) is the best value.</PlanRow>
+
+<PlanRow plan="premium">**Own Premium?** 30% off the Modded Pass\*.</PlanRow>
+
+<PlanRow plan="paid">**Own a Modded 2.0 edition?** 40% off the Modded Pass\*.</PlanRow>
+
+\* Prices vary by region: we offer purchasing power parity pricing in some countries, and discounts are applied to your local price. Google Play shows your final price before you buy.
+
+If you bought a Classic edition, it stays yours (see [Classic editions](#classic-editions)). It doesn't lower the price of Modded 2.0.
+
+## How to install a Modded OS?
+
+In the Andronix app 10:
+
+1. Open the **Modded OS** tab and pick an edition.
+2. If you don't own it yet, buy it (or the Modded Pass) on Google Play.
+3. Tap the owned edition: the app copies one command. Run it in Termux.
+4. Create your user, then open the desktop with `andronix desktop <distro>` and the Termux:X11 app.
+
+For the step-by-step guide, see [Installing Modded OS](/beta/modded-os/modded-os-installation).
+
+## Classic editions
+
+<AppShot name="app10-modded-classic" alt="The Classic Modded editions for a past buyer" />
+
+The original Modded OS editions are now **Classic**. They aren't sold anymore. If you bought one, it's in the app under **Archived — yours to keep**, free, and installs the same way (see [Classic editions](/beta/modded-os/modded-os-installation#classic-editions)):
+
+* Ubuntu XFCE <Badge>v22.04</Badge>
+* Ubuntu KDE <Badge>v18.04</Badge>
+* Manjaro XFCE <Badge>v19</Badge>
+* Debian XFCE <Badge>v10</Badge>
+
+## Next steps
+
+- [Installing Modded OS](/beta/modded-os/modded-os-installation): step-by-step install guide.
+- [VNC](/beta/reference/vnc): connect to your Modded OS desktop.
+- [Fixing Sound](/beta/use/sound): get audio working in your distro.
+- [FAQ](/beta/troubleshooting/faq): answers to common questions and errors.

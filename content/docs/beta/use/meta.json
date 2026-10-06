@@ -1,0 +1,17 @@
+{
+  "title": "Step 4 · Use it",
+  "defaultOpen": true,
+  "pages": [
+    "apps",
+    "android-files",
+    "shortcuts",
+    "gpu",
+    "dev-packs",
+    "sound",
+    "storage",
+    "backups",
+    "updates",
+    "performance",
+    "ssh"
+  ]
+}

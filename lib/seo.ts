@@ -41,9 +41,9 @@ const V8_CANONICAL: Record<string, string> = {
 
 export const isV8 = (page: Page) => page.slugs[0] === 'v8';
 
-// Sections that are online but not launched yet: left out of the sidebar (not in meta.json),
-// the sitemap and search, and marked noindex. Remove a section from here when it launches.
-const UNLISTED = new Set(['standalone']);
+// Docs versions that are online but not public yet (the 10.1 beta): not the default version,
+// left out of the sitemap and search, and marked noindex. Remove one from here when it launches.
+const UNLISTED = new Set(['beta']);
 export const isUnlisted = (page: Page) => UNLISTED.has(page.slugs[0]);
 
 /** The URL search engines should index for this page (a path, resolved against metadataBase). */

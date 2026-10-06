@@ -1,0 +1,149 @@
+---
+title: Installing Modded OS
+description: How to buy and install a Modded OS edition with the Andronix app 10 - pick an edition, buy it on Google Play, run one command in Termux, and open the desktop.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import YoutubeEmbed from "@/components/youtubeEmbed";
+import Collapsed from "@/components/collapsed";
+import NextStep from "@/components/next-step";
+import Badge from "@/components/badge";
+
+This guide covers installing a Modded OS edition with the **Andronix app 10 (Andronix 2.0)**: the five Modded 2.0 editions, and the Classic editions for people who bought them before. It takes a few taps in the app and one command in Termux.
+
+<Callout type="info">Using the Andronix app 8.x? Its guide is in the [App 8.x (Classic) docs](/v8/modded-os/modded-os-installation).</Callout>
+
+{/* App 10 screenshots: see DOCS_SHOTS.md. <AppShot> renders nothing until public/images/app10/<name>.png exists. */}
+
+## Before you start
+
+- **Sign in** to the Andronix app. Your purchases are linked to your account.
+- **A 64-bit phone:** Modded OS isn't available on 32-bit phones; the app tells you if yours is one.
+- **Termux** from F-Droid, GitHub or Google Play. See [Install Termux](/beta/start-here/install-termux).
+- **One install per distro:** a Modded edition is installed into the folder of the distro it's built on, so it can't sit next to the free distro of the same base, or another edition built on it. For example, Modded 2.0 Ubuntu KDE replaces the free Ubuntu. If one is already there, the install stops and tells you; to replace it, add `--reinstall` to the command. It asks before deleting anything, so [back up](/beta/use/backups) what you want to keep first.
+- **Download limits:** each account can download a Modded OS a set number of times per day and per month. Most people never reach the limit, and Premium raises it. If you need more for a good reason, [contact us](mailto:support@andronix.app).
+
+## 1. Pick an edition
+
+Open the **Modded OS** tab. It lists the Modded 2.0 editions, the Modded Pass and Andronix Complete. If you bought a Modded OS before Andronix 2.0, your **Classic** editions are listed further down, under **Archived — yours to keep**.
+
+<AppShot name="app10-modded-editions" alt="The Modded tab with Andronix Complete, the Modded Pass and the Modded 2.0 editions" />
+
+{/* Old anchors the app links to (LinkHub ANDRONIX_DOCS_MODDED_*); keep them. */}
+<span id="2-selection-️" />
+
+## 2. Buy it (if you don't own it yet)
+
+Tap an edition you don't own, or the **Modded Pass** or **Andronix Complete** offer. The Google Play purchase sheet opens; pay there as you would for any app. When the purchase is done, the edition shows as **Owned**.
+
+<AppShot name="app10-modded-editions-owned" alt="The Modded tab for a Modded Pass owner, with the editions marked Owned" />
+
+Already own it? Skip to the next step.
+
+{/* Old anchors the app links to (LinkHub ANDRONIX_DOCS_MODDED_*); keep them. */}
+<span id="3-termux-execution-" />
+
+## 3. Install it
+
+<Steps>
+<Step>
+
+### Tap your edition
+
+Tap an edition marked **Owned**. The app goes straight to the Termux step and copies the install command for you. The command includes a download token, so the app hides it on screen; tap **Show full command** to see it with the token masked.
+
+<AppShot name="app10-modded-termux-step" alt="The Termux step for a Modded edition, with the token hidden" />
+
+</Step>
+
+<Step>
+
+### Run it in Termux
+
+Tap **Open Termux**, long-press to paste the command, and press **Enter**. If you copied something else in the meantime, tap **Recopy Command** first.
+
+The installer shows its steps and ticks each one off. The first run also updates Termux and can take a few minutes, so keep Termux open.
+
+<Callout type="warning">Android may ask whether Termux can keep running in the background. Tap **Allow**, and turn off battery optimization for Termux, so Android doesn't stop the install.</Callout>
+
+</Step>
+
+<Step>
+
+### Back in the app
+
+Tap **Next**. The app waits while the install runs in Termux, then shows the result.
+
+<AppShot name="app10-install-result" alt="The install result: Debian 13 with XFCE installed" />
+
+</Step>
+
+<Step>
+
+### Create your user
+
+When the install finishes, Termux asks you to create your user: a username, a password, and a desktop password, the same as for a free distro (see [Create your user](/beta/install/with-the-app#create-your-user)).
+
+
+</Step>
+</Steps>
+
+<Callout type="info">If the install stops, run the same command again; it continues where it stopped. See [The install fails or stops](/beta/troubleshooting/install). Seeing **Process completed (signal 9)**? See [Process completed (signal 9)](/beta/troubleshooting/signal-9).</Callout>
+
+{/* Old anchors the app links to (LinkHub ANDRONIX_DOCS_MODDED_*); keep them. */}
+<span id="4-starting-distribution-️" />
+<span id="5-vnc-configuration-" />
+
+## 4. Start the desktop
+
+The app moves on to **Start the desktop**. Open your Modded desktop full screen with Termux:X11, using the distro your edition is built on, for example:
+
+```bash copy
+andronix desktop debian
+```
+
+<AppShot name="app10-start-desktop" alt="The Start the desktop step, with Termux:X11 installed and the andronix desktop command" />
+
+See [Start the desktop](/beta/desktop/termux-x11) for getting the Termux:X11 app and everything else.
+
+## Classic editions
+
+The Classic editions (the original Modded Ubuntu XFCE, Ubuntu KDE, Debian and Manjaro) install the same way: tap the edition under **Archived — yours to keep** (it shows **Owned**), then follow steps 3 and 4. They're free for everyone who bought them before, and aren't sold anymore.
+
+<AppShot name="app10-modded-classic" alt="The Classic Modded editions for a past buyer" />
+
+<Collapsed title="Older video (Andronix 7)">
+This walkthrough shows the Andronix 7 app and the Classic setup screens from before Andronix 2.0.
+
+<YoutubeEmbed id={"DW2g-I8gKDg"}/>
+</Collapsed>
+
+## Remove a Modded OS
+
+<Badge>installer 2.0.1+</Badge>
+
+Each edition has an id, and `andronix remove` takes it. Stop the desktop and `exit` the distro, then run in Termux, for example:
+
+```bash copy
+andronix remove ubuntu-kde
+```
+
+| Modded 2.0 | Classic |
+|---|---|
+| `ubuntu-xfce`, `ubuntu-kde`, `debian-xfce`, `kali-xfce`, `manjaro-xfce` | `legacy-ubuntu-xfce`, `legacy-ubuntu-kde`, `legacy-debian`, `legacy-manjaro` |
+
+It deletes only that exact edition, never the free distro or another edition. If a different one is installed, it says which and deletes nothing. It shows what it will delete and asks first; add `--yes` to skip the question. Files in `/sdcard` are not touched.
+
+For a Classic edition, `--legacy` also deletes the copy the old Andronix app (8.x and earlier) installed, such as `~/androkde-fs`, `~/androkde-binds` and `~/start-androkde.sh`:
+
+```bash copy
+andronix remove legacy-ubuntu-kde --legacy
+```
+
+<TerminalDemo name="remove-legacy" command="andronix remove legacy-ubuntu-kde --legacy" />
+
+`start`, `desktop`, `update`, `backup` and `doctor` accept the edition id too, for example `andronix desktop ubuntu-kde`. See [the andronix command](/beta/reference/andronix-command#removing-a-modded-os-edition) for the full list.
+
+{/* TODO(docs): edition ids ship with installer 2.0.1 (andronix-distros 330608e). Remove the badge after the release. */}
+
+<NextStep href="/beta/use/apps" title="Use it" description="Install apps, add dev packs, and back up your Modded OS." />

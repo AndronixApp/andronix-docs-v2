@@ -1,0 +1,411 @@
+---
+title: The andronix Command
+description: Reference for the andronix command in Termux - install, start, desktop, update, backup, restore, tune, dev packs, doctor, report, remove - and the commands inside a distro.
+---
+
+import Badge from "@/components/badge";
+
+In Andronix 2.0, every free distro is installed and managed by one command, `andronix`. The install command the app copies for you sets it up in Termux, so you don't need to install anything by hand. This page lists everything `andronix` can do.
+
+<Callout type="info">You'll usually never type most of these. The app copies the right install command, and `./start-<distro>.sh` still starts your distro. This page is for when you want more control.</Callout>
+
+## Quick reference
+
+Run these in **Termux** (not inside the distro):
+
+```bash
+# install Debian 13 with the XFCE desktop
+andronix install debian --de xfce
+
+# open Debian (same as ./start-debian.sh)
+andronix start debian
+
+# open Debian's desktop full screen in Termux:X11
+andronix desktop debian
+
+# what's installed, and what you can install
+andronix list
+
+# update andronix and every installed distro
+andronix update
+
+# save Debian to your phone's storage
+andronix backup debian --to storage
+
+# pick a backup and bring it back
+andronix restore
+
+# make the desktop lighter
+andronix tune debian --profile light
+
+# add a dev pack (python, node, java, go, db)
+andronix pack add debian python
+
+# delete Debian
+andronix remove debian
+
+# delete a Modded OS edition, by its edition id (installer 2.0.1+)
+andronix remove ubuntu-kde
+
+# free the space of leftover downloads (installer 2.0.1+)
+andronix clean
+
+# check this phone and what Andronix adjusts for it (installer 2.0.1+)
+andronix doctor
+
+# report a failed command to Andronix; shows everything first (installer 2.0.2+)
+andronix report
+
+# show the version, e.g. andronix 2.0.0
+andronix version
+
+# show help
+andronix help
+```
+
+Run these **inside the distro**:
+
+```bash
+# start the desktop
+vncserver-start
+
+# stop the desktop
+vncserver-stop
+```
+
+## Getting andronix
+
+The Andronix app (10.0 or newer) sets up `andronix` for you with its install command. Without the app, this one line downloads `andronix`, checks it, and runs an install:
+
+```bash copy
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. If Termux doesn't have `proot` yet, the installer installs it first. See [Install without the app](/beta/install/without-the-app).
+
+`andronix update` keeps it up to date.
+
+## Distro names
+
+Use these names with `andronix install`, `start`, `remove` and `backup`.
+
+| Name | Distro | CPU types | Start script |
+|---|---|---|---|
+| `debian` | Debian 13 | arm64, arm, x86, x86_64 | `./start-debian.sh` |
+| `ubuntu` | Ubuntu 26.04 LTS | arm64, arm, x86_64 | `./start-ubuntu26.sh` or `./start-ubuntu22.sh` |
+| `ubuntu24` | Ubuntu 24.04 LTS | arm64, arm, x86_64 | `./start-ubuntu.sh` or `./start-ubuntu20.sh` |
+| `kali` | Kali Linux (rolling) | arm64, arm, x86, x86_64 | `./start-kali.sh` |
+| `fedora` | Fedora 44 | arm64, x86_64 | `./start-fedora.sh` |
+| `arch` | Arch Linux (Arch Linux ARM on phones) | arm64, arm, x86_64 | `./start-arch.sh` |
+| `manjaro` | Manjaro ARM | arm64, x86_64 | `./start-manjaro.sh` |
+| `alpine` | Alpine 3.24 | arm64, arm, x86, x86_64 | `./start-alpine.sh` |
+| `void` | Void Linux (rolling) | arm64, arm, x86, x86_64 | `./start-void.sh` |
+
+<Callout type="info">Most phones are **arm64**. Not sure what yours is? `andronix install` checks it for you and tells you if a distro doesn't support it.</Callout>
+
+### Modded OS edition ids
+
+<Badge>installer 2.0.1+</Badge>
+
+A [Modded OS](/beta/modded-os/modded-os) edition is installed into the folder of the distro it's built on, and has its own id. You install it from the app (see [Installing Modded OS](/beta/modded-os/modded-os-installation)); after that, `start`, `desktop`, `update`, `backup`, `doctor`, `tune`, `pack` and `remove` accept its id as well as the distro name.
+
+| Edition id | Edition | Built on |
+|---|---|---|
+| `ubuntu-xfce` | Modded 2.0 Ubuntu XFCE | `ubuntu` |
+| `ubuntu-kde` | Modded 2.0 Ubuntu KDE | `ubuntu` |
+| `debian-xfce` | Modded 2.0 Debian XFCE | `debian` |
+| `kali-xfce` | Modded 2.0 Kali XFCE | `kali` |
+| `manjaro-xfce` | Modded 2.0 Manjaro XFCE | `manjaro` |
+| `legacy-ubuntu-xfce` | Classic Ubuntu XFCE | `ubuntu` |
+| `legacy-ubuntu-kde` | Classic Ubuntu KDE | `ubuntu` |
+| `legacy-debian` | Classic Debian | `debian` |
+| `legacy-manjaro` | Classic Manjaro | `manjaro` |
+
+An edition id only works when that exact edition is the one installed. If the distro's folder holds something else (the free distro, or another edition), the command says what's installed there and which name to use instead.
+
+<Callout type="info">**One install per distro.** A distro and the Modded editions built on it share one folder, so only one of them can be installed at a time. For example, the free Ubuntu, Modded 2.0 Ubuntu KDE and Classic Ubuntu XFCE can't be installed side by side. Installing a different one over it stops with a message; add `--reinstall` to replace it. It asks before deleting anything, so [back up](#backing-up-and-restoring) first if you want to keep your files.</Callout>
+
+## Installing
+
+```bash
+andronix install <distro> [--de <desktop>] [options]
+```
+
+`--de` picks the desktop. See [Desktop Environments](/beta/reference/desktops) for help choosing.
+
+| Desktop | What you get |
+|---|---|
+| `--de xfce` | XFCE, our recommended desktop |
+| `--de lxqt` | LXQt, a light Qt desktop |
+| `--de mate` | MATE, a classic desktop |
+| `--de kde` | KDE Plasma, the most complete desktop. Debian, Ubuntu 26.04 and Kali only; needs 4 GB of RAM or more. |
+| `--de none` | Command line only, no desktop |
+
+`--de kde` on another distro stops with a message naming the distros that offer it. For old app buttons and commands, `--de lxde` installs LXQt, and the retired window managers (`i3`, `awesome`, `openbox`) and Enlightenment install XFCE, each with a notice.
+
+Other options:
+
+| Option | What it does |
+|---|---|
+| `--no-browser` | Don't install Firefox. Desktop installs include it by default. |
+| `--no-start` | Don't open the distro when the install finishes. |
+| `--reinstall` | Delete the distro and install it again from scratch. Also replaces a different edition installed in the same folder (see [Modded OS edition ids](#modded-os-edition-ids)). Asks before deleting. |
+| `--yes` | Answer yes to every question. |
+| `--plain` | No colours or animation, one line per step. Handy for logs. |
+
+The installer shows each step with a ✓ as it finishes:
+
+```text
+✓ Installing proot          (only if Termux doesn't have it yet)
+✓ Checking your phone
+✓ Finding the best download
+✓ Downloading Debian 13
+✓ Unpacking files
+✓ Setting up Debian 13
+✓ Refreshing package lists
+✓ Updating Debian 13
+✓ Installing XFCE desktop · 250 packages
+✓ Installing Firefox
+✓ Setting up the desktop
+✓ Writing start-debian.sh
+```
+
+Then it asks you to create your user (see [First login](#first-login)) and takes you into the distro.
+
+<Callout type="info">If an install stops halfway (you closed Termux, lost the connection, or Android stopped it), run the **same command again**. It picks up where it left off.</Callout>
+
+### Where the files come from
+
+The installer downloads a ready-made image of the distro from Andronix's servers. If that download isn't available, it falls back to the distro's official image (for example, from Docker Hub). Every download is checked before it's unpacked.
+
+## First login
+
+Free distros no longer log you in as `root`. The first time you start a distro, it asks you for:
+
+1. **A username**, in lower-case letters and numbers, for example `alex`.
+2. **A password** for that user. You'll need it for `sudo`.
+3. **A desktop (VNC) password**, 6 to 8 characters. You can reuse your user password if it's 6 to 8 characters long. Desktop installs only.
+
+After that, the distro always logs you in as that user, and your prompt looks like `alex@localhost`. Use `sudo` for anything that needs root, for example `sudo apt install nano`.
+
+<Callout type="info">**Manjaro:** `sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks, open a root shell from Termux with `andronix start manjaro --root`.</Callout>
+
+<Callout type="warning">Forgot your password? In Termux, run `andronix start <distro> --root` to get a root shell, then `passwd <username>` to set a new one.</Callout>
+
+## Starting a distro
+
+```bash
+andronix start <distro> [--root] [-- command...]
+```
+
+- `andronix start debian` opens a shell as your user. `./start-debian.sh` does exactly the same.
+- `--root` opens a root shell instead.
+- `--x11` opens the distro's desktop in Termux:X11 instead of a shell (same as `andronix desktop debian`).
+- Anything after `--` runs inside the distro and then returns to Termux, for example `andronix start debian -- uname -a`. The old form `./start-debian.sh uname -a` works too.
+
+Type `exit` to leave the distro and go back to Termux.
+
+Each interactive start also makes sure Termux's PulseAudio is running, so [sound](/beta/use/sound) works. One-off commands (after `--`) never install anything.
+
+## Opening the desktop on Termux:X11
+
+```bash
+andronix desktop [<distro>]
+andronix desktop stop
+```
+
+- Opens the distro's desktop full screen in the Termux:X11 app, as your user. With only one desktop install, the distro name is optional.
+- Installs Termux's `termux-x11` package the first time. The Termux:X11 app itself comes from its GitHub release page; if it's missing, the command shows the link.
+- `andronix desktop stop` (from another Termux session) stops it.
+
+See [Termux:X11](/beta/desktop/termux-x11).
+
+## Listing distros
+
+```bash
+andronix list
+```
+
+Shows what's installed (with its desktop and start script), any distros from the pre-2.0 installer, and every distro and desktop you can install.
+
+## Updating
+
+```bash
+andronix update [<distro>]
+```
+
+Updates `andronix` itself, then the packages in every installed distro (or only the one you name). `--self` updates only `andronix`; `--no-self` only the distros. See [Keep it updated](/beta/use/updates).
+
+**Update channel:** `andronix` updates itself from the **stable** channel (the release) by default.
+
+- **Beta builds:** `andronix update --channel beta --token '<token>'` switches to beta builds of the installer. This is a Premium early-access perk. The token comes from the app: Premium › Beta installer builds › **Copy beta command** copies the whole command. The token is only valid for a limited time; if it's refused, copy the command again.
+- **Back to the release:** `andronix update --channel stable`.
+
+## Removing a distro
+
+```bash
+andronix remove <distro> [--yes] [--legacy]
+```
+
+Deletes the distro, its files and its start script. Files in `/sdcard` are not touched. It asks before deleting anything unless you pass `--yes`.
+
+`--legacy` also deletes a copy of the same distro left by the pre-2.0 installer (for example `~/debian-fs`). The app's uninstall command includes it. See [Installs from before Andronix 2.0](/beta/pre-2.0/older-installs).
+
+### Removing a Modded OS edition
+
+<Badge>installer 2.0.1+</Badge>
+
+```bash
+andronix remove <edition-id> [--yes] [--legacy]
+```
+
+Deletes only that exact edition, for example `andronix remove ubuntu-kde`. It never deletes the free distro or another edition in the same folder: if that edition isn't the one installed, it says what is installed, keeps it, and deletes nothing. See [Modded OS edition ids](#modded-os-edition-ids).
+
+With a Classic edition id, `--legacy` also deletes the copy of that edition the old Andronix app (8.x and earlier) installed in Termux's home folder, if it's still there:
+
+| Edition id | Old copy that `--legacy` deletes |
+|---|---|
+| `legacy-ubuntu-xfce` | `~/andronix-fs`, `~/andronix-binds`, `~/start-andronix.sh` |
+| `legacy-ubuntu-kde` | `~/androkde-fs`, `~/androkde-binds`, `~/start-androkde.sh` |
+| `legacy-debian` | `~/androdeb-fs`, `~/androdeb-binds`, `~/start-androdeb.sh` |
+| `legacy-manjaro` | `~/androjaro-fs`, `~/androjaro-binds`, `~/start-androjaro.sh` |
+
+It removes the old copy even if the edition was never installed with Andronix 2.0. The box before the confirmation lists every folder it will delete, with its size.
+
+{/* TODO(docs): edition ids for remove/start/desktop etc. ship with installer 2.0.1 (andronix-distros 330608e). Remove the badges after the release. */}
+
+<Callout type="warning">Stop the desktop (`vncserver-stop`) and exit every session of the distro before removing it.</Callout>
+
+## Freeing space: andronix clean
+
+<Badge>installer 2.0.1+</Badge>
+
+```bash
+andronix clean
+```
+
+Empties the download cache (`~/.andronix/cache`), for example a download left behind when an install stopped halfway, and prints how much space it freed. Your installed distros aren't touched. A download that's still running is kept.
+
+You rarely need it: a finished install deletes its download, and `andronix remove` deletes the distro's leftover downloads.
+
+<TerminalDemo name="clean" command="andronix clean" />
+
+## Backing up and restoring
+
+```bash
+andronix backup <distro> [file] [--to storage]
+andronix restore [file]
+```
+
+- `backup` saves the whole distro to one file: with `--to storage`, in `Andronix/backups` in your phone's storage; otherwise in Termux's home folder, or at the file name you give.
+- `restore` brings a backup back. Without a file name, it lists the backups it finds and lets you pick one.
+
+See [Back up and restore](/beta/use/backups).
+
+## Tuning the desktop
+
+```bash
+andronix tune <distro> [--profile light|balanced]
+```
+
+- **light:** no desktop effects, fewer background apps, no file thumbnails, and 16-bit colour at 1280x720 over VNC. Automatic on phones with less than 3 GB of RAM.
+- **balanced:** the normal settings.
+
+Without `--profile`, it shows the current profile and your phone's RAM. See [Make it faster](/beta/use/performance).
+
+## Dev packs
+
+```bash
+andronix pack list   [<distro>]
+andronix pack add    [<distro>] <pack>...
+andronix pack remove [<distro>] [--purge] <pack>...
+```
+
+Packs: `python`, `node`, `java`, `go`, `db`. From Termux, name the distro; inside the distro, leave it out and use `sudo` (`sudo andronix pack add python`). `--purge` also deletes data the pack made (the `db` pack's databases). See [Dev packs](/beta/use/dev-packs).
+
+## Checking your phone: andronix doctor
+
+<Badge>installer 2.0.1+</Badge>
+
+```bash
+andronix doctor [<distro>]
+```
+
+Shows what Andronix knows about your phone, and what it adjusts for it:
+
+- **This phone:** the Linux kernel, the Android version and ROM, the Termux build, RAM and free space, and whether Android's phantom process killer is on (see [Process completed (signal 9)](/beta/troubleshooting/signal-9)).
+- **Syscalls under proot:** how a few system calls behave inside a distro on this phone. It tests inside the distro you name, or the first one installed; with no distro installed, this part is skipped.
+- **Fixes that apply:** the compatibility fixes Andronix uses on this phone, each with the reason. They're applied automatically when you install, resume or update a distro; `doctor` only reports them.
+
+It changes nothing, and it checks again each time you run it. When you ask for help, include its output, or paste it into the app's [Report a problem](/beta/troubleshooting/report-a-problem) form.
+
+{/* TODO(docs): doctor ships with installer 2.0.1 once feat-compat merges (distros gating it, Sept 27). Remove this note, and the badge if wanted, after the release. */}
+
+## Reporting a problem: andronix report
+
+<Badge>installer 2.0.2+</Badge>
+
+```bash
+andronix report [--message "<text>"] [--dry-run]
+andronix report --open <AX-ID>
+```
+
+Sends a problem report to Andronix: the last command that failed (its step, error and log), your phone's facts (as in `andronix doctor`) and the installer version. Tokens, signed links, email addresses, passwords, user names and home folder paths are removed first. It prints the whole report and asks before sending, then opens the Andronix app's **Report a problem** form with the details attached, where you add a description and photos. Without the app it prints the report ID and a link, and offers to send it as it is. Every failed command's error box ends with a reminder to run it.
+
+| Option | What it does |
+|---|---|
+| `--dry-run` | Print the report (redacted) and send nothing. |
+| `--message "<text>"` | A line about what happened, up to 300 characters. Used when you send without the app. |
+| `--open <AX-ID>` | In Termux: open a waiting report in the Andronix app, for example one made inside a distro. Reports wait 24 hours. |
+
+Exit status: `0` when the report was sent or handed to the app, when you answer no, and for `--dry-run`; `1` when it couldn't be sent or opened (no connection, too many reports, an expired or unknown ID); `130` if you press Ctrl+C.
+
+See [Report a problem](/beta/troubleshooting/report-a-problem) for the whole flow and what's collected.
+
+{/* Source: andronix-distros next-2.0.2 (internal/app/problem.go, 4171afe). Drop the badge after the release. */}
+
+## Telemetry
+
+To see which distros and phones installs fail on, `andronix` sends anonymous usage events. It says so the first time it runs.
+
+- **Sent:** when an install starts and how it ended (success or the failed step, the distro, desktop, and how long it took), and when you start, update or add a pack. Each event also carries the CPU type, Android version, Termux build, `andronix` version and a random install ID.
+- **Never sent:** file paths, user names, passwords, tokens, or the commands you run. Nothing is sent from inside a distro.
+- **Turn it off:** `andronix telemetry off` (and `on` or `status`), or set `ANDRONIX_NO_TELEMETRY=1` or `DO_NOT_TRACK=1`.
+
+## Inside the distro
+
+These commands are installed inside every desktop install.
+
+| Command | What it does |
+|---|---|
+| `vncserver-start` | Start the desktop. Asks for a screen size; press Enter for Auto. |
+| `vncserver-start 1920x1080` | Start the desktop at that size without asking. |
+| `vncserver-start --lan` | Let other devices on your network connect (by default only this phone can). |
+| `vncserver-stop` | Stop the desktop. |
+| `sudo andronix pack add python` | Add a [dev pack](/beta/use/dev-packs). |
+
+See [VNC](/beta/reference/vnc) for how to connect.
+
+## Where things live
+
+| Path (in Termux) | What |
+|---|---|
+| `~/.andronix/distros/<distro>/` | The installed distro |
+| `~/.andronix/logs/` | Logs from every install, remove, backup and restore, plus `termux.log` (PulseAudio, Termux:X11). Include the latest one when you ask for help. |
+| `Andronix/backups` in your phone's storage | Backups made with `--to storage` |
+| `~/start-<distro>.sh` | The start script. It just runs `andronix start <distro>`. |
+| `~/<distro>-binds/` | Optional extra folders to share with the distro, as in the pre-2.0 installer |
+
+## Old commands still work
+
+- The install commands the Andronix app copies keep working. They now set up `andronix` and run it for you.
+- `./start-debian.sh`, `./start-ubuntu.sh`, `./start-kali.sh` and the other start scripts keep their names.
+- `vncserver-start` and `vncserver-stop` keep their names and use the same address, `localhost:1`.
+- Distros installed with the pre-2.0 installer are left alone. See [Installs from before Andronix 2.0](/beta/pre-2.0/older-installs).
+
+## Related pages
+
+- [Install without the app](/beta/install/without-the-app)
+- [Supported distros](/beta/reference/distros)
+- [Termux:X11](/beta/desktop/termux-x11) and [VNC](/beta/reference/vnc)
+- [The install fails or stops](/beta/troubleshooting/install)
