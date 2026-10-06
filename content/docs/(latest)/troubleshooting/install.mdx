@@ -43,20 +43,33 @@ Leave some extra room for the download while it unpacks. If you're short on spac
 
 ## The installer warns about an old kernel
 
-Some older phones (for example Android 8 or 9 phones on a 4.4 kernel) run a Linux kernel older than 4.8. On those, **every desktop stays black**: XFCE, LXQt, MATE and KDE Plasma, in Termux:X11 and VNC alike. The command line works fully.
+Some older phones (for example Android 8 or 9 phones on a 4.4 kernel) run a Linux kernel older than 4.8. Desktops install and work on many of them, but on some the desktop stays black. The command line always works.
 
-`andronix` warns you before a desktop install, and again before `andronix desktop` and `vncserver-start`:
+The app (10.0.3 and newer) shows a notice when you pick a desktop, and `andronix` warns before a desktop install, `andronix desktop` and `vncserver-start`. From installer 2.0.5 the warning reads:
 
 ```text
-This phone's Linux kernel (4.4.x) is older than 4.8: desktops (XFCE, LXQt, MATE, KDE) stay black on it, in Termux:X11 and VNC alike. The command line works fully: install with --de none.
+This phone's Linux kernel (4.4.x) is older than 4.8. Desktops work on many such phones but may stay black. If yours does: andronix desktop --legacy-drawing, or try VNC (vncserver-start). The command line always works.
 ```
 
-**What to do:**
+Installer 2.0.4 still says the desktop stays black and suggests `--de none`. You can install a desktop anyway.
 
-- **Use the command line only.** Install with `--de none`, for example `andronix install debian --de none`, or pick **CLI Only** in the app. You can still install and run command-line software, dev packs and servers.
-- **Check your kernel:** run `uname -r` in Termux. `4.4.x` or `4.9.x`? A `4.9` kernel is fine; only versions below 4.8 are affected.
+**If the desktop stays black:**
 
-There's no workaround for the desktop on these kernels. If you think your phone is wrongly flagged, tell us on [Discord](https://chat.andronix.app) with the output of `uname -r`.
+1. **Try legacy drawing.** In Termux, stop the desktop and open it again with `--legacy-drawing` (installer 2.0.4 or newer). Andronix remembers it for the next start.
+
+   ```bash copy
+   andronix desktop stop
+   andronix desktop --legacy-drawing
+   ```
+
+2. **Try VNC.** Inside the distro, run `vncserver-start`, then connect a VNC viewer. See [Other ways to connect (VNC)](/reference/vnc).
+3. **Use the command line.** Everything except the desktop works: command-line software, dev packs and servers. To skip the desktop, install with `--de none` (for example `andronix install debian --de none`) or pick **CLI Only** in the app.
+
+**Check your kernel:** run `uname -r` in Termux. `4.4.x` or `4.9.x`? A `4.9` kernel is fine; only versions below 4.8 are affected.
+
+**Modded OS needs kernel 4.8 or newer.** Below that, the app shows "Modded OS needs a newer kernel" and doesn't offer the editions.
+
+Tell us how it went: [Report a problem](/troubleshooting/report-a-problem) or ask on [Discord](https://chat.andronix.app), with the output of `uname -r`.
 
 ## Your phone isn't supported by a distro
 
