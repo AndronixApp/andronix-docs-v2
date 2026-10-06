@@ -7,9 +7,9 @@
     "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs",
     "build": "next build",
     "postinstall": "fumadocs-mdx",
-    "preview": "pnpm build && wrangler dev --port 8799",
-    "deploy": "node scripts/check-release-date.mjs && pnpm build && wrangler deploy",
-    "upload": "pnpm build && wrangler versions upload"
+    "preview": "wrangler dev --port 8799",
+    "deploy": "node scripts/check-release-date.mjs && wrangler deploy",
+    "upload": "wrangler versions upload"
   },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",

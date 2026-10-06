@@ -5,6 +5,12 @@
 name = "andronix-docs-v2"
 compatibility_date = "2025-03-25"
 
+# wrangler deploy, wrangler versions upload and wrangler dev run the full build first (prebuild
+# checks, redirects, next build), so a version can never be uploaded from a stale out/.
+[build]
+command = "pnpm build"
+watch_dir = ["app", "components", "content", "lib"]
+
 [assets]
 directory = "out"
 # /path serves /path.html (and /path/ redirects to /path).

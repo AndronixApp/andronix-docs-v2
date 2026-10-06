@@ -19,11 +19,7 @@ pnpm exec wrangler whoami                # logged in to the Andronix Cloudflare 
 - **Build from the release commit.** Merge `docs/new-installer` into `master` first (reviewed PR), then deploy from `master` so the live site matches the default branch.
 - **Release date.** Set `RELEASE_DATE` in `lib/release.mjs` (for example `'October 2, 2026'`). It fills in the blog post, the blog index and the changelog. While it's still the placeholder `RELEASE_DATE`, `pnpm run deploy` refuses to run (`scripts/check-release-date.mjs`). `pnpm build` and `pnpm run upload` still work, for staging.
 - **Early bird end date.** Set `EARLY_BIRD_END` in `lib/release.mjs` too (when the Modded Pass early-bird price ends, 4 days after launch). It fills in the Modded OS Prices table, the blog post and the changelog. `pnpm run deploy` refuses to run while it's still `{EARLY_BIRD_END}`.
-- **Analytics client ID (build time).** The pages are built ahead of time, so the ID must be in the environment when you build. Without it the site has no analytics, which is safe but probably not what you want.
-  ```sh
-  export OPENPANEL_WEB_CLIENT_ID=b798ebe6-278f-4cd0-beb3-8759abd175f1  # the public "web" client on events.andronix.app, shared with andronix.app
-  ```
-  If the Worker is built by Cloudflare Workers Builds (git integration) instead of locally, set the same variable under Worker › Settings › Build › Variables.
+- **Analytics client ID: nothing to set.** The public OpenPanel "web" client id (`b798ebe6-278f-4cd0-beb3-8759abd175f1`, shared with andronix.app) is committed in `.env.production`, and Next.js reads it at build time, so every build has analytics on. An `OPENPANEL_WEB_CLIENT_ID` in the environment overrides it (set it to an empty value to build without analytics).
 
 ## 1. Note the current live version (for rollback)
 
@@ -42,7 +38,7 @@ pnpm exec wrangler dev --port 8799 --local
 
 Then, in another terminal, run the smoke test (section 5) against `http://localhost:8799`. Stop `wrangler dev` when it passes.
 
-The `pnpm run deploy` (plus the release-date check), `pnpm run upload` and `pnpm run preview` scripts (always with `run`: plain `pnpm deploy` is a different, built-in pnpm command) run `pnpm build`, so the same checks (`scripts/app-shots-manifest.mjs`, `scripts/check-latest-links.mjs`, `scripts/write-redirects.mjs`) run before every build. The build fails if an App 10 page links to a URL that only exists in the App 8.x docs.
+`wrangler.toml` has `[build] command = "pnpm build"`, so `wrangler deploy`, `wrangler versions upload` and `wrangler dev` always build first, and a version can never be uploaded from a stale `out/`. The `pnpm run deploy` (plus the release-date check), `pnpm run upload` and `pnpm run preview` scripts (always with `run`: plain `pnpm deploy` is a different, built-in pnpm command) just call them, so the same checks (`scripts/app-shots-manifest.mjs`, `scripts/check-latest-links.mjs`, `scripts/write-redirects.mjs`) run before every build. The build fails if an App 10 page links to a URL that only exists in the App 8.x docs.
 
 While someone reviews on a local `next dev`, build with `NEXT_DIST_DIR=.next-check pnpm build` so the dev server's `.next` isn't disturbed; the export still lands in `out/`. Serve it with `pnpm exec wrangler dev --port 8799 --local` (`next start` doesn't serve a static export).
 
