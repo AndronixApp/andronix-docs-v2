@@ -31,10 +31,10 @@ This walkthrough shows the Andronix 7 app and the pre-2.0 installer (root login,
 
 ## 1. Preparation 🚀
 
-### Linux Distributions
-Open the Andronix app and tap the **Linux Distribution** card on the dashboard. This takes you to the list of distros you can install.
+### Linux distros
+Open the Andronix app and, under **Install Linux** on Home, tap the **Linux distros** card. This takes you to the list of distros you can install.
 
-<AppShot name="app10-home" alt="The Andronix app's Home screen, with the Linux Distribution block" />
+<AppShot name="app10-home" alt="The Andronix app's Home screen, with the Linux distros card under Install Linux" />
 
 ### Selection
 You'll now see every distribution that can be installed on your Android device.
@@ -88,9 +88,9 @@ No extra configuration is needed for the Command Line Interface. Continue to the
 
 This is where the actual installation of your Linux distribution happens.
 
-<Callout type="info">The Andronix app has automatically copied an install command to your clipboard.</Callout>
+<Callout type="info">When this step opens, the app copies the install command to your clipboard.</Callout>
 
-<AppShot name="app10-termux-step" alt="The Termux step, showing the andronix install command with Copy and Open Termux buttons" />
+<AppShot name="app10-termux-step" alt="The Termux step: the andronix install command, 'In Termux, long-press, tap Paste, then press Enter.' and the Copy and open Termux button" />
 
 ### Execute
 You'll run this command in Termux to download and set up the distro.
@@ -98,9 +98,18 @@ You'll run this command in Termux to download and set up the distro.
 <Callout type="warning">Before you continue, make sure you're using a compatible version of Termux. If you haven't already, follow the [Migrating Termux to F-Droid](/start-here/install-termux) guide.</Callout>
 
 ### Paste
-Open the Termux app, **long press to paste the copied command, then press Enter to run it**.
+Tap **Copy and open Termux**. The app copies the command again (in case you copied something else in the meantime), shows **Copied. Paste it in Termux.**, and opens Termux a second later. In Termux, **long-press, tap Paste, then press Enter**.
+
+<AppShot name="app10-termux-copied" alt="The Termux step with the message 'Copied. Paste it in Termux.'" />
+
+The copy icon in the corner of the command copies it again too. **Show full command** shows the whole command as it's pasted.
 
 <Imagera src="/images/termux_pkg_up.png" alt="The Andronix install command pasted into Termux"/>
+
+### If nothing happens
+If you come back to the app and the install still hasn't started after 30 seconds, the app shows **Nothing happened? Paste the whole command in Termux. Typing install alone won't work.** Go back to Termux and paste the whole command; typing `install` on its own doesn't run anything.
+
+<AppShot name="app10-termux-nothing-happened" alt="The Termux step with the hint 'Nothing happened? Paste the whole command in Termux. Typing install alone won't work.'" />
 
 ### Wait
 The command sets up the `andronix` installer and runs it. You'll see a list of steps, each ticked off with a ✓ as it finishes, with a progress bar for the long ones:
