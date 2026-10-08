@@ -1,5 +1,11 @@
 # App 10 screenshot shot list
 
+## 10.0.6 update (Oct 8, renders from android, 10.0.6 debug build, 1080 x 1920)
+
+- Replaced: `app10-home` (Linux distros card, new icons), `app10-termux-step` (Copy and open Termux).
+- New: `app10-termux-nothing-happened` (the hint 30 s after coming back from Termux).
+- Still to come from android: `app10-termux-copied` (the "Copied. Paste it in Termux." message, without Android's clipboard preview, which shows the install ID) and a retake of `app10-termux-step-uninstall`. Until `app10-termux-copied.png` exists, its AppShot renders nothing.
+
 ## Capture status (ui-revamp 5b2cd649, installer v2.0.1, Sept 26)
 
 **Committed:** every shot the App 10 pages use, all 1080 × 1920, 24-bit, no alpha.
