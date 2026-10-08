@@ -49,7 +49,7 @@ export function DocsEvents() {
       if (!input?.matches?.('input[aria-controls="fd-search-list"]')) return;
       clearTimeout(timer);
       timer = setTimeout(() => {
-        // nothing personal: emails, phone numbers, long numbers and tokens become "[hidden]"; max 40 characters
+        // nothing personal: emails, phone numbers, long numbers and tokens become "(hidden)"; max 40 characters
         const query = searchQueryForAnalytics(input.value);
         if (!query || query === last) return;
         last = query;
