@@ -3,6 +3,7 @@
 import { useOpenPanel } from "@openpanel/nextjs";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { searchQueryForAnalytics } from "@/lib/search-query";
 
 // The docs' own events, sent through the OpenPanel component in app/layout.tsx: docs_search,
 // copy_code and play_store_click (page views and link_out come from the component itself).
@@ -40,7 +41,7 @@ export function DocsEvents() {
       op.track("play_store_click", { path: location.pathname, label: (a?.textContent || "").trim().slice(0, 60) });
     };
 
-    // docs_search: the query once typing pauses, with how many results showed
+    // docs_search: the query once typing pauses (sanitized, lib/search-query.ts), with how many results showed
     let timer: ReturnType<typeof setTimeout> | undefined;
     let last = "";
     const onInput = (e: Event) => {
@@ -48,8 +49,9 @@ export function DocsEvents() {
       if (!input?.matches?.('input[aria-controls="fd-search-list"]')) return;
       clearTimeout(timer);
       timer = setTimeout(() => {
-        const query = input.value.trim().toLowerCase().slice(0, 80);
-        if (query.length < 2 || query === last) return;
+        // nothing personal: emails, phone numbers, long numbers and tokens become "[hidden]"; max 40 characters
+        const query = searchQueryForAnalytics(input.value);
+        if (!query || query === last) return;
         last = query;
         const results = document.querySelectorAll("#fd-search-list [role='option']").length;
         op.track("docs_search", { query, results, path: location.pathname });
