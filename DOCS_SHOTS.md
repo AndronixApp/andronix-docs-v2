@@ -3,8 +3,9 @@
 ## 10.0.6 update (Oct 8, renders from android, 10.0.6 debug build, 1080 x 1920)
 
 - Replaced: `app10-home` (Linux distros card, new icons), `app10-termux-step` (Copy and open Termux).
-- New: `app10-termux-nothing-happened` (the hint 30 s after coming back from Termux).
-- Still to come from android: `app10-termux-copied` (the "Copied. Paste it in Termux." message, without Android's clipboard preview, which shows the install ID) and a retake of `app10-termux-step-uninstall`. Until `app10-termux-copied.png` exists, its AppShot renders nothing.
+- New: `app10-termux-nothing-happened` (the hint 30 s after coming back from Termux) and `app10-termux-copied` (the "Copied. Paste it in Termux." message). In `app10-termux-copied` the strip with the two buttons comes from the same screen at rest, because Android 16's clipboard preview (which shows the install ID) covered it; the rest is the live frame.
+- Retaken: `app10-termux-step-uninstall`, now `andronix remove ubuntu --legacy` with Copy and open Termux (no Next, no hint).
+- The free step shows "You'll also need Termux:X11" because the render emulator has no Termux:X11; with it installed, that line isn't there.
 
 ## Capture status (ui-revamp 5b2cd649, installer v2.0.1, Sept 26)
 
@@ -30,7 +31,7 @@
 - `termux-vncserver-start`: App 10 uses Termux:X11.
 
 **Noted:**
-- `app10-termux-step-uninstall` shows `andronix remove debian --legacy`, which is intentional and documented.
+- `app10-termux-step-uninstall` shows `andronix remove ubuntu --legacy`, which is intentional and documented.
 - `app10-premium-owner` shows `andronix update --channel stable`, which is documented.
 - `app10-phantom-tip` says "How to fix it", which the docs text matches.
 
