@@ -28,7 +28,7 @@ Andronix offers **XFCE**, **LXQt** and **MATE** on every free distro, and **KDE 
 | <Badge>KDE Plasma</Badge> | A modern, polished desktop (Plasma 6) with Dolphin and Konsole. The heaviest of the four. | Your phone has 4 GB of RAM or more, and you want the most complete desktop. |
 | <Badge>CLI only</Badge> | No desktop, just a terminal. The smallest and fastest install. | You only need the command line. |
 
-Every desktop install also comes with Firefox. Open the desktop full screen with `andronix desktop` and the Termux:X11 app; see [Start the desktop](/termux/termux-x11). (VNC also works; see [Other ways to connect](/termux/vnc).)
+Every desktop install also comes with a web browser. The desktop opens in the app, full screen; see [The desktop in the app](/desktop/in-the-app).
 
 ### XFCE
 
@@ -73,7 +73,7 @@ See [Make it faster](/use/performance) for the light profile (`andronix tune`), 
 
 ## Changing your desktop
 
-To try a different desktop, install the distro again with that desktop, for example from Termux:
+In the app, a distro installed with **Command line only** can get a desktop later: tap **⋮** next to it on Home, then **Add a desktop**. To switch desktops, remove the distro and install it again with the other one. In Termux:
 
 ```bash copy
 andronix install debian --de lxqt --reinstall
@@ -85,5 +85,4 @@ andronix install debian --de lxqt --reinstall
 
 ## Next steps
 
-- [Install a distro](/termux/with-the-app) with the DE of your choice.
-- Learn how to view your desktop with [VNC](/termux/vnc).
+- [Install a distro](/install/in-the-app) with the desktop of your choice.

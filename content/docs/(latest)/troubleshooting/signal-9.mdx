@@ -1,18 +1,20 @@
 ---
 title: Process Completed (Signal 9)
 metaTitle: 'Fix "Process completed (signal 9)" in Termux (Android 12+) - Andronix Docs'
-description: Fix "[Process completed (signal 9) - press Enter]" in Termux. Android 12 and newer stop apps that start many processes; here's how to turn that off on your Android version.
+description: Fix "Android stopped" in the Andronix app and "[Process completed (signal 9) - press Enter]" in Termux. Android 12 and newer stop apps that start many processes; here's how to turn that off on your Android version.
 ---
 
 ## The symptom
 
-Termux suddenly shows:
+**In the app**, the desktop or terminal closes and Android shows **Android stopped Debian** (with your distro's name). Its **Why?** button opens this page. Tap the notification to start it again.
+
+**In Termux**, Termux suddenly shows:
 
 ```text
 [Process completed (signal 9) - press Enter]
 ```
 
-Your distro, its desktop and any install that was running stop at that moment. It happens most often with a desktop open, because a desktop starts many processes.
+Either way, your distro, its desktop and any install that was running stop at that moment. It happens most often with a desktop open, because a desktop starts many processes.
 
 The Andronix app also warns about this on newer Android versions, on the Start the desktop step, with a **How to fix it** link to this page:
 
@@ -20,7 +22,7 @@ The Andronix app also warns about this on newer Android versions, on the Start t
 
 ## Why it happens
 
-Android 12 added a **phantom process killer**. It stops the background processes an app starts once there are more than 32 of them, or when they use a lot of CPU. Andronix runs your whole distro as Termux's child processes, so Android can kill it.
+Android 12 added a **phantom process killer**. It stops the background processes an app starts once there are more than 32 of them, or when they use a lot of CPU. Andronix runs your whole distro as child processes of the app (or of Termux), so Android can kill it.
 
 - **Android 11 and older:** not affected. You don't need this page.
 - **Android 12 and newer:** turn it off with the steps for your version below. You only need to do it once, but see the notes for each version.
@@ -65,9 +67,9 @@ On some stock Android 12L and 13 phones, **Developer options › Feature flags**
 ## After the fix
 
 - If an install stopped, run the **same install command** again. It continues where it stopped.
-- Also turn off **battery optimization** for Termux in your phone's settings.
+- Also turn off **battery optimization** for Andronix (or for Termux, if you use it) in your phone's settings.
 
-More install and desktop problems: [The install fails or stops](/troubleshooting/install) and [The desktop is black, slow or closes](/termux/desktop-problems).
+More install and desktop problems: [The install fails or stops](/termux/install-problems) and [The desktop is black, slow or closes](/termux/desktop-problems).
 
 Still stopping after the fix? [Report a problem](/troubleshooting/report-a-problem) from the Andronix app.
 

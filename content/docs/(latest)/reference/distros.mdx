@@ -6,11 +6,11 @@ description: Every free Linux distro Andronix installs, with its version, suppor
 
 import Badge from "@/components/badge";
 
-Andronix installs these free distros. Each one comes with the desktop you pick (XFCE, LXQt, MATE, or KDE Plasma on some distros) or the command line only, a VNC server for the desktop, and Firefox. This page lists what you get with each distro and the commands to install, start and remove it.
+Andronix installs these free distros. Each one comes with the desktop you pick (XFCE, LXQt, MATE, or KDE Plasma on some distros) or the command line only and a web browser. This page lists what you get with each distro and the commands to install, start and remove it.
 
-<Callout type="info">The easiest way to install is through the app (version 10.0 or newer): it copies the right command for you. See [Installing a Distro](/termux/with-the-app). The commands on this page do the same thing from Termux.</Callout>
+<Callout type="info">The easiest way to install is in the app: pick the distro and a desktop, and the app does the rest. See [Install in the app](/install/in-the-app).</Callout>
 
-The `andronix install` commands below need `andronix` in Termux. If you haven't installed a distro with Andronix 2.0 yet, use this one line instead, with your distro and desktop:
+The `andronix install` commands below are for Termux (older phones, or the command-line installer). If you haven't installed a distro with Andronix 2.0 in Termux yet, use this one line instead, with your distro and desktop:
 
 ```bash copy
 (curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
@@ -113,7 +113,7 @@ Update with `sudo pacman -Syu` before installing anything, and avoid `pacman -Sy
 
 Manjaro ARM, an Arch-based distro. Only available on arm64 and x86_64.
 
-<Callout type="warning">`sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks such as installing packages, open a root shell from Termux with `andronix start manjaro --root`.</Callout>
+<Callout type="warning">`sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks such as installing packages, use the root terminal (in Termux: `andronix start manjaro --root`).</Callout>
 
 | | |
 |---|---|
@@ -164,7 +164,6 @@ Inside the distro, use its package manager with `sudo` (on Manjaro, use a root s
 
 ## Next steps
 
-- [Installing a Distro](/termux/with-the-app): the step-by-step guide with the app.
+- [Install in the app](/install/in-the-app): the step-by-step guide.
 - [Desktop Environments](/reference/desktops): compare XFCE, LXQt and MATE.
-- [VNC](/termux/vnc): connect to your desktop.
 - [The andronix command](/reference/andronix-command): every command and option.

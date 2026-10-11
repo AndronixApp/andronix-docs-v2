@@ -3,6 +3,8 @@ title: The Install Fails or Stops
 description: Fix an Andronix install that fails or stops - signal 9, storage space, downloads, unsupported phones, passwords - and where to find the logs.
 ---
 
+This page is for Andronix with **Termux**. For installs in the app, see [Linux in the app: limits and problems](/troubleshooting/in-the-app).
+
 This page covers problems while installing a free distro, and just after. For desktop problems, see [The desktop is black, slow or closes](/termux/desktop-problems); for Termux errors, see [Termux errors](/termux/errors). If yours isn't here, see [Still stuck?](#still-stuck) at the bottom.
 
 ## The install stopped halfway
@@ -45,9 +47,9 @@ Leave some extra room for the download while it unpacks. If you're short on spac
 
 Some older phones (for example Android 8 or 9 phones on a 4.4 kernel) run a Linux kernel older than 4.8.
 
-**In the app**, XFCE, MATE and KDE Plasma aren't offered on these phones; the app says **Needs Linux kernel 4.8 or newer. On this device, use LXQt.** Pick LXQt or the command line. If you already have one of those desktops installed, tapping it opens the terminal instead.
+In the app, these desktops aren't offered on such phones: see [Requirements](/start-here/requirements#older-linux-kernels).
 
-**In Termux**, desktops install and work on many of these phones, but on some the desktop stays black. The command line always works.
+Desktops install and work on many of these phones, but on some the desktop stays black. The command line always works.
 
 The app (10.0.3 and newer) shows a notice when you pick a desktop, and `andronix` warns before a desktop install, `andronix desktop` and `vncserver-start`. From installer 2.0.5 the warning reads:
 

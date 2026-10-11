@@ -35,6 +35,7 @@ const MOVED_TO_TERMUX: Record<string, string> = {
   '/troubleshooting/termux': '/termux/errors',
   '/troubleshooting/desktop': '/termux/desktop-problems',
   '/use/ssh': '/termux/ssh',
+  '/troubleshooting/install': '/termux/install-problems',
 };
 
 export const isV8 = (page: Page) => page.slugs[0] === 'v8';

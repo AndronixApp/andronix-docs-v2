@@ -10,6 +10,7 @@
     "termux-x11",
     "vnc",
     "storage",
+    "install-problems",
     "errors",
     "desktop-problems",
     "updates",
