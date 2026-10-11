@@ -1,9 +1,10 @@
 ---
 title: Uninstall a Distro
-description: Remove a Linux distro installed with Andronix from your Android device in a few steps, using the Andronix app and a single Termux command.
+description: Remove a Linux distro from your Android device - in the app with Remove, or in Termux with the Andronix app's command or andronix remove.
 ---
 
 import Imagera from "@/components/imagera";
+import AppShot from "@/components/app-shot";
 
 <Callout type="info">**Upgrading from an older Modded OS?** If you installed a Modded OS with the old Andronix app (8.x or earlier), see [Upgrading from an older Modded OS](/modded-os/upgrade): back up your files, uninstall the old version, then install the new one.</Callout>
 
@@ -14,6 +15,30 @@ Learn how to uninstall a Linux distro you installed with Andronix. The app gener
 <Callout type="warning">Uninstalling deletes everything inside the distro. Copy anything you want to keep to `/sdcard` first, or make a backup with [`andronix backup`](/reference/andronix-command#backing-up-and-restoring).</Callout>
 
 {/* App 10 screenshots: see DOCS_SHOTS.md. <AppShot> renders nothing until public/images/app10/<name>.png exists. */}
+
+## In the app
+
+For a distro you installed **in the app** (listed on Home under **Your Linux**):
+
+1. On Home, under **Your Linux**, tap **⋮** next to the distro, then **Remove**.
+
+   <AppShot name="app10-your-linux-menu" alt="The ⋮ menu for a distro under Your Linux, with Remove at the bottom" />
+
+2. The app asks **Remove Debian?** (with your distro's name): the distro and everything inside it is deleted from this device. Tap **Remove**.
+
+   <AppShot name="app10-remove-confirm" alt="Remove Debian? Debian and everything inside it is deleted from this device. Cancel and Remove" />
+
+3. The app stops the distro if it's running, removes it, and says when it's done.
+
+What stays: files you saved to **Download/Andronix** or **Documents/Andronix** stay on your phone. Home-screen shortcuts to the distro's apps stop working, and Android can't remove them for you: remove them from your home screen yourself. If you install the same distro again, they work again.
+
+If the app says **Wait for the install to finish first**, an install is still running. If it says the distro **couldn't be removed**, close Andronix, open it again and try once more.
+
+**Install a free distro again from scratch:** remove it, then install it again. Installing a distro that's already there changes nothing. A Modded OS edition can be reinstalled directly; see [Modded OS](/modded-os/modded-os-installation).
+
+## In Termux
+
+For a distro you installed in Termux.
 
 ## 1. Preparation 🚀
 

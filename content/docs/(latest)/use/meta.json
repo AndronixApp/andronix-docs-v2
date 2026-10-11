@@ -2,6 +2,7 @@
   "title": "Step 4 · Use it",
   "defaultOpen": true,
   "pages": [
+    "your-linux",
     "apps",
     "android-files",
     "shortcuts",
@@ -11,6 +12,7 @@
     "storage",
     "backups",
     "updates",
+    "saved-commands",
     "performance",
     "ssh"
   ]

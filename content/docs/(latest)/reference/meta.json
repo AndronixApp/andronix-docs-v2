@@ -3,6 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "andronix-command",
+    "settings",
     "distros",
     "desktops",
     "vnc",
