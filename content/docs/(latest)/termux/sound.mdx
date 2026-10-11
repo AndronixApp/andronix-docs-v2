@@ -1,0 +1,33 @@
+---
+title: Sound in Termux
+description: How sound from a distro in Termux reaches the phone's speakers through PulseAudio, and what to check if you hear nothing.
+---
+
+import NextStep from "@/components/next-step";
+
+This page is for Andronix with **Termux**, on phones that can't run Linux in the app (Android 7, or no 64-bit ARM processor), or if you use the command-line installer. For Linux in the app, see [Sound](/use/sound).
+
+Sound works out of the box in Andronix 2.0. Anything that plays audio in your distro, like a browser or a music player, plays through the phone's speakers or headphones.
+
+## How it works
+
+Your distro sends its sound to **PulseAudio**, a sound server that runs in Termux. Each time you start the distro (`./start-debian.sh`, `andronix start` or `andronix desktop`), Andronix makes sure PulseAudio is running, and installs it in Termux the first time if it's missing. There's nothing to set up.
+
+PulseAudio only accepts connections from the phone itself (127.0.0.1), not from your network.
+
+<Callout type="info">With [VNC](/termux/vnc), the sound plays on the **phone**, even when you're viewing the desktop from another device. VNC doesn't carry sound.</Callout>
+
+## No sound?
+
+1. **Start the distro once from a Termux session** (not with a one-off command like `./start-debian.sh ls`). One-off commands never install packages, so PulseAudio only gets installed by an interactive start.
+2. **Check PulseAudio is running.** In Termux, run:
+
+   ```bash copy
+   pulseaudio --check && echo running
+   ```
+
+   If it prints nothing, exit the distro and start it again.
+3. **Check the volume** in the desktop's sound settings, and on the phone.
+4. **Look at the log:** what Andronix did with PulseAudio is in `~/.andronix/logs/termux.log`. Include it when you [ask for help](/troubleshooting/install#still-stuck).
+
+<Callout type="info">The Classic Modded OS editions set up sound their own way. For them and for installs from before Andronix 2.0, see [Sound on an old install](/pre-2.0/old-install-guides#sound-on-an-old-install).</Callout>

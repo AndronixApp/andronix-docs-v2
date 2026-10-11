@@ -1,29 +1,9 @@
 ---
 title: Keep It Updated
-description: Keep Andronix and your distros up to date - in the app with app updates and the distro's package manager, in Termux with andronix update.
+description: Keep Andronix and your distros up to date - Andronix updates with the app, and your distro's packages with its own package manager.
 ---
 
 import NextStep from "@/components/next-step";
-
-One command in Termux updates everything:
-
-```bash copy
-andronix update
-```
-
-It does two things:
-
-1. **Updates `andronix` itself** to the latest version, after checking its checksum.
-2. **Updates the packages in every installed distro**, with the same progress display as an install.
-3. **Adds what a newer installer brings** to distros installed with an older one. For example, installer 2.0.1 adds the web browser's video codecs to distros installed with 2.0.0.
-
-<TerminalDemo name="update" command="andronix update" />
-
-Exit the distro and stop its desktop before updating it.
-
-## In the app
-
-For distros you installed **in the app**:
 
 - **Andronix's part updates with the app.** The installer and everything that runs Linux in the app are inside the Andronix app, so they update when the app does. When an update is ready, the app shows **Update available**; after it downloads, tap **Restart**.
 - **Your distro's packages** update with the distro's own package manager, in the distro's terminal. On Debian and Ubuntu:
@@ -34,30 +14,6 @@ For distros you installed **in the app**:
 
   On Fedora, `sudo dnf upgrade`; on Arch and Manjaro, `sudo pacman -Syu`; on Alpine, `sudo apk upgrade`; on Void, `sudo xbps-install -Su`.
 
-`andronix update` is for Termux only: inside a distro in the app, it says it's done from the Andronix app.
-
-## In Termux
-
-## Only some of it
-
-| Command | Updates |
-|---|---|
-| `andronix update debian` | `andronix`, then only Debian |
-| `andronix update --self` | Only `andronix` |
-| `andronix update --no-self` | Only the distros |
-
-## From inside the distro
-
-You can also update a distro with its own package manager, like on any Linux PC:
-
-| Distro | Command |
-|---|---|
-| Debian, Ubuntu, Kali | `sudo apt update && sudo apt upgrade` |
-| Fedora | `sudo dnf upgrade` |
-| Arch, Manjaro | `sudo pacman -Syu` (on Manjaro, from `andronix start manjaro --root`, without `sudo`) |
-| Alpine | `sudo apk upgrade` |
-| Void | `sudo xbps-install -Su` |
-
-`andronix update` also applies Andronix's fixes for known problems (for example with the desktop session), so run it from time to time even if you usually update inside the distro.
+`andronix update` is only for distros in Termux; see [Keep it updated in Termux](/termux/updates).
 
 <NextStep href="/use/performance" title="Make it faster" description="The light profile, lighter desktops, and other ways to speed things up." />

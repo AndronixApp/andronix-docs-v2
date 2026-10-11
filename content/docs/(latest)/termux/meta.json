@@ -3,6 +3,7 @@
   "description": "Andronix with Termux: for Android 7, devices without a 64-bit ARM processor, and the command-line installer",
   "defaultOpen": false,
   "pages": [
+    "requirements",
     "install-termux",
     "with-the-app",
     "without-the-app",
@@ -10,6 +11,10 @@
     "vnc",
     "storage",
     "errors",
-    "desktop-problems"
+    "desktop-problems",
+    "updates",
+    "sound",
+    "backups",
+    "uninstall"
   ]
 }
