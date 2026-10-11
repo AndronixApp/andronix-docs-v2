@@ -13,16 +13,13 @@ import AppShot from "@/components/app-shot";
 <Steps>
 <Step>
 
-### Choose "In the app"
+### Open Linux distros
 
-On Home, tap **Install Linux**. The first time, the app asks **How should Linux run?**
+On Home, under **Install Linux**, tap **Linux distros**. On a device that can run Linux in the app, the distro installs in the app; there's nothing to choose.
 
-- **In the app** (Recommended): Andronix runs Linux and its desktop itself. The desktop opens right here, with sound, and there's nothing else to install.
-- **In Termux**: the classic way. You install Termux and paste one command, and the desktop opens in the Termux:X11 app.
+If you already used Andronix with Termux, check where new installs go: **Settings › Linux › Run Linux**. See [Coming from Termux](/install/standalone-and-termux#switch-between-them).
 
-**In the app** is already selected if you're new to Andronix and your device can run it. If you already use Termux, the app keeps Termux selected. Tap **Continue**. You can change this later in [Settings](/install/standalone-and-termux#switch-between-them).
-
-<AppShot name="app10-sa-install-mode" alt="How should Linux run? In the app (Recommended, selected) and In Termux, with Continue" />
+<AppShot name="app10-your-linux" alt="Home: Your Linux at the top, and Install Linux with the Linux distros card" />
 
 </Step>
 
@@ -30,11 +27,12 @@ On Home, tap **Install Linux**. The first time, the app asks **How should Linux 
 
 ### Pick a distro and a desktop
 
-Choose the distro, then the desktop (XFCE, LXQt, MATE or KDE Plasma). Not sure which? See [Choose a distro and desktop](/install/choose).
+Choose the distro on **Distro Selection**. Then choose **Desktop Environment** or **Command line only (no desktop)**, and for a desktop, pick XFCE, LXQt, MATE or KDE Plasma. Not sure which? See [Choose a distro and desktop](/install/choose).
 
 <Shots>
-<AppShot name="app10-sa-pick-distro" alt="The list of distros to install in the app" />
-<AppShot name="app10-sa-pick-desktop" alt="The desktop choice for Debian: XFCE (Recommended), LXQt, MATE, KDE Plasma and Command line only (no desktop)" />
+<AppShot name="app10-sa-pick-distro" alt="Distro Selection, step 1 of 4: Try out Modded OS, Ubuntu 26.04 LTS and Debian 13 (Recommended), Ubuntu 24.04 LTS" />
+<AppShot name="app10-sa-pick-interface" alt="GUI Selection: Desktop Environment (Best) or Command line only (no desktop)" />
+<AppShot name="app10-sa-pick-desktop" alt="Desktop Environments: XFCE (Recommended), LXQt, MATE and KDE Plasma (needs 4 GB of RAM or more)" />
 </Shots>
 
 - **Command line only (no desktop):** no desktop opens; the app opens a terminal where you use Linux. You can [add a desktop later](#add-a-desktop-later).
@@ -60,7 +58,10 @@ The app also passes your phone's time zone and keyboard layout to the distro.
 
 The app shows each step as it goes: checking your device, downloading and unpacking the distro, installing the desktop and a web browser, and setting up your user. It usually takes **5 to 30 minutes**, depending on your phone and your connection.
 
-<AppShot name="app10-sa-install-progress" alt="Installing Debian, Step 4 of 9: the current step with its progress, and the Steps list with Done steps and their times" />
+<Shots>
+<AppShot name="app10-sa-install-progress-download" alt="Installing Debian: downloading, with the bytes done and the Steps list" />
+<AppShot name="app10-sa-install-progress" alt="Installing Debian: a later step, with the Steps list showing Done steps and their times" />
+</Shots>
 
 The install keeps going if you leave the app. Android shows an **Installing Debian** notification (with your distro's name) with the step, the time left and **Cancel**; tap it to come back. The first time, on Android 13 and newer, the app asks to send notifications so it can tell you when the install finishes.
 
