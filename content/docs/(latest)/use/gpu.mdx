@@ -59,7 +59,7 @@ glxgears -info | grep GL_RENDERER
 - With GPU acceleration: `GL_RENDERER = virgl (...)`, with your chip in the brackets.
 - Without it (software drawing): `llvmpipe ...`.
 
-`glxinfo` may fail with VirGL, so use `glxgears -info`.
+<Callout type="warning">**Known issue:** in GPU mode, `glxinfo` may stop with `BadMatch (X_GetImage)`. That is a quirk of how the desktop shows GPU frames, not a problem with the GPU. To check the GPU, run `glxgears`; it shows the frame rate. Both `glxinfo` and `glxgears` come from the `mesa-utils` package (`sudo apt install mesa-utils`).</Callout>
 
 ## Measured results
 
