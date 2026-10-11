@@ -1,0 +1,37 @@
+---
+title: Open-Source Components of the App
+description: The open-source libraries the Andronix app uses to run Linux without Termux (proot, talloc, libandroid-shmem, virglrenderer, libepoxy), their licenses, where their source code is, and our written offer.
+---
+
+import { STANDALONE_RUNTIME_VERSION as V } from '@/lib/beta.mjs';
+
+export const RELEASE = `https://github.com/AndronixApp/andronix/releases/tag/standalone-${V}`;
+
+The Andronix app runs Linux distros without Termux using these native libraries. Each app release lists the exact versions; for this release:
+
+| Library | Component | Version | License |
+|---|---|---|---|
+| `libproot.so`, `libproot-loader.so` | proot (Termux's fork) | 5.1.107.96 | GPL-2.0 |
+| `libtalloc.so` | talloc | 2.5.0 | LGPL-3.0-or-later |
+| inside `libproot.so` | libandroid-shmem | 0.7 | BSD-3-Clause |
+| `libvirgl.so` | virglrenderer (with our Android patch), libepoxy | 1.3.0, 1.5.10 | MIT |
+| `libandronix.so`, `libandronixpresent.so` | Andronix | | Andronix's own license |
+
+## Where the source is
+
+The GitHub release <a href={RELEASE}><code>standalone-{V}</code></a> has, for exactly the libraries in this app version:
+
+- the unmodified source archives of proot, talloc and libandroid-shmem;
+- the virglrenderer and libepoxy archives and `virglrenderer-android.patch`, our only change to any of these components;
+- `SHA256SUMS` for those files and for the six libraries in the app, and `build.json` with the versions;
+- the license texts.
+
+The scripts that build the libraries, with every build setting, are in the repository's `standalone/` folder at that release's tag. The build is reproducible: following `standalone/README.md` gives the same files, byte for byte, as those in the app.
+
+## Written offer
+
+For at least three years after we last distribute a given app version, Andronix will give anyone who asks a complete machine-readable copy of the corresponding source code of the GPL and LGPL components above, on a medium customarily used for software interchange or by download, for a charge no more than the cost of physically performing the distribution. Write to [support@andronix.app](mailto:support@andronix.app) and name the app version (Settings, About).
+
+## talloc (LGPL)
+
+`libtalloc.so` is a separate shared library in the app, loaded by proot at run time, not linked into it.
