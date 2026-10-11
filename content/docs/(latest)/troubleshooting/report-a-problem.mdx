@@ -5,14 +5,18 @@ description: Send us a problem report from the Andronix app or with andronix rep
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 import Badge from "@/components/badge";
+import AppShot from "@/components/app-shot";
 
 If something doesn't work and the troubleshooting pages don't fix it, send us a report. It reaches us with the details we need to help, so you don't have to type them out, and you get a **report ID** like `AX-7K3Q9M` to quote in any later message.
 
 ## From the app
 
-{/* TODO(docs): where the form is opened from (menu, Settings, install result) isn't final in the app (feat/report-problem). Add the path and an AppShot once it is. */}
+In the Andronix app, open the **Help** tab and tap **Report a problem**. It also opens, with the problem filled in, from:
 
-In the Andronix app, open **Report a problem**.
+- **Report a problem** on the screen of an install that failed, or **Send report** in its notification;
+- **Report a problem** on the safe-mode and GPU sheets, after a black desktop (see [Black screen and safe mode](/troubleshooting/black-screen)).
+
+<AppShot name="app10-report-form" alt="Report a problem: the category, the description, photos, email or Linked to your account, and Send report" />
 
 <Steps>
 <Step>
@@ -42,6 +46,8 @@ Describe what you did and what went wrong, up to 8,000 characters. You can also 
 
 The form shows the details it attaches: the app version, your Android version and phone, the Linux kernel, and your Termux and Termux:X11 versions. It also includes the result of your last install from the app (the distro, desktop, and the step it stopped at). We send only what's shown on the form.
 
+For a distro in the app, **Attach my last install** is on: it adds the distro, the step the install stopped at and when, with the error and the installer's log, personal details removed. If Android stopped a desktop, that's attached too, with its log.
+
 Tap **Send report**. The app shows your report ID; tap **Copy ID** to keep it.
 
 </Step>
@@ -50,6 +56,22 @@ Tap **Send report**. The app shows your report ID; tap **Copy ID** to keep it.
 <Callout type="info">Offline? The app saves the report and sends it automatically when you're back online. Sending the same report twice never creates a second one.</Callout>
 
 You don't need to be signed in. If you are, the report is linked to your account, which helps with purchase and Modded OS questions.
+
+## Automatic problem reports
+
+For Linux in the app, Andronix can also send a report by itself when something fails: an install, update or removal that fails, a desktop that doesn't start or stops by itself, Android stopping a desktop, or the app crashing while it runs Linux.
+
+The first time something fails, the app asks **Send problem reports automatically?** and shows what it would send (open **What we'll send** to see the list). When you're signed in, **Linked to your account** links the report to your account; switch it off if you don't want that.
+
+<AppShot name="app10-auto-report-sheet" alt="Send problem reports automatically? The explanation, What we'll send, Linked to your account, and Always, Just this time and No" />
+
+- **Always:** send reports like this automatically from now on.
+- **Just this time:** send this one. The app asks again next time.
+- **No:** don't send.
+
+You can change it any time in **Settings › Send problem reports automatically**. A report never includes photos or an email address you type, and the same problem is sent at most once a day.
+
+After a report is sent, a notification says **Report sent** with its ID. If we already know the problem, it says so; tap it to see the fix. Offline, it says **Report saved** and sends when you're back online. What a report contains and how long we keep it: see the [Privacy Policy](https://andronix.app/legal/privacy-policy).
 
 ## From Termux: andronix report
 
