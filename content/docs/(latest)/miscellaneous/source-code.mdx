@@ -3,9 +3,11 @@ title: Open-Source Components of the App
 description: The open-source libraries the Andronix app uses to run Linux without Termux (proot, talloc, libandroid-shmem, virglrenderer, libepoxy), their licenses, where their source code is, and our written offer.
 ---
 
-import { STANDALONE_RUNTIME_VERSION as V } from '@/lib/beta.mjs';
+import { STANDALONE_RUNTIME_VERSION as V, STANDALONE_RUNTIME_BETA_VERSION as BV } from '@/lib/beta.mjs';
 
 export const RELEASE = `https://github.com/AndronixApp/andronix/releases/tag/standalone-${V}`;
+export const BETA_RELEASE = `https://github.com/AndronixApp/andronix/releases/tag/standalone-${BV}`;
+export const SCRIPTS = `https://github.com/AndronixApp/andronix/tree/standalone-${V}/standalone`;
 
 The Andronix app runs Linux distros without Termux using these native libraries. Each app release lists the exact versions; for this release:
 
@@ -19,14 +21,16 @@ The Andronix app runs Linux distros without Termux using these native libraries.
 
 ## Where the source is
 
-The GitHub release <a href={RELEASE}><code>standalone-{V}</code></a> has, for exactly the libraries in this app version:
+The GitHub release <a href={RELEASE}><code>standalone-{V}</code></a> (Andronix 10.1) has, for exactly the libraries in this app version:
 
 - the unmodified source archives of proot, talloc and libandroid-shmem;
 - the virglrenderer and libepoxy archives and `virglrenderer-android.patch`, our only change to any of these components;
 - `SHA256SUMS` for those files and for the six libraries in the app, and `build.json` with the versions;
 - the license texts.
 
-The scripts that build the libraries, with every build setting, are in the repository's `standalone/` folder at that release's tag. The build is reproducible: following `standalone/README.md` gives the same files, byte for byte, as those in the app.
+For the 10.1 beta (10.1.0-beta17), the same files are in the release <a href={BETA_RELEASE}><code>standalone-{BV}</code></a>.
+
+The scripts that build the libraries, with every build setting, are in the repository's <a href={SCRIPTS}><code>standalone/</code> folder</a> at that release's tag. The build is reproducible: following `standalone/README.md` gives the same files, byte for byte, as those in the app.
 
 ## Written offer
 
