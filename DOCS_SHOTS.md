@@ -1,5 +1,54 @@
 # App 10 screenshot shot list
 
+## 10.1 launch: Linux in the app (#155, for one emulator session)
+
+**Format.**
+- 1080 x 1920 PNG, 24-bit, no alpha, saved as `public/images/app10/<name>.png`.
+- English (en-US), the app's default theme as in the other app10 shots.
+- An app 10.1.0 build (release or beta17+), Linux mode **In the app**.
+- `<AppShot>` shows nothing until the file exists, so pages are safe to publish before the shots land.
+
+**Setup, in this order, on one arm64 emulator (Android 14, Pixel-size phone).**
+1. Fresh install of the app, signed in with a test account that has saved Andronix Commands. A Premium or Modded Pass owner is best, for the Modded shot.
+2. Install Debian with XFCE in the app (shots 1-7).
+3. Install Alpine with **Command line only** (shot 12).
+4. Leave Debian running for the Home, menu and notification shots.
+5. For the failure shots, turn on airplane mode during a download.
+6. For the dimmed card, use a second emulator that can't run Linux in the app (Android 7, or an x86_64 image). Use the reason it shows, and tell docs which reason it is so the alt text matches.
+
+| # | Name | Screen and state | Page |
+|---|---|---|---|
+| 1 | `app10-sa-install-mode` | Home > Install Linux, first run: "How should Linux run?" with **In the app** (Recommended) selected | Install in the app |
+| 2 | `app10-sa-pick-distro` | The distro list in app mode | Install in the app |
+| 3 | `app10-sa-pick-desktop` | Debian's desktop choice: XFCE (Recommended), LXQt, MATE, KDE Plasma, Command line only (no desktop) with its app-mode text | Install in the app |
+| 4 | `app10-sa-setup-user` | Set up your user, filled in (user `alex`, password dots), with the sudo note | Install in the app |
+| 5 | `app10-sa-install-progress` | Installing Debian, mid-install (around step 4), with the Steps list showing Done steps and their times | Install in the app |
+| 6 | `app10-sa-install-done` | "Debian is ready" with **Open the desktop** | Install in the app |
+| 7 | `app10-sa-install-failed` | A failed install ("No connection", from airplane mode) with What to try, **Report a problem** and **Try again** | Install in the app |
+| 8 | `app10-your-linux` | Home > Your Linux: Debian **Running** with the Open pill and Stop; Alpine below | Your Linux on Home |
+| 9 | `app10-your-linux-menu` | Debian's ⋮ menu open: Add an app to the home screen, Start in safe mode, Desktop size, Remove | Your Linux, Uninstall |
+| 10 | `app10-linux-running-notification` | Notification shade: "Debian · desktop running", uptime and RAM, with Open terminal / Stop / Mute | Your Linux on Home |
+| 11 | `app10-remove-confirm` | Remove a distro: the "Remove Alpine?" dialog (use the throwaway distro) | Uninstall |
+| 12 | `app10-sa-add-desktop` | Alpine (command line) ⋮ > Add a desktop: the sheet with XFCE, LXQt, MATE (and KDE if offered) | Install in the app |
+| 13 | `app10-sa-run-linux-sheet` | Settings > Linux > Run Linux: the sheet with both cards and Save | In the app and in Termux |
+| 14 | `app10-settings-linux` | Settings, scrolled to the Linux section: Run Linux, Android files in Linux, GPU acceleration (Experimental, off), Send problem reports automatically | Settings |
+| 15 | `app10-sa-android-files` | Settings > Linux > Android files in Linux, with Shared folders On, Import, Linux files in Android On | Android files in Linux |
+| 16 | `app10-sa-move-from-termux` | The "Move Linux from Termux" screen (from the Home card's Try it, or with Termux installed) | In the app and in Termux |
+| 17 | `app10-saved-commands` | Settings > Tools > Saved commands: the sheet with the count, the list, Save as file, Share, Close | Saved commands |
+| 18 | `app10-auto-report-sheet` | "Send problem reports automatically?" (it shows at the first failure, e.g. after shot 7), with What we'll send collapsed and Linked to your account on | Report a problem |
+| 19 | `app10-report-form` | Help > Report a problem: category "The install failed", a short description, **Attach my last install** on | Report a problem |
+| 20 | `app10-sa-modded-installing` | A Modded edition installing in the app (install screen, mid-install) | Modded OS installation |
+| 21 | `app10-sa-mode-dimmed` | Second emulator: "How should Linux run?" with **In the app** dimmed and its reason | Requirements |
+
+**Retakes on 10.1.0, same session.** These existing `public/images/standalone/*.jpg` shots come from beta5-beta8. Retake them if the screen changed, keeping the same file names:
+- `your-linux`, `loading-1` to `loading-3`;
+- `desktop-toolbar`, `extra-keys`, `mouse-mode`, `toolbar-hardware-keyboard`, `desktop-size`;
+- `settings-linux`, `gpu-off-sheet`, `gpu-off-banner-beta8` (rename it to `gpu-off-banner` and tell docs);
+- `safe-mode-sheet`, `black-safe-mode`, `black-vnc`, `black-gpu-off`;
+- `pin-dialog`, `pin-launched`;
+- `tablet-home`, `fold-tabletop` (these need a tablet or foldable emulator).
+
+
 ## 10.0.6 update (Oct 8, renders from android, 10.0.6 debug build, 1080 x 1920)
 
 - Replaced: `app10-home` (Linux distros card, new icons), `app10-termux-step` (Copy and open Termux).
