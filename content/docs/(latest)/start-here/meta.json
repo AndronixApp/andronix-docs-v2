@@ -3,7 +3,6 @@
   "defaultOpen": true,
   "pages": [
     "what-is-andronix",
-    "requirements",
-    "install-termux"
+    "requirements"
   ]
 }

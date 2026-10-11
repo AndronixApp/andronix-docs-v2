@@ -3,7 +3,6 @@
   "defaultOpen": true,
   "pages": [
     "in-the-app",
-    "tablets",
-    "termux-x11"
+    "tablets"
   ]
 }

@@ -11,7 +11,7 @@ These errors come from Termux itself, before or around the Andronix installer.
 
 If the command fails with errors from `pkg` or `apt` before you see the Andronix steps, your Termux is probably the old Play Store build from 2020 (version 0.101), whose package servers no longer work.
 
-**Fix:** replace it with a current Termux. See [Install Termux](/start-here/install-termux).
+**Fix:** replace it with a current Termux. See [Install Termux](/termux/install-termux).
 
 ## andronix: command not found
 
@@ -21,7 +21,7 @@ If the command fails with errors from `pkg` or `apt` before you see the Andronix
 (curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
-Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/install/without-the-app).
+Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/termux/without-the-app).
 
 ## "CANNOT LINK EXECUTABLE"
 
@@ -185,6 +185,6 @@ If the issue persists after trying all the solutions:
 
 ### Related Pages
 
-- [Migrating Termux to F-Droid](/start-here/install-termux)
-- [Termux Security](/start-here/install-termux)
+- [Migrating Termux to F-Droid](/termux/install-termux)
+- [Termux Security](/termux/install-termux)
 - [Report a problem](/troubleshooting/report-a-problem)

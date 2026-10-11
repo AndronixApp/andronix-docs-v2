@@ -1,0 +1,15 @@
+{
+  "title": "Termux (older phones)",
+  "description": "Andronix with Termux: for Android 7, devices without a 64-bit ARM processor, and the command-line installer",
+  "defaultOpen": false,
+  "pages": [
+    "install-termux",
+    "with-the-app",
+    "without-the-app",
+    "termux-x11",
+    "vnc",
+    "storage",
+    "errors",
+    "desktop-problems"
+  ]
+}

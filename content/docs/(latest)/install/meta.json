@@ -5,8 +5,6 @@
     "in-the-app",
     "standalone-and-termux",
     "choose",
-    "with-the-app",
-    "without-the-app",
     "uninstall"
   ]
 }

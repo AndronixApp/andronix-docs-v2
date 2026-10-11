@@ -13,17 +13,17 @@ Andronix puts a full Linux distro, like Debian, Ubuntu or Fedora, on your Androi
 ## Two ways to run Linux
 
 - **In the app** (new in 10.1): the Andronix app installs and runs the distro itself and shows its desktop on its own screen, with sound. Nothing else to install. See [Install in the app](/install/in-the-app).
-- **In Termux**: the classic way. The distro runs inside the Termux app, and the desktop opens in the Termux:X11 app. See [Install with the app](/install/with-the-app).
+- **In Termux**: the classic way. The distro runs inside the Termux app, and the desktop opens in the Termux:X11 app. See [Install with the app](/termux/with-the-app).
 
 Both can be on the same phone; see [Linux in the app and in Termux](/install/standalone-and-termux). The rest of this page describes the Termux way; in the app, the same pieces are built in.
 
 ## The pieces
 
 - **The Andronix app** is where you pick a distro and a desktop. It gives you one command to paste into Termux, and it sells [Modded OS](/modded-os/modded-os), our themed editions with apps already set up.
-- **Termux** is a terminal app for Android. Your distro lives and runs inside it. See [Install Termux](/start-here/install-termux).
+- **Termux** is a terminal app for Android. Your distro lives and runs inside it. See [Install Termux](/termux/install-termux).
 - **The `andronix` command** runs in Termux. It downloads the distro, sets it up, installs your desktop, and starts it. See [the andronix command](/reference/andronix-command).
 - **proot** lets the distro run inside Termux as if it had its own root filesystem, without needing root on the phone. `andronix` installs it for you.
-- **Termux:X11** is an Android app that shows the distro's desktop full screen on the phone. (To reach the desktop from another device, there's also [VNC](/reference/vnc).)
+- **Termux:X11** is an Android app that shows the distro's desktop full screen on the phone. (To reach the desktop from another device, there's also [VNC](/termux/vnc).)
 - **PulseAudio** in Termux plays the distro's sound through the phone's speakers. `andronix` sets it up for you.
 
 <PlayLink />

@@ -81,7 +81,7 @@ The Andronix app (10.0 or newer) sets up `andronix` for you with its install com
 (curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
-Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. If Termux doesn't have `proot` yet, the installer installs it first. See [Install without the app](/install/without-the-app).
+Replace `debian` and `xfce` with the distro and desktop you want. After that, `andronix` is installed in Termux and you can use it directly. If Termux doesn't have `proot` yet, the installer installs it first. See [Install without the app](/termux/without-the-app).
 
 `andronix update` keeps it up to date.
 
@@ -218,7 +218,7 @@ andronix desktop stop
 - Installs Termux's `termux-x11` package the first time. The Termux:X11 app itself comes from its GitHub release page; if it's missing, the command shows the link.
 - `andronix desktop stop` (from another Termux session) stops it.
 
-See [Termux:X11](/desktop/termux-x11).
+See [Termux:X11](/termux/termux-x11).
 
 ## Listing distros
 
@@ -384,7 +384,7 @@ These commands are installed inside every desktop install.
 | `vncserver-stop` | Stop the desktop. |
 | `sudo andronix pack add python` | Add a [dev pack](/use/dev-packs). |
 
-See [VNC](/reference/vnc) for how to connect.
+See [VNC](/termux/vnc) for how to connect.
 
 ## Where things live
 
@@ -405,7 +405,7 @@ See [VNC](/reference/vnc) for how to connect.
 
 ## Related pages
 
-- [Install without the app](/install/without-the-app)
+- [Install without the app](/termux/without-the-app)
 - [Supported distros](/reference/distros)
-- [Termux:X11](/desktop/termux-x11) and [VNC](/reference/vnc)
+- [Termux:X11](/termux/termux-x11) and [VNC](/termux/vnc)
 - [The install fails or stops](/troubleshooting/install)

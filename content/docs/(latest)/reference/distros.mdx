@@ -8,7 +8,7 @@ import Badge from "@/components/badge";
 
 Andronix installs these free distros. Each one comes with the desktop you pick (XFCE, LXQt, MATE, or KDE Plasma on some distros) or the command line only, a VNC server for the desktop, and Firefox. This page lists what you get with each distro and the commands to install, start and remove it.
 
-<Callout type="info">The easiest way to install is through the app (version 10.0 or newer): it copies the right command for you. See [Installing a Distro](/install/with-the-app). The commands on this page do the same thing from Termux.</Callout>
+<Callout type="info">The easiest way to install is through the app (version 10.0 or newer): it copies the right command for you. See [Installing a Distro](/termux/with-the-app). The commands on this page do the same thing from Termux.</Callout>
 
 The `andronix install` commands below need `andronix` in Termux. If you haven't installed a distro with Andronix 2.0 yet, use this one line instead, with your distro and desktop:
 
@@ -16,7 +16,7 @@ The `andronix install` commands below need `andronix` in Termux. If you haven't 
 (curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
 ```
 
-See [Installing without the app](/install/without-the-app).
+See [Installing without the app](/termux/without-the-app).
 
 ## At a glance
 
@@ -164,7 +164,7 @@ Inside the distro, use its package manager with `sudo` (on Manjaro, use a root s
 
 ## Next steps
 
-- [Installing a Distro](/install/with-the-app): the step-by-step guide with the app.
+- [Installing a Distro](/termux/with-the-app): the step-by-step guide with the app.
 - [Desktop Environments](/reference/desktops): compare XFCE, LXQt and MATE.
-- [VNC](/reference/vnc): connect to your desktop.
+- [VNC](/termux/vnc): connect to your desktop.
 - [The andronix command](/reference/andronix-command): every command and option.

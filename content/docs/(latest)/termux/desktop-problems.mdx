@@ -4,14 +4,14 @@ metaTitle: 'Termux:X11 or VNC Black Screen? Fix the Desktop - Andronix Docs'
 description: Fix Andronix desktop problems - a black screen in Termux:X11 or VNC, a desktop that won't start, closes, runs slowly, or can't be reached from another device.
 ---
 
-This page covers problems with the desktop, over [Termux:X11](/desktop/termux-x11) or [VNC](/reference/vnc).
+This page covers problems with the desktop, over [Termux:X11](/termux/termux-x11) or [VNC](/termux/vnc).
 
 ## Termux:X11 doesn't open, or a box covers the desktop
 
 - **A "send you notifications?" box** (Android 13 and newer, the first time): tap **Allow**. Your desktop is behind it.
 - **Termux says "Desktop is running" but the app doesn't come to the front:** open Termux:X11 from your app drawer.
 - **The extra-keys bar is missing, or covers the bottom panel:** Andronix hides Termux:X11's extra-keys bar the first time you start a desktop so the bottom panel shows. Swipe down with three fingers in Termux:X11 to bring it back (or turn it on in Termux:X11 settings).
-- **"Termux:X11 isn't installed":** download `termux-x11-universal-debug.apk` from the [Termux:X11 nightly release](https://github.com/termux/termux-x11/releases/tag/nightly) and install it. See [Start the desktop](/desktop/termux-x11).
+- **"Termux:X11 isn't installed":** download `termux-x11-universal-debug.apk` from the [Termux:X11 nightly release](https://github.com/termux/termux-x11/releases/tag/nightly) and install it. See [Start the desktop](/termux/termux-x11).
 
 ## The desktop disappears and Termux says "signal 9"
 
@@ -62,7 +62,7 @@ Firefox opens in a smaller window the first time; double-tap its title bar to ma
 
 ## I can't connect from my computer
 
-By default, the desktop only accepts connections from the phone itself. Start it with `vncserver-start --lan` to allow other devices on your network. See [VNC on other devices](/reference/vnc#vnc-on-other-devices).
+By default, the desktop only accepts connections from the phone itself. Start it with `vncserver-start --lan` to allow other devices on your network. See [VNC on other devices](/termux/vnc#vnc-on-other-devices).
 
 ## Still stuck?
 

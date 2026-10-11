@@ -19,9 +19,21 @@ const V8_CANONICAL: Record<string, string> = {
   '/v8/get-started/limitations': '/reference/limitations',
   '/v8/modded-os/modded-os-installation': '/modded-os/modded-os-installation',
   '/v8/modded-os/modded-os': '/modded-os/modded-os',
-  '/v8/termux/migrating-to-f-droid': '/start-here/install-termux',
-  '/v8/unmodded-distros/unmodded-os-installation': '/install/with-the-app',
+  '/v8/termux/migrating-to-f-droid': '/termux/install-termux',
+  '/v8/unmodded-distros/unmodded-os-installation': '/termux/with-the-app',
   '/v8/window-managers/window-managers': '/pre-2.0/older-installs',
+};
+
+// Termux-only pages that moved under /termux for 10.1 (lib/redirects.mjs termuxMoveRedirects)
+const MOVED_TO_TERMUX: Record<string, string> = {
+  '/start-here/install-termux': '/termux/install-termux',
+  '/install/with-the-app': '/termux/with-the-app',
+  '/install/without-the-app': '/termux/without-the-app',
+  '/desktop/termux-x11': '/termux/termux-x11',
+  '/reference/vnc': '/termux/vnc',
+  '/use/storage': '/termux/storage',
+  '/troubleshooting/termux': '/termux/errors',
+  '/troubleshooting/desktop': '/termux/desktop-problems',
 };
 
 export const isV8 = (page: Page) => page.slugs[0] === 'v8';
@@ -40,7 +52,10 @@ export const isUnlisted = (page: Page) => UNLISTED.has(page.slugs[0]);
 /** The URL search engines should index for this page (a path, resolved against metadataBase). */
 export function canonicalPath(page: Page): string {
   if (isV8(page)) return V8_CANONICAL[page.url] ?? '/v8';
-  if (isV10(page)) return page.url.replace(/^\/v10(?=\/|$)/, '') || '/';
+  if (isV10(page)) {
+    const current = page.url.replace(/^\/v10(?=\/|$)/, '') || '/';
+    return MOVED_TO_TERMUX[current] ?? current;
+  }
   return page.url;
 }
 

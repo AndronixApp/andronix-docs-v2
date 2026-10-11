@@ -3,7 +3,7 @@ title: The Install Fails or Stops
 description: Fix an Andronix install that fails or stops - signal 9, storage space, downloads, unsupported phones, passwords - and where to find the logs.
 ---
 
-This page covers problems while installing a free distro, and just after. For desktop problems, see [The desktop is black, slow or closes](/troubleshooting/desktop); for Termux errors, see [Termux errors](/troubleshooting/termux). If yours isn't here, see [Still stuck?](#still-stuck) at the bottom.
+This page covers problems while installing a free distro, and just after. For desktop problems, see [The desktop is black, slow or closes](/termux/desktop-problems); for Termux errors, see [Termux errors](/termux/errors). If yours isn't here, see [Still stuck?](#still-stuck) at the bottom.
 
 ## The install stopped halfway
 
@@ -66,7 +66,7 @@ Installer 2.0.4 still says the desktop stays black and suggests `--de none`. You
    andronix desktop --legacy-drawing
    ```
 
-2. **Try VNC.** Inside the distro, run `vncserver-start`, then connect a VNC viewer. See [Other ways to connect (VNC)](/reference/vnc).
+2. **Try VNC.** Inside the distro, run `vncserver-start`, then connect a VNC viewer. See [Other ways to connect (VNC)](/termux/vnc).
 3. **Use the command line.** Everything except the desktop works: command-line software, dev packs and servers. To skip the desktop, install with `--de none` (for example `andronix install debian --de none`) or pick **CLI Only** in the app.
 
 **Check your kernel:** run `uname -r` in Termux. `4.4.x` or `4.9.x`? A `4.9` kernel is fine; only versions below 4.8 are affected.
@@ -88,7 +88,7 @@ andronix start debian --root
 passwd alex
 ```
 
-Replace `debian` with your distro and `alex` with your username. To reset the desktop (VNC) password, see [Changing the desktop password](/reference/vnc#changing-the-desktop-password).
+Replace `debian` with your distro and `alex` with your username. To reset the desktop (VNC) password, see [Changing the desktop password](/termux/vnc#changing-the-desktop-password).
 
 ## sudo prints "unable to send audit message"
 
