@@ -3,8 +3,6 @@
   "defaultOpen": false,
   "pages": [
     "older-installs",
-    "old-install-guides",
-    "window-managers",
-    "xsdl"
+    "old-install-guides"
   ]
 }

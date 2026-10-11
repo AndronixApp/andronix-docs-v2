@@ -6,10 +6,11 @@
 // /page/ form gets a permanent 308 to /page (the asset server's own is a 307).
 import { readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { betaRedirects, externalRedirects, legacyRedirects, v8Redirects } from '../lib/redirects.mjs';
+import { betaRedirects, externalRedirects, legacyRedirects, offsiteRedirects, removedPageRedirects, v8Redirects } from '../lib/redirects.mjs';
 
-const internal = [...v8Redirects, ...legacyRedirects, ...betaRedirects];
-const sources = new Set([...internal, ...externalRedirects].map(([from]) => from));
+const internal = [...v8Redirects, ...legacyRedirects, ...betaRedirects, ...removedPageRedirects];
+const external = [...externalRedirects, ...offsiteRedirects];
+const sources = new Set([...internal, ...external].map(([from]) => from));
 const slash = (rules, status) => rules
   .filter(([from]) => !from.includes('*') && !from.endsWith('/') && !sources.has(from + '/'))
   .map(([from, to]) => `${from}/ ${to} ${status}`);
@@ -27,9 +28,9 @@ const pages = walk(root).map((file) => {
 
 const all = [
   ...internal.map(([from, to]) => `${from} ${to} 308`),
-  ...externalRedirects.map(([from, to]) => `${from} ${to} 301`),
+  ...external.map(([from, to]) => `${from} ${to} 301`),
   ...slash(internal, 308),
-  ...slash(externalRedirects, 301),
+  ...slash(external, 301),
   ...pages.map((p) => `${p}/ ${p} 308`),
 ];
 // Exact paths first, splats (/software/*, /blog/*) last, so a splat never shadows an exact rule.

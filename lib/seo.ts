@@ -14,29 +14,14 @@ export const OG_IMAGE = { url: '/og-image-1200x630.png', width: 1200, height: 63
 // count for the new docs instead of competing with them.
 const V8_CANONICAL: Record<string, string> = {
   '/v8': '/',
-  '/v8/android-12/andronix-on-android-12-and-beyond': '/troubleshooting/signal-9',
   '/v8/desktop-environments/desktop-environments': '/reference/desktops',
   '/v8/faq/faq': '/troubleshooting/faq',
-  '/v8/get-started/how-does-andronix-work': '/start-here/what-is-andronix',
   '/v8/get-started/limitations': '/reference/limitations',
-  '/v8/miscellaneous/open-source': '/miscellaneous/open-source',
   '/v8/modded-os/modded-os-installation': '/modded-os/modded-os-installation',
   '/v8/modded-os/modded-os': '/modded-os/modded-os',
-  '/v8/security/termux': '/security/termux',
-  '/v8/software/browsers': '/use/apps',
-  '/v8/software/gimp': '/use/apps',
-  '/v8/software/IDEs': '/use/apps',
-  '/v8/software/libre-office': '/use/apps',
-  '/v8/ssh/ssh-basics': '/use/ssh',
-  '/v8/termux/cannot-link-executable': '/troubleshooting/termux',
   '/v8/termux/migrating-to-f-droid': '/start-here/install-termux',
-  '/v8/troubleshoot/internal-storage': '/use/storage',
-  '/v8/troubleshoot/sound': '/use/sound',
   '/v8/unmodded-distros/unmodded-os-installation': '/install/with-the-app',
-  '/v8/unmodded-distros/unmodded-os-uninstallation': '/install/uninstall',
-  '/v8/vnc/vnc-basics': '/reference/vnc',
-  '/v8/window-managers/window-managers': '/pre-2.0/window-managers',
-  '/v8/xsdl/xsdl-basics': '/pre-2.0/xsdl',
+  '/v8/window-managers/window-managers': '/pre-2.0/older-installs',
 };
 
 export const isV8 = (page: Page) => page.slugs[0] === 'v8';

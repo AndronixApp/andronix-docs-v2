@@ -77,12 +77,20 @@ cd ~ && curl -fsSL https://raw.githubusercontent.com/AndronixApp/AndronixOrigin/
 
 The others are in the same place, one folder per distro: `Alpine/UNI-alpine.sh`, `Arch/UNI-arch.sh`, `Debian/UNI-debian.sh`, `Fedora/UNI-fedora.sh`, `Kali/UNI-kali.sh`, `Manjaro/UNI-manjaro.sh`, `Parrot/UNI-parrot.sh`, `Ubuntu19/UNI-ubuntu19.sh`, `Ubuntu20/UNI-ubuntu20.sh`, `Ubuntu22/UNI-ubuntu22.sh` and `Void/UNI-void.sh`. Run them in Termux's home folder (`cd ~` first). They leave Andronix 2.0's distros in `~/.andronix` alone, but they also delete the start script (for example `start-debian.sh`), which Andronix 2.0 uses too: if you have the same distro from 2.0, run `andronix install debian` afterwards to write it again. For an old **Modded OS**, see [Upgrading from an older Modded OS](/modded-os/upgrade#3-uninstall-the-old-version).
 
+## Window managers
+
+Andronix 2.0 no longer offers window managers (Awesome, i3 and Openbox, which the pre-2.0 installer offered for every distro except Alpine). New installs come with a [desktop environment](/reference/desktops) (XFCE, LXQt, MATE or KDE Plasma) or the command line only. When an old window-manager command runs the Andronix 2.0 installer, it installs XFCE and tells you so. Distros you already installed with a window manager keep working.
+
+<span id="which-wm-should-i-choose" />
+
+**What to use instead:** **XFCE** is our recommendation; if you liked a window manager for its light weight, try **LXQt**. You can still install a window manager yourself inside a distro with its package manager, for example `sudo apt install i3` on Debian, but Andronix doesn't set it up or support it.
+
 ## Older guides
 
 Some pages describe how the pre-2.0 installer worked. They're kept for people still using an old install, and marked as such:
 
-- [Window Managers](/pre-2.0/window-managers)
-- [XSDL Basics](/pre-2.0/xsdl)
+- [Window Managers](/pre-2.0/older-installs#window-managers)
+- [XSDL Basics](/pre-2.0/older-installs)
 - [VNC on an old install](/pre-2.0/old-install-guides#vnc-on-an-old-install)
 - [Fixing Sound on an old install](/pre-2.0/old-install-guides#sound-on-an-old-install)
 - [Accessing Internal Storage on an old install](/pre-2.0/old-install-guides#storage-on-an-old-install)
