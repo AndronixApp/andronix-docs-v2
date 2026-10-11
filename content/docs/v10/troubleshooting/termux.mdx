@@ -1,0 +1,190 @@
+---
+title: Termux Errors
+description: "Fix Termux errors that stop Andronix - pkg errors on the old Play Store Termux, \"andronix: command not found\", and \"CANNOT LINK EXECUTABLE\" for wget and curl."
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+These errors come from Termux itself, before or around the Andronix installer.
+
+## Errors before the installer starts
+
+If the command fails with errors from `pkg` or `apt` before you see the Andronix steps, your Termux is probably the old Play Store build from 2020 (version 0.101), whose package servers no longer work.
+
+**Fix:** replace it with a current Termux. See [Install Termux](/v10/start-here/install-termux).
+
+## andronix: command not found
+
+`andronix` isn't installed in this Termux yet (or Termux was reinstalled). Install it with the app's install command, or with this one line from Termux:
+
+```bash copy
+(curl -fsSL --retry 4 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh || curl -4 -fsSL --retry 2 --retry-delay 3 https://dl.andronix.app/get.sh -o $PREFIX/tmp/get.sh) && sh $PREFIX/tmp/get.sh install debian --de xfce
+```
+
+Replace `debian` and `xfce` with your distro and desktop. See [Installing without the app](/v10/install/without-the-app).
+
+## "CANNOT LINK EXECUTABLE"
+
+This page shows how to resolve the "CANNOT LINK EXECUTABLE" error for `wget`, `curl` and other utilities in Termux. Work through the solutions in order, starting with the most common fix.
+
+<Callout type="error">
+If you see **CANNOT LINK EXECUTABLE "wget": library "libssl.so.3"** or a similar error for `curl` and other commands, follow the solutions below.
+</Callout>
+
+### The Problem
+
+This error occurs when Termux utilities like `wget` or `curl` cannot find or link to the required OpenSSL library (`libssl.so.3`). This typically happens because of:
+
+- Outdated or corrupted package repositories
+- Missing OpenSSL dependencies
+- Repository mirror connection issues
+
+### Solutions
+
+Try these solutions in order. If one doesn't work, move on to the next.
+
+### Solution 1: Change Repository Mirror
+
+The most common fix is to switch to a more reliable repository mirror.
+
+<Steps>
+<Step>
+
+### Open the repository selection tool
+
+```bash copy
+termux-change-repo
+```
+
+</Step>
+
+<Step>
+
+### Select "Main repository"
+
+Use the arrow keys to navigate and press Enter to select.
+
+</Step>
+
+<Step>
+
+### Choose "Mirror by BFSU"
+
+Select the BFSU (Beijing Foreign Studies University) mirror from the list.
+
+</Step>
+
+<Step>
+
+### Confirm and apply
+
+Press OK to apply the changes.
+
+</Step>
+
+<Step>
+
+### Restart Termux
+
+Close the Termux app completely and open it again.
+
+</Step>
+
+<Step>
+
+### Test the fix
+
+Run your command again:
+
+```bash copy
+wget --version
+```
+
+or
+
+```bash copy
+curl --version
+```
+
+</Step>
+</Steps>
+
+### Solution 2: Update and Upgrade Packages
+
+If changing the repository doesn't resolve the issue, try updating all packages.
+
+<Steps>
+<Step>
+
+### Update package lists
+
+```bash copy
+apt-get update
+```
+
+</Step>
+
+<Step>
+
+### Upgrade installed packages
+
+```bash copy
+apt-get upgrade
+```
+
+</Step>
+
+<Step>
+
+### Test the fix
+
+Run your command again to check that it works.
+
+</Step>
+</Steps>
+
+### Solution 3: Reinstall OpenSSL
+
+If neither of the solutions above works, the OpenSSL library may need to be reinstalled.
+
+<Steps>
+<Step>
+
+### Install OpenSSL
+
+```bash copy
+apt install openssl
+```
+
+This installs (or reinstalls) the required `libssl.so.3` library.
+
+</Step>
+
+<Step>
+
+### Verify installation
+
+Check whether the error is resolved:
+
+```bash copy
+wget --version
+curl --version
+```
+
+</Step>
+</Steps>
+
+### Additional Tips
+
+<Callout type="info">
+If the issue persists after trying all the solutions:
+- Make sure you have a stable internet connection
+- Try a different repository mirror if BFSU doesn't work
+- Consider reinstalling Termux from F-Droid (recommended) instead of the Play Store
+</Callout>
+
+### Related Pages
+
+- [Migrating Termux to F-Droid](/v10/start-here/install-termux)
+- [Termux Security](/v10/security/termux)
+- [Report a problem](/v10/troubleshooting/report-a-problem)

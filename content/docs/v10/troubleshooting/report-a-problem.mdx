@@ -1,0 +1,139 @@
+---
+title: Report a Problem
+description: Send us a problem report from the Andronix app or with andronix report in Termux, with your phone's details attached, and get a report ID to quote when you talk to us.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import Badge from "@/components/badge";
+
+If something doesn't work and the troubleshooting pages don't fix it, send us a report. It reaches us with the details we need to help, so you don't have to type them out, and you get a **report ID** like `AX-7K3Q9M` to quote in any later message.
+
+## From the app
+
+{/* TODO(docs): where the form is opened from (menu, Settings, install result) isn't final in the app (feat/report-problem). Add the path and an AppShot once it is. */}
+
+In the Andronix app, open **Report a problem**.
+
+<Steps>
+<Step>
+
+### Pick what it's about
+
+For example **The install failed**, **Desktop, Termux:X11 or sound**, **Termux stops (signal 9)**, **Modded OS access or download**, **Refund or purchase**, **Something in the app** or **An idea**.
+
+</Step>
+
+<Step>
+
+### Tell us what happened
+
+Describe what you did and what went wrong, up to 8,000 characters. You can also add:
+
+- **An email for a reply.** Optional. Without it, we can't reply to you directly.
+- **The output of `andronix doctor`**, pasted from Termux. Optional, and very helpful for install and desktop problems (installer 2.0.1 or newer; see [andronix doctor](/v10/reference/andronix-command#checking-your-phone-andronix-doctor)).
+- **Up to 3 photos**, such as screenshots of the problem. Location and camera details are removed before sending.
+- **An earlier report ID**, if this is about a problem you already reported.
+
+</Step>
+
+<Step>
+
+### Check what's attached, and send
+
+The form shows the details it attaches: the app version, your Android version and phone, the Linux kernel, and your Termux and Termux:X11 versions. It also includes the result of your last install from the app (the distro, desktop, and the step it stopped at). We send only what's shown on the form.
+
+Tap **Send report**. The app shows your report ID; tap **Copy ID** to keep it.
+
+</Step>
+</Steps>
+
+<Callout type="info">Offline? The app saves the report and sends it automatically when you're back online. Sending the same report twice never creates a second one.</Callout>
+
+You don't need to be signed in. If you are, the report is linked to your account, which helps with purchase and Modded OS questions.
+
+## From Termux: andronix report
+
+<Badge>installer 2.0.2+</Badge>
+
+{/* Source: andronix-distros next-2.0.2 (internal/app/problem.go, 4171afe). Drop the badge after the release. */}
+
+If a command fails in Termux, report it from there. The installer's error box ends with a reminder:
+
+```text
+Still stuck? run andronix report (it shows everything it sends first)
+```
+
+Run it right after the failure, before other commands, so the report describes the command that failed:
+
+```bash copy
+andronix report
+```
+
+### What it collects
+
+- **What failed:** the command, the distro or Modded edition, the step it stopped at, and the error message. The installer records these whenever a command fails.
+- **Your phone:** the same facts as [`andronix doctor`](/v10/reference/andronix-command#checking-your-phone-andronix-doctor): Android version, ROM, kernel, CPU type, RAM, free space, whether the phantom process killer is on, your Termux source and version, and the compatibility fixes Andronix applies on this phone.
+- **The log:** the last 400 lines of the failing command's log (or, if nothing failed, the newest install, update or remove log).
+- **The installer version**, and the install ID from the app's command, if you used one.
+
+Before anything leaves your phone, the installer **removes** download tokens, signed download links, email addresses, passwords, your distro user names, your Android user ID and your home folder path.
+
+### Check it, then send it
+
+`andronix report` prints the whole report, exactly as it will be sent, and asks **Send it to Andronix?** Nothing is sent unless you answer yes.
+
+When you say yes, it uploads the report as a draft and opens the Andronix app on it. **Report a problem** opens already filled in, with the installer's details attached:
+
+<AppShot name="app10-report-installer-attached" alt="Report a problem in the app, with 'Details from the installer are attached': the last install, the error, the installer version, andronix doctor and the install log" />
+
+Add what you were doing and any screenshots, then tap **Send report**. The app shows your report ID:
+
+<AppShot name="app10-report-sent" alt="Report sent, with the report ID AX-AFWSZ2 and a Copy ID button" />
+
+The draft waits in the app for **24 hours**. After that, run `andronix report` again.
+
+### Without the app
+
+If the Andronix app isn't installed, or Android doesn't open it, `andronix report` prints the report ID and a link you can open in the app later. It then offers to **send the report now, without the app**: answer yes and type one line about what happened. It prints `Report sent: AX-…`.
+
+To give that line up front, use `--message` (up to 300 characters):
+
+```bash copy
+andronix report --message "the desktop stays black after install"
+```
+
+### Inside a distro
+
+You can also run `andronix report` in the distro's terminal, for example in the desktop's terminal when an app misbehaves. It adds the distro, the desktop and the desktop session's log instead of the Termux facts.
+
+A distro can't open Android apps, so it prints the report ID instead. Open it from **Termux**:
+
+```bash copy
+andronix report --open AX-XXXXXX
+```
+
+Replace `AX-XXXXXX` with the ID it printed. `--open` works for 24 hours, and also for drafts made in Termux.
+
+### See it without sending
+
+```bash copy
+andronix report --dry-run
+```
+
+Prints the report, already redacted, and sends nothing.
+
+<TerminalDemo name="report" command="andronix report --dry-run" label="installer 2.0.2" />
+
+## What happens next
+
+- If you left an email, we reply there.
+- Writing to us at [support@andronix.app](mailto:support@andronix.app) or on [Discord](https://chat.andronix.app)? Put your report ID (for example `AX-7K3Q9M`) in the message, so we can find the details.
+
+## Your data
+
+{/* From the support-desk reports-v1 contract (draft 2): server redaction and retention. Recheck against products-api once POST /v1/reports ships. */}
+
+- A report holds what you typed, any photos you added, the details shown before you send, and your email if you gave one.
+- `andronix report` removes tokens, signed download links, email addresses, passwords, user names and your home folder path on your phone, before sending. The server removes them again from logs and pasted `andronix doctor` output.
+- We delete a report 90 days after it's closed, and when you [delete your account](/v10/account/deletion).
+- See the [Privacy Policy](https://andronix.app/legal/privacy-policy).

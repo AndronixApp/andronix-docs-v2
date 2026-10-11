@@ -41,14 +41,21 @@ const V8_CANONICAL: Record<string, string> = {
 
 export const isV8 = (page: Page) => page.slugs[0] === 'v8';
 
-// Docs versions that are online but not public yet (the 10.1 beta): not the default version,
-// left out of the sitemap and search, and marked noindex. Remove one from here when it launches.
-const UNLISTED = new Set(['beta']);
+// The App 10.0 copy under /v10 stays online while 10.1 rolls out in stages. 10.1's docs have
+// every 10.0 page at the same path, so each /v10 page points search engines at that page.
+export const isV10 = (page: Page) => page.slugs[0] === 'v10';
+/** An older docs version (App 10.0, App 8.x): in the version menu, not in the sitemap or search. */
+export const isArchive = (page: Page) => isV8(page) || isV10(page);
+
+// Docs versions that are online but not public yet (like the 10.1 beta was): not the default
+// version, left out of the sitemap and search, and marked noindex. Remove one from here when it launches.
+const UNLISTED = new Set<string>([]);
 export const isUnlisted = (page: Page) => UNLISTED.has(page.slugs[0]);
 
 /** The URL search engines should index for this page (a path, resolved against metadataBase). */
 export function canonicalPath(page: Page): string {
   if (isV8(page)) return V8_CANONICAL[page.url] ?? '/v8';
+  if (isV10(page)) return page.url.replace(/^\/v10(?=\/|$)/, '') || '/';
   return page.url;
 }
 

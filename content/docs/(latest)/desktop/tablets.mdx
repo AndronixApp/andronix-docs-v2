@@ -1,0 +1,49 @@
+---
+title: Tablets and Foldables
+description: Andronix on big screens - the navigation rail, two-pane Home, desktop size, tabletop mode and folding with the desktop open.
+---
+
+import Badge from "@/components/badge";
+import NextStep from "@/components/next-step";
+import { Shot } from "@/components/shot";
+
+<Badge>beta 5</Badge>
+
+On a tablet or an unfolded foldable, the app uses the extra room, and the Linux desktop follows the screen as you fold, unfold and rotate. These were tested on Pixel Tablet and Pixel Fold emulators.
+
+## The app on a big screen
+
+- **Navigation rail:** on screens 600 dp and wider (tablets, unfolded foldables), the bottom bar becomes a rail on the left, with Settings and your profile at its foot.
+- **Two-pane Home:** on screens 840 dp and wider, Home shows your list on the left and the selected distro's details on the right: **Open the desktop**, **Terminal**, **Stop**, its desktop, desktop size and where it runs, and its actions (add an app to the home screen, safe mode, desktop size, remove). Tap a row to select it.
+
+<Shot name="standalone/tablet-home" alt="Home on a tablet: the navigation rail, Your Linux on the left and Debian 13's details on the right" />
+
+## Desktop size
+
+Each distro has a desktop size:
+
+| Size | Lines | Good for |
+|---|---|---|
+| **Standard** | 720 | The fastest. The default on phones. |
+| **Sharp** | 1080 | Crisp text. The default on tablets and unfolded foldables. |
+| **Native** | Every screen pixel | The sharpest, and the slowest. |
+
+Change it from the toolbar's **Desktop size** button, from **⋮ › Desktop size** on Home, or in the details pane. The running desktop changes at once; text size catches up the next time the desktop starts. On a phone, a size bigger than the current one applies at the next start.
+
+<Shot name="standalone/desktop-size" alt="The Desktop size dialog on a tablet: Standard, Sharp (selected) and Native" />
+
+## Folding and rotating
+
+The desktop resizes itself when you fold, unfold or rotate, and fills the screen it's on, including a foldable's cover screen. Your apps keep running.
+
+## Tabletop mode
+
+Half open a foldable with the hinge across the screen and set it down, like a small laptop. The desktop moves to the top half. The bottom half becomes the controls: a touchpad (tap to click, two fingers to scroll or right-click, double-tap and hold to drag), the extra keys, and **Keyboard**, **Mute**, **Fit**, **Desktop size** and **Stop**. Open it flat again to go back to the normal view; the session keeps running.
+
+<Shot name="standalone/fold-tabletop" alt="Tabletop mode on a foldable: the desktop on the top half, the touchpad and keys below the hinge" />
+
+## Keyboard and mouse
+
+Tablets work well with a keyboard and mouse. See [A hardware keyboard](/desktop/in-the-app#a-hardware-keyboard-beta-5) and [A mouse](/desktop/in-the-app#a-mouse-beta-5).
+
+<NextStep href="/install/standalone-and-termux" title="Linux in the app and in Termux" description="Use both, switch between them, or move a distro from Termux into the app." />

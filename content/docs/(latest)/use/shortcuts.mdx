@@ -1,0 +1,30 @@
+---
+title: Linux Apps on Your Home Screen
+description: Pin a Linux app to Android's home screen so it opens with one tap, and what happens to shortcuts when you remove a distro.
+---
+
+import NextStep from "@/components/next-step";
+import { Shot, Shots } from "@/components/shot";
+
+## Add an app
+
+1. On Home, under **Your Linux**, tap **⋮** next to your distro, then **Add an app to the home screen**.
+2. Pick the app. The list shows the distro's apps with their icons, with search at the top; the distro's settings dialogs are grouped under **Desktop settings**. **Terminal** opens Andronix's own terminal instead of the desktop.
+3. Android asks where to put it. Confirm, and the app's icon appears on your home screen.
+
+<Shots>
+<Shot name="standalone/pin-dialog" alt="Android's Add to home screen dialog for Xfce Terminal" />
+<Shot name="standalone/pin-launched" alt="An app opened on the desktop from a shortcut" />
+</Shots>
+
+**Tapping the icon** starts the distro's desktop if it isn't running, opens the desktop and starts the app. If another distro is running, the app asks to stop it first.
+
+If your home screen can't add icons from apps, Andronix adds the shortcut to its own icon instead: touch and hold the Andronix icon to open it from there.
+
+## When you remove a distro
+
+Android doesn't let apps remove icons from your home screen, so the shortcuts stay but stop working: tapping one says "This Linux was removed from Andronix." If you install the same distro again, they work again. To get rid of one, drag it off your home screen.
+
+To remove a distro: on Home, tap **⋮** next to it, then **Remove**. The distro and everything inside it are deleted from this device.
+
+<NextStep href="/use/gpu" title="GPU acceleration" description="Draw 3D apps on the phone's graphics chip (experimental)." />

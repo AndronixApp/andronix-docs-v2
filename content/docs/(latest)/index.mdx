@@ -1,50 +1,37 @@
 ---
 title: Welcome to Andronix
 metaTitle: 'Andronix Docs: Install Linux on Android without Root'
-description: Run Linux distros like Debian, Ubuntu and Fedora on your Android phone, without root. Follow four steps to go from Termux to a full desktop.
+description: "Andronix 10.1 runs Linux distros like Debian, Ubuntu and Fedora inside the app, with a desktop and sound, and without Termux or root. Termux still works too."
 ---
 
 import { Cards, Card } from 'fumadocs-ui/components/card';
-import { RiRocket2Fill, RiDownload2Fill, RiComputerFill, RiApps2Fill, RiLifebuoyFill, RiCommandFill, RiLayoutColumnFill, RiTerminalBoxFill } from 'react-icons/ri';
+import { RiRocket2Fill, RiDownload2Fill, RiComputerFill, RiApps2Fill, RiLifebuoyFill, RiCommandFill } from 'react-icons/ri';
 import { MarkTile } from '@/components/marks';
 
-## Help us test what's next
-
-<Cards>
-  <Card icon={<RiLayoutColumnFill />} title="Big screens and foldables">
-    Two-pane Home, tabletop mode, keyboard and mouse.
-  </Card>
-  <Card icon={<RiTerminalBoxFill />} title="Andronix Standalone">
-    Linux right inside the Andronix app, no Termux needed.
-  </Card>
-</Cards>
-
-<DiscordBetaLink />
-
-## About Andronix
-
-Andronix runs a full Linux distro, like Debian, Ubuntu or Fedora, on your Android phone or tablet, with a real desktop and no root. New here? Follow the four steps below, in order.
+Andronix runs a full Linux distro, like Debian, Ubuntu or Fedora, on your Android phone or tablet, with a real desktop and no root. Since Andronix 10.1, the app can run Linux **itself**: no Termux to install and no command to paste. Termux still works, as the alternative. New here? Follow the four steps below, in order.
 
 <PlayLink />
 
+<Callout type="info">**Still on app 10.0?** Andronix 10.1 reaches phones in stages on Google Play. Until your phone has it, the docs for app 10.0 are under [App 10.0](/v10), also in the version menu at the top of the sidebar. Linux in Termux works the same in both.</Callout>
+
 <Callout type="info">**Andronix 2.0:** free distros install with one command, with the latest versions (Debian 13, Ubuntu 26.04 LTS, Fedora 44 and more), a choice of XFCE, LXQt, MATE or KDE Plasma, Firefox included, and a full-screen desktop with Termux:X11. [See what's supported](/reference/distros).</Callout>
 
-<Callout type="info">**Using Andronix app 8.x or older?** These docs are for app 10 (Andronix 2.0). The docs for the old app, with its installer, VNC setup and Andronix Commands, are under [App 8.x (Classic)](/v8), also in the version menu at the top of the sidebar. Or update to app 10 and follow the steps here. Had a Modded OS on the old app? See [Upgrading from an older Modded OS](/modded-os/upgrade).</Callout>
+<Callout type="info">**Using Andronix app 8.x or older?** These docs are for app 10.1 (Andronix 2.0). The docs for the old app, with its installer, VNC setup and Andronix Commands, are under [App 8.x (Classic)](/v8), also in the version menu at the top of the sidebar. Or update the app and follow the steps here. Had a Modded OS on the old app? See [Upgrading from an older Modded OS](/modded-os/upgrade).</Callout>
 
 ## Get started
 
 <Cards>
   <Card icon={<RiRocket2Fill />} href="/start-here/what-is-andronix" title="Step 1 · Start here">
-    What Andronix is, what your phone needs, and the right Termux.
+    What Andronix is, and what your phone needs.
   </Card>
-  <Card icon={<RiDownload2Fill />} href="/install/choose" title="Step 2 · Install a distro">
-    Choose a distro and desktop, then install it with the app or one command.
+  <Card icon={<RiDownload2Fill />} href="/install/in-the-app" title="Step 2 · Install a distro">
+    Install it in the app, or in Termux as the alternative.
   </Card>
-  <Card icon={<RiComputerFill />} href="/desktop/termux-x11" title="Step 3 · Start the desktop">
-    Open your desktop full screen on the phone with Termux:X11.
+  <Card icon={<RiComputerFill />} href="/desktop/in-the-app" title="Step 3 · Use the desktop">
+    The toolbar, keyboard and mouse in the app; Termux:X11 in Termux.
   </Card>
   <Card icon={<RiApps2Fill />} href="/use/apps" title="Step 4 · Use it">
-    Apps, dev packs, sound, phone storage, backups and updates.
+    Apps, Android files, home-screen shortcuts, dev packs, sound, backups and updates.
   </Card>
 </Cards>
 

@@ -3,6 +3,9 @@
   "defaultOpen": true,
   "pages": [
     "apps",
+    "android-files",
+    "shortcuts",
+    "gpu",
     "dev-packs",
     "sound",
     "storage",

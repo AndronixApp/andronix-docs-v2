@@ -1,12 +1,13 @@
 ---
-title: Termux:X11
-metaTitle: "Termux:X11 APK: Install and Open a Linux Desktop on Android"
-description: "Get the Termux:X11 (termux-x11) APK from its GitHub nightly release, install it, then open your Linux desktop full screen from Termux: andronix desktop."
+title: The Desktop in Termux:X11
+description: Open your Andronix desktop full screen on your phone with the Termux:X11 app and one command, andronix desktop.
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 import NextStep from "@/components/next-step";
 import Imagera from "@/components/imagera";
+
+<Callout type="info">This is the **Termux** way. To run Linux in the app instead, without Termux, see [The desktop in the app](/desktop/in-the-app).</Callout>
 
 Termux:X11 is an Android app that shows your distro's desktop full screen on the phone, at the phone's own resolution. There's nothing to connect to and no desktop password to type: one command in Termux opens it.
 
@@ -77,7 +78,7 @@ Any of these works:
 - **Android 12 and newer:** if Termux shows `[Process completed (signal 9) - press Enter]` and the desktop disappears, Android stopped it. Turn that off once: [Process completed (signal 9)](/troubleshooting/signal-9).
 - **Screen size:** the desktop uses the phone's screen size. Change the resolution, orientation and touch behaviour in the Termux:X11 app's preferences.
 - **One at a time:** you can have one Termux:X11 desktop open at a time.
-- **No GPU acceleration:** the desktop is drawn in software, as with VNC.
+- **No GPU acceleration in Termux:** the desktop is drawn in software, as with VNC. In the app there's an experimental [GPU acceleration](/use/gpu) setting.
 - **Firefox:** Firefox opens in a smaller window the first time; double-tap its title bar to maximize, and it remembers.
 - **Opening an app from Termux:** while the desktop is open, another session can start an app on it, for example `./start-debian.sh 'DISPLAY=:0 mousepad'`.
 

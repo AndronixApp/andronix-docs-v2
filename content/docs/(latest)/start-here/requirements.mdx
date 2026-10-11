@@ -5,7 +5,38 @@ description: What your phone needs to run Andronix - Android version, CPU, free 
 
 import NextStep from "@/components/next-step";
 
-Andronix runs on most Android phones and tablets from the last several years. Check these before you install.
+Andronix runs on most Android phones and tablets from the last several years. Running Linux **in the app** needs a little more than running it in Termux. Check these before you install.
+
+## Linux in the app
+
+- **A 64-bit ARM processor (arm64).** Almost every phone from the last few years has one. The app checks your device's main processor type, so x86 phones and x86 Chromebooks use Termux, even if they can run ARM apps.
+- **Android 8.0 or newer.** The app installs from Android 7, but on Android 7 Linux runs in Termux only.
+- **Free space for the distro.** The installer works out how much the distro and its desktop need and tells you before it starts. As a guide: about 1.3 GB for Alpine, 1.6 GB for Debian with XFCE, 1.8 GB for Ubuntu, and 3 GB for Arch or Manjaro.
+- **Memory:** there's no minimum, but KDE Plasma needs about 4 GB of RAM. On a device with less, the app warns you and suggests XFCE, which is lighter.
+
+The phone doesn't need to be rooted, and you don't need Termux.
+
+### How the app checks
+
+The first time, the app runs a short self-check (about a tenth of a second) to make sure Linux can run inside it on your device. It runs again after each app update.
+
+If your device can't run Linux in the app, **In the app** is dimmed on the install-mode screen with the reason:
+
+| The app says | What it means |
+|---|---|
+| Needs a device with a 64-bit ARM processor. | Your device's main processor isn't arm64. Use Termux. |
+| Needs Android 8 or newer. | Your device runs Android 7. Use Termux. |
+| Linux can't run in the app on this device. | The self-check failed. Use Termux, and please [report it](/troubleshooting/in-the-app#report-a-problem). |
+| Not available right now; new installs use Termux. | We've switched standalone mode off for new installs while we fix a problem. Distros you already installed in the app still open. |
+| Paused while we fix a problem. | We've paused standalone mode. Your distros and files stay on your device, and Termux still works. |
+
+### Older Linux kernels
+
+On devices with a Linux kernel older than 4.8 (some Android 8 and 9 phones), desktops install but may stay black. The terminal always works. See [The installer warns about an old kernel](/troubleshooting/install#the-installer-warns-about-an-old-kernel). Modded OS needs kernel 4.8 or newer.
+
+## Linux in Termux
+
+In Termux, Andronix runs on more devices:
 
 | | Command line only | With a desktop |
 |---|---|---|
@@ -15,17 +46,17 @@ Andronix runs on most Android phones and tablets from the last several years. Ch
 | **RAM** | 2 GB | 3 GB or more is comfortable; 4 GB or more for KDE Plasma |
 | **Root** | Not needed | Not needed |
 
-## Android version
+### Android version
 
 Andronix needs **Android 7 or newer**, because Termux does. The Play Store build of Termux needs Android 11 or newer; see [Install Termux](/start-here/install-termux).
 
 On **Android 12 and newer**, Android can stop long-running apps in the background, which shows up as **Process completed (signal 9)**. Turning that off takes a minute; see [Process completed (signal 9)](/troubleshooting/signal-9).
 
-## CPU type
+### CPU type
 
 Most phones are **arm64**, and every distro supports it. Some distros also run on 32-bit arm, x86 and x86_64 devices (like Chromebooks); see [Supported distros](/reference/distros). You don't need to check this yourself: the installer checks your CPU first and tells you if a distro doesn't support it.
 
-## Storage
+### Storage
 
 Distros install to your phone's **internal storage**, inside Termux. They can't be installed on an SD card. Roughly how much space an install takes:
 
@@ -38,14 +69,14 @@ Distros install to your phone's **internal storage**, inside Termux. They can't 
 
 Leave some extra room for the download while it unpacks.
 
-## Memory (RAM)
+### Memory (RAM)
 
 On phones with **less than 3 GB of RAM**, Andronix sets up the desktop with a light profile automatically (no effects, fewer background apps). See [Make it faster](/use/performance). KDE Plasma needs **4 GB or more**; the installer warns you below that.
 
-## Older phones
+### Older phones
 
 - **Kernels older than 4.8** (for example Android 8 or 9 phones on a 4.4 kernel): desktops work on many of these phones but may stay black; the command line always works. Modded OS needs 4.8 or newer. The app and the installer warn you. See [The installer warns about an old kernel](/troubleshooting/install#the-installer-warns-about-an-old-kernel).
 
 To check your kernel, run `uname -r` in Termux.
 
-<NextStep href="/start-here/install-termux" title="Install Termux" description="Get the right Termux build, from F-Droid, GitHub or the Play Store." />
+<NextStep href="/install/in-the-app" title="Install in the app" description="Install a distro in the app and open its desktop." or={{ href: "/start-here/install-termux", title: "Or install Termux" }} />

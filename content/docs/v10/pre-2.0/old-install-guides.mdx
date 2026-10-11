@@ -1,0 +1,213 @@
+---
+title: Old Install Guides
+description: VNC, sound and phone-storage instructions for distros installed before Andronix 2.0 and for the Classic Modded OS editions.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import Imagera from "@/components/imagera";
+
+These instructions are for distros installed **before Andronix 2.0**, and for the **Classic** Modded OS editions. They use the old scripts, log you in as `root`, and need some manual setup that Andronix 2.0 now does for you. For a current install, see [VNC](/v10/reference/vnc), [Sound](/v10/use/sound) and [Phone storage](/v10/use/storage).
+
+## VNC on an old install
+
+<Callout type="warning">This section is for the **Classic** Modded OS editions and for distros installed with the **pre-2.0 installer**, which use the old VNC scripts. It doesn't apply to new installs. See [Installs from before Andronix 2.0](/v10/pre-2.0/older-installs).</Callout>
+
+On an old install, `vncserver-start` asks for a resolution, and `vncserver-stop` asks for a port number: enter **1** and press **Enter**.
+
+
+<Callout type="info">These instructions assume that you have started your distro and are inside the distro shell (not the Termux shell).</Callout>
+
+### Setting a resolution on an old install
+
+To set your preferred resolution, open the VNC start script by running:
+
+```bash copy
+nano /usr/local/bin/vncserver-start
+```
+
+Then change the last line of the file to:
+
+```bash copy
+vncserver -name remote-desktop -geometry 1920x1080 :1
+```
+
+<Callout type="info">You can replace 1920x1080 with your desired resolution.</Callout>
+
+Save the file by pressing `ctrl + x`, then `y`, and finally `Enter`.
+
+### How to change resolution permanently in Modded OS /Ubuntu 19
+
+To change the resolution permanently, run the following command in the distro's shell:
+
+```bash copy
+nano /usr/local/bin/vnc
+```
+
+Then replace the second line with:
+
+```bash copy
+LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -localhost no -depth 24 -name remote-desktop -geometry 1920x1080 :$PORT
+```
+
+<Callout type="info">You can replace 1920x1080 with your desired resolution. Then restart (or start) the VNC server.</Callout>
+
+When you're done, press `Ctrl+X`, type `Y` and press `Enter`. The next time you start the VNC server, choose the first option, **Start vnc-server with autodetect/dynamic resolution**.
+
+### VNC on other devices (old install)
+
+<Callout type="info">You can access the distro running on your phone from any other device on your network.</Callout>
+
+First, make sure both devices are on the same network. If you don't have access to Wi-Fi, turn on the hotspot on the
+device running Linux and connect the other device to it. Once both devices are on the same network, run the following
+command inside the distro's shell:
+
+```bash copy
+nano /usr/local/bin/vncserver-start
+```
+
+Now change the last line to:
+
+```bash copy
+vncserver -name remote-desktop -geometry 1920x1080 -localhost no :1
+```
+
+<Callout type="warning">If you're using an Arch-based distro such as Manjaro, or Arch Linux itself, use the following line instead:</Callout>
+
+```bash copy
+vncserver -name remote-desktop -geometry 1920x1080 -localhost :1
+```
+
+When you're done, open a new Termux session (swipe in from the left edge to open the sidebar for more options) and
+type:
+
+```
+ip a
+```
+
+Copy the **WLAN IP** address (e.g. _192.168.xx.xx_). On the other device, connect to this IP address with port
+number 1 (e.g. _192.168.xx.xx:1_).
+
+## Sound on an old install
+
+<Callout type="warning">These steps are for distros installed with the **pre-2.0 installer**.</Callout>
+
+Follow these steps in order to enable sound output:
+
+<Steps>
+<Step>
+
+### Close Distro
+
+If your distro is running, close it by running `exit` inside Termux. _Skip this step if your distro isn't running._
+
+```bash copy
+exit
+```
+
+</Step>
+
+<Step>
+
+### Run Commands
+
+Run the following command in **Termux (not inside Linux)**:
+
+```bash copy
+pkg install wget && wget https://andronixos.sfo2.cdn.digitaloceanspaces.com/OS-Files/setup-audio.sh && chmod +x setup-audio.sh && ./setup-audio.sh
+```
+
+</Step>
+
+<Step>
+
+### Start PulseAudio Server
+
+Start the PulseAudio server:
+
+```bash copy
+pulseaudio --start
+```
+
+</Step>
+</Steps>
+
+## Storage on an old install
+
+<Callout type="warning">These steps are for distros installed with the **pre-2.0 installer**. On Andronix 2.0, the start script no longer needs editing; see [Storage on a new install](/v10/use/storage#storage-on-a-new-install).</Callout>
+
+<Steps>
+<Step>
+
+### Termux Session
+
+First, open a new Termux session (swipe from the left edge to the right) and type:
+
+```bash copy
+termux-setup-storage
+```
+
+Termux will now ask for Storage permission. **Allow the Storage permission**.
+
+</Step>
+
+<Step>
+
+### Open Start File
+
+Once that's done, type:
+
+```bash copy
+nano start-(distroname).sh
+```
+
+<Callout type="warning">Make sure to replace **(distroname)** with your specific distro name.</Callout>
+
+</Step>
+
+<Step>
+
+### Search
+
+Now look for this line:
+
+```bash copy
+#command+=" -b /sdcard"
+```
+
+</Step>
+
+<Step>
+
+### Edit
+
+If you find it, remove the leading `#` so the line reads:
+
+```bash copy
+command+=" -b /sdcard"
+```
+
+</Step>
+
+<Step>
+
+### Add the line
+
+If you can't find the line, add the line above as shown in the screenshot below.
+
+<Imagera src="/images/strorage_ss.png"/>
+
+</Step>
+
+<Step>
+
+### Save
+
+When you're done, press `Ctrl+X`, then `Y`, and then `Enter`. Now start your Linux system and run `cd /`. You should see a folder named `sdcard`, which means you have successfully mounted your internal storage.
+
+</Step>
+</Steps>
+
+## Related pages
+
+- [Installs from before Andronix 2.0](/v10/pre-2.0/older-installs): find, keep or remove an old install.
+- [Install with the app](/v10/install/with-the-app): install the Andronix 2.0 version.

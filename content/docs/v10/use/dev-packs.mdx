@@ -1,0 +1,64 @@
+---
+title: Dev Packs
+description: Add Python, Node.js, Java, Go or PostgreSQL to your Andronix distro with one command, using the distro's own packages.
+---
+
+import NextStep from "@/components/next-step";
+
+Dev packs add a complete developer toolset to your distro with one command: the language, its package manager, and the build tools it usually needs. They use your distro's own packages, so updates come with the rest of the system.
+
+## The packs
+
+| Pack | What you get |
+|---|---|
+| `python` | Python 3 with pip, venv, pipx and the build tools for native packages |
+| `node` | Node.js with npm and Corepack (for yarn and pnpm) |
+| `java` | An LTS Java JDK and Maven |
+| `go` | Go and gopls |
+| `db` | PostgreSQL, SQLite and DB Browser for SQLite, plus a helper to run the PostgreSQL server |
+
+Versions are your distro's own. For example, on Debian 13 `python` gives Python 3.13 and `node` gives Node.js 20; on Ubuntu 26.04 they're Python 3.14 and Node.js 22.
+
+## Add a pack
+
+**Inside the distro:**
+
+```bash copy
+sudo andronix pack add python
+```
+
+**From Termux**, name the distro first:
+
+```bash copy
+andronix pack add debian python node
+```
+
+You can add several packs at once. Andronix checks your free space first, installs the packages in one go, and then checks that the tools actually work. If the check fails, the pack is marked as failed and `pack add` tries again next time.
+
+<Callout type="info">On Manjaro, where `sudo` doesn't work yet, add packs from Termux: `andronix pack add manjaro python`.</Callout>
+
+## See and remove packs
+
+```bash copy
+andronix pack list debian          # what's available and what's installed
+andronix pack remove debian node   # remove a pack
+```
+
+Removing a pack takes out only the packages it installed, and keeps any that another pack you still have needs.
+
+## PostgreSQL
+
+Andronix can't run system services the usual way (there's no systemd), so the `db` pack includes a small helper to run the PostgreSQL server:
+
+```bash copy
+sudo andronix-postgres start    # start the server
+psql                            # connect as your user, to your own database
+sudo andronix-postgres stop     # stop it
+```
+
+The first start creates the database cluster, a database role and a database named after your user. The server only listens on the phone itself (127.0.0.1 and a local socket).
+
+- `sudo andronix-postgres status` shows whether it's running.
+- Removing the `db` pack keeps your databases and says where they are. To delete them too, use `andronix pack remove --purge debian db`.
+
+<NextStep href="/v10/use/sound" title="Sound" description="How sound reaches the phone's speakers, and what to check if you hear nothing." />

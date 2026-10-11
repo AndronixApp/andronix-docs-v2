@@ -6,9 +6,9 @@
 // /page/ form gets a permanent 308 to /page (the asset server's own is a 307).
 import { readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { externalRedirects, legacyRedirects, v8Redirects } from '../lib/redirects.mjs';
+import { betaRedirects, externalRedirects, legacyRedirects, v8Redirects } from '../lib/redirects.mjs';
 
-const internal = [...v8Redirects, ...legacyRedirects];
+const internal = [...v8Redirects, ...legacyRedirects, ...betaRedirects];
 const sources = new Set([...internal, ...externalRedirects].map(([from]) => from));
 const slash = (rules, status) => rules
   .filter(([from]) => !from.includes('*') && !from.endsWith('/') && !sources.has(from + '/'))

@@ -1,0 +1,7 @@
+{
+  "title": "Step 3 · Start the desktop",
+  "defaultOpen": true,
+  "pages": [
+    "termux-x11"
+  ]
+}

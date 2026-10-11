@@ -1,0 +1,22 @@
+{
+  "title": "App 10.0",
+  "description": "Docs for Andronix app 10.0 (Linux in Termux)",
+  "root": "version",
+  "pages": [
+    "index",
+    "start-here",
+    "install",
+    "desktop",
+    "use",
+    "modded-os",
+    "troubleshooting",
+    "reference",
+    "---About---",
+    "[Blog](https://andronix.app/blog)",
+    "account/deletion",
+    "miscellaneous/open-source",
+    "security/termux",
+    "---Archive---",
+    "pre-2.0"
+  ]
+}
