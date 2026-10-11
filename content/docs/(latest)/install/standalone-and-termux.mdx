@@ -4,6 +4,7 @@ description: Use Linux in the app and in Termux side by side, choose where new i
 ---
 
 import { Steps, Step } from 'fumadocs-ui/components/steps';
+import AppShot from "@/components/app-shot";
 import NextStep from "@/components/next-step";
 
 ## How they compare
@@ -34,9 +35,13 @@ Distros you install in the app run in the app and are listed on Home under **You
 
 Open **Settings › Linux › Run Linux** and choose **In the app** or **In Termux**, then tap **Save**. This only decides where **new** installs go. Distros you already installed stay where they are.
 
+<AppShot name="app10-sa-run-linux-sheet" alt="The Run Linux sheet: New installs use this, In the app and In Termux cards, and Save" />
+
 ## Move a distro from Termux into the app
 
 If you use Termux and your device can run Linux in the app, Home shows a **Run Linux without Termux** card. Tap **Try it** to move a distro:
+
+<AppShot name="app10-sa-move-from-termux" alt="Move Linux from Termux: 1, Back it up in Termux, with the andronix backup command and Open Termux; 2, Choose the backup" />
 
 <Steps>
 <Step>

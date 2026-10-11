@@ -3,6 +3,7 @@ title: Requirements
 description: What your phone needs to run Andronix - Android version, CPU, free storage, RAM and the right Termux - and what to expect on older phones.
 ---
 
+import AppShot from "@/components/app-shot";
 import NextStep from "@/components/next-step";
 
 Andronix runs on most Android phones and tablets from the last several years. Running Linux **in the app** needs a little more than running it in Termux. Check these before you install.
@@ -19,6 +20,8 @@ The phone doesn't need to be rooted, and you don't need Termux.
 ### How the app checks
 
 The first time, the app runs a short self-check (about a tenth of a second) to make sure Linux can run inside it on your device. It runs again after each app update.
+
+<AppShot name="app10-sa-mode-dimmed" alt="How should Linux run? with In the app dimmed and the reason, Needs a device with a 64-bit ARM processor" />
 
 If your device can't run Linux in the app, **In the app** is dimmed on the install-mode screen with the reason:
 
