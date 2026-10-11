@@ -9,7 +9,7 @@ import Collapsed from "@/components/collapsed";
 import NextStep from "@/components/next-step";
 import Badge from "@/components/badge";
 
-This guide covers installing a Modded OS edition with the **Andronix app 10 (Andronix 2.0)**: the five Modded 2.0 editions, and the Classic editions for people who bought them before. It takes a few taps in the app and one command in Termux.
+This guide covers installing a Modded OS edition with the **Andronix app 10 (Andronix 2.0)**: the five Modded 2.0 editions, and the Classic editions for people who bought them before. In the app, it takes a few taps; in Termux, a few taps and one command.
 
 <Callout type="info">Using the Andronix app 8.x? Its guide is in the [App 8.x (Classic) docs](/v8/modded-os/modded-os-installation).</Callout>
 
@@ -46,6 +46,28 @@ Already own it? Skip to the next step.
 <span id="3-termux-execution-" />
 
 ## 3. Install it
+
+### In the app
+
+If **Run Linux** is set to **In the app** (see [Linux in the app and in Termux](/install/standalone-and-termux)), the edition installs inside the app, with no Termux:
+
+1. Tap your edition, then install it.
+2. **Set up your user**: enter a user name and a password, as for a free distro. Modded editions come without a user, so the app always asks.
+3. The install screen shows each step. When it's done, tap **Open the desktop**.
+
+<AppShot name="app10-sa-modded-installing" alt="Installing Ubuntu Modded in the app: the current step and the Steps list" />
+
+The edition installs into its base distro and shows on Home under **Your Linux** with its base distro's name and **Modded**. In the app, Modded OS needs a 64-bit ARM device and a Linux kernel 4.8 or newer.
+
+If the app says:
+
+- **That token is for another edition:** go back and pick this edition again.
+- **Early access: Premium:** this edition is in early access for Andronix Premium and Modded Pass owners.
+- **The download link expired:** go back and start the install again.
+
+To reinstall an edition in the app, install it again. The app asks you to confirm first, because everything inside it is deleted.
+
+### In Termux
 
 <Steps>
 <Step>

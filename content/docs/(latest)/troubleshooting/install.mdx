@@ -43,7 +43,11 @@ Leave some extra room for the download while it unpacks. If you're short on spac
 
 ## The installer warns about an old kernel
 
-Some older phones (for example Android 8 or 9 phones on a 4.4 kernel) run a Linux kernel older than 4.8. Desktops install and work on many of them, but on some the desktop stays black. The command line always works.
+Some older phones (for example Android 8 or 9 phones on a 4.4 kernel) run a Linux kernel older than 4.8.
+
+**In the app**, XFCE, MATE and KDE Plasma aren't offered on these phones; the app says **Needs Linux kernel 4.8 or newer. On this device, use LXQt.** Pick LXQt or the command line. If you already have one of those desktops installed, tapping it opens the terminal instead.
+
+**In Termux**, desktops install and work on many of these phones, but on some the desktop stays black. The command line always works.
 
 The app (10.0.3 and newer) shows a notice when you pick a desktop, and `andronix` warns before a desktop install, `andronix desktop` and `vncserver-start`. From installer 2.0.5 the warning reads:
 

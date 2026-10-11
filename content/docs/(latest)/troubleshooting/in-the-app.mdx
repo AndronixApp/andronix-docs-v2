@@ -23,7 +23,11 @@ description: Known limits of Linux in the app, fixes for common problems, and ho
 | **In the app** is dimmed | The app says why. See [How the app checks](/start-here/requirements#how-the-app-checks). |
 | The install stopped | Tap **Try again**. If it says "Not enough space", free up a few GB first. |
 | The desktop stays black | Andronix fixes it by itself. See [Black screen and safe mode](/troubleshooting/black-screen). |
-| A Linux command says to run it in Termux | Commands that manage installs (install, start, remove, update, backup) are done with the app's buttons here. Type `exit` to leave the distro first. |
+| A Linux command says to run it in Termux | Commands that manage installs (install, start, remove, update, backup) are done with the app's buttons here. Dev packs work inside: `sudo andronix pack add python`. Update packages with the distro's own manager; see [Keep it updated](/use/updates). |
+| **No connection** | The device couldn't reach the download server. Check Wi-Fi or mobile data, then tap **Try again**. Private DNS can stay on: Linux in the app looks up websites with it (since 10.1). |
+| **The download stopped** | Tap **Try again**; the download continues where it stopped. |
+| **This device's date and time are off** | Turn on automatic date and time in Android's settings, then tap **Try again**. |
+| Opening another distro shows the one that's running | One distro runs at a time. Stop the running one first: **Stop** on its row or in the notification. |
 
 ## Report a problem
 
