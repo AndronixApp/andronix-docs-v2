@@ -17,12 +17,10 @@ Termux is the terminal app your distro runs in. Andronix needs a current build o
 
 | Termux build | Works with Andronix | Notes |
 |---|---|---|
-| **F-Droid** | Yes | Android 7 or newer. |
-| **GitHub** (the Termux project's releases, or our mirror below) | Yes | Android 7 or newer. The same app as F-Droid, but signed differently, so don't mix the two. |
+| **F-Droid** | Yes | Android 7 or newer. The Andronix app recommends it. |
+| **GitHub** (the Termux project's releases) | Yes | Android 7 or newer. The same app as F-Droid, but signed differently, so don't mix the two. |
 | **Google Play Store, current build** | Yes | Android 11 or newer. |
 | **Google Play Store, old build (2020, version 0.101)** | No | Its package servers are gone, so installs fail before they start. Replace it (see below). |
-
-{/* TODO(docs): owner decision pending on which build to recommend first (IA proposal, question 1). The table stays neutral until then. */}
 
 Termux plugins that share Termux's data, like Termux:API, must come from the same source as Termux itself, because apps from different sources are signed differently.
 
@@ -40,7 +38,7 @@ It prints `F_DROID`, `GITHUB` or `GOOGLE_PLAY_STORE`. If it prints nothing, or T
 
 ## Manual method
 
-Use these steps to install Termux from F-Droid or our mirror, or to replace the old Play Store build.
+Use these steps to install Termux from F-Droid or GitHub, or to replace the old Play Store build. Andronix never bundles or hosts Termux: it always comes from the Termux project.
 
 <Callout type="warning">Uninstalling Termux deletes everything in it, including any distros. If you have a distro you want to keep, [back it up](/use/backups) to your phone's storage first.</Callout>
 
@@ -57,15 +55,13 @@ If you have the old Play Store build, uninstall it first. Apps from different so
 
 ### Download Termux
 
-Download the latest Termux from F-Droid at https://f-droid.org/en/packages/com.termux/, or from Andronix's [Termux release mirror](https://github.com/AndronixApp/termux-releases):
+Get Termux from the Termux project:
 
-<AndronixButton link={"https://github.com/AndronixApp/termux-releases/blob/main/Releases/Termux_118/com.termux_118.apk?raw=true"}>
-    Download Termux
-</AndronixButton>
+- **F-Droid** (recommended): https://f-droid.org/packages/com.termux/. The F-Droid client app also keeps Termux updated for you.
+- **GitHub:** the Termux project's releases at https://github.com/termux/termux-app/releases.
+- **Google Play** (Android 11 or newer): search for Termux by Fredrik Fornwall.
 
-{/* TODO(docs): the mirror button points at Termux 0.118; check it's still the latest release when publishing. */}
-
-The F-Droid client app also keeps Termux updated for you. You can check the APK's hashes on [Termux Security](/security/termux).
+In the Andronix app, **Get Termux** opens these same pages.
 
 <Callout type="info">Android may warn that files like this can harm your device. That generic warning shows for any app installed from outside the Play Store.</Callout>
 

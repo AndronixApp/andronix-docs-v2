@@ -1,6 +1,6 @@
 ---
 title: Keep It Updated
-description: Update the andronix command and every installed distro's packages with one command, andronix update.
+description: Keep Andronix and your distros up to date - in the app with app updates and the distro's package manager, in Termux with andronix update.
 ---
 
 import NextStep from "@/components/next-step";
@@ -20,6 +20,23 @@ It does two things:
 <TerminalDemo name="update" command="andronix update" />
 
 Exit the distro and stop its desktop before updating it.
+
+## In the app
+
+For distros you installed **in the app**:
+
+- **Andronix's part updates with the app.** The installer and everything that runs Linux in the app are inside the Andronix app, so they update when the app does. When an update is ready, the app shows **Update available**; after it downloads, tap **Restart**.
+- **Your distro's packages** update with the distro's own package manager, in the distro's terminal. On Debian and Ubuntu:
+
+  ```bash copy
+  sudo apt update && sudo apt upgrade
+  ```
+
+  On Fedora, `sudo dnf upgrade`; on Arch and Manjaro, `sudo pacman -Syu`; on Alpine, `sudo apk upgrade`; on Void, `sudo xbps-install -Su`.
+
+`andronix update` is for Termux only: inside a distro in the app, it says it's done from the Andronix app.
+
+## In Termux
 
 ## Only some of it
 
