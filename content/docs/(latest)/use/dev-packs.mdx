@@ -19,25 +19,19 @@ Dev packs add a complete developer toolset to your distro with one command: the 
 
 Versions are your distro's own. For example, on Debian 13 `python` gives Python 3.13 and `node` gives Node.js 20; on Ubuntu 26.04 they're Python 3.14 and Node.js 22.
 
-<Callout type="info">**In the app**, run the pack commands inside the distro's terminal with `sudo` and without the distro's name, for example `sudo andronix pack add python`.</Callout>
-
 ## Add a pack
 
-**Inside the distro:**
+In the distro's terminal (Home > **Your Linux** > **Terminal**):
 
 ```bash copy
 sudo andronix pack add python
 ```
 
-**From Termux**, name the distro first:
-
-```bash copy
-andronix pack add debian python node
-```
-
 You can add several packs at once. Andronix checks your free space first, installs the packages in one go, and then checks that the tools actually work. If the check fails, the pack is marked as failed and `pack add` tries again next time.
 
-<Callout type="info">On Manjaro, where `sudo` doesn't work yet, add packs from Termux: `andronix pack add manjaro python`.</Callout>
+<Callout type="info">On Manjaro, `sudo` doesn't work yet: use the root terminal for admin work.</Callout>
+
+In Termux, name the distro first, for example `andronix pack add debian python node`.
 
 ## See and remove packs
 

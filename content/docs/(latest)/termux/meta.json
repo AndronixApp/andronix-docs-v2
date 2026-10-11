@@ -15,6 +15,9 @@
     "updates",
     "sound",
     "backups",
-    "uninstall"
+    "uninstall",
+    "modded-os",
+    "ssh",
+    "performance"
   ]
 }

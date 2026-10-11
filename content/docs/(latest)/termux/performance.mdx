@@ -1,0 +1,32 @@
+---
+title: Make It Faster in Termux
+description: Speed up a distro in Termux - the light profile (andronix tune), and the Termux:X11 and VNC resolution.
+---
+
+import NextStep from "@/components/next-step";
+
+This page is for Andronix with **Termux**. For Linux in the app, see [Make it faster](/use/performance).
+
+## Use the light profile
+
+The light profile turns off desktop effects (compositing, animations), file thumbnails and some background apps, and uses 16-bit colour at 1280x720 over VNC. In Termux:
+
+```bash copy
+andronix tune debian --profile light
+```
+
+The change applies the next time you start the desktop. To go back, use `--profile balanced`. To see the current profile and your phone's RAM, run `andronix tune debian`.
+
+<Callout type="info">On phones with **less than 3 GB of RAM**, desktop installs start with the light profile automatically.</Callout>
+
+The light profile only adds its own settings on top of the desktop's, so your themes and any Modded OS look stay as they are.
+
+## Lower the resolution
+
+- **[Termux:X11](/termux/termux-x11)** draws the desktop at the phone's resolution. If it feels slow, lower the resolution in the Termux:X11 app's preferences. (The light profile's VNC settings don't apply here.)
+- **[VNC](/termux/vnc)**, if you use it: a smaller screen size is faster, for example `vncserver-start 1280x720`, and lower picture quality in the viewer helps too.
+
+## Good habits in Termux
+
+- Turn off battery optimization for Termux, so Android doesn't slow it down in the background.
+- Use the command line (`./start-debian.sh`) for work that doesn't need a desktop.

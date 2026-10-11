@@ -1,25 +1,15 @@
 ---
 title: Make It Faster
-description: Speed up your Andronix desktop with the light profile (andronix tune), a lighter desktop, the right display app, and a few habits.
+description: Make the Linux desktop in the Andronix app faster - a smaller desktop size, a lighter desktop, GPU acceleration and good habits.
 ---
 
 import NextStep from "@/components/next-step";
 
-Andronix draws the desktop in software (in the app, unless you turn on the experimental [GPU acceleration](/use/gpu)). These are the changes that make the biggest difference.
+Andronix draws the desktop in software, unless you turn on the experimental [GPU acceleration](/use/gpu). These are the changes that make the biggest difference in the app.
 
-## Use the light profile
+## Pick a smaller desktop size
 
-The light profile turns off desktop effects (compositing, animations), file thumbnails and some background apps, and uses 16-bit colour at 1280x720 over VNC. In Termux:
-
-```bash copy
-andronix tune debian --profile light
-```
-
-The change applies the next time you start the desktop. To go back, use `--profile balanced`. To see the current profile and your phone's RAM, run `andronix tune debian`.
-
-<Callout type="info">On phones with **less than 3 GB of RAM**, desktop installs start with the light profile automatically.</Callout>
-
-The light profile only adds its own settings on top of the desktop's, so your themes and any Modded OS look stay as they are.
+**Standard** is the fastest desktop size; **Sharp** and **Native** draw more pixels. Change it from the desktop's toolbar or the distro's **⋮** menu on Home. See [Desktop size](/desktop/tablets#desktop-size).
 
 ## Pick a lighter desktop
 
@@ -29,16 +19,17 @@ From lightest to heaviest: **LXQt**, **XFCE**, **MATE**, **KDE Plasma**. KDE Pla
 andronix install debian --de lxqt --reinstall
 ```
 
-## Lower the resolution
+## Try GPU acceleration
 
-- **[Termux:X11](/termux/termux-x11)** draws the desktop at the phone's resolution. If it feels slow, lower the resolution in the Termux:X11 app's preferences. (The light profile's VNC settings don't apply here.)
-- **[VNC](/termux/vnc)**, if you use it: a smaller screen size is faster, for example `vncserver-start 1280x720`, and lower picture quality in the viewer helps too.
+On a device with a slower processor, the experimental GPU acceleration can make 3D apps faster; on fast devices, software drawing can be quicker. See [GPU acceleration](/use/gpu).
 
 ## Good habits
 
 - Keep only the apps you use open; browsers use the most memory.
 - Close other Android apps while you use the desktop.
-- Turn off battery optimization for Termux, so Android doesn't slow it down in the background.
-- Use the command line (`./start-debian.sh`) for work that doesn't need a desktop.
+- If the app shows **Keep Linux running**, tap it to turn off battery optimization for Andronix, so Android doesn't stop Linux in the background.
+- Use the terminal (Home > **Your Linux** > **Terminal**) for work that doesn't need a desktop.
 
-<NextStep href="/use/ssh" title="SSH" description="Reach your distro's command line from another device." />
+In Termux, the light profile (`andronix tune`) and the Termux:X11 and VNC resolution settings help too: see [Make it faster in Termux](/termux/performance).
+
+<NextStep href="/use/updates" title="Keep it updated" description="Update Andronix and your distro's packages." />

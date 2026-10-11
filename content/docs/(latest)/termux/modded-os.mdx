@@ -1,0 +1,103 @@
+---
+title: Modded OS in Termux
+description: Install, start and remove a Modded OS edition with Termux - the app copies the install command with its download token, andronix desktop opens it, andronix remove removes it.
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import YoutubeEmbed from "@/components/youtubeEmbed";
+import Collapsed from "@/components/collapsed";
+import NextStep from "@/components/next-step";
+import Badge from "@/components/badge";
+
+This page is for Andronix with **Termux**, on phones that can't run Linux in the app (Android 7, or no 64-bit ARM processor), or if you use the command-line installer. For Linux in the app, see [Installing Modded OS](/modded-os/modded-os-installation).
+
+Buy or pick your edition in the app first: see [Installing Modded OS](/modded-os/modded-os-installation).
+
+## Install it
+
+<Steps>
+<Step>
+
+### Tap your edition
+
+Tap an edition marked **Owned**. The app goes straight to the Termux step and copies the install command for you. The command includes a download token, so the app hides it on screen; tap **Show full command** to see it with the token masked.
+
+<AppShot name="app10-modded-termux-step" alt="The Termux step for a Modded edition, with the token hidden" />
+
+</Step>
+
+<Step>
+
+### Run it in Termux
+
+Tap **Copy and open Termux**. The app copies the command again (in case you copied something else in the meantime) and opens Termux. Long-press, tap **Paste**, and press **Enter**.
+
+If you come back to the app and the install still hasn't started after 30 seconds, the app shows **Nothing happened?** Paste the whole command in Termux; typing `install` on its own won't work.
+
+The installer shows its steps and ticks each one off. The first run also updates Termux and can take a few minutes, so keep Termux open.
+
+<Callout type="warning">Android may ask whether Termux can keep running in the background. Tap **Allow**, and turn off battery optimization for Termux, so Android doesn't stop the install.</Callout>
+
+</Step>
+
+<Step>
+
+### Back in the app
+
+Tap **Next**. The app waits while the install runs in Termux, then shows the result.
+
+<AppShot name="app10-install-result" alt="The install result: Debian 13 with XFCE installed" />
+
+</Step>
+
+<Step>
+
+### Create your user
+
+When the install finishes, Termux asks you to create your user: a username, a password, and a desktop password, the same as for a free distro (see [Create your user](/termux/with-the-app#create-your-user)).
+
+
+</Step>
+</Steps>
+
+<Callout type="info">If the install stops, run the same command again; it continues where it stopped. See [The install fails or stops](/troubleshooting/install). Seeing **Process completed (signal 9)**? See [Process completed (signal 9)](/troubleshooting/signal-9).</Callout>
+
+## Start the desktop
+
+The app moves on to **Start the desktop**. Open your Modded desktop full screen with Termux:X11, using the distro your edition is built on, for example:
+
+```bash copy
+andronix desktop debian
+```
+
+<AppShot name="app10-start-desktop" alt="The Start the desktop step, with Termux:X11 installed and the andronix desktop command" />
+
+See [Start the desktop](/termux/termux-x11) for getting the Termux:X11 app and everything else.
+
+## Remove a Modded OS
+
+<Badge>installer 2.0.1+</Badge>
+
+Each edition has an id, and `andronix remove` takes it. Stop the desktop and `exit` the distro, then run in Termux, for example:
+
+```bash copy
+andronix remove ubuntu-kde
+```
+
+| Modded 2.0 | Classic |
+|---|---|
+| `ubuntu-xfce`, `ubuntu-kde`, `debian-xfce`, `kali-xfce`, `manjaro-xfce` | `legacy-ubuntu-xfce`, `legacy-ubuntu-kde`, `legacy-debian`, `legacy-manjaro` |
+
+It deletes only that exact edition, never the free distro or another edition. If a different one is installed, it says which and deletes nothing. It shows what it will delete and asks first; add `--yes` to skip the question. Files in `/sdcard` are not touched.
+
+For a Classic edition, `--legacy` also deletes the copy the old Andronix app (8.x and earlier) installed, such as `~/androkde-fs`, `~/androkde-binds` and `~/start-androkde.sh`:
+
+```bash copy
+andronix remove legacy-ubuntu-kde --legacy
+```
+
+<TerminalDemo name="remove-legacy" command="andronix remove legacy-ubuntu-kde --legacy" />
+
+`start`, `desktop`, `update`, `backup` and `doctor` accept the edition id too, for example `andronix desktop ubuntu-kde`. See [the andronix command](/reference/andronix-command#removing-a-modded-os-edition) for the full list.
+
+{/* TODO(docs): edition ids ship with installer 2.0.1 (andronix-distros 330608e). Remove the badge after the release. */}
