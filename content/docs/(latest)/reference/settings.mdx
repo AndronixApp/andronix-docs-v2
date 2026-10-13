@@ -1,0 +1,29 @@
+---
+title: Settings for Linux in the App
+description: The Linux section of the Andronix app's Settings - Run Linux, Android files in Linux, GPU acceleration and automatic problem reports - and the other settings that matter for Linux in the app.
+---
+
+import AppShot from "@/components/app-shot";
+
+Open **Settings** in the Andronix app. The **Linux** section shows when your device can run Linux in the app, or when you already use it.
+
+<AppShot name="app10-settings-linux" alt="Settings, the Linux section: Run Linux, Android files in Linux, GPU acceleration (Experimental) and Send problem reports automatically" />
+
+## Linux
+
+| Setting | What it does |
+|---|---|
+| **Run Linux** | **In the app** or **In Termux**: where **new** installs go. Distros you already installed stay where they are. See [Coming from Termux](/install/standalone-and-termux#switch-between-them). |
+| **Android files in Linux** | Shared folders, **Import**, and your Linux home in the Files app. See [Android files in Linux](/use/android-files). |
+| **GPU acceleration** (Experimental) | Off by default. Draws OpenGL programs with your device's graphics chip. Turning it on asks first, and it applies from the next desktop start. If a desktop stays black with it on, Andronix turns it off by itself. See [GPU acceleration](/use/gpu). |
+| **Send problem reports automatically** | When something fails, the app sends us the error and logs, with personal details hidden. Off until you choose **Always**. See [Automatic problem reports](/troubleshooting/report-a-problem#automatic-problem-reports). |
+
+## Other settings
+
+| Setting | What it does |
+|---|---|
+| **Tools › Saved commands** | Your old Andronix Commands. See [Your saved Andronix Commands](/use/saved-commands). |
+| **Notifications & privacy › Share usage analytics** | On by default. Turning it off also turns off the installer's usage data for Linux in the app. See the [Privacy Policy](https://andronix.app/legal/privacy-policy). |
+| **About › Linux in the app** | The open-source programs that run Linux in the app (PRoot, talloc, libandroid-shmem), their licenses, and links to their source code and our build scripts. See [Open-source components of the app](/miscellaneous/source-code). |
+
+Settings for one distro, like its **desktop size** and **safe mode**, are in its **⋮** menu on Home. See [Your Linux on Home](/use/your-linux).

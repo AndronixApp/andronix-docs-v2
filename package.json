@@ -4,7 +4,7 @@
   "description": "Andronix Docs V2",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs",
+    "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-shots.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs",
     "build": "next build",
     "postinstall": "fumadocs-mdx",
     "preview": "wrangler dev --port 8799",

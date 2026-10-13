@@ -5,6 +5,7 @@ description: Save a whole Andronix distro to one file on your phone's storage, r
 
 import NextStep from "@/components/next-step";
 
+<Callout type="info">**Andronix 10.1 runs Linux in the app**, without Termux; it reaches phones in stages on Google Play. Have it? See [Linux in the app (10.1)](#linux-in-the-app-101) below.</Callout>
 A backup saves your whole distro (your files, installed apps and settings) to one file. You can restore it later, after reinstalling Termux, or on another phone.
 
 ## Back up
@@ -32,5 +33,12 @@ If the same distro is already installed, it asks before replacing it. When it's 
 ## On another phone
 
 Backups work on any phone with the same CPU type (most phones are arm64). Install Termux on the new phone, [install Andronix without the app](/install/without-the-app) or through the app, then copy the backup file over and run `andronix restore`.
+
+
+## Linux in the app (10.1)
+
+There's no backup for distros in the app yet. To keep your files, copy them out: your Linux home shows in Android's **Files** app under **Andronix**, and you can save files to `~/Android/Download` or `~/Android/Documents` in Linux, which appear in **Download/Andronix** and **Documents/Andronix** on your phone. See [Android files in Linux](/use/android-files).
+
+You can bring a backup from Termux **into** the app: see [Move a distro from Termux into the app](/install/standalone-and-termux#move-a-distro-from-termux-into-the-app).
 
 <NextStep href="/use/updates" title="Keep it updated" description="Update Andronix and your distro's packages with one command." />

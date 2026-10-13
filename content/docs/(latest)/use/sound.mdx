@@ -5,6 +5,7 @@ description: Sound from your Andronix distro plays through the phone's speakers 
 
 import NextStep from "@/components/next-step";
 
+<Callout type="info">**Andronix 10.1 runs Linux in the app**, without Termux; it reaches phones in stages on Google Play. Have it? See [Linux in the app (10.1)](#linux-in-the-app-101) below.</Callout>
 Sound works out of the box in Andronix 2.0. Anything that plays audio in your distro, like a browser or a music player, plays through the phone's speakers or headphones.
 
 ## How it works
@@ -29,5 +30,10 @@ PulseAudio only accepts connections from the phone itself (127.0.0.1), not from 
 4. **Look at the log:** what Andronix did with PulseAudio is in `~/.andronix/logs/termux.log`. Include it when you [ask for help](/troubleshooting/install#still-stuck).
 
 <Callout type="info">The Classic Modded OS editions set up sound their own way. For them and for installs from before Andronix 2.0, see [Sound on an old install](/pre-2.0/old-install-guides#sound-on-an-old-install).</Callout>
+
+
+## Linux in the app (10.1)
+
+Sound is built in: the desktop's sound plays in the Andronix app, and keeps playing when you leave the app. **Mute** is on the desktop's toolbar and in the **Linux is running** notification. There's no microphone yet.
 
 <NextStep href="/use/storage" title="Phone storage" description="Reach your phone's files from inside the distro at /sdcard." />

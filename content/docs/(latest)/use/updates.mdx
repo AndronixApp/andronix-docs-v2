@@ -5,6 +5,7 @@ description: Update the andronix command and every installed distro's packages w
 
 import NextStep from "@/components/next-step";
 
+<Callout type="info">**Andronix 10.1 runs Linux in the app**, without Termux; it reaches phones in stages on Google Play. Have it? See [Linux in the app (10.1)](#linux-in-the-app-101) below.</Callout>
 One command in Termux updates everything:
 
 ```bash copy
@@ -42,5 +43,17 @@ You can also update a distro with its own package manager, like on any Linux PC:
 | Void | `sudo xbps-install -Su` |
 
 `andronix update` also applies Andronix's fixes for known problems (for example with the desktop session), so run it from time to time even if you usually update inside the distro.
+
+
+## Linux in the app (10.1)
+
+- **Andronix's part updates with the app.** The installer and everything that runs Linux in the app are inside the Andronix app, so they update when the app does. When an update is ready, the app shows **Update available**; after it downloads, tap **Restart**.
+- **Your distro's packages** update with the distro's own package manager, in the distro's terminal. On Debian and Ubuntu:
+
+  ```bash copy
+  sudo apt update && sudo apt upgrade
+  ```
+
+  On Fedora, `sudo dnf upgrade`; on Arch and Manjaro, `sudo pacman -Syu`; on Alpine, `sudo apk upgrade`; on Void, `sudo xbps-install -Su`.
 
 <NextStep href="/use/performance" title="Make it faster" description="The light profile, lighter desktops, and other ways to speed things up." />
