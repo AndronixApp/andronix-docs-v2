@@ -6,8 +6,6 @@ import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const PENDING = {
-  'app10-saved-commands': '2026-10-12T18:00:00Z', // images: needs a test account with saved commands (#155 shot 17)
-  'app10-sa-modded-installing': '2026-10-12T18:00:00Z', // images: needs a Modded owner account (#155 shot 20)
 };
 
 const walk = (dir) => readdirSync(dir).flatMap((name) => {
