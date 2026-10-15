@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { SEASON, SALE } from '@/lib/season.mjs';
 import path from 'node:path';
 import type { InferPageType } from 'fumadocs-core/source';
 import type { source } from '@/lib/source';
@@ -7,7 +8,15 @@ type Page = InferPageType<typeof source>;
 
 export const SITE_URL = 'https://docs.andronix.app';
 export const SITE_NAME = 'Andronix Docs';
-export const OG_IMAGE = { url: '/og-image-1200x630.png', width: 1200, height: 630, alt: 'Andronix 2.0: Linux on Android' };
+// Halloween share image (#189, #188), chosen at build time: crawlers don't run the date gate, so any build
+// after the end date goes back to the regular image by itself (one deploy after Nov 2 drops it).
+const BUILD_TIME = new Date();
+const inWindow = (on: boolean, start: string, end: string) => on && BUILD_TIME >= new Date(start) && BUILD_TIME < new Date(end);
+export const OG_IMAGE = inWindow(SALE.active, SALE.start, SALE.end)
+  ? { url: '/images/halloween/og-sale-1200x630.png', width: 1200, height: 630, alt: 'Andronix Halloween sale: 30% off the Modded Pass and Andronix Complete until Nov 1' }
+  : inWindow(SEASON.active, SEASON.start, SEASON.end)
+    ? { url: '/images/halloween/og-1200x630.png', width: 1200, height: 630, alt: 'Happy Halloween from Andronix' }
+    : { url: '/og-image-1200x630.png', width: 1200, height: 630, alt: 'Andronix 2.0: Linux on Android' };
 
 // The App 8.x (Classic) copy under /v8 stays online for app 8.x users, but each page points
 // search engines at the current page on the same topic, so the old pages' links and rankings

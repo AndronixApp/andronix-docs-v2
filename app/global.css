@@ -437,3 +437,8 @@ html[data-sale] .season-bar a.sale-on { display: inline !important; white-space:
 .sale-was { opacity: .6; text-decoration-thickness: 2px; }
 .sale-foot { font-size: .875rem; color: var(--andronix-on-surface-variant); }
 .season-home a { color: var(--season-pumpkin); font-weight: 600; font-size: 14px; }
+
+/* Halloween logo (#189, icon A1) in the docs nav */
+.mark-season { display: none; }
+html[data-season="halloween"] .mark-season { display: inline-block; }
+html[data-season="halloween"] .mark-regular { display: none; }

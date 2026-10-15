@@ -1,3 +1,4 @@
+import { SEASON } from '@/lib/season.mjs';
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { Github } from "lucide-react";
 
@@ -20,7 +21,11 @@ export function baseOptions(): BaseLayoutProps {
       title: (
         <span className="inline-flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/mark.svg" alt="" width={22} height={22} className="rounded-[6px]" />
+          <img src="/mark.svg" alt="" width={22} height={22} className="mark-regular rounded-[6px]" />
+          {SEASON.active && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src="/images/halloween/mark.svg" alt="" width={22} height={22} loading="lazy" className="mark-season rounded-[6px]" />
+          )}
           <span className="text-[1.05rem] font-extrabold tracking-[-0.01em] text-fd-foreground">
             andronix<span style={{ color: "var(--andronix-primary)" }}>.</span>
           </span>
