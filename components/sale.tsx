@@ -8,7 +8,7 @@ export function SalePrice({ regular, sale, star = true }: { regular: string; sal
   return (
     <>
       <span className="sale-off">{regular}{star && '*'}</span>
-      <span className="sale-on"><s className="sale-was">{regular}</s> {sale}*</span>
+      <span className="sale-on"><s className="sale-was">{regular}</s> {sale}{star && '*'}</span>
     </>
   );
 }
