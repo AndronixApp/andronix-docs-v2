@@ -43,5 +43,14 @@ export function SeasonSidebarCard() {
 }
 
 export function SeasonHomeArt() {
-  return <div className="season-home" aria-hidden="true" />;
+  return (
+    <aside className="season-home" aria-label="Halloween">
+      <img src="/images/halloween/pumpkin-tile.webp" width={96} height={96} alt="" />
+      <div>
+        <span className="season-eyebrow">Halloween</span>
+        <b>Happy Halloween from Andronix</b>
+        <span>A full Linux desktop on your phone, no tricks.</span>
+      </div>
+    </aside>
+  );
 }
