@@ -7,6 +7,7 @@ import AppShot from '@/components/app-shot';
 import TerminalDemo from '@/components/terminal-demo';
 import PlayLink from '@/components/play-link';
 import DiscordBetaLink from '@/components/discord-beta-link';
+import { SalePrice, SaleOnly, SaleFootnote } from '@/components/sale';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -18,6 +19,9 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     TerminalDemo,
     PlayLink,
     DiscordBetaLink,
+    SalePrice,
+    SaleOnly,
+    SaleFootnote,
     ...components,
   };
 }
