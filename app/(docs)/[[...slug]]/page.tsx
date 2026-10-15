@@ -9,6 +9,8 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
 import { getMDXComponents } from '@/mdx-components';
+import { SEASON } from '@/lib/season.mjs';
+import { SeasonHomeArt } from '@/components/season';
 import { OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, canonicalPath, frontmatter, isUnlisted } from '@/lib/seo';
 
 export default async function Page(props: {
@@ -24,6 +26,7 @@ export default async function Page(props: {
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <JsonLd page={page} />
+      {SEASON.active && !params.slug?.length && <SeasonHomeArt />}
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
