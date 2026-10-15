@@ -392,7 +392,6 @@ figure.shiki button[data-checked] {
 .season-bar, .season-side, .season-home { display: none; }
 html[data-season="halloween"] .season-bar { display: flex; }
 html[data-season="halloween"] .season-side { display: flex; }
-html[data-season="halloween"] .season-home { display: block; }
 html[data-season="halloween"]:not([data-season-bar-dismissed]) { --fd-banner-height: 56px; }
 html[data-season-bar-dismissed] .season-bar { display: none; }
 
@@ -409,15 +408,23 @@ html[data-season-bar-dismissed] .season-bar { display: none; }
 .season-side { position: relative; overflow: hidden; isolation: isolate; padding: 14px; font-size: 14px; border-radius: var(--andronix-radius-card); background: var(--andronix-surface); color: var(--andronix-on-surface); border: 1px solid var(--andronix-surface-highest); }
 .season-side::after { content: ""; position: absolute; z-index: -1; inset: -20% -30% -20% 35%; background: url(/images/halloween/moon-disc.webp) center / contain no-repeat; opacity: .55; -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent); mask-image: radial-gradient(closest-side, #000 60%, transparent); pointer-events: none; }
 
-/* docs home: the harvest moon rises behind the title */
-html[data-season="halloween"] #nd-page { position: relative; isolation: isolate; }
-.season-home { position: absolute; z-index: -1; top: -40px; right: -40px; width: min(440px, 70%); aspect-ratio: 1; background: url(/images/halloween/moon-disc.webp) center / contain no-repeat; opacity: .5; -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent); mask-image: radial-gradient(closest-side, #000 55%, transparent); pointer-events: none; }
+/* docs home: a harvest-moon header card above the title */
+html[data-season="halloween"] .season-home { display: flex; }
+.season-home { position: relative; overflow: hidden; isolation: isolate; align-items: center; gap: 16px; min-height: 132px; padding: 20px 24px; margin-bottom: 8px; border-radius: var(--andronix-radius-card); background: var(--andronix-surface); border: 1px solid var(--andronix-surface-highest); }
+.season-home::before { content: ""; position: absolute; z-index: -1; top: 50%; right: 4%; width: 300px; aspect-ratio: 1; translate: 0 -50%; background: url(/images/halloween/moon-disc.webp) center / contain no-repeat; opacity: .75; -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent); mask-image: radial-gradient(closest-side, #000 60%, transparent); }
+.season-home::after { content: ""; position: absolute; z-index: -1; inset: auto 0 0 0; height: 56px; background: url(/images/halloween/fog.webp) center bottom / 100% 100% no-repeat; opacity: .45; }
+.season-home img { flex: none; width: 64px; height: 64px; border-radius: 16px; background: var(--andronix-surface-high); padding: 7px; }
+.season-home div { display: grid; gap: 2px; min-width: 0; }
+.season-home b { font-size: 20px; }
+.season-home span:not(.season-eyebrow) { color: var(--andronix-on-surface-variant); font-size: 14px; }
 html[data-season="halloween"] #nd-page h1 { text-decoration: underline dotted var(--season-pumpkin-deep); text-decoration-thickness: 4px; text-underline-offset: .18em; }
+@media (max-width: 640px) { .season-home::before { right: -20%; opacity: .45; } }
 
 /* strong: brighter moon, pumpkin primary colour, fog under the home title */
 html[data-season-level="strong"] .season-bar { background: #140E0B; }
 html[data-season-level="strong"] .season-bar::after { width: min(720px, 60%); opacity: 1; }
-html[data-season-level="strong"] .season-home { width: min(620px, 90%); opacity: .9; top: -80px; right: -80px; -webkit-mask-image: radial-gradient(closest-side, #000 68%, transparent); mask-image: radial-gradient(closest-side, #000 68%, transparent); }
+html[data-season-level="strong"] .season-home { min-height: 180px; background: #140E0B; }
+html[data-season-level="strong"] .season-home::before { width: 420px; opacity: 1; -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent); mask-image: radial-gradient(closest-side, #000 70%, transparent); }
+html[data-season-level="strong"] .season-home::after { height: 90px; opacity: .9; }
 html[data-season-level="strong"] .season-side::after { opacity: .9; }
 html[data-season-level="strong"][data-season="halloween"] { --color-fd-primary: var(--season-pumpkin); --color-fd-primary-foreground: var(--season-on-pumpkin); }
-html[data-season-level="strong"] .season-home::after { content: ""; position: absolute; left: -60%; right: -10%; bottom: -30%; height: 30%; background: url(/images/halloween/fog.webp) center bottom / 100% 100% no-repeat; opacity: .8; }
