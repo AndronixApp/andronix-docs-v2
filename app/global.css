@@ -428,3 +428,12 @@ html[data-season-level="strong"] .season-home::before { width: 420px; opacity: 1
 html[data-season-level="strong"] .season-home::after { height: 90px; opacity: .9; }
 html[data-season-level="strong"] .season-side::after { opacity: .9; }
 html[data-season-level="strong"][data-season="halloween"] { --color-fd-primary: var(--season-pumpkin); --color-fd-primary-foreground: var(--season-on-pumpkin); }
+
+/* Halloween sale (#188): sale prices only while public/season.js sets html[data-sale] */
+.sale-on { display: none !important; }
+html[data-sale] .sale-on { display: revert !important; }
+html[data-sale] .sale-off { display: none !important; }
+html[data-sale] .season-bar a.sale-on { display: inline !important; white-space: nowrap; }
+.sale-was { opacity: .6; text-decoration-thickness: 2px; }
+.sale-foot { font-size: .875rem; color: var(--andronix-on-surface-variant); }
+.season-home a { color: var(--season-pumpkin); font-weight: 600; font-size: 14px; }
