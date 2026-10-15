@@ -5,6 +5,7 @@ import { DocsEvents } from "@/components/analytics";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { SEASON } from "@/lib/season.mjs";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -68,6 +69,12 @@ export const viewport = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`dark ${jakarta.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Halloween look (#189): sets html[data-season] before first paint, only inside SEASON's dates */}
+        {SEASON.active && (
+          <script src="/season.js" data-name={SEASON.name} data-id={SEASON.id} data-level={SEASON.level} data-favicon={SEASON.favicon} data-start={SEASON.start} data-end={SEASON.end} />
+        )}
+      </head>
       <body>
         <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark", enableSystem: false }} search={{ options: { type: "static" } }}>{children}</RootProvider>
         {OPENPANEL_CLIENT_ID && (

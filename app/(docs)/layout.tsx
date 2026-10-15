@@ -4,6 +4,8 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { TriangleAlert } from 'lucide-react';
+import { SEASON } from '@/lib/season.mjs';
+import { SeasonBar, SeasonSidebarCard } from '@/components/season';
 
 export const metadata: Metadata = {
   title: {
@@ -14,6 +16,8 @@ export const metadata: Metadata = {
 
 export default function RootDocsLayout({ children }: { children: React.ReactNode }) {
   return (
+    <>
+    {SEASON.active && <SeasonBar id={SEASON.id} />}
     <DocsLayout
       {...baseOptions()}
       tree={source.getPageTree()}
@@ -21,6 +25,8 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
       sidebar={{
         defaultOpenLevel: 1,
         banner: (
+          <div className="flex flex-col gap-2">
+          {SEASON.active && <SeasonSidebarCard />}
           <Link
             key="signal-9-banner"
             href="/troubleshooting/signal-9"
@@ -37,10 +43,12 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
               <span className="text-xs opacity-85 group-hover:underline">Read the fix →</span>
             </span>
           </Link>
+          </div>
         ),
       }}
     >
       {children}
     </DocsLayout>
+    </>
   );
 }
