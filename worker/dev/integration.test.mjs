@@ -171,25 +171,27 @@ test("ownership: B → A's stream, follow-up, ticket, feedback, report-attach �
   assert.equal((await json(await post(b, "/chat-api/report-attach", { sessionId: sid, reportId: "AX-FAKE01" }))).body.code, "not_owner");
 });
 
-test("streams: 4th concurrent → streams; a slot frees when eve ends the lease; bad query → bad_body", async () => {
-  const a = await account();
-  const { body } = await create(a);
-  const sid = body.sessionId;
-  assert.equal((await json(await fetch(`${W}/eve/v1/session/${sid}/stream?evil=1`, { headers: h(a) }))).body.code, "bad_body");
+test("streams: 4th concurrent session → streams; a same-session reopen replaces its lease; bad query → bad_body", async () => {
+  const a = await account({ staff: true });
+  const sids = [];
+  for (let k = 0; k < 4; k++) sids.push((await create(a)).body.sessionId);
+  assert.equal((await json(await fetch(`${W}/eve/v1/session/${sids[0]}/stream?evil=1`, { headers: h(a) }))).body.code, "bad_body");
   const ctrls = [];
-  for (let i = 0; i < 3; i++) {
+  const open = async (sid) => {
     const c = new AbortController(); ctrls.push(c);
     const res = await fetch(`${W}/eve/v1/session/${sid}/stream`, { headers: h(a), signal: c.signal });
-    assert.equal(res.status, 200);
-    (async () => { const r = res.body.getReader(); try { for (;;) if ((await r.read()).done) break; } catch {} })();
-  }
-  const fourth = await json(await fetch(`${W}/eve/v1/session/${sid}/stream`, { headers: h(a) }));
-  assert.equal(fourth.status, 429); assert.equal(fourth.body.code, "streams"); assert.ok(fourth.body.retryAfter > 0);
-  // local workerd doesn't cancel the body on a client disconnect; the slot frees when eve's
-  // lease ends (fake: 12 s, eve: 60 s), or after the 90 s lease TTL
-  await new Promise((r) => setTimeout(r, 16_000)); // replay (~2 s) + 12 s lease
-  const again = await fetch(`${W}/eve/v1/session/${sid}/stream?follow=false`, { headers: h(a) });
-  assert.equal(again.status, 200); await again.text();
+    if (res.ok) (async () => { const r = res.body.getReader(); try { for (;;) if ((await r.read()).done) break; } catch {} })();
+    return res;
+  };
+  for (const sid of sids.slice(0, 3)) assert.equal((await open(sid)).status, 200);
+  const fourth = await open(sids[3]);
+  const fb = await fourth.json();
+  assert.equal(fourth.status, 429); assert.equal(fb.code, "streams"); assert.ok(fb.retryAfter > 0);
+  assert.equal((await open(sids[0])).status, 200, "same-session reopen");
+  // local workerd doesn't cancel the body on a client disconnect; a slot frees when eve's lease
+  // ends (fake: 12 s idle, eve: 60 s) or after the 90 s lease TTL
+  await new Promise((r) => setTimeout(r, 16_000)); // replay (~2 s) + 12 s idle
+  assert.equal((await open(sids[3])).status, 200);
   for (const c of ctrls) c.abort();
 });
 

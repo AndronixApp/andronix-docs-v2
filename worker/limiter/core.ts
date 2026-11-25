@@ -50,7 +50,7 @@ interface UserRec {
   month: { ym: string; count: number };
   costDay: { date: string; micros: number };
   tickets: { date: string; keys: string[] };
-  streams: { id: string; exp: number }[];
+  streams: { id: string; exp: number; sid?: string }[];
   streamOpens: Window;
   sessions: string[];
   lastSeen: number;
@@ -284,9 +284,13 @@ export class LimiterCore {
     const u = this.user(uid);
     const now = this.now();
     if (u.streamOpens.count >= this.limits.streamOpensPerMinute) return { ok: false, code: "streams", retryAfter: Math.ceil((u.streamOpens.start + MIN - now) / 1000) };
+    // A client follows a session with one stream at a time; a new open on the same session means
+    // the old one was abandoned (a disconnect the Worker may not see), so it replaces that lease.
+    // The 3-concurrent cap counts sessions; 30 opens a minute bounds re-opens.
+    u.streams = u.streams.filter((l) => l.sid !== sessionId);
     if (u.streams.length >= this.limits.streamsConcurrent) return { ok: false, code: "streams", retryAfter: 10 };
     const leaseId = crypto.randomUUID();
-    u.streams.push({ id: leaseId, exp: now + STREAM_LEASE_MS });
+    u.streams.push({ id: leaseId, exp: now + STREAM_LEASE_MS, sid: sessionId });
     u.streamOpens.count++;
     this.saveUser(uid, u);
     return { ok: true, leaseId };

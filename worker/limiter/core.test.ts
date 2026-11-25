@@ -112,14 +112,17 @@ test("new_ip: 31st young uid from one IP refused; 20 normal accounts from one IP
   for (let i = 0; i < 20; i++) ok(core.admitCreate(who({ uid: `old${i}`, ip: "2.2.2.2" })));
 });
 
-test("streams: 4th concurrent → streams; closing frees a slot; 31st open/min → streams", () => {
+test("streams: 4th concurrent session → streams; same-session reopen replaces; closing frees; 31st open/min → streams", () => {
   const { core, clock } = setup();
-  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
-  const leases = [1, 2, 3].map(() => ok(core.openStream("u1", "S1")).leaseId);
-  assert.equal(code(core.openStream("u1", "S1")), "streams");
-  core.closeStream("u1", leases[0]);
-  const l = ok(core.openStream("u1", "S1")).leaseId;
-  for (const x of [l, leases[1], leases[2]]) core.closeStream("u1", x);
+  for (const s of ["S1", "S2", "S3", "S4"]) { ok(core.admitCreate(who({ tier: "staff", staff: true }))); core.bindSession("u1", s, "docs"); }
+  const leases = ["S1", "S2", "S3"].map((s) => ok(core.openStream("u1", s)).leaseId);
+  assert.equal(code(core.openStream("u1", "S4")), "streams");
+  ok(core.openStream("u1", "S1")); // replaces S1's lease
+  assert.equal(code(core.openStream("u1", "S4")), "streams");
+  core.closeStream("u1", leases[1]);
+  const l = ok(core.openStream("u1", "S4")).leaseId;
+  for (const x of [l, leases[2]]) core.closeStream("u1", x);
+  clock.now += 2 * 60_000;
   clock.now += MIN;
   for (let i = 0; i < 30; i++) { const x = ok(core.openStream("u1", "S1")).leaseId; core.closeStream("u1", x); }
   assert.equal(code(core.openStream("u1", "S1")), "streams");

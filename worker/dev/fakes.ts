@@ -25,7 +25,7 @@ const EDGE = "dev-edge-secret";
 const SERVICE = "dev-service-secret";
 
 interface Delivery { id: string; source: "channel" | "cancel" | "control"; line: number }
-interface Session { id: string; lines: string[]; deliveries: Delivery[]; next: number; released: number; subs: Set<(n: number) => void>; synth: number }
+interface Session { id: string; lines: string[]; recorded: number; deliveries: Delivery[]; next: number; released: number; synth: number }
 const sessions = new Map<string, Session>();
 const requests: unknown[] = [];
 const events: unknown[] = [];
@@ -66,15 +66,23 @@ function synthesizeTurn(s: Session): string {
   const last = [...s.deliveries].reverse().find((d) => d.source === "channel")!;
   const from = last.line;
   const after = s.deliveries.find((d) => d.line > from);
-  const to = after ? after.line : s.lines.length;
+  const to = after ? after.line : s.recorded;
   const n = ++s.synth;
   const id = crypto.randomUUID();
+  // the new turn follows the session's latest turn, as eve records it
+  let prevTurn: string | null = null;
+  for (const l of s.lines) { const m = /"turnId":"([^"]+)"\},"type":"turn\.started"/.exec(l) ?? /"type":"turn\.started","scope":\{"turnId":"([^"]+)"/.exec(l); if (m) prevTurn = m[1]; }
   const chunk = s.lines.slice(from, to).map((l) => {
     const v = JSON.parse(l) as { at?: string; facts?: Fact[]; progress?: Fact };
     if (v.facts) v.facts = v.facts.filter((f) => f.type !== "session.started" && f.type !== "session.ended");
     return v.facts && !v.facts.length ? null : JSON.stringify(v)
       .replaceAll(last.id, id).replace(/"turn_(\d+)"/g, `"turn_s${n}_$1"`).replace(/"run_(\d+)/g, `"s${n}_run_$1`).replace(/mock-tool-call-/g, `s${n}-call-`);
-  }).filter((x): x is string => x !== null);
+  }).filter((x): x is string => x !== null).map((l) => {
+    if (!l.includes('"turn.started"')) return l;
+    const v = JSON.parse(l) as { facts: Fact[] };
+    for (const f of v.facts) if (f.type === "turn.started" && f.data) f.data.follows = prevTurn;
+    return JSON.stringify(v);
+  });
   s.lines.push(...chunk);
   s.released = s.lines.length;
   return id;
@@ -107,7 +115,7 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     const n = /fixture:(\d\d)/.exec(body!.message!)?.[1] ?? "01";
     const { lines, deliveries } = parseFixture(FIXTURES[n] ?? f01);
     const id = `wrun_fake_${n}_${crypto.randomUUID().slice(0, 8)}`;
-    const s: Session = { id, lines, deliveries, next: 0, released: 0, subs: new Set(), synth: 0 };
+    const s: Session = { id, lines, recorded: lines.length, deliveries, next: 0, released: 0, synth: 0 };
     sessions.set(id, s);
     return j({ ok: true, sessionId: id, deliveryId: releaseNext(s) }, 202, { "x-eve-session-id": id });
   }
@@ -121,7 +129,6 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     if (!keysExactly(body, ["message", "idempotencyKey"], ["message"])) return j({ ok: false, error: "fake eve: follow-up body must be {message, idempotencyKey?}" }, 400);
     const nextChannel = s.deliveries[s.next]?.source === "channel";
     const deliveryId = nextChannel ? releaseNext(s) : synthesizeTurn(s);
-    for (const fn of s.subs) fn(s.released);
     return j({ ok: true, sessionId: s.id, deliveryId }, 202, { "x-eve-session-id": s.id });
   }
   if (m[2] === "/cancel" && req.method === "POST") {
@@ -129,7 +136,6 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     const bad = checkEdge(req, "cancel", body); if (bad) return bad;
     if (!keysExactly(body, ["turnId"], [])) return j({ ok: false, error: "fake eve: cancel body must be {turnId?}" }, 400);
     const deliveryId = s.deliveries[s.next]?.source === "cancel" ? releaseNext(s) : crypto.randomUUID();
-    for (const fn of s.subs) fn(s.released);
     return j({ ok: true, sessionId: s.id, deliveryId }, 202);
   }
   if (m[2] === "/end" && req.method === "POST") {
@@ -159,14 +165,19 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
         };
         await push(s.released);
         if (!follow) { controller.close(); return; }
-        // follow: keep the lease open; new turns push lines; the lease ends after 12 s (eve: 60 s)
-        const sub = (n: number) => { push(n); };
-        s.subs.add(sub);
-        const hb = setInterval(() => { try { controller.enqueue(enc.encode('{"$eve":"heartbeat"}\n')); } catch {} }, 10_000);
-        setTimeout(() => {
-          closed = true; s.subs.delete(sub); clearInterval(hb);
-          try { controller.enqueue(enc.encode('{"$eve":"stream.lease-ended"}\n')); controller.close(); } catch {}
-        }, 12_000);
+        // follow: hold the lease and poll for released lines in this request's own context
+        // (workerd won't let another request's timers write here); the lease ends after 12 s
+        // without new lines (eve: 60 s).
+        let idleSince = Date.now();
+        let lastBeat = Date.now();
+        while (!closed) {
+          if (sent < s.released) { await push(s.released); idleSince = Date.now(); }
+          if (Date.now() - idleSince > 12_000) break;
+          if (Date.now() - lastBeat > 10_000) { lastBeat = Date.now(); try { controller.enqueue(enc.encode('{"$eve":"heartbeat"}\n')); } catch { break; } }
+          await new Promise((r) => setTimeout(r, 100));
+        }
+        closed = true;
+        try { controller.enqueue(enc.encode('{"$eve":"stream.lease-ended"}\n')); controller.close(); } catch {}
       },
     });
     return new Response(stream, { status: 200, headers });

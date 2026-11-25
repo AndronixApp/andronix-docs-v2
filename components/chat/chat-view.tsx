@@ -263,6 +263,9 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
         <SentCard key={k} ticketRef={v.ticketRef} topic={v.topic} email={user.email ?? ""} />
       ))}
 
+      {agent.error && !failed && !limit && !ended && (
+        <p className="chat-error">{agent.error.message.includes("streams") || (agent.error as { code?: string }).code === "streams" ? "Too many chats open. Close another tab and try again." : "Something went wrong. Try again."}</p>
+      )}
       {failed && !cooling && (
         <div className="flex items-center gap-3">
           <p className="chat-error">Something went wrong. Try again.</p>
