@@ -1,2 +1,10 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
+
+# Support chat (build plan B0.3): report-only first, enforced once /chat runs clean.
+/chat
+  Content-Security-Policy-Report-Only: connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://events.andronix.app; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'
+  Referrer-Policy: strict-origin-when-cross-origin
+/chat/*
+  Content-Security-Policy-Report-Only: connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://events.andronix.app; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'
+  Referrer-Policy: strict-origin-when-cross-origin

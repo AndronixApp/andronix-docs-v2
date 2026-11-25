@@ -1,19 +1,70 @@
-# docs.andronix.app: a static site (Next.js static export in out/), served
-# entirely by Workers Static Assets. There is no Worker script, so page views,
-# prefetches, search and redirects (out/_redirects) never count as Worker
-# requests. The custom domain is attached in the Cloudflare dashboard.
+# docs.andronix.app: a static site (Next.js static export in out/), served by Workers Static
+# Assets, plus one small Worker script (worker/index.ts) that runs ONLY for the paths in
+# run_worker_first: the Firebase sign-in helper proxy and the support chat API. Page views,
+# prefetches, search and redirects (out/_redirects) still never count as Worker requests.
+# The custom domain is attached in the Cloudflare dashboard.
 name = "andronix-docs-v2"
+main = "worker/index.ts"
 compatibility_date = "2025-03-25"
 
 # wrangler deploy, wrangler versions upload and wrangler dev run the full build first (prebuild
 # checks, redirects, next build), so a version can never be uploaded from a stale out/.
 [build]
 command = "pnpm build"
-watch_dir = ["app", "components", "content", "lib"]
+watch_dir = ["app", "components", "content", "lib", "worker"]
 
 [assets]
 directory = "out"
+binding = "ASSETS"
 # /path serves /path.html (and /path/ redirects to /path).
 html_handling = "auto-trailing-slash"
-# Unknown URLs get out/404.html with a 404 status.
+# Unknown URLs get out/404.html with a 404 status (without running the Worker).
 not_found_handling = "404-page"
+run_worker_first = ["/eve/*", "/chat-api/*", "/__/auth/*", "/__/firebase/*"]
+
+# One global ChatLimiter instance holds every chat counter (build plan 1.4, 1.5, 1.9).
+[[durable_objects.bindings]]
+name = "CHAT_LIMITER"
+class_name = "ChatLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ChatLimiter"]
+
+# Chat stays off until launch (build plan 4): CHAT_ENABLED=1 and CHAT_ROLLOUT=staff then.
+# Secrets (wrangler secret put): EVE_EDGE_SECRET, CHAT_INTERNAL_SECRET, CHAT_SERVICE_SECRET,
+# DESK_API_KEY, OPENPANEL_CLIENT_SECRET, OPS_WEBHOOK_URL.
+[vars]
+CHAT_ENABLED = "0"
+CHAT_ROLLOUT = "staff"
+FIREBASE_PROJECT_ID = "andronix-techriz"
+
+[observability]
+enabled = true
+
+# Preview Worker (build plan 1.3 row): workers.dev only, its own DO, products-api staging,
+# A's protected Vercel preview (EVE_BYPASS_HEADER), the built-in fake desk (DESK_API_URL unset),
+# the dev OpenPanel project. Deploy only when the lead OKs it:
+#   pnpm build:preview && wrangler deploy --env preview
+# Its own secrets: EVE_EDGE_SECRET, CHAT_INTERNAL_SECRET, CHAT_SERVICE_SECRET, EVE_BYPASS_HEADER,
+# OPENPANEL_CLIENT_SECRET (all preview-only values).
+[env.preview]
+name = "andronix-docs-chat-preview"
+workers_dev = true
+routes = []
+
+[env.preview.build]
+command = "pnpm build:preview"
+watch_dir = ["app", "components", "content", "lib", "worker"]
+
+[[env.preview.durable_objects.bindings]]
+name = "CHAT_LIMITER"
+class_name = "ChatLimiter"
+
+[env.preview.vars]
+CHAT_ENABLED = "1"
+CHAT_ROLLOUT = "all"
+FIREBASE_PROJECT_ID = "andronix-techriz"
+# EVE_ORIGIN = "<A's Vercel preview deployment URL>"
+# PRODUCTS_API_URL = "<products-api staging URL>"
+# OPENPANEL_API_URL / OPENPANEL_CLIENT_ID = the dev project

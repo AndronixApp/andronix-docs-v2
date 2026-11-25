@@ -1,0 +1,241 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { LimiterCore, MapStore, type Who } from "./core.ts";
+import { DEFAULT_LIMITS } from "../env.ts";
+
+// 2026-11-10 12:00 UTC: 21 days left in the month including today
+const T0 = Date.UTC(2026, 10, 10, 12, 0, 0);
+const MIN = 60_000;
+
+function setup(now = T0) {
+  const clock = { now };
+  const store = new MapStore();
+  const core = new LimiterCore(store, DEFAULT_LIMITS, () => clock.now);
+  return { core, clock, store };
+}
+const who = (over: Partial<Who> = {}): Who => ({ uid: "u1", tier: "free", staff: false, ip: "1.1.1.1", newAccount: false, issuedAt: T0 - MIN, ...over });
+const ok = <T extends { ok: boolean }>(r: T) => { assert.equal(r.ok, true, JSON.stringify(r)); return r as Extract<T, { ok: true }>; };
+const code = (r: { ok: boolean; code?: string }) => (r.ok ? "ok" : r.code);
+
+/** Sends n messages spread over minutes so the per-minute limit doesn't bite. */
+function sendSpread(core: LimiterCore, clock: { now: number }, w: Who, n: number) {
+  const out: string[] = [];
+  for (let i = 0; i < n; i++) { clock.now += MIN; out.push(code(core.admitCreate(w, crypto.randomUUID())) as string); }
+  return out;
+}
+
+test("free: 10/day, then rate_day with retryAfter", () => {
+  const { core, clock } = setup();
+  const r = sendSpread(core, clock, who(), 11);
+  assert.deepEqual(r.slice(0, 10), Array(10).fill("ok"));
+  const last = core.admitCreate(who(), crypto.randomUUID());
+  assert.equal(code(last), "rate_day");
+  assert.ok(!last.ok && last.retryAfter! > 0);
+});
+
+test("rate_minute: 4th message in a minute", () => {
+  const { core } = setup();
+  for (let i = 0; i < 3; i++) ok(core.admitCreate(who(), crypto.randomUUID()));
+  assert.equal(code(core.admitCreate(who(), crypto.randomUUID())), "rate_minute");
+});
+
+test("new/unverified: 3/day → new_account; owner 30; staff 200", () => {
+  const { core, clock } = setup();
+  assert.deepEqual(sendSpread(core, clock, who({ uid: "n", tier: "new", newAccount: true }), 4), ["ok", "ok", "ok", "new_account"]);
+  const owner = sendSpread(core, clock, who({ uid: "o", tier: "owner" }), 31);
+  assert.equal(owner.filter((x) => x === "ok").length, 30);
+  assert.equal(owner[30], "rate_day");
+  const staff = sendSpread(core, clock, who({ uid: "s", tier: "staff", staff: true }), 201);
+  assert.equal(staff.filter((x) => x === "ok").length, 200);
+});
+
+test("verify upgrades the tier immediately: unverified 3 then free up to 10", () => {
+  const { core, clock } = setup();
+  sendSpread(core, clock, who({ tier: "new", newAccount: true }), 3);
+  assert.equal(code(core.admitCreate(who({ tier: "new", newAccount: true }), crypto.randomUUID())), "new_account");
+  const after = sendSpread(core, clock, who({ tier: "free" }), 8);
+  assert.deepEqual(after, [...Array(7).fill("ok"), "rate_day"]);
+});
+
+test("same clientMsgId twice counts 1 message", () => {
+  const { core } = setup();
+  const id = crypto.randomUUID();
+  ok(core.admitCreate(who(), id));
+  const dup = ok(core.admitCreate(who(), id));
+  assert.equal(dup.duplicate, true);
+  assert.equal(core.me(who()).day.used, 1);
+});
+
+test("follow-ups: owner check, turn_running, 13th turn → chat_full", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "staff", staff: true });
+  ok(core.admitCreate(w));
+  core.bindSession("u1", "S1", "docs");
+  assert.equal(code(core.admitFollowup(w, "S1", crypto.randomUUID())), "turn_running");
+  assert.equal(code(core.admitFollowup(who({ uid: "u2" }), "S1")), "not_owner");
+  for (let turn = 2; turn <= 12; turn++) {
+    core.turnEnded("S1");
+    clock.now += MIN;
+    const r = ok(core.admitFollowup(w, "S1", crypto.randomUUID()));
+    assert.equal(r.turn, turn);
+  }
+  core.turnEnded("S1");
+  assert.equal(code(core.admitFollowup(w, "S1", crypto.randomUUID())), "chat_full");
+});
+
+test("turn_running expires after 3 minutes without a turn end", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who()));
+  core.bindSession("u1", "S1", "docs");
+  clock.now += 3 * MIN + 1;
+  ok(core.admitFollowup(who(), "S1"));
+});
+
+test("retry of an admitted follow-up (same clientMsgId) skips turn_running and isn't counted", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who()));
+  core.bindSession("u1", "S1", "docs");
+  core.turnEnded("S1");
+  clock.now += MIN;
+  const id = crypto.randomUUID();
+  ok(core.admitFollowup(who(), "S1", id));
+  const again = ok(core.admitFollowup(who(), "S1", id));
+  assert.equal(again.duplicate, true);
+  assert.equal(core.me(who()).day.used, 2);
+});
+
+test("new_ip: 31st young uid from one IP refused; 20 normal accounts from one IP chat freely", () => {
+  const { core } = setup();
+  for (let i = 0; i < 30; i++) ok(core.admitCreate(who({ uid: `young${i}`, tier: "new", newAccount: true })));
+  assert.equal(code(core.admitCreate(who({ uid: "young30", tier: "new", newAccount: true }))), "new_ip");
+  ok(core.admitCreate(who({ uid: "young5", tier: "new", newAccount: true }))); // already seen today
+  for (let i = 0; i < 20; i++) ok(core.admitCreate(who({ uid: `old${i}`, ip: "2.2.2.2" })));
+});
+
+test("streams: 4th concurrent → streams; closing frees a slot; 31st open/min → streams", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  const leases = [1, 2, 3].map(() => ok(core.openStream("u1", "S1")).leaseId);
+  assert.equal(code(core.openStream("u1", "S1")), "streams");
+  core.closeStream("u1", leases[0]);
+  const l = ok(core.openStream("u1", "S1")).leaseId;
+  for (const x of [l, leases[1], leases[2]]) core.closeStream("u1", x);
+  clock.now += MIN;
+  for (let i = 0; i < 30; i++) { const x = ok(core.openStream("u1", "S1")).leaseId; core.closeStream("u1", x); }
+  assert.equal(code(core.openStream("u1", "S1")), "streams");
+  assert.equal(code(core.openStream("u2", "S1")), "not_owner");
+});
+
+test("tickets: 3/day, the same key repeats without counting", () => {
+  const { core } = setup();
+  ok(core.admitTicket("u1", "u1:S1:money"));
+  assert.equal(ok(core.admitTicket("u1", "u1:S1:money")).repeat, true);
+  ok(core.admitTicket("u1", "u1:2026-11-10:stuck"));
+  ok(core.admitTicket("u1", "u1:S2:money"));
+  assert.equal(code(core.admitTicket("u1", "u1:S3:money")), "tickets");
+});
+
+test("feedback: one per turn, second ignored; other uid → not_owner", () => {
+  const { core } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  assert.equal(ok(core.feedback("u1", "S1", "t1")).first, true);
+  assert.equal(ok(core.feedback("u1", "S1", "t1")).first, false);
+  assert.equal(code(core.feedback("u2", "S1", "t1")), "not_owner");
+});
+
+test("budget: 41% → degrade, 86% → free paused (owners not), 100% → owners paused, staff fine until month stop", () => {
+  const { core } = setup();
+  // allowance today = 180 $ / 21 days ≈ 8.571 $
+  const allowance = 180_000_000 / 21;
+  let gen = 0;
+  const spend = (fraction: number) => core.usage({ generationId: `g${gen++}`, uid: "spender", costMicros: Math.ceil(allowance * fraction) });
+  assert.equal(spend(0.41).transition?.state, "degrade");
+  assert.equal(core.budgetFor("free").budget, "degrade");
+  assert.equal(spend(0.45).transition?.state, "free_paused");
+  assert.equal(core.budgetFor("free").budget, "paused");
+  assert.equal(core.budgetFor("new").budget, "paused");
+  assert.equal(core.budgetFor("owner").budget, "degrade");
+  assert.equal(code(core.admitCreate(who())), "budget_paused");
+  assert.equal(spend(0.15).transition?.state, "owners_paused");
+  assert.equal(core.budgetFor("owner").budget, "paused");
+  assert.equal(core.budgetFor("staff").budget, "degrade");
+  assert.equal(spend(0.01).transition, null, "one transition per state");
+});
+
+test("month stop: staff paused at $180 (via floor)", () => {
+  const { core } = setup();
+  assert.equal(core.setFloor(180_000_000)?.state, "month_stop");
+  assert.equal(core.budgetFor("staff").budget, "paused");
+  assert.equal(code(core.admitCreate(who({ tier: "staff", staff: true }))), "budget_paused");
+});
+
+test("floor POST raises month and day spend", () => {
+  const { core } = setup();
+  core.usage({ generationId: "g1", uid: "x", costMicros: 1_000_000 });
+  core.setFloor(5_000_000);
+  const r = core.budgetReport();
+  assert.equal(r.monthSpendMicros, 5_000_000);
+  assert.equal(r.daySpendMicros, 5_000_000); // tracked today 1 + (floor 5 − tracked month 1)
+  core.setFloor(2_000_000); // a lower floor never lowers it
+  assert.equal(core.budgetReport().monthSpendMicros, 5_000_000);
+});
+
+test("usage: same generationId counted once; cost_day per account", () => {
+  const { core } = setup();
+  assert.equal(core.usage({ generationId: "g1", uid: "u1", costMicros: 200_000 }).counted, true);
+  assert.equal(core.usage({ generationId: "g1", uid: "u1", costMicros: 200_000 }).counted, false);
+  assert.equal(core.budgetReport().daySpendMicros, 200_000);
+  core.usage({ generationId: "g2", uid: "u1", costMicros: 100_000 });
+  assert.equal(code(core.admitCreate(who())), "cost_day");
+});
+
+test("watchdog: 20 messages over 15 min with no usage → degrade (cause watchdog); usage clears it", () => {
+  const { core, clock } = setup();
+  let transition = null;
+  for (let i = 0; i < 20; i++) {
+    clock.now += MIN;
+    const r = core.admitCreate(who({ uid: `w${i}`, tier: "staff", staff: true }));
+    if (r.ok && r.transition) transition = r.transition;
+  }
+  assert.deepEqual(transition, { state: "degrade", cause: "watchdog" });
+  assert.equal(core.budgetFor("free").budget, "degrade");
+  const after = core.usage({ generationId: "gw", uid: "x", costMicros: 1 });
+  assert.equal(after.transition?.state, "normal");
+});
+
+test("erase: counters reset, old sessions not_owner, pre-delete token refused for 1 h", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  const sessions = core.erase("u1");
+  assert.deepEqual(sessions, ["S1"]);
+  assert.equal(core.me(who()).day.used, 0);
+  assert.equal(code(core.session("u1", "S1")), "not_owner");
+  assert.equal(core.isTombstoned("u1", T0 - MIN), true);
+  assert.equal(core.isTombstoned("u1", clock.now + 1000), false); // a token issued after the erase
+  clock.now += 61 * MIN;
+  assert.equal(core.isTombstoned("u1", T0 - MIN), false);
+});
+
+test("alarm sweep: idle sessions (25 h), generations (48 h), tombstones (1 h), counters (35 d)", () => {
+  const { core, clock, store } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  core.usage({ generationId: "g1", uid: "u1", costMicros: 1 });
+  core.erase("u9");
+  clock.now += 26 * 3600_000;
+  let r = core.sweep();
+  assert.equal(r.sessions, 1); assert.equal(r.tombstones, 1); assert.equal(r.generations, 0);
+  clock.now += 24 * 3600_000;
+  r = core.sweep();
+  assert.equal(r.generations, 1);
+  clock.now += 35 * 24 * 3600_000;
+  r = core.sweep();
+  assert.equal(r.users, 1);
+  assert.equal([...store.list("u:")].length, 0);
+});
+
+test("redeem: 10/min per IP", () => {
+  const { core } = setup();
+  for (let i = 0; i < 10; i++) ok(core.admitRedeem("9.9.9.9"));
+  assert.equal(code(core.admitRedeem("9.9.9.9")), "ip");
+  ok(core.admitRedeem("8.8.8.8"));
+});

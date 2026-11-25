@@ -38,6 +38,8 @@
   ],
   "exclude": [
     "node_modules",
-    "lib/**/*.test.ts"
+    "lib/**/*.test.ts",
+    "worker",
+    "**/*.test.ts"
   ]
 }

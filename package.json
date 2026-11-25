@@ -8,8 +8,10 @@
     "build": "next build",
     "postinstall": "fumadocs-mdx",
     "preview": "wrangler dev --port 8799",
-    "deploy": "node scripts/check-release-date.mjs && wrangler deploy",
-    "upload": "wrangler versions upload"
+    "deploy": "node scripts/check-worker.mjs && node scripts/check-release-date.mjs && wrangler deploy",
+    "upload": "node scripts/check-worker.mjs && wrangler versions upload",
+    "test:worker": "node --test worker/body.test.ts worker/limiter/core.test.ts",
+    "typecheck:worker": "tsc -p worker/tsconfig.json"
   },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
@@ -18,9 +20,11 @@
     "@orama/tokenizers": "^3.1.15",
     "@tailwindcss/postcss": "^4.3.3",
     "axios": "^1.4.0",
+    "firebase": "^12.19.0",
     "fumadocs-core": "16.15.14",
     "fumadocs-mdx": "15.4.5",
     "fumadocs-ui": "16.15.14",
+    "jose": "^6.2.18",
     "lucide-react": "0.544.0",
     "next": "16.3.6",
     "react": "^19.3.0",
@@ -31,6 +35,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261125.1",
     "@opennextjs/cloudflare": "^1.20.6",
     "@tailwindcss/typography": "^0.5.19",
     "@types/mdx": "^2.0.13",
