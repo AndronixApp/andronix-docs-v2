@@ -1,0 +1,35 @@
+{
+  "fixture": "14-harmful-session-end",
+  "title": "Harmful: decline{harmful}, then session.ended (cause hook turn-outcome)",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE14",
+  "lines": 10,
+  "ui": "Card REFUSAL_COPY.harmful with Open the docs, then the ended-session state with Start a new chat.",
+  "sessionEnded": {
+    "cause": {
+      "hook": "turn-outcome"
+    },
+    "outcome": "completed"
+  },
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "decline": {
+        "reason": "harmful"
+      },
+      "feedbackButtons": false,
+      "answerModelStarted": false,
+      "modelIds": [
+        "andronix/decline-harmful"
+      ],
+      "error": null
+    }
+  ]
+}

@@ -86,3 +86,26 @@ test("fixture 11: turn 2 repeats a turn-1 command with no tools → verified (se
   assert.ok(blocks.length >= 1);
   assert.ok(blocks.every((b) => isVerified(b.text, retrievedText(c.messages))));
 });
+
+test("guardrails: page refusal copy and buttons equal the vendored contract", async () => {
+  const c = await import("../../lib/chat-contract/tools.ts");
+  const p = await import("./refusals.ts");
+  assert.deepEqual(p.REFUSAL_COPY, c.REFUSAL_COPY);
+  assert.deepEqual(p.REFUSAL_BUTTONS, c.REFUSAL_BUTTONS);
+  for (const reason of ["offtopic", "jailbreak", "harmful"]) assert.equal(p.refusalKey({ reason }), c.refusalKey(reason));
+});
+
+test("guardrails fixtures: 13 decline card only, 14 session ended by turn-outcome, 15 no-answer narration + stuck handoff", async () => {
+  const c13 = await conversationFor("13-decline-offtopic");
+  const a13 = c13.messages.filter((m) => m.role === "assistant").at(-1)!;
+  const decline = a13.parts.find((x) => x.type === "tool" && x.name === "decline") as { input?: { reason?: string } } | undefined;
+  assert.ok(decline, "decline tool part present");
+  assert.equal((await import("./refusals.ts")).refusalKey(decline!.input), "offtopic");
+  const text14 = readFileSync(new URL("../../lib/chat-contract/fixtures/streams/14-harmful-session-end.ndjson", import.meta.url), "utf8");
+  assert.match(text14, /"cause":\{"hook":"turn-outcome"\}/);
+  const c15 = await conversationFor("15-no-answer");
+  const a15 = c15.messages.filter((m) => m.role === "assistant").at(-1)!;
+  const t15 = a15.parts.filter((x) => x.type === "text").map((x) => x.text).join("");
+  assert.equal(t15.trim(), (await import("./refusals.ts")).REFUSAL_COPY.no_answer);
+  assert.ok(a15.parts.some((x) => x.type === "tool" && x.name === "offer_handoff"));
+});

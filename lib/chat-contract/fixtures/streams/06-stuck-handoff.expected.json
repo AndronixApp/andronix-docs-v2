@@ -21,10 +21,11 @@
         "reason": "stuck",
         "topic": "install"
       },
+      "decline": null,
       "feedbackButtons": false,
       "answerModelStarted": true,
       "modelIds": [
-        "andronix/stub",
+        "andronix/ground-search",
         "andronix/stub"
       ],
       "error": null

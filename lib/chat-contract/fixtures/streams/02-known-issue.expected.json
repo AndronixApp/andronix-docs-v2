@@ -23,10 +23,11 @@
         "status": "fix_coming"
       },
       "handoff": null,
+      "decline": null,
       "feedbackButtons": true,
       "answerModelStarted": true,
       "modelIds": [
-        "andronix/stub",
+        "andronix/ground-search",
         "andronix/stub",
         "andronix/stub"
       ],

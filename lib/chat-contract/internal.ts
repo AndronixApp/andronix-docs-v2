@@ -31,3 +31,22 @@ export const usageBody = z
   .strict();
 
 export type UsageBody = z.infer<typeof usageBody>;
+
+/**
+ * POST /chat-api/internal/strike (guardrails §2). One per refused turn,
+ * de-duplicated on `turnId` by the Worker. Weights: offtopic 1, jailbreak 2,
+ * harmful 2 (rolling 24 h; LIMITS_JSON.abuse). Never carries text.
+ */
+export const StrikeReason = z.enum(["offtopic", "jailbreak", "harmful"]);
+export const STRIKE_WEIGHTS = { offtopic: 1, jailbreak: 2, harmful: 2 } as const;
+
+export const strikeBody = z
+  .object({
+    uid: z.string().min(1).max(128),
+    sessionId: z.string().min(1).max(128),
+    turnId: z.string().min(1).max(64),
+    reason: StrikeReason,
+  })
+  .strict();
+
+export type StrikeBody = z.infer<typeof strikeBody>;

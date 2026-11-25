@@ -4,7 +4,7 @@
   "eveVersion": "1.5.0",
   "streamVersion": 27,
   "sessionId": "wrun_FIXTURE08",
-  "lines": 11,
+  "lines": 17,
   "ui": "\"This chat is full. Start a new chat.\" Composer disabled; New chat button.",
   "sessionEnded": {
     "cause": {
@@ -18,12 +18,16 @@
       "outcome": "cancelled",
       "text": [],
       "codeBlocks": [],
-      "sourceChips": [],
+      "sourceChips": [
+        "https://docs.andronix.app/troubleshooting/black-screen"
+      ],
       "knownIssueChip": null,
       "handoff": null,
+      "decline": null,
       "feedbackButtons": false,
       "answerModelStarted": true,
       "modelIds": [
+        "andronix/ground-search",
         "andronix/stub"
       ],
       "error": null

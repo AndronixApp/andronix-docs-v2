@@ -288,6 +288,7 @@
             "scope": {
               "type": "string",
               "enum": [
+                "cooldown",
                 "auth",
                 "not_owner",
                 "bad_body",
@@ -423,6 +424,7 @@
               "enum": [
                 "answered",
                 "handoff_offered",
+                "declined",
                 "error",
                 "cancelled"
               ]
@@ -498,16 +500,20 @@
                 "ok",
                 "money",
                 "account",
-                "injection",
-                "off_topic",
-                "unavailable"
+                "offtopic",
+                "jailbreak",
+                "harmful",
+                "no_answer"
               ]
             },
             "stage": {
               "type": "string",
               "enum": [
                 "keyword",
-                "haiku"
+                "haiku",
+                "model",
+                "retrieval",
+                "output"
               ]
             },
             "__timestamp": {

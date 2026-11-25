@@ -23,10 +23,11 @@
       "sourceChips": [],
       "knownIssueChip": null,
       "handoff": null,
+      "decline": null,
       "feedbackButtons": false,
       "answerModelStarted": true,
       "modelIds": [
-        "andronix/stub",
+        "andronix/ground-search",
         "andronix/stub"
       ],
       "error": null

@@ -20,10 +20,11 @@
       ],
       "knownIssueChip": null,
       "handoff": null,
+      "decline": null,
       "feedbackButtons": true,
       "answerModelStarted": true,
       "modelIds": [
-        "andronix/stub",
+        "andronix/ground-search",
         "andronix/stub",
         "andronix/stub",
         "andronix/stub"

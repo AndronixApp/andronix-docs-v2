@@ -21,6 +21,7 @@
         "reason": "money",
         "topic": "purchase_locked"
       },
+      "decline": null,
       "feedbackButtons": false,
       "answerModelStarted": false,
       "modelIds": [

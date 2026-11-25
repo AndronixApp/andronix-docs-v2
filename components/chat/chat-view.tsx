@@ -15,7 +15,7 @@ import { AssistantHeader, Bubble, Markdown, SourceChips, turnFacts, type ToolPar
 import { AttachCard, DeclineCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
 import { attachReport, chatIdFor, fileTicket, sendFeedback, type Me } from "./api";
 import { retrievedUnits } from "./verify";
-import { declineReason } from "./refusals";
+import { refusalKey } from "./refusals";
 import { COMPOSER_NOTE, MONEY_FOLLOWUP, SOLVED_FOLLOWUP, STUCK_FOLLOWUP } from "./copy";
 import type { Entry, Surface } from "./events";
 import { useChatEvents } from "./events";
@@ -35,6 +35,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const inApp = surface === "app_webview";
   const events = useChatEvents(entry, surface);
   const msgIdRef = useRef<string>("");
+  const awaitEndRef = useRef(false);
+  const [sessionGone, setSessionGone] = useState(false);
   const [draft, setDraft] = useState(initialQuestion);
   const [failed, setFailed] = useState<{ text: string; id: string } | null>(null);
   const [limit, setLimit] = useState<Limit | null>(null);
@@ -54,14 +56,16 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const agent = useEveAgent({
     baseUrl: "",
     auth: { bearer: async () => user.getIdToken() },
-    followWhile: (view) => !idle(view),
+    // idle → close the stream; but after a jailbreak/harmful decline eve ends the session on the
+    // next line (turn-outcome hook), so keep reading until that session.ended arrives
+    followWhile: (view) => !idle(view) || awaitEndRef.current,
     prepareSend: (input) => ({ ...input, headers: { ...(input.headers ?? {}), "x-andronix-client-msg-id": msgIdRef.current, "x-andronix-entry": entry } }),
     onFinish: () => onLimitsChanged(),
   });
   const view = agent.view;
   const sessionId = agent.session?.sessionId ?? null;
   const running = !!activeTurn(view) || agent.status === "busy";
-  const ended = sessionOf(view).status === "ended";
+  const ended = sessionOf(view).status === "ended" || sessionGone;
   const messages = agent.messages as readonly Msg[];
   const retrieved = useMemo(() => retrievedUnits(messages as never), [messages]);
 
@@ -87,6 +91,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       let retryAfter: number | undefined;
       try { retryAfter = JSON.parse((e as { body?: string }).body ?? "{}").retryAfter; } catch {}
       if (code === "chat_full") { setLimit({ code }); return; }
+      // eve ended the session without a card we saw (e.g. its output guard): offer a new chat
+      if (code === "session_not_active" || (e as { name?: string }).name === "SessionNotActiveError") { setSessionGone(true); setDraft(message); return; }
       if (code === "auth") { onMeStale(); setFailed({ text: message, id: msgIdRef.current }); setDraft(message); return; }
       if (code === "rate_minute") { setCooldownUntil(Date.now() + (retryAfter ?? 20) * 1000); setDraft(message); setFailed({ text: message, id: msgIdRef.current }); return; }
       if (isErrorCode(code) && (HTTP_ERRORS[code].status === 429 || HTTP_ERRORS[code].status === 503)) {
@@ -146,7 +152,22 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
     return f.hasSteps || f.verifiedCode > 0 ? last.turnId : null;
   }, [turns, view, retrieved]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const endedByRefusal = ended && turns.some((t) => t.tools.some((p) => p.name === "decline"));
+  // jailbreak / harmful (and an output-guard stop) end the session from eve's turn-outcome hook
+  {
+    const last = [...turns].reverse().find((t) => !t.turnId.startsWith("local:"));
+    const d = last?.tools.find((p) => p.name === "decline")?.input as { reason?: string } | undefined;
+    awaitEndRef.current = !ended && (d?.reason === "jailbreak" || d?.reason === "harmful");
+  }
+  // the idle close can win the race with eve's session.ended line: catch up once to see it
+  const resumedFor = useRef<string | null>(null);
+  const lastTurnId = turns.length ? turns[turns.length - 1].turnId : null;
+  useEffect(() => {
+    if (!awaitEndRef.current || ended || agent.status !== "idle" || !lastTurnId || resumedFor.current === lastTurnId) return;
+    resumedFor.current = lastTurnId;
+    agent.resume().catch(() => {});
+  });
+  const endedByRefusal = sessionGone || ended && (agent.events as readonly { type: string; data?: { cause?: { hook?: string } } }[])
+    .some((e) => e.type === "session.ended" && e.data?.cause?.hook === "turn-outcome");
 
   const submitTicket = async (h: Handoff, v: { orderId?: string; note?: string; includeChat: boolean }) => {
     setFormBusy(true); setFormError("");
@@ -232,7 +253,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
                 <AssistantHeader />
                 {/* a turn with `decline` shows only the fixed card; its text is dropped (guardrails §1, layer 4) */}
                 {declinePart
-                  ? <DeclineCard reason={declineReason(declinePart.input)} docsHref={docsHref} onSupport={() => setHandoff({ reason: "user_request", topic: "other", key: `decline:${t.turnId}` })} />
+                  ? <DeclineCard reason={refusalKey(declinePart.input)} docsHref={docsHref} onSupport={() => setHandoff({ reason: "user_request", topic: "other", key: `decline:${t.turnId}` })} />
                   : t.text ? <Markdown text={t.text} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
                 {s.settled && s.outcome === "failed" && !ended && <p className="chat-error">Something went wrong. Try again.</p>}
                 {s.settled && s.outcome === "cancelled" && <p className="chat-small">Stopped.</p>}

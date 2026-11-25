@@ -108,7 +108,7 @@ const STRIKE_REASONS = ["offtopic", "jailbreak", "harmful"] as const;
 /**
  * eve's turn.settled hook reports a refused turn (guardrails §2):
  * {uid, sessionId, turnId, reason: offtopic | jailbreak | harmful}, de-duplicated on turnId.
- * Answers {counted, total, cooldownUntil}. Reaching the longest step posts once to the ops
+ * Answers 204. Reaching the longest step posts once to the ops
  * webhook, with the pid only.
  */
 async function strike(ctx: Ctx, request: Request): Promise<Response> {
@@ -121,5 +121,5 @@ async function strike(ctx: Ctx, request: Request): Promise<Response> {
     const pid = await pidFor(b.uid);
     ctx.exec.waitUntil(opsNotify(ctx.env, `Support chat: account ${pid} reached ${r.total} strike points in 24 h; paused for 24 h.`));
   }
-  return json({ counted: r.counted, total: r.total, cooldownUntil: r.cooldownUntil ? new Date(r.cooldownUntil).toISOString() : null });
+  return noContent(); // contract: 204 (A-guardrails.md)
 }

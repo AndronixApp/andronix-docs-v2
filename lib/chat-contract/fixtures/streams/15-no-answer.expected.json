@@ -1,0 +1,35 @@
+{
+  "fixture": "15-no-answer",
+  "title": "No answer: step-0 search misses, one forced (tool_choice required) search misses, fixed no-answer reply + offer_handoff{stuck}",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE15",
+  "lines": 23,
+  "ui": "Narration text REFUSAL_COPY.no_answer and the support form prefilled reason=stuck. No feedback buttons.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "I couldn't find this in the Andronix docs, so I won't guess. Try rephrasing it, or send it to our support team and they'll reply by email."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": {
+        "reason": "stuck",
+        "topic": "other"
+      },
+      "decline": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/ground-search",
+        "andronix/stub",
+        "andronix/no-answer"
+      ],
+      "error": null
+    }
+  ]
+}

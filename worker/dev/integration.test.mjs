@@ -425,10 +425,9 @@ test("guardrails: eve strikes via /internal/strike → 3 points → 429 cooldown
   assert.equal((await fetch(`${W}/chat-api/internal/strike`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" })).status, 401);
   assert.equal((await json(await strike("t1", "rude"))).body.code, "bad_body");
   assert.equal((await json(await strike("t1", "offtopic", { text: "x" }))).body.code, "bad_body");
-  assert.equal((await json(await strike("t1"))).body.total, 1);
-  assert.equal((await json(await strike("t1"))).body.counted, false);
-  const third = (await json(await strike("t2", "jailbreak"))).body;
-  assert.equal(third.total, 3); assert.ok(third.cooldownUntil);
+  assert.equal((await strike("t1")).status, 204);
+  assert.equal((await strike("t1")).status, 204); // same turn: not counted again
+  assert.equal((await strike("t2", "jailbreak")).status, 204); // 1 + 2 = 3 points
   await advance(61_000);
   const r = await json(await post(a, `/eve/v1/session/${sid}`, { message: "again", clientMsgId: uuid() }));
   assert.equal(r.status, 429); assert.equal(r.body.code, "cooldown");
@@ -473,8 +472,7 @@ test("every server event the Worker sent validates against chat-events.schema.js
   const { validateEvent } = await import("../../lib/chat-contract/validate-event.mjs");
   const events = await (await fetch(`${FAKES}/fake/events`)).json();
   assert.ok(events.length > 0);
-  // chat_rate_limited{scope:"cooldown"} waits for A's guardrails schema (support-chat-guardrails.md §5)
-  const problems = events.filter((e) => e.payload.properties?.scope !== "cooldown").flatMap((e) => validateEvent(e.payload.name, e.payload.properties, "worker"));
+  const problems = events.flatMap((e) => validateEvent(e.payload.name, e.payload.properties, "worker"));
   assert.deepEqual(problems, []);
 });
 

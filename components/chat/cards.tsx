@@ -4,7 +4,7 @@
 
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ORDER_ID_HINT } from "./copy";
-import { cooldownText, REFUSAL_TEXT, type RefusalKey } from "./refusals";
+import { cooldownText, REFUSAL_BUTTONS, REFUSAL_COPY } from "./refusals";
 
 export function Card({ children, tone }: { children: ReactNode; tone?: "ok" | "warn" }) {
   return <div className={`chat-card ${tone ? `chat-card-${tone}` : ""}`}>{children}</div>;
@@ -230,13 +230,14 @@ export function AttachCard({ onAttach, onDismiss, busy, error }: { onAttach: () 
 
 // ---------- decline (guardrails §1): the fixed card replaces the turn's text ----------
 
-export function DeclineCard({ reason, docsHref, onSupport }: { reason: Exclude<RefusalKey, "cooldown" | "no_answer">; docsHref: string; onSupport: () => void }) {
+export function DeclineCard({ reason, docsHref, onSupport }: { reason: "offtopic" | "harmful"; docsHref: string; onSupport: () => void }) {
+  const buttons = REFUSAL_BUTTONS[reason];
   return (
     <Card>
-      <p className="chat-muted">{REFUSAL_TEXT[reason]}</p>
+      <p className="chat-muted">{REFUSAL_COPY[reason]}</p>
       <div className="flex flex-col gap-2">
-        <a className="chat-btn chat-btn-primary" href={docsHref}>Open the docs</a>
-        {reason !== "harmful" && <Secondary onClick={onSupport}>Send to support team</Secondary>}
+        {buttons.includes("open_docs") && <a className="chat-btn chat-btn-primary" href={docsHref}>Open the docs</a>}
+        {buttons.includes("send_to_support") && <Secondary onClick={onSupport}>Send to support team</Secondary>}
       </div>
     </Card>
   );

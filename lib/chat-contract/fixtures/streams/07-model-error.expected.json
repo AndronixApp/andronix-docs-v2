@@ -4,7 +4,7 @@
   "eveVersion": "1.5.0",
   "streamVersion": 27,
   "sessionId": "wrun_FIXTURE07",
-  "lines": 5,
+  "lines": 11,
   "ui": "\"Something went wrong. Try again.\" The session stays usable.",
   "sessionEnded": {
     "cause": {
@@ -12,7 +12,7 @@
     },
     "error": {
       "code": "MODEL_CALL_FAILED",
-      "id": "f242ab58-87ff-418b-9ea9-f888c8f92f16",
+      "id": "912b7a93-81cd-4016-b706-dfeff4d78a3e",
       "message": "stub 400"
     },
     "outcome": "failed"
@@ -26,9 +26,11 @@
       "sourceChips": [],
       "knownIssueChip": null,
       "handoff": null,
+      "decline": null,
       "feedbackButtons": false,
       "answerModelStarted": true,
       "modelIds": [
+        "andronix/ground-search",
         "andronix/stub"
       ],
       "error": null

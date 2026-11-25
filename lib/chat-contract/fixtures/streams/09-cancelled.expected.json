@@ -4,7 +4,7 @@
   "eveVersion": "1.5.0",
   "streamVersion": 27,
   "sessionId": "wrun_FIXTURE09",
-  "lines": 20,
+  "lines": 26,
   "ui": "Partial text stays, marked stopped. Composer re-enabled. No feedback buttons.",
   "sessionEnded": null,
   "turns": [
@@ -18,9 +18,11 @@
       "sourceChips": [],
       "knownIssueChip": null,
       "handoff": null,
+      "decline": null,
       "feedbackButtons": false,
       "answerModelStarted": true,
       "modelIds": [
+        "andronix/ground-search",
         "andronix/stub"
       ],
       "error": null
