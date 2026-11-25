@@ -1,8 +1,37 @@
 {
+  "route": "stream-resume",
   "method": "GET",
-  "path": "/eve/v1/session/:id/stream",
-  "query": {
-    "startIndex": "26"
+  "path": "/eve/v1/session/:sessionId/stream",
+  "sequence": [
+    {
+      "query": {
+        "startIndex": "26",
+        "includeTailIndex": "1"
+      },
+      "purpose": "bounded catch-up from the cursor when send() reopens a closed stream"
+    },
+    {
+      "query": {
+        "startIndex": "26"
+      },
+      "purpose": "following read from the cursor"
+    }
+  ],
+  "headers": {
+    "accept": "*/*",
+    "x-andronix-client-msg-id": "<the latest send's uuid>",
+    "x-andronix-entry": "docs"
   },
-  "source": "PROVISIONAL: recorded by stream B from eve 1.5.0 (useEveAgent client) against a local mock agent; replaced by stream A's 2A.1 recording"
+  "notes": [
+    "startIndex is the next stored line to read (the client's session.streamIndex).",
+    "Lease renewals (no idle close) reconnect as {startIndex: N} once a minute."
+  ],
+  "recordedWith": {
+    "eve": "1.5.0",
+    "client": "eve/react useEveAgent (pinned 1.5.0) in a Next 16.3.6 static export",
+    "recordedAt": "2026-11-25",
+    "source": "spike/recordings/log-1-answer-followup.json, log-2-cancel.json"
+  },
+  "auth": "Every request carries `Authorization: Bearer <Firebase ID token>` from `auth.bearer` (spike used `Bearer dev:<uid>`).",
+  "clientHeaders": "Headers passed to `send(message, { headers })` are sent on that POST and then reused on the stream reads that follow it (eve: 'become the stream's credentials on its next reconnect'). The spike page sends `x-andronix-client-msg-id` (uuid per send) and `x-andronix-entry`; see docs/spike.md, contract note C1."
 }

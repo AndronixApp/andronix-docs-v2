@@ -1,0 +1,35 @@
+{
+  "fixture": "04-unverified-command",
+  "title": "A code block not in any retrieved text → replaced at turn.settled",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE04",
+  "lines": 14,
+  "ui": "The block is dimmed with no Copy while streaming, then replaced with \"I can't confirm this command. See the linked docs page.\"",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "Try clearing the cache with this:\n\n```bash\nandronix cache purge --all --force\n```\n\nThen run the install again."
+      ],
+      "codeBlocks": [
+        {
+          "code": "andronix cache purge --all --force",
+          "verified": false
+        }
+      ],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}

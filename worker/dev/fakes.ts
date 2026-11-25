@@ -4,7 +4,7 @@
 // fake eve replays lib/chat-contract/fixtures/streams/*.ndjson. The fixture comes from the
 // first message ("fixture:04 …"), or the default 01. Each POST releases the fixture's next turn.
 // It validates incoming requests the way eve would see them from the Worker: x-eve-edge, the
-// x-andronix-* headers, and the exact body keys (create {message}; follow-up {message,
+// x-andronix-* headers, and the exact body keys (create {message, operationId?}; follow-up {message,
 // idempotencyKey?}; cancel {turnId?}). GET /fake/requests lists what it saw.
 
 import f01 from "../../lib/chat-contract/fixtures/streams/01-answer-code-sources.ndjson";
@@ -111,7 +111,7 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
   if (p === "/eve/v1/session" && req.method === "POST") {
     const body = await req.json().catch(() => null) as { message?: string } | null;
     const bad = checkEdge(req, "create", body); if (bad) return bad;
-    if (!keysExactly(body, ["message"], ["message"])) return j({ ok: false, error: "fake eve: create body must be exactly {message}" }, 400);
+    if (!keysExactly(body, ["message", "operationId"], ["message"])) return j({ ok: false, error: "fake eve: create body must be {message, operationId?}" }, 400);
     const n = /fixture:(\d\d)/.exec(body!.message!)?.[1] ?? "01";
     const { lines, deliveries } = parseFixture(FIXTURES[n] ?? f01);
     const id = `wrun_fake_${n}_${crypto.randomUUID().slice(0, 8)}`;

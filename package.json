@@ -16,7 +16,7 @@
     "chat:fakes": "wrangler dev -c worker/dev/wrangler.fakes.toml --port 8790 --inspector-port 9238",
     "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239",
     "test:chat-int": "node --test --test-concurrency=1 worker/dev/integration.test.mjs",
-    "test:chat": "node --test worker/body.test.ts worker/limiter/core.test.ts components/chat/render.test.ts",
+    "test:chat": "node --test worker/body.test.ts worker/limiter/core.test.ts components/chat/render.test.ts components/chat/filter.test.ts",
     "chat:page": "set -a && . ./.env.chat-dev && set +a && next dev -p 3312"
   },
   "author": "Andronix <hello@andronix.app>",
@@ -53,6 +53,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
-    "wrangler": "^4.140.0"
+    "wrangler": "^4.140.0",
+    "zod": "4.6.7"
   }
 }

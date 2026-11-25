@@ -1,0 +1,37 @@
+{
+  "fixture": "10-multi-tool-long",
+  "title": "Three tool calls, a long reply, and unknown event/progress types (must be ignored)",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE10",
+  "lines": 28,
+  "ui": "Renders normally. The injected unknown fact `x.future_event` and progress `x.future_progress` change nothing.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "Sound in Termux distros goes through PulseAudio running in Termux.\n\n1. Check item 1 from the sound page before moving on.\n2. Check item 2 from the sound page before moving on.\n3. Check item 3 from the sound page before moving on.\n4. Check item 4 from the sound page before moving on.\n5. Check item 5 from the sound page before moving on.\n6. Check item 6 from the sound page before moving on.\n7. Check item 7 from the sound page before moving on.\n8. Check item 8 from the sound page before moving on.\n9. Check item 9 from the sound page before moving on.\n10. Check item 10 from the sound page before moving on.\n11. Check item 11 from the sound page before moving on.\n12. Check item 12 from the sound page before moving on.\n\nSource: [Sound](https://docs.andronix.app/termux/sound)."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [
+        "https://docs.andronix.app/termux/sound"
+      ],
+      "knownIssueChip": null,
+      "handoff": null,
+      "feedbackButtons": true,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/stub",
+        "andronix/stub",
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ],
+  "notes": [
+    "Line after the first model.settled is a synthetic line with an unknown fact type; one synthetic unknown progress record follows it."
+  ]
+}

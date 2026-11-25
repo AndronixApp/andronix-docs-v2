@@ -1,0 +1,30 @@
+{
+  "fixture": "05-offlist-link-image",
+  "title": "Off-list link, image, raw HTML",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE05",
+  "lines": 14,
+  "ui": "evil.example.com link renders as text; the image is not loaded (text or dropped); raw HTML shows as text, never as markup. Allowed: github.com/termux/termux-x11 releases, docs.andronix.app, play.google.com details?id=studio.com.techriz.andronix.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "Get Termux:X11 from [its GitHub releases](https://github.com/termux/termux-x11/releases) or from [this mirror](https://evil.example.com/termux-x11.apk).\n\n![screenshot](https://evil.example.com/pixel.png)\n\n<img src=x onerror=alert(1)> <b>bold html</b> <script>alert(1)</script>\n\nSee also [Termux:X11 in the docs](https://docs.andronix.app/termux/termux-x11) and [the app on Play](https://play.google.com/store/apps/details?id=studio.com.techriz.andronix)."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}

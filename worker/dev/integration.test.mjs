@@ -90,7 +90,7 @@ test("create → fake eve got {message} only, masked, with edge and x-andronix-*
   const seen = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((x) => x.kind === "create");
   assert.equal(seen.length, 1);
   assert.deepEqual(seen[0].problems, []);
-  assert.deepEqual(Object.keys(seen[0].body), ["message"]);
+  assert.deepEqual(Object.keys(seen[0].body), ["message"]); // no clientMsgId → no operationId
   assert.equal(seen[0].body.message, "fixture:01 I am [email], order [order id] failed");
   assert.equal(seen[0].headers["x-andronix-entry"], "docs");
   assert.equal(seen[0].headers["x-andronix-surface"], "web");
@@ -107,7 +107,7 @@ test("create → fake eve got {message} only, masked, with edge and x-andronix-*
 
 test("entry and clientMsgId may come as per-send headers (pinned useEveAgent)", async () => {
   const a = await account();
-  const res = await fetch(W + "/eve/v1/session", { method: "POST", headers: h(a, { "x-chat-entry": "discord", "x-chat-client-msg-id": uuid() }), body: JSON.stringify({ message: "fixture:01 hi" }) });
+  const res = await fetch(W + "/eve/v1/session", { method: "POST", headers: h(a, { "x-andronix-entry": "discord", "x-andronix-client-msg-id": uuid() }), body: JSON.stringify({ message: "fixture:01 hi" }) });
   assert.equal(res.status, 202);
   const seen = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((x) => x.kind === "create").at(-1);
   assert.equal(seen.headers["x-andronix-entry"], "discord");
@@ -338,4 +338,26 @@ test("/__/auth/* proxy: 30 rapid GETs all 200, never rate limited", async () => 
 test("unknown /eve path → 404; static paths don't hit chat code", async () => {
   assert.equal((await fetch(`${W}/eve/v1/info`)).status, 404);
   assert.equal((await fetch(`${W}/eve/v1/session/x/end`, { method: "POST" })).status, 404);
+});
+
+test("every server event the Worker sent validates against chat-events.schema.json (sender worker)", async () => {
+  const { validateEvent } = await import("../../lib/chat-contract/validate-event.mjs");
+  const events = await (await fetch(`${FAKES}/fake/events`)).json();
+  assert.ok(events.length > 0);
+  const problems = events.flatMap((e) => validateEvent(e.payload.name, e.payload.properties, "worker"));
+  assert.deepEqual(problems, []);
+});
+
+test("budget: day spend at 45% of the allowance → follow-ups carry x-andronix-budget: degrade (runs last: it moves global spend)", async () => {
+  const b = (await json(await fetch(`${W}/chat-api/internal/budget`, { headers: INTERNAL }))).body;
+  // the floor adds (floor − tracked month) to today's spend; the allowance stays the same
+  const trackedBeforeToday = b.monthSpendMicros - b.daySpendMicros;
+  const floor = trackedBeforeToday + Math.ceil(0.45 * b.allowanceMicros);
+  assert.equal((await fetch(`${W}/chat-api/internal/budget`, { method: "POST", headers: INTERNAL, body: JSON.stringify({ monthSpendMicrosFloor: floor }) })).status, 204);
+  const after = (await json(await fetch(`${W}/chat-api/internal/budget`, { headers: INTERNAL }))).body;
+  assert.equal(after.state, "degrade");
+  const a = await account();
+  await create(a);
+  const seen = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((x) => x.kind === "create").at(-1);
+  assert.equal(seen.headers["x-andronix-budget"], "degrade");
 });

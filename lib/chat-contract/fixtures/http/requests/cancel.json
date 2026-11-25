@@ -1,7 +1,35 @@
 {
+  "route": "cancel",
   "method": "POST",
-  "path": "/eve/v1/session/:id/cancel",
+  "path": "/eve/v1/session/:sessionId/cancel",
   "query": {},
-  "body": {},
-  "source": "PROVISIONAL: recorded by stream B from eve 1.5.0 (useEveAgent client) against a local mock agent; replaced by stream A's 2A.1 recording"
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "turnId": "turn_0"
+  },
+  "bodyKeys": [
+    "turnId"
+  ],
+  "response": {
+    "status": 202,
+    "body": {
+      "ok": true,
+      "sessionId": "wrun_\u2026",
+      "deliveryId": "<uuid>"
+    }
+  },
+  "notes": [
+    "`agent.cancel()` sends the observed turnId. Confirmation arrives on the stream as turn.settled outcome cancelled.",
+    "Cancel does not carry the send() headers."
+  ],
+  "recordedWith": {
+    "eve": "1.5.0",
+    "client": "eve/react useEveAgent (pinned 1.5.0) in a Next 16.3.6 static export",
+    "recordedAt": "2026-11-25",
+    "source": "spike/recordings/log-1-answer-followup.json, log-2-cancel.json"
+  },
+  "auth": "Every request carries `Authorization: Bearer <Firebase ID token>` from `auth.bearer` (spike used `Bearer dev:<uid>`).",
+  "clientHeaders": "Headers passed to `send(message, { headers })` are sent on that POST and then reused on the stream reads that follow it (eve: 'become the stream's credentials on its next reconnect'). The spike page sends `x-andronix-client-msg-id` (uuid per send) and `x-andronix-entry`; see docs/spike.md, contract note C1."
 }

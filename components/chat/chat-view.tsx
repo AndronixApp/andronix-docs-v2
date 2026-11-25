@@ -54,7 +54,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
     baseUrl: "",
     auth: { bearer: async () => user.getIdToken() },
     followWhile: (view) => !idle(view),
-    prepareSend: (input) => ({ ...input, headers: { ...(input.headers ?? {}), "x-chat-client-msg-id": msgIdRef.current, "x-chat-entry": entry } }),
+    prepareSend: (input) => ({ ...input, headers: { ...(input.headers ?? {}), "x-andronix-client-msg-id": msgIdRef.current, "x-andronix-entry": entry } }),
     onFinish: () => onLimitsChanged(),
   });
   const view = agent.view;
@@ -225,7 +225,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
               <div className="flex flex-col gap-3">
                 <AssistantHeader />
                 {t.text ? <Markdown text={t.text} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
-                {s.settled && s.outcome === "failed" && <p className="chat-error">Something went wrong. Try again.</p>}
+                {s.settled && s.outcome === "failed" && !ended && <p className="chat-error">Something went wrong. Try again.</p>}
                 {s.settled && s.outcome === "cancelled" && <p className="chat-small">Stopped.</p>}
                 <SourceChips tools={t.tools} />
                 {handoffPart && hi?.reason && (sent[hKey]
@@ -274,7 +274,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       )}
       {(ended || limit?.code === "chat_full") && (
         <div className="chat-card">
-          <p className="chat-card-title">This chat is full. Start a new chat.</p>
+          {/* a model error ends the session too (spike C4): say what happened, not "full" */}
+          <p className="chat-card-title">{ended && sessionOf(view).outcome === "failed" ? "Something went wrong. Start a new chat." : "This chat is full. Start a new chat."}</p>
           <Primary onClick={onNewChat}>New chat</Primary>
         </div>
       )}

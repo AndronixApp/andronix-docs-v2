@@ -1,6 +1,33 @@
 {
+  "route": "stream",
   "method": "GET",
-  "path": "/eve/v1/session/:id/stream",
-  "query": {},
-  "source": "PROVISIONAL: recorded by stream B from eve 1.5.0 (useEveAgent client) against a local mock agent; replaced by stream A's 2A.1 recording"
+  "path": "/eve/v1/session/:sessionId/stream",
+  "sequence": [
+    {
+      "query": {
+        "includeTailIndex": "1"
+      },
+      "purpose": "bounded catch-up read right after create; ends at the tail (x-eve-stream-tail-index header)",
+      "closesAfterMs": "~12"
+    },
+    {
+      "query": {},
+      "purpose": "following read; stays open while a turn runs; closed by the client when followWhile returns false (idle), or by eve's 60 s lease ({\"$eve\":\"stream.lease-ended\"}) after which the client reconnects with startIndex"
+    }
+  ],
+  "headers": {
+    "accept": "*/*"
+  },
+  "notes": [
+    "Query keys seen: includeTailIndex, startIndex. Also valid per eve: follow=false (bounded read; the Worker's ticket transcript uses it).",
+    "A Worker should pass the query through unchanged and allow exactly: startIndex (integer, may be negative), includeTailIndex=1, follow=false."
+  ],
+  "recordedWith": {
+    "eve": "1.5.0",
+    "client": "eve/react useEveAgent (pinned 1.5.0) in a Next 16.3.6 static export",
+    "recordedAt": "2026-11-25",
+    "source": "spike/recordings/log-1-answer-followup.json, log-2-cancel.json"
+  },
+  "auth": "Every request carries `Authorization: Bearer <Firebase ID token>` from `auth.bearer` (spike used `Bearer dev:<uid>`).",
+  "clientHeaders": "Headers passed to `send(message, { headers })` are sent on that POST and then reused on the stream reads that follow it (eve: 'become the stream's credentials on its next reconnect'). The spike page sends `x-andronix-client-msg-id` (uuid per send) and `x-andronix-entry`; see docs/spike.md, contract note C1."
 }

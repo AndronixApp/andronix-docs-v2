@@ -1,0 +1,36 @@
+{
+  "fixture": "02-known-issue",
+  "title": "kb_read of a fix_coming known issue, steps, feedback (mock 7 right)",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE02",
+  "lines": 20,
+  "ui": "Known-issue chip (status fix_coming) linking to its docs page. Ordered list. Solved / Still stuck.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "This is a known issue on some 32-bit phones with older kernels, and a fix is coming in the next installer release.\n\nThe crash usually doesn't stop the install itself:\n\n1. Wait until the install screen says the install is done. Don't run `andronix desktop` while packages are still downloading.\n2. If the install was interrupted, start it again from the app.\n3. If it still fails, send a problem report from the app so we can check the log."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [
+        "https://docs.andronix.app/troubleshooting/in-the-app"
+      ],
+      "knownIssueChip": {
+        "url": "https://docs.andronix.app/troubleshooting/in-the-app",
+        "status": "fix_coming"
+      },
+      "handoff": null,
+      "feedbackButtons": true,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/stub",
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}

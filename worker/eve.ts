@@ -11,21 +11,19 @@ import type { Env } from "./env.ts";
 const SESSION = /^\/eve\/v1\/session\/([^/]{1,200})(\/stream|\/cancel)?$/;
 /** Query params the pinned useEveAgent sends on stream reads (eve 1.5.0 client/open-stream.js). */
 const STREAM_PARAMS: Record<string, RegExp> = { startIndex: /^-?\d{1,9}$/, includeTailIndex: /^1$/, follow: /^false$/ };
-/** Set from the spike (2A.1-2): whether eve's create accepts idempotencyKey. Follow-ups always send it. */
-const CREATE_SENDS_IDEMPOTENCY_KEY = false;
 
 /**
- * The pinned useEveAgent builds the POST body itself ({message}, plus inbox/turnPolicy on some
- * follow-ups), so the page can't put clientMsgId and entry in it. It sends them as per-send
- * headers (prepareSend → headers); they're folded into the body before the 1.4 key check.
- * Contract question raised with the lead (support-chat-status/B.md).
+ * The pinned useEveAgent builds the POST body itself (exactly {message}, spike 2A.1), so the page
+ * sends clientMsgId and entry as per-send headers, `x-andronix-client-msg-id` and
+ * `x-andronix-entry` (A's C1 proposal). They're folded into the body before the 1.4 key check
+ * and never forwarded: the Worker builds every x-andronix-* header toward eve itself.
  */
 async function bodyWithHeaders(request: Request, keys: ("clientMsgId" | "entry")[]): Promise<unknown> {
   const body = await readJson(request);
   if (!body || typeof body !== "object" || Array.isArray(body)) return body;
   const b = body as Record<string, unknown>;
-  const msgId = request.headers.get("x-chat-client-msg-id");
-  const entry = request.headers.get("x-chat-entry");
+  const msgId = request.headers.get("x-andronix-client-msg-id");
+  const entry = request.headers.get("x-andronix-entry");
   if (keys.includes("clientMsgId") && msgId && b.clientMsgId === undefined) b.clientMsgId = msgId;
   if (keys.includes("entry") && entry && b.entry === undefined) b.entry = entry;
   return b;
@@ -102,7 +100,8 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
   reportTransition(ctx, admit.transition);
   const masked = mask(message);
   const body: Record<string, string> = { message: masked.text };
-  if (CREATE_SENDS_IDEMPOTENCY_KEY && clientMsgId) body.idempotencyKey = await sha256Hex(`${caller.who.uid}:${clientMsgId}`);
+  // eve's create takes operationId for retry-safe creates (not idempotencyKey; spike C2)
+  if (clientMsgId) body.operationId = await sha256Hex(`${caller.who.uid}:${clientMsgId}`);
   const headers = await eveHeaders(ctx.env, request, caller, entry, admit.budget);
   headers.set("content-type", "application/json");
   const res = await forward(ctx.env, "/eve/v1/session", { method: "POST", headers, body: JSON.stringify(body) });

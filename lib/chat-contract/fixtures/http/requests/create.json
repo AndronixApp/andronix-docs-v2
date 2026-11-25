@@ -1,9 +1,37 @@
 {
+  "route": "create",
   "method": "POST",
   "path": "/eve/v1/session",
   "query": {},
-  "body": {
-    "message": "fixture:11 How do I start VNC?"
+  "headers": {
+    "content-type": "application/json",
+    "x-andronix-client-msg-id": "<uuid v4>",
+    "x-andronix-entry": "docs"
   },
-  "source": "PROVISIONAL: recorded by stream B from eve 1.5.0 (useEveAgent client) against a local mock agent; replaced by stream A's 2A.1 recording"
+  "body": {
+    "message": "<text>"
+  },
+  "bodyKeys": [
+    "message"
+  ],
+  "response": {
+    "status": 202,
+    "body": {
+      "ok": true,
+      "sessionId": "wrun_\u2026",
+      "deliveryId": "<uuid>"
+    }
+  },
+  "notes": [
+    "The hook sends only {message}. With turnPolicy set on the channel, no turnPolicy is sent.",
+    "eve's create accepts `operationId` (1-256 chars) for retry-safe creates, not `idempotencyKey` (create rejects unknown fields with 400). The spike proxy sets operationId = sha256(uid + ':' + clientMsgId)."
+  ],
+  "recordedWith": {
+    "eve": "1.5.0",
+    "client": "eve/react useEveAgent (pinned 1.5.0) in a Next 16.3.6 static export",
+    "recordedAt": "2026-11-25",
+    "source": "spike/recordings/log-1-answer-followup.json, log-2-cancel.json"
+  },
+  "auth": "Every request carries `Authorization: Bearer <Firebase ID token>` from `auth.bearer` (spike used `Bearer dev:<uid>`).",
+  "clientHeaders": "Headers passed to `send(message, { headers })` are sent on that POST and then reused on the stream reads that follow it (eve: 'become the stream's credentials on its next reconnect'). The spike page sends `x-andronix-client-msg-id` (uuid per send) and `x-andronix-entry`; see docs/spike.md, contract note C1."
 }

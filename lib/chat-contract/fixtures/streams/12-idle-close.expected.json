@@ -1,0 +1,51 @@
+{
+  "fixture": "12-idle-close",
+  "title": "Turn settles, the stream closes on idle, reopens on the next send",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE12",
+  "lines": 28,
+  "segments": [
+    14
+  ],
+  "ui": "Serve lines [0, segments[0]) on the first stream open; the client must close it after turn.settled (followWhile idle). After the next POST, serve from segments[0]. No stream requests in between.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "Andronix runs Linux distros on Android, in the app or with Termux."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    },
+    {
+      "turnId": "turn_1",
+      "outcome": "completed",
+      "text": [
+        "In the app you need an arm64 phone with Android 8 or newer."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}
