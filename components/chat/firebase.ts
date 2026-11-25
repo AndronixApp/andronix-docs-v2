@@ -75,6 +75,8 @@ export async function finishRedirect(a: Auth): Promise<boolean> {
 
 export function friendlyAuthError(e: unknown): string {
   const code = (e as { code?: string }).code ?? "";
+  if (code) console.warn("chat sign-in failed:", code); // the code only, never the account
+  if (code === "auth/unauthorized-domain") return "Google sign-in isn't set up for this address yet. Sign in with email instead.";
   if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found" || code === "auth/invalid-email") return "That email and password don't match an Andronix account.";
   if (code === "auth/too-many-requests") return "Too many tries. Wait a few minutes and try again.";
   if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return "";
