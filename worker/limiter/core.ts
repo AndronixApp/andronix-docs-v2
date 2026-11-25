@@ -473,11 +473,13 @@ export class LimiterCore {
     const r = this.s.get<StrikeRec>(key) ?? { events: [], cooldownUntil: 0 };
     r.events = r.events.filter((e) => now - e.at < a.windowMs);
     const before = r.events.reduce((n, e) => n + e.points, 0);
-    if (r.events.some((e) => e.turnId === turnId)) {
+    // eve's turn ids restart at turn_0 in every session: the de-dupe key is (sessionId, turnId)
+    const turnKey = `${sessionId}:${turnId}`;
+    if (r.events.some((e) => e.turnId === turnKey)) {
       return { counted: false, points: 0, total: before, cooldownUntil: r.cooldownUntil, startedMs: 0, longest: false };
     }
     const points = a.weights[reason] ?? 1;
-    r.events.push({ at: now, points, turnId });
+    r.events.push({ at: now, points, turnId: turnKey });
     const total = before + points;
     const stepOf = (n: number) => a.steps.filter((st) => n >= st.points).length; // 0 = none
     const was = stepOf(before);

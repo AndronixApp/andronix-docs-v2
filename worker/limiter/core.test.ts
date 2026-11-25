@@ -360,3 +360,13 @@ test("guardrails: a strike naming another uid's session is refused; erase clears
   core.erase("u1");
   assert.equal(core.cooldownLeft({ uid: "u1", tier: "free" }), 0);
 });
+
+test("guardrails: strikes de-dupe on (session, turn): turn_0 of two chats counts twice → cooldown", () => {
+  const { core } = setup();
+  core.strike("u1", "S1", "turn_0", "offtopic");
+  const second = core.strike("u1", "S2", "turn_0", "jailbreak") as { counted: boolean; total: number; startedMs: number };
+  assert.equal(second.counted, true);
+  assert.equal(second.total, 3);
+  assert.equal(second.startedMs, 10 * MIN);
+  assert.equal((core.strike("u1", "S2", "turn_0", "jailbreak") as { counted: boolean }).counted, false, "same session + turn again");
+});
