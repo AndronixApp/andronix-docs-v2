@@ -24,11 +24,23 @@ export async function handleInternal(ctx: Ctx, request: Request, url: URL): Prom
   return new Response("Not found", { status: 404 });
 }
 
+/**
+ * POST /chat-api/internal/usage (contract/internal.ts, QA-1 S2): one call per provider call.
+ * `costMicros` is null when OpenRouter's cost is unknown; the Worker then counts eve's
+ * `estimatedCostMicros` ceiling. Exact key set; ints ≥ 0.
+ */
+const USAGE_KEYS = ["generationId", "uid", "sessionId", "turnId", "model", "inputTokens", "outputTokens", "cachedTokens", "costMicros", "estimatedCostMicros", "outcome"];
+const isInt = (v: unknown): v is number => Number.isInteger(v) && (v as number) >= 0;
+
 async function usage(ctx: Ctx, request: Request): Promise<Response> {
   const b = (await readJson(request)) as Record<string, unknown> | undefined;
-  if (!b || !isStr(b.generationId) || !isStr(b.uid, 128) || !isStr(b.sessionId) || !isNum(b.costMicros)) return fail("bad_body");
-  for (const k of ["inputTokens", "outputTokens", "cachedTokens"]) if (b[k] !== undefined && !isNum(b[k])) return fail("bad_body");
-  const r = await ctx.limiter.call("usage", { generationId: b.generationId, uid: b.uid, costMicros: b.costMicros });
+  if (!b || Object.keys(b).some((k) => !USAGE_KEYS.includes(k)) || USAGE_KEYS.some((k) => !(k in b))) return fail("bad_body");
+  if (!isStr(b.generationId) || !isStr(b.uid, 128) || !isStr(b.sessionId, 128) || !isStr(b.turnId, 64) || !isStr(b.model, 120)) return fail("bad_body");
+  if (!isInt(b.inputTokens) || !isInt(b.outputTokens) || !isInt(b.cachedTokens) || !isInt(b.estimatedCostMicros)) return fail("bad_body");
+  if (b.costMicros !== null && !isInt(b.costMicros)) return fail("bad_body");
+  if (b.outcome !== "finished" && b.outcome !== "aborted" && b.outcome !== "error") return fail("bad_body");
+  const costMicros = (b.costMicros as number | null) ?? (b.estimatedCostMicros as number);
+  const r = await ctx.limiter.call("usage", { generationId: b.generationId, uid: b.uid, costMicros });
   reportTransition(ctx, r.transition);
   return noContent();
 }

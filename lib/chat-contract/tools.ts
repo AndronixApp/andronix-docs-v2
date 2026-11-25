@@ -63,18 +63,24 @@ export const kbReadOutput = z.object({
 
 export const getReportInput = z.object({});
 
+/**
+ * The desk answers `null` for any field the report doesn't have (QA-1 S1):
+ * a Help-tab report has no install fields, and `log` can be null. Every field
+ * is nullable; the tool shows the model "unknown" for nulls.
+ */
+const reportField = z.string().nullable();
 export const getReportOutput = z.union([
   z.object({ attached: z.literal(false) }),
   z.object({
     attached: z.literal(true),
-    distro: z.string(),
-    de: z.string(),
-    step: z.string(),
-    outcome: z.string(),
-    phone: z.string(),
-    android: z.string(),
-    appVersion: z.string(),
-    log: z.string().max(6000),
+    distro: reportField,
+    de: reportField,
+    step: reportField,
+    outcome: reportField,
+    phone: reportField,
+    android: reportField,
+    appVersion: reportField,
+    log: z.string().max(6000).nullable(),
   }),
 ]);
 
@@ -127,12 +133,19 @@ export const TOOL_UI = {
 
 export const MAX_SOURCE_CHIPS = 3;
 
-/** Fixed reply text for the money/account gate (no answer-model call). */
+/**
+ * Fixed reply text for gated turns (no answer-model call). Keys are gate
+ * actions (agent/lib/gate.ts GATE_ACTIONS). Copy needs owner OK.
+ */
 export const GATE_REPLY = {
   money:
     "I can't help with payments, refunds or purchases here, but our support team can. Send them a message below and they'll reply by email.",
   account:
     "I can't help with account access or deletion here, but our support team can. Send them a message below and they'll reply by email.",
+  injection: "I can only help with Andronix: installing and using Linux on Android, Termux and the app. What do you need help with?",
+  off_topic: "I can only help with Andronix: installing and using Linux on Android, Termux and the app. What do you need help with?",
+  unavailable:
+    "I can't answer right now. Try again in a minute, or send your question to our support team below and they'll reply by email.",
 } as const;
 
 export type KbSearchInput = z.infer<typeof kbSearchInput>;

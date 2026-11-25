@@ -499,7 +499,8 @@
                 "money",
                 "account",
                 "injection",
-                "off_topic"
+                "off_topic",
+                "unavailable"
               ]
             },
             "stage": {

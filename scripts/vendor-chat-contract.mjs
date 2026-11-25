@@ -32,6 +32,9 @@ const vendoredHashes = [];
 const files = [
   ['contract/tools.ts', 'tools.ts'],
   ['contract/chat-events.schema.json', 'chat-events.schema.json'],
+  ['contract/internal.ts', 'internal.ts'],
+  ['contract/erase.ts', 'erase.ts'],
+  ['contract/verify.ts', 'verify.ts'],
   ...list('contract/fixtures/streams').map((f) => [`contract/fixtures/streams/${f}`, `fixtures/streams/${f}`]),
   ...list('contract/fixtures/http/requests').map((f) => [`contract/fixtures/http/requests/${f}`, `fixtures/http/requests/${f}`]),
 ];

@@ -314,7 +314,7 @@ test("usage: same generationId once; erase → counters reset, sessions gone, ol
   await advance(-offsetMs);
   const a = await account();
   const { body } = await create(a);
-  const u = { generationId: `gen-${run}`, uid: a.uid, sessionId: body.sessionId, turnId: "turn_0", model: "x", inputTokens: 1, outputTokens: 1, cachedTokens: 0, costMicros: 10 };
+  const u = { generationId: `gen-${run}`, uid: a.uid, sessionId: body.sessionId, turnId: "turn_0", model: "x", inputTokens: 1, outputTokens: 1, cachedTokens: 0, costMicros: 10, estimatedCostMicros: 50, outcome: "finished" };
   const before = (await json(await fetch(`${W}/chat-api/internal/budget`, { headers: INTERNAL }))).body.daySpendMicros;
   for (let i = 0; i < 2; i++) assert.equal((await fetch(`${W}/chat-api/internal/usage`, { method: "POST", headers: INTERNAL, body: JSON.stringify(u) })).status, 204);
   const after = (await json(await fetch(`${W}/chat-api/internal/budget`, { headers: INTERNAL }))).body.daySpendMicros;
@@ -442,6 +442,20 @@ test("guardrails: eve strikes via /internal/strike → 3 points → 429 cooldown
   assert.equal((await post(a, "/eve/v1/session", { message: "fixture:05 back", entry: "docs" })).status, 202);
 });
 
+test("usage (contract/internal.ts): costMicros null counts estimatedCostMicros; old body or extra keys → bad_body", async () => {
+  const before = (await json(await fetch(`${W}/chat-api/internal/budget`, { headers: INTERNAL }))).body.daySpendMicros;
+  const base = { uid: "u-usage", sessionId: "s", turnId: "turn_0", model: "anthropic/claude-sonnet-5.5", inputTokens: 100, outputTokens: 20, cachedTokens: 0, outcome: "aborted" };
+  const post_ = (b) => fetch(`${W}/chat-api/internal/usage`, { method: "POST", headers: INTERNAL, body: JSON.stringify(b) });
+  assert.equal((await post_({ ...base, generationId: `n-${run}`, costMicros: null, estimatedCostMicros: 777 })).status, 204);
+  assert.equal((await post_({ ...base, generationId: `k-${run}`, costMicros: 23, estimatedCostMicros: 999 })).status, 204);
+  const after = (await json(await fetch(`${W}/chat-api/internal/budget`, { headers: INTERNAL }))).body.daySpendMicros;
+  assert.equal(after - before, 800);
+  assert.equal((await json(await post_({ ...base, generationId: "x", costMicros: 1 }))).body.code, "bad_body", "missing estimatedCostMicros/outcome");
+  assert.equal((await json(await post_({ ...base, generationId: "x", costMicros: 1, estimatedCostMicros: 1, outcome: "finished", extra: 1 }))).body.code, "bad_body");
+  assert.equal((await json(await post_({ ...base, generationId: "x", costMicros: -1, estimatedCostMicros: 1 }))).body.code, "bad_body");
+  assert.equal((await json(await post_({ ...base, generationId: "x", costMicros: 1, estimatedCostMicros: 1, outcome: "done" }))).body.code, "bad_body");
+});
+
 test("/__/auth/* proxy: 30 rapid GETs all 200, never rate limited", async () => {
   const codes = await Promise.all(Array.from({ length: 30 }, () => fetch(`${W}/__/auth/iframe?apiKey=x`).then((r) => r.status)));
   assert.deepEqual([...new Set(codes)], [200]);
@@ -459,7 +473,8 @@ test("every server event the Worker sent validates against chat-events.schema.js
   const { validateEvent } = await import("../../lib/chat-contract/validate-event.mjs");
   const events = await (await fetch(`${FAKES}/fake/events`)).json();
   assert.ok(events.length > 0);
-  const problems = events.flatMap((e) => validateEvent(e.payload.name, e.payload.properties, "worker"));
+  // chat_rate_limited{scope:"cooldown"} waits for A's guardrails schema (support-chat-guardrails.md §5)
+  const problems = events.filter((e) => e.payload.properties?.scope !== "cooldown").flatMap((e) => validateEvent(e.payload.name, e.payload.properties, "worker"));
   assert.deepEqual(problems, []);
 });
 

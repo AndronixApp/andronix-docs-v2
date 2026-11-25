@@ -40,6 +40,7 @@ async function me(ctx: Ctx, request: Request): Promise<Response> {
     newAccount: caller.newAccount,
     limits: { minute: m.minute, day: m.day, month: m.month, costDay: m.costDay },
     budget: m.budget,
+    cooldownUntil: m.cooldownUntil,
     rollout: caller.rollout,
   });
 }

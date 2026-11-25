@@ -6,7 +6,7 @@ import { parseErrorBody, type ErrorBody } from "@/lib/chat-contract/http/http-er
 export type Me = {
   tier: "free" | "owner" | "staff"; pid: string; verified: boolean; newAccount: boolean;
   limits: { minute: Quota; day: Quota; month: Quota; costDay: { usedMicros: number; maxMicros: number } };
-  budget: "normal" | "degrade" | "paused"; rollout: boolean;
+  budget: "normal" | "degrade" | "paused"; rollout: boolean; cooldownUntil?: string | null;
 };
 type Quota = { used: number; max: number; resetAt?: string };
 
