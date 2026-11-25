@@ -34,7 +34,8 @@ export type UsageBody = z.infer<typeof usageBody>;
 
 /**
  * POST /chat-api/internal/strike (guardrails §2). One per refused turn,
- * de-duplicated on `turnId` by the Worker. Weights: offtopic 1, jailbreak 2,
+ * de-duplicated on (`sessionId`, `turnId`) by the Worker (turn ids restart at
+ * `turn_0` in every session). Weights: offtopic 1, jailbreak 2,
  * harmful 2 (rolling 24 h; LIMITS_JSON.abuse). Never carries text.
  */
 export const StrikeReason = z.enum(["offtopic", "jailbreak", "harmful"]);
