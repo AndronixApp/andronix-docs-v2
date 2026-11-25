@@ -417,6 +417,31 @@ test("QA-1 S4: with CHAT_ROLLOUT=staff, a free account gets disabled on ticket, 
   assert.equal((await fetch(`${W2}/chat-api/ticket`, { method: "POST", headers: { authorization: `Bearer ${staff.token}`, "content-type": "application/json" }, body: JSON.stringify({ reason: "stuck", includeChat: false }) })).status, 200);
 });
 
+test("guardrails: eve strikes via /internal/strike → 3 points → 429 cooldown with retryAfter at admit; turnId de-duped; bad reason → bad_body", async () => {
+  const a = await account();
+  const sid = (await create(a, "fixture:05 hi")).body.sessionId;
+  await drain(a, sid);
+  const strike = (turnId, reason = "offtopic", extra = {}) => fetch(`${W}/chat-api/internal/strike`, { method: "POST", headers: INTERNAL, body: JSON.stringify({ uid: a.uid, sessionId: sid, turnId, reason, ...extra }) });
+  assert.equal((await fetch(`${W}/chat-api/internal/strike`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" })).status, 401);
+  assert.equal((await json(await strike("t1", "rude"))).body.code, "bad_body");
+  assert.equal((await json(await strike("t1", "offtopic", { text: "x" }))).body.code, "bad_body");
+  assert.equal((await json(await strike("t1"))).body.total, 1);
+  assert.equal((await json(await strike("t1"))).body.counted, false);
+  const third = (await json(await strike("t2", "jailbreak"))).body;
+  assert.equal(third.total, 3); assert.ok(third.cooldownUntil);
+  await advance(61_000);
+  const r = await json(await post(a, `/eve/v1/session/${sid}`, { message: "again", clientMsgId: uuid() }));
+  assert.equal(r.status, 429); assert.equal(r.body.code, "cooldown");
+  assert.ok(r.body.retryAfter > 7 * 60 && r.body.retryAfter <= 10 * 60, String(r.body.retryAfter));
+  assert.equal((await json(await post(a, "/eve/v1/session", { message: "new chat", entry: "docs" }))).body.code, "cooldown");
+  assert.ok((await me(a)).cooldownUntil);
+  // another account's session can't be struck through this uid
+  const b = await account();
+  assert.equal((await json(await fetch(`${W}/chat-api/internal/strike`, { method: "POST", headers: INTERNAL, body: JSON.stringify({ uid: b.uid, sessionId: sid, turnId: "x", reason: "harmful" }) }))).body.code, "not_owner");
+  await advance(10 * 60_000);
+  assert.equal((await post(a, "/eve/v1/session", { message: "fixture:05 back", entry: "docs" })).status, 202);
+});
+
 test("/__/auth/* proxy: 30 rapid GETs all 200, never rate limited", async () => {
   const codes = await Promise.all(Array.from({ length: 30 }, () => fetch(`${W}/__/auth/iframe?apiKey=x`).then((r) => r.status)));
   assert.deepEqual([...new Set(codes)], [200]);
