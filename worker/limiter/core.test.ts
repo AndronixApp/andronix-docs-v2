@@ -57,13 +57,77 @@ test("verify upgrades the tier immediately: unverified 3 then free up to 10", ()
   assert.deepEqual(after, [...Array(7).fill("ok"), "rate_day"]);
 });
 
-test("same clientMsgId twice counts 1 message", () => {
+test("create: same clientMsgId twice → 409 while in flight, then the original response; counted once", () => {
   const { core } = setup();
   const id = crypto.randomUUID();
-  ok(core.admitCreate(who(), id));
-  const dup = ok(core.admitCreate(who(), id));
-  assert.equal(dup.duplicate, true);
+  assert.equal(ok(core.admitCreate(who(), id)).kind, "new");
+  assert.equal(code(core.admitCreate(who(), id)), "turn_running", "original still in flight");
+  core.bindSession("u1", "S1", "docs");
+  core.recordResult("u1", "create", id, 202, '{"ok":true,"sessionId":"S1"}', "S1");
+  const r = ok(core.admitCreate(who(), id));
+  assert.equal(r.kind, "replay");
+  assert.equal(r.sessionId, "S1");
   assert.equal(core.me(who()).day.used, 1);
+});
+
+test("create replay never re-binds: the session keeps its turns, report and feedback", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "staff", staff: true });
+  ok(core.admitCreate(w));
+  core.bindSession("u1", "S1", "docs");
+  core.turnEnded("S1"); clock.now += MIN;
+  ok(core.admitFollowup(w, "S1", crypto.randomUUID()));
+  ok(core.bindReport("u1", "S1", "AX-FAKE01"));
+  ok(core.feedback("u1", "S1", "turn_0"));
+  core.bindSession("u1", "S1", "docs"); // a second bind (old replay path) must change nothing
+  const s = ok(core.session("u1", "S1"));
+  assert.equal(s.turns, 2);
+  assert.equal(s.reportId, "AX-FAKE01");
+  assert.equal(ok(core.feedback("u1", "S1", "turn_0")).first, false);
+});
+
+test("QA-1 B1 repro: an id used on S2 and sent to S1 is a new message and hits every limit", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "new", newAccount: true }); // 3/day, like the live account
+  ok(core.admitCreate(w)); core.bindSession("u1", "S1", "docs"); core.turnEnded("S1");
+  clock.now += MIN;
+  ok(core.admitCreate(w)); core.bindSession("u1", "S2", "docs"); core.turnEnded("S2");
+  clock.now += MIN;
+  const x = crypto.randomUUID();
+  const r = ok(core.admitFollowup(w, "S2", x)); // 3/3 used
+  assert.equal(r.kind, "new");
+  core.recordResult("u1", "S2", x, 202, "{}", "S2"); core.turnEnded("S2");
+  clock.now += MIN;
+  assert.equal(code(core.admitFollowup(w, "S1", crypto.randomUUID())), "new_account", "a fresh id is refused");
+  assert.equal(code(core.admitFollowup(w, "S1", x)), "new_account", "S2's id on S1 is refused too");
+  assert.equal(code(core.admitCreate(w, x)), "new_account", "and on a new session");
+  assert.equal(core.me(w).day.used, 3);
+  assert.equal(ok(core.session("u1", "S1")).turns, 1, "no turn started on S1");
+  // the same id on its own session replays, never a new turn
+  assert.equal(ok(core.admitFollowup(w, "S2", x)).kind, "replay");
+});
+
+test("a repeat replays even when paused, full or limited, and never passes a pause as new work", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs"); core.turnEnded("S1");
+  clock.now += MIN;
+  const x = crypto.randomUUID();
+  ok(core.admitFollowup(who(), "S1", x));
+  core.recordResult("u1", "S1", x, 202, "{}", "S1"); core.turnEnded("S1");
+  core.setFloor(180_000_000); // month stop
+  assert.equal(ok(core.admitFollowup(who(), "S1", x)).kind, "replay", "replay costs nothing");
+  assert.equal(code(core.admitFollowup(who(), "S1", crypto.randomUUID())), "budget_paused");
+});
+
+test("eve refused the message: the id is released, a retry is admitted (and counted) as new", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs"); core.turnEnded("S1");
+  clock.now += MIN;
+  const x = crypto.randomUUID();
+  ok(core.admitFollowup(who(), "S1", x));
+  core.turnRejected("S1"); core.releaseDedupe("u1", "S1", x);
+  assert.equal(ok(core.admitFollowup(who(), "S1", x)).kind, "new");
+  assert.equal(core.me(who()).day.used, 3);
 });
 
 test("follow-ups: owner check, turn_running, 13th turn → chat_full", () => {
@@ -89,19 +153,6 @@ test("turn_running expires after 3 minutes without a turn end", () => {
   core.bindSession("u1", "S1", "docs");
   clock.now += 3 * MIN + 1;
   ok(core.admitFollowup(who(), "S1"));
-});
-
-test("retry of an admitted follow-up (same clientMsgId) skips turn_running and isn't counted", () => {
-  const { core, clock } = setup();
-  ok(core.admitCreate(who()));
-  core.bindSession("u1", "S1", "docs");
-  core.turnEnded("S1");
-  clock.now += MIN;
-  const id = crypto.randomUUID();
-  ok(core.admitFollowup(who(), "S1", id));
-  const again = ok(core.admitFollowup(who(), "S1", id));
-  assert.equal(again.duplicate, true);
-  assert.equal(core.me(who()).day.used, 2);
 });
 
 test("new_ip: 31st young uid from one IP refused; 20 normal accounts from one IP chat freely", () => {
@@ -252,4 +303,19 @@ test("erase prep: sessionsOf lists the uid's sessions; tombstone alone keeps the
   assert.equal(core.isTombstoned("u1", T0 - MIN), true);
   assert.equal(core.session("u1", "S1").ok, true, "still owned until eve confirms");
   assert.deepEqual(core.sessionsOf("nobody"), []);
+});
+
+test("QA-1 S7: no usage for 2 h while 60+ messages flow → free accounts pause (cause watchdog); owners degrade; usage clears it", () => {
+  const { core, clock } = setup();
+  let pause = null;
+  for (let i = 0; i < 61; i++) {
+    clock.now += 2 * MIN + 5_000;
+    const r = core.admitCreate(who({ uid: `p${i}`, tier: "owner" }));
+    if (r.ok && r.kind === "new" && r.transition?.state === "free_paused") pause = r.transition;
+  }
+  assert.deepEqual(pause, { state: "free_paused", cause: "watchdog" });
+  assert.equal(core.budgetFor("free").budget, "paused");
+  assert.equal(core.budgetFor("owner").budget, "degrade");
+  assert.equal(core.usage({ generationId: "g-s7", uid: "x", costMicros: 1 }).transition?.state, "normal");
+  assert.equal(core.budgetFor("free").budget, "normal");
 });

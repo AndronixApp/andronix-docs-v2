@@ -22,5 +22,6 @@ export function useChatEvents(entry: Entry, surface: Surface) {
     try { op.track(name, { ...props, entry, surface }); } catch {}
   }, [op, entry, surface]);
   const identify = useCallback((pid: string) => { try { op.identify({ profileId: pid }); } catch {} }, [op]);
-  return { track, identify };
+  const reset = useCallback(() => { try { (op as unknown as { clear?: () => void }).clear?.(); } catch {} }, [op]);
+  return { track, identify, reset };
 }

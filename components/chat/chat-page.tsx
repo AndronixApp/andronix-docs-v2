@@ -16,12 +16,16 @@ type Boot = { q: string; entry: Entry; handoff: string | null; embed: boolean };
 
 /** Reads #q, #src and #h once, then clears the fragment (history.replaceState) before analytics run. */
 let bootOnce: Boot | null = null;
+let shimReady: Promise<void> = Promise.resolve();
 function readFragment(): Boot {
   if (bootOnce) return bootOnce;
   const url = new URL(location.href);
   const frag = new URLSearchParams(url.hash.slice(1));
   const embed = url.searchParams.get("embed") === "app";
-  if (url.searchParams.get("shim") === "app") bridge.installDevShim();
+  // dev builds only: the shim module isn't in production bundles (QA-1 nit)
+  if (process.env.NODE_ENV !== "production" && url.searchParams.get("shim") === "app") {
+    shimReady = import("@/lib/app-bridge-shim").then((m) => m.installDevShim());
+  }
   const q = (frag.get("q") ?? "").replace(/\s+/g, " ").trim().slice(0, 500);
   const src = frag.get("src");
   const handoff = frag.get("h");
@@ -37,8 +41,10 @@ export function ChatPage() {
   useEffect(() => {
     const b = readFragment();
     if (b.embed) document.documentElement.dataset.chatEmbed = "app";
-    setBoot(b);
-    chatAuth(b.embed || bridge.isApp()).then(setAuth, () => setFailed(true));
+    shimReady.then(() => {
+      setBoot(b);
+      return chatAuth(b.embed || bridge.isApp()).then(setAuth, () => setFailed(true));
+    });
   }, []);
   if (failed) return <div className="chat-shell"><div className="chat-main"><p className="chat-error">The assistant can't load right now. Try again later.</p></div></div>;
   if (!boot || !auth) return <div className="chat-shell" aria-busy="true" />;
@@ -87,6 +93,11 @@ function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {
     finishRedirect(auth).then((ok) => { if (ok) method.current = "google"; });
     return onIdTokenChanged(auth, (u) => setUser(u));
   }, [auth]);
+
+  // the chat's profile id stays on /chat: cleared when the page goes away (QA-1 nit)
+  const resetRef = useRef(events.reset);
+  resetRef.current = events.reset;
+  useEffect(() => () => resetRef.current(), []);
 
   const loadMe = useCallback(async (force = false) => {
     const u = auth.currentUser;
@@ -193,7 +204,7 @@ function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {
           </div>
           <div className="chat-rail-card">
             <p className="font-semibold">Report</p>
-            <p className="chat-small">{reportId ? `${reportId} attached.` : "None attached. Send one from the app (Help > Report a problem) and it shows up here."}</p>
+            <p className="chat-small">{reportId ? `${reportId} attached.` : "None attached. To chat about a failed install with its report, open Help in the Andronix app."}</p>
           </div>
           <button type="button" className="chat-btn chat-btn-secondary" onClick={() => window.dispatchEvent(new Event("andronix-chat-support"))}>Send to support team</button>
           <button type="button" className="chat-link-btn self-center" onClick={() => { setChatKey((k) => k + 1); setReportId(null); }}>New chat</button>

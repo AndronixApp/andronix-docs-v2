@@ -349,6 +349,74 @@ test("erase: eve gets {pid, sessionIds} with edge + internal secret; eve 502 →
   assert.equal((await (await fetch(`${FAKES}/fake/erased`)).json()).length, before);
 });
 
+test("QA-1 B1 repro: an id used on S2 and sent to S1 with new text is refused at the limit; no turn starts", async () => {
+  const a = await account({ verified: false }); // 3/day like the live repro
+  const s1 = (await create(a, "fixture:05 one")).body.sessionId;
+  await drain(a, s1);
+  await advance(61_000);
+  const s2 = (await create(a, "fixture:05 two")).body.sessionId;
+  await drain(a, s2);
+  const x = uuid();
+  assert.equal((await post(a, `/eve/v1/session/${s2}`, { message: "three", clientMsgId: x })).status, 202); // 3/3
+  await drain(a, s2);
+  await advance(61_000);
+  const before = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((r) => r.kind === "followup").length;
+  const fresh = await json(await post(a, `/eve/v1/session/${s1}`, { message: "fresh id", clientMsgId: uuid() }));
+  assert.equal(fresh.body.code, "new_account");
+  const cross = await json(await post(a, `/eve/v1/session/${s1}`, { message: "new text, S2's id", clientMsgId: x }));
+  assert.equal(cross.status, 429, JSON.stringify(cross.body));
+  assert.equal(cross.body.code, "new_account");
+  assert.equal((await json(await post(a, "/eve/v1/session", { message: "new chat, S2's id", entry: "docs", clientMsgId: x }))).body.code, "new_account");
+  const after = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((r) => r.kind === "followup").length;
+  assert.equal(after, before, "nothing reached eve");
+  assert.equal((await me(a)).limits.day.used, 3);
+  // the same id on its own session gets the original answer back, no eve call
+  const again = await post(a, `/eve/v1/session/${s2}`, { message: "three", clientMsgId: x });
+  assert.equal(again.status, 202);
+  assert.equal(again.headers.get("x-andronix-replay"), "1");
+  assert.equal((await (await fetch(`${FAKES}/fake/requests`)).json()).filter((r) => r.kind === "followup").length, before);
+});
+
+test("create replay: same id → the original session back, no second eve create, no re-bind", async () => {
+  const a = await account({ staff: true });
+  const x = uuid();
+  const first = await create(a, "fixture:05 first", { clientMsgId: x });
+  const creates = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((r) => r.kind === "create").length;
+  const again = await create(a, "fixture:05 again", { clientMsgId: x });
+  assert.equal(again.status, 202);
+  assert.equal(again.body.sessionId, first.body.sessionId);
+  assert.equal((await (await fetch(`${FAKES}/fake/requests`)).json()).filter((r) => r.kind === "create").length, creates);
+});
+
+test("QA-1 S11: a ticket from an account without an email → 400 with a reason, nothing sent", async () => {
+  const uid = `noemail-${run}`;
+  const code = `devcode4${run}${"0".repeat(12)}`;
+  await fetch(`${FAKES}/fake/handoff`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ uid, entry: "app_help", code, verifier: "dev-verifier-000000000000000" }) });
+  const r = await json(await fetch(`${W}/chat-api/redeem`, { method: "POST", headers: { "content-type": "application/json", "cf-connecting-ip": "198.51.100.9" }, body: JSON.stringify({ code, verifier: "dev-verifier-000000000000000" }) }));
+  const idToken = (await (await fetch(`${AUTH}/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=fake`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: r.body.customToken, returnSecureToken: true }) })).json()).idToken;
+  const t = await json(await fetch(`${W}/chat-api/ticket`, { method: "POST", headers: { authorization: `Bearer ${idToken}`, "content-type": "application/json" }, body: JSON.stringify({ reason: "stuck", includeChat: false }) }));
+  assert.equal(t.status, 400);
+  assert.match(t.body.error, /no email address/);
+});
+
+test("QA-1 S13: /chat-api/csp-report accepts a report → 204", async () => {
+  const res = await fetch(`${W}/chat-api/csp-report`, { method: "POST", headers: { "content-type": "application/csp-report" }, body: JSON.stringify({ "csp-report": { "violated-directive": "connect-src", "blocked-uri": "https://evil.example/x?q=secret", "document-uri": "https://docs.andronix.app/chat" } }) });
+  assert.equal(res.status, 204);
+});
+
+test("QA-1 S4: with CHAT_ROLLOUT=staff, a free account gets disabled on ticket, feedback and report-attach; /me still answers", { skip: !process.env.CHAT_WORKER_STAFF_ONLY }, async () => {
+  const W2 = process.env.CHAT_WORKER_STAFF_ONLY;
+  const a = await account();
+  const hh = { authorization: `Bearer ${a.token}`, "content-type": "application/json" };
+  assert.equal((await json(await fetch(`${W2}/chat-api/ticket`, { method: "POST", headers: hh, body: JSON.stringify({ reason: "money", includeChat: false }) }))).body.code, "disabled");
+  assert.equal((await json(await fetch(`${W2}/chat-api/feedback`, { method: "POST", headers: hh, body: JSON.stringify({ sessionId: "s", turnId: "t", value: "solved" }) }))).body.code, "disabled");
+  assert.equal((await json(await fetch(`${W2}/chat-api/report-attach`, { method: "POST", headers: hh, body: JSON.stringify({ sessionId: "s", reportId: "AX-FAKE01" }) }))).body.code, "disabled");
+  const m = await json(await fetch(`${W2}/chat-api/me`, { headers: hh }));
+  assert.equal(m.status, 200); assert.equal(m.body.rollout, false);
+  const staff = await account({ staff: true });
+  assert.equal((await fetch(`${W2}/chat-api/ticket`, { method: "POST", headers: { authorization: `Bearer ${staff.token}`, "content-type": "application/json" }, body: JSON.stringify({ reason: "stuck", includeChat: false }) })).status, 200);
+});
+
 test("/__/auth/* proxy: 30 rapid GETs all 200, never rate limited", async () => {
   const codes = await Promise.all(Array.from({ length: 30 }, () => fetch(`${W}/__/auth/iframe?apiKey=x`).then((r) => r.status)));
   assert.deepEqual([...new Set(codes)], [200]);

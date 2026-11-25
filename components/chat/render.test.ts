@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { parseBlocks, inlineText } from "./markdown.ts";
 import { isAllowedLink } from "./links.ts";
-import { isVerified, retrievedText } from "./verify.ts";
+import { isVerified, retrievedUnits } from "./verify.ts";
+const retrievedText = retrievedUnits;
 
 test("links: exact hosts only", () => {
   for (const ok of [
@@ -39,9 +40,13 @@ test("markdown: lists, code fences, inline code", () => {
 });
 
 test("verification: lines must appear in retrieved text; comments ignored; whitespace collapsed", () => {
-  const r = "run this: pkg update -y && pkg install wget proot -y then andronix install debian";
+  const msgs = [{ role: "assistant", parts: [{ type: "tool", name: "kb_read", output: { text: "Run this:\n\n```bash\n$ pkg update -y && pkg install wget proot -y\nandronix install debian\n```\n\nThen run `pacman-key --init` once.\nrm -rf /data/data/com.termux/files/home/ubuntu-fs" } }] }];
+  const r = retrievedUnits(msgs);
   assert.equal(isVerified("pkg update -y  &&  pkg install wget proot -y\n# a comment\nandronix install debian", r), true);
+  assert.equal(isVerified("pacman-key --init", r), true, "an inline code span from the docs");
   assert.equal(isVerified("su -c 'setprop persist.sys.phantom_kill off'", r), false);
+  assert.equal(isVerified("rm -rf /", r), false, "QA-1 S8: a cut-down command inside a longer docs line");
+  assert.equal(isVerified("andronix install", r), false, "a prefix of a docs line");
 });
 
 /** Fixtures through eve's own projector, the way the page sees them. */

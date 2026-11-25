@@ -48,7 +48,7 @@ function CodeBlock({ block, settled, verified }: { block: Extract<Block, { t: "c
   );
 }
 
-export function Markdown({ text, settled, retrieved }: { text: string; settled: boolean; retrieved: string }) {
+export function Markdown({ text, settled, retrieved }: { text: string; settled: boolean; retrieved: Set<string> }) {
   const blocks = useMemo(() => parseBlocks(text, isAllowedLink), [text]);
   return (
     <div className="chat-md">
@@ -66,7 +66,7 @@ export function Markdown({ text, settled, retrieved }: { text: string; settled: 
 }
 
 /** What a settled turn shows besides its text (for Solved / Still stuck and chat_code_check). */
-export function turnFacts(text: string, retrieved: string) {
+export function turnFacts(text: string, retrieved: Set<string>) {
   const blocks = parseBlocks(text, isAllowedLink);
   const code = blocks.filter((b): b is Extract<Block, { t: "code" }> => b.t === "code");
   const verifiedCode = code.filter((b) => isVerified(b.text, retrieved)).length;

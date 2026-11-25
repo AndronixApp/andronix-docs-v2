@@ -10,8 +10,23 @@ const collapse = (s: string) => s.replace(/\s+/g, " ").trim();
 type ToolPartLike = { type: string; name?: string; output?: unknown; state?: string };
 type MessageLike = { role: string; parts: readonly ToolPartLike[] };
 
-/** All text the session retrieved: kb_search result texts and kb_read texts, collapsed. */
-export function retrievedText(messages: readonly MessageLike[]): string {
+/**
+ * The units a command line can match (QA-1 S8): every whole line of the retrieved text and every
+ * inline code span in it, whitespace collapsed, with a leading "$ " prompt dropped. A line of a
+ * reply's code block verifies only when it equals one of them, so a cut-down command
+ * (`rm -rf /` from `rm -rf /data/…/ubuntu-fs`) doesn't.
+ */
+export function retrievedUnits(messages: readonly MessageLike[]): Set<string> {
+  const units = new Set<string>();
+  const add = (s: string) => { const c = collapse(s).replace(/^\$\s+/, ""); if (c) units.add(c); };
+  for (const text of retrievedChunks(messages)) {
+    for (const line of text.split("\n")) add(line);
+    for (const m of text.matchAll(/`([^`\n]+)`/g)) add(m[1]);
+  }
+  return units;
+}
+
+function retrievedChunks(messages: readonly MessageLike[]): string[] {
   const chunks: string[] = [];
   for (const m of messages) {
     for (const p of m.parts) {
@@ -21,16 +36,16 @@ export function retrievedText(messages: readonly MessageLike[]): string {
       if (p.name === "kb_search" && Array.isArray(o.results)) for (const r of o.results) if (typeof r?.text === "string") chunks.push(r.text);
     }
   }
-  return collapse(chunks.join("\n"));
+  return chunks;
 }
 
-/** The lines a block must match: non-empty, not a comment, whitespace collapsed. */
+/** The lines a block must match: non-empty, not a comment, whitespace collapsed, "$ " dropped. */
 export function checkedLines(code: string): string[] {
-  return code.split("\n").map(collapse).filter((l) => l && !l.startsWith("#") && !l.startsWith("//"));
+  return code.split("\n").map((l) => collapse(l).replace(/^\$\s+/, "")).filter((l) => l && !l.startsWith("#") && !l.startsWith("//"));
 }
 
-export function isVerified(code: string, retrieved: string): boolean {
+export function isVerified(code: string, units: Set<string>): boolean {
   const lines = checkedLines(code);
   if (lines.length === 0) return true; // comments only: nothing to run
-  return lines.every((l) => retrieved.includes(l));
+  return lines.every((l) => units.has(l));
 }

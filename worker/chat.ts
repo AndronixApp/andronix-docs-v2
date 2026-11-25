@@ -1,6 +1,6 @@
 // /chat-api/* public routes (build plan 1.4): me, redeem, report-attach, ticket, feedback.
 
-import { parseFeedback, parseRedeem, parseReportAttach, parseTicket, type Entry } from "./body.ts";
+import { cutUtf16, parseFeedback, parseRedeem, parseReportAttach, parseTicket, type Entry } from "./body.ts";
 import { authenticate, chatEnabled, type Caller, type Ctx } from "./context.ts";
 import { chatIdFor } from "./crypto.ts";
 import { fail, json, noContent, readJson, clientIp } from "./http.ts";
@@ -15,18 +15,22 @@ export async function handleChatApi(ctx: Ctx, request: Request, url: URL): Promi
   if (p === "/chat-api/report-attach" && request.method === "POST") return reportAttach(ctx, request);
   if (p === "/chat-api/ticket" && request.method === "POST") return ticket(ctx, request);
   if (p === "/chat-api/feedback" && request.method === "POST") return feedback(ctx, request);
+  if (p === "/chat-api/csp-report" && request.method === "POST") return cspReport(request);
   return new Response("Not found", { status: 404 });
 }
 
-async function signedIn(ctx: Ctx, request: Request): Promise<Caller | Response> {
+async function signedIn(ctx: Ctx, request: Request, opts: { rollout: boolean } = { rollout: true }): Promise<Caller | Response> {
   if (!chatEnabled(ctx.env)) return fail("disabled", 3600);
   const caller = await authenticate(ctx, request);
   if ("error" in caller) return fail(caller.error);
+  // tickets, feedback and report-attach follow the rollout like the chat itself (QA-1 S4);
+  // only /me answers outside it, so the page can say the assistant isn't open yet
+  if (opts.rollout && !caller.rollout) return fail("disabled", 86400);
   return caller;
 }
 
 async function me(ctx: Ctx, request: Request): Promise<Response> {
-  const caller = await signedIn(ctx, request);
+  const caller = await signedIn(ctx, request, { rollout: false });
   if (caller instanceof Response) return caller;
   const m = await ctx.limiter.call("me", caller.who);
   return json({
@@ -109,13 +113,14 @@ export function transcriptFromNdjson(text: string): { role: "user" | "assistant"
         // eve 1.5.0 user parts are {kind: "text", text}
         const t = (d.parts as { kind?: string; type?: string; text?: string }[]).filter((p) => (p?.kind ?? p?.type) === "text" && typeof p.text === "string").map((p) => p.text).join("\n");
         if (t) out.push({ role: "user", text: t, at: line.at ?? "" });
-      } else if (f.type === "content.completed" && d.kind === "text" && d.phase === "reply") {
+      } else if (f.type === "content.completed" && d.kind === "text" && (d.phase === "reply" || d.phase === "narration")) {
+        // narration carries the money gate's fixed reply (spike C3)
         const t = typeof d.value === "string" ? d.value : typeof d.fallbackText === "string" ? d.fallbackText : "";
         if (t) out.push({ role: "assistant", text: t, at: line.at ?? "" });
       }
     }
   }
-  return out.slice(-24).map((e) => ({ ...e, text: [...e.text].slice(0, 4000).join("") }));
+  return out.slice(-24).map((e) => ({ ...e, text: cutUtf16(e.text, 4000) }));
 }
 
 async function fetchTranscript(ctx: Ctx, request: Request, sessionId: string): Promise<{ role: string; text: string; at: string }[] | null> {
@@ -137,6 +142,8 @@ async function ticket(ctx: Ctx, request: Request): Promise<Response> {
   if (caller instanceof Response) return caller;
   const parsed = parseTicket(await readJson(request));
   if (!parsed.ok) return fail(parsed.code);
+  // The desk replies by email; an account without one can't get a reply (QA-1 S11).
+  if (!caller.principal.email) return json({ ok: false, code: "bad_body", error: "Your account has no email address, so our team can't reply. Use Report a problem in the app." }, 400);
   const b = parsed.value;
   let entry: Entry = "docs";
   let boundReport: string | null = null;
@@ -175,4 +182,25 @@ async function ticket(ctx: Ctx, request: Request): Promise<Response> {
     return fail("upstream");
   }
   return json({ ticketRef: res.ticketRef });
+}
+
+/**
+ * CSP violation reports from /chat (QA-1 S13). Logged to Workers observability with only the
+ * directive and the blocked origin: no page URL, no path or query, nothing the user typed.
+ */
+async function cspReport(request: Request): Promise<Response> {
+  const text = (await request.text()).slice(0, 8192);
+  try {
+    const raw = JSON.parse(text) as unknown;
+    const items = Array.isArray(raw) ? raw.map((r) => (r as { body?: unknown }).body) : [(raw as { "csp-report"?: unknown })["csp-report"]];
+    for (const r of items.slice(0, 5)) {
+      const o = (r ?? {}) as Record<string, unknown>;
+      const directive = String(o["effective-directive"] ?? o.effectiveDirective ?? o["violated-directive"] ?? "").split(" ")[0].slice(0, 40);
+      const blocked = String(o["blocked-uri"] ?? o.blockedURL ?? "");
+      let origin = blocked.slice(0, 20);
+      try { origin = new URL(blocked).origin; } catch {}
+      console.log("chat csp violation", JSON.stringify({ directive, blocked: origin }));
+    }
+  } catch {}
+  return noContent();
 }

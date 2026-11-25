@@ -14,7 +14,7 @@ import { newId } from "@/lib/app-bridge";
 import { AssistantHeader, Bubble, Markdown, SourceChips, turnFacts, type ToolPart } from "./message";
 import { AttachCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
 import { attachReport, chatIdFor, fileTicket, sendFeedback, type Me } from "./api";
-import { retrievedText } from "./verify";
+import { retrievedUnits } from "./verify";
 import { COMPOSER_NOTE, MONEY_FOLLOWUP, SOLVED_FOLLOWUP, STUCK_FOLLOWUP } from "./copy";
 import type { Entry, Surface } from "./events";
 import { useChatEvents } from "./events";
@@ -62,7 +62,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const running = !!activeTurn(view) || agent.status === "busy";
   const ended = sessionOf(view).status === "ended";
   const messages = agent.messages as readonly Msg[];
-  const retrieved = useMemo(() => retrievedText(messages as never), [messages]);
+  const retrieved = useMemo(() => retrievedUnits(messages as never), [messages]);
 
   // the report the app handed over (failed-install entry) binds to the session once it exists
   useEffect(() => {
@@ -154,7 +154,9 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       if (handoff?.key === h.key) setHandoff(null);
     } catch (e) {
       const code = (e as { code?: string }).code;
-      setFormError(code === "tickets" ? "You've sent the most support requests for today. Our team will reply to the ones you sent." : "That didn't send. Try again.");
+      const detail = (e as { body?: { error?: string } | null }).body?.error;
+      setFormError(code === "tickets" ? "You've sent the most support requests for today. Our team will reply to the ones you sent."
+        : code === "bad_body" && detail ? detail : "That didn't send. Try again.");
     } finally { setFormBusy(false); }
   };
 
@@ -292,7 +294,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
           onChange={(e) => setDraft(e.target.value.slice(0, 2000))}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); (e.currentTarget.form as HTMLFormElement).requestSubmit(); } }}
           placeholder={messages.length ? "Ask a follow-up" : "Type your question"}
-          rows={1}
+          rows={Math.min(5, Math.max(draft.split("\n").length, Math.ceil(draft.length / 48), 1))}
           disabled={ended}
         />
         {running

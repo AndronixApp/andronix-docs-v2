@@ -89,6 +89,13 @@ export async function handleEve(ctx: Ctx, request: Request, url: URL): Promise<R
   return new Response("Not found", { status: 404 });
 }
 
+/** The original eve answer, for a repeat of the same (session, clientMsgId): no eve call, no turn. */
+function replayed(r: { status: number; body: string; sessionId?: string }): Response {
+  const h = new Headers({ "cache-control": "no-store", "content-type": "application/json", "x-andronix-replay": "1" });
+  if (r.sessionId) h.set("x-eve-session-id", r.sessionId);
+  return new Response(r.body, { status: r.status, headers: h });
+}
+
 async function create(ctx: Ctx, request: Request): Promise<Response> {
   const caller = await gate(ctx, request);
   if (caller instanceof Response) return caller;
@@ -96,8 +103,10 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
   if (!parsed.ok) return fail(parsed.code);
   const { message, clientMsgId, entry } = parsed.value;
   const admit = await ctx.limiter.call("admitCreate", caller.who, clientMsgId);
-  if (!admit.ok) { rateLimited(ctx, caller, admit.code, entry); return fail(admit.code, admit.retryAfter); }
+  if (!admit.ok) { if (admit.code !== "turn_running") rateLimited(ctx, caller, admit.code, entry); return fail(admit.code, admit.retryAfter); }
+  if (admit.kind === "replay") return replayed(admit);
   reportTransition(ctx, admit.transition);
+  const release = () => (clientMsgId ? ctx.limiter.call("releaseDedupe", caller.who.uid, "create", clientMsgId) : undefined);
   const masked = mask(message);
   const body: Record<string, string> = { message: masked.text };
   // eve's create takes operationId for retry-safe creates (not idempotencyKey; spike C2)
@@ -105,19 +114,18 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
   const headers = await eveHeaders(ctx.env, request, caller, entry, admit.budget);
   headers.set("content-type", "application/json");
   const res = await forward(ctx.env, "/eve/v1/session", { method: "POST", headers, body: JSON.stringify(body) });
-  if (!res) return fail("upstream");
-  if (!res.ok) return passthrough(res);
+  if (!res) { await release(); return fail("upstream"); }
+  if (!res.ok) { await release(); return passthrough(res); }
   const text = await res.text();
   let sessionId = res.headers.get("x-eve-session-id")?.trim() ?? "";
   try { const j = JSON.parse(text); if (typeof j.sessionId === "string") sessionId = j.sessionId; } catch {}
-  if (!sessionId) return fail("upstream");
+  if (!sessionId) { await release(); return fail("upstream"); }
   await ctx.limiter.call("bindSession", caller.who.uid, sessionId, entry);
-  if (!admit.duplicate) {
-    ctx.exec.waitUntil(track(ctx.env, {
-      name: "chat_message_sent", profileId: caller.pid,
-      properties: { chat_id: await chatIdFor(sessionId), tier: caller.tier, turn: 1, chars_bucket: charsBucket([...message].length), masked: masked.masked, entry, surface: surfaceFor(entry) },
-    }));
-  }
+  if (clientMsgId) await ctx.limiter.call("recordResult", caller.who.uid, "create", clientMsgId, res.status, text, sessionId);
+  ctx.exec.waitUntil(track(ctx.env, {
+    name: "chat_message_sent", profileId: caller.pid,
+    properties: { chat_id: await chatIdFor(sessionId), tier: caller.tier, turn: 1, chars_bucket: charsBucket([...message].length), masked: masked.masked, entry, surface: surfaceFor(entry) },
+  }));
   return passthrough(res, text);
 }
 
@@ -135,6 +143,7 @@ async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<
     }
     return fail(admit.code, admit.retryAfter);
   }
+  if (admit.kind === "replay") return replayed({ ...admit, sessionId });
   reportTransition(ctx, admit.transition);
   const masked = mask(message);
   const body: Record<string, string> = { message: masked.text };
@@ -143,16 +152,17 @@ async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<
   headers.set("content-type", "application/json");
   const res = await forward(ctx.env, `/eve/v1/session/${encodeURIComponent(sessionId)}`, { method: "POST", headers, body: JSON.stringify(body) });
   if (!res || !res.ok) {
-    if (!admit.duplicate) await ctx.limiter.call("turnRejected", sessionId);
+    await ctx.limiter.call("turnRejected", sessionId);
+    if (clientMsgId) await ctx.limiter.call("releaseDedupe", caller.who.uid, sessionId, clientMsgId);
     return res ? passthrough(res) : fail("upstream");
   }
-  if (!admit.duplicate) {
-    ctx.exec.waitUntil(track(ctx.env, {
-      name: "chat_message_sent", profileId: caller.pid,
-      properties: { chat_id: await chatIdFor(sessionId), tier: caller.tier, turn: admit.turn, chars_bucket: charsBucket([...message].length), masked: masked.masked, entry: admit.entry, surface: surfaceFor(admit.entry) },
-    }));
-  }
-  return passthrough(res);
+  const text = await res.text();
+  if (clientMsgId) await ctx.limiter.call("recordResult", caller.who.uid, sessionId, clientMsgId, res.status, text, sessionId);
+  ctx.exec.waitUntil(track(ctx.env, {
+    name: "chat_message_sent", profileId: caller.pid,
+    properties: { chat_id: await chatIdFor(sessionId), tier: caller.tier, turn: admit.turn, chars_bucket: charsBucket([...message].length), masked: masked.masked, entry: admit.entry, surface: surfaceFor(admit.entry) },
+  }));
+  return passthrough(res, text);
 }
 
 async function cancel(ctx: Ctx, request: Request, sessionId: string): Promise<Response> {

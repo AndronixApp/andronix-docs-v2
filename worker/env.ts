@@ -54,6 +54,8 @@ export interface Limits {
   ownerPauseAt: number;
   watchdogMessages: number;
   watchdogWindowMs: number;
+  watchdogPauseMessages: number;
+  watchdogPauseMs: number;
 }
 
 export const DEFAULT_LIMITS: Limits = {
@@ -76,6 +78,8 @@ export const DEFAULT_LIMITS: Limits = {
   ownerPauseAt: 1.0,
   watchdogMessages: 20,
   watchdogWindowMs: 15 * 60_000,
+  watchdogPauseMessages: 60,
+  watchdogPauseMs: 2 * 60 * 60_000,
 };
 
 /** LIMITS_JSON overrides any subset of DEFAULT_LIMITS (tiers merge per tier). Bad JSON → defaults. */

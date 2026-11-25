@@ -69,7 +69,15 @@ interface GlobalRec {
   lastUsageAt: number;
   admitsSinceUsage: number[];
   watchdog: boolean;
+  /** No usage for watchdogPauseMs while watchdogPauseMessages flowed: free accounts pause (QA-1 S7). */
+  watchdogPause?: boolean;
+  admitCount?: number;
+  firstAdmitAt?: number;
 }
+
+interface DedupeRec { at: number; state: "pending" | "done"; status?: number; body?: string; sessionId?: string }
+export type Admitted = { ok: true; kind: "new"; budget: "normal" | "degrade"; transition: BudgetTransition | null };
+export type Replay = { ok: true; kind: "replay"; status: number; body: string; sessionId?: string };
 
 export interface Who { uid: string; tier: Tier; staff: boolean; ip: string; newAccount: boolean; issuedAt: number }
 export type Deny = { ok: false; code: ErrorCode; retryAfter?: number };
@@ -129,7 +137,10 @@ export class LimiterCore {
     return a && this.now() - a.at < ACCOUNT_CACHE_MS ? a : null;
   }
   getStaleAccount(uid: string): AccountRec | null { return this.s.get<AccountRec>(`acct:${uid}`) ?? null; }
-  setAccount(uid: string, tier: "free" | "owner", createdAt: number) { this.s.put(`acct:${uid}`, { tier, createdAt, at: this.now() }); }
+  /** ttlMs < 1 h stores a short-lived fallback (products-api down): retried after ttlMs, not on every request. */
+  setAccount(uid: string, tier: "free" | "owner", createdAt: number, ttlMs = ACCOUNT_CACHE_MS) {
+    this.s.put(`acct:${uid}`, { tier, createdAt, at: this.now() - (ACCOUNT_CACHE_MS - ttlMs) });
+  }
 
   // ---- budget ----
   private effective(g: GlobalRec) {
@@ -145,6 +156,7 @@ export class LimiterCore {
     const r = e.allowance > 0 ? e.day / e.allowance : Infinity;
     if (r >= this.limits.ownerPauseAt) return "owners_paused";
     if (r >= this.limits.freePauseAt) return "free_paused";
+    if (g.watchdogPause) return "free_paused";
     if (r >= this.limits.degradeAt || g.watchdog) return "degrade";
     return "normal";
   }
@@ -154,7 +166,8 @@ export class LimiterCore {
     const prev = g.state;
     g.state = next;
     this.s.put("global", g);
-    return next !== prev ? { state: next, cause: g.watchdog && next === "degrade" ? "watchdog" : cause } : null;
+    const byWatchdog = (g.watchdog && next === "degrade") || (!!g.watchdogPause && next === "free_paused");
+    return next !== prev ? { state: next, cause: byWatchdog ? "watchdog" : cause } : null;
   }
   budgetFor(tier: Tier): { budget: "normal" | "degrade" | "paused"; retryAfter: number } {
     const g = this.global();
@@ -195,18 +208,32 @@ export class LimiterCore {
     return null;
   }
 
-  private dedupeKey(uid: string, clientMsgId: string) { return `dd:${uid}:${clientMsgId}`; }
-  private seen(uid: string, clientMsgId: string | undefined) {
-    if (!clientMsgId) return false;
-    const at = this.s.get<number>(this.dedupeKey(uid, clientMsgId));
-    return at !== undefined && this.now() - at < DEDUPE_MS;
+  // ---- clientMsgId de-dupe (QA-1 B1) ----
+  // Scoped to (uid, "create" | sessionId, clientMsgId). A repeat never reaches eve and never
+  // starts a turn: it gets the original response once eve has answered, or 409 turn_running
+  // while the original is still in flight. The same id on another session is a new message and
+  // goes through every limit like any other.
+  private dedupeKey(uid: string, scope: string, clientMsgId: string) { return `dd:${uid}:${scope}:${clientMsgId}`; }
+  private dedupe(uid: string, scope: string, clientMsgId: string | undefined): DedupeRec | null {
+    if (!clientMsgId) return null;
+    const r = this.s.get<DedupeRec>(this.dedupeKey(uid, scope, clientMsgId));
+    return r && this.now() - r.at < DEDUPE_MS ? r : null;
   }
+  private replay(r: DedupeRec): Deny | Replay {
+    if (r.state === "pending" || r.status === undefined) return { ok: false, code: "turn_running", retryAfter: 5 };
+    return { ok: true, kind: "replay", status: r.status, body: r.body ?? "", sessionId: r.sessionId };
+  }
+  /** eve accepted the message: later repeats get this response. */
+  recordResult(uid: string, scope: string, clientMsgId: string, status: number, body: string, sessionId?: string) {
+    const k = this.dedupeKey(uid, scope, clientMsgId);
+    const r = this.s.get<DedupeRec>(k);
+    if (!r) return;
+    this.s.put<DedupeRec>(k, { ...r, state: "done", status, body: body.slice(0, 2048), sessionId });
+  }
+  /** eve refused or failed: a retry with the same id is admitted (and counted) as a new message. */
+  releaseDedupe(uid: string, scope: string, clientMsgId: string) { this.s.delete(this.dedupeKey(uid, scope, clientMsgId)); }
 
-  private admitCommon(who: Who, clientMsgId: string | undefined): Deny | { ok: true; duplicate: boolean; budget: "normal" | "degrade"; transition: BudgetTransition | null; turn?: number } {
-    if (this.seen(who.uid, clientMsgId)) {
-      const b = this.budgetFor(who.tier);
-      return { ok: true, duplicate: true, budget: b.budget === "paused" ? "degrade" : b.budget, transition: null };
-    }
+  private admitCommon(who: Who, scope: string, clientMsgId: string | undefined): Deny | Admitted {
     const b = this.budgetFor(who.tier);
     if (b.budget === "paused") return { ok: false, code: "budget_paused", retryAfter: b.retryAfter };
     const u = this.user(who.uid);
@@ -214,7 +241,7 @@ export class LimiterCore {
     if (deny) return deny;
     u.minute.count++; u.day.count++; u.month.count++;
     this.saveUser(who.uid, u);
-    if (clientMsgId) this.s.put(this.dedupeKey(who.uid, clientMsgId), this.now());
+    if (clientMsgId) this.s.put<DedupeRec>(this.dedupeKey(who.uid, scope, clientMsgId), { at: this.now(), state: "pending" });
     // watchdog: messages flow but no usage arrives
     const g = this.global();
     const now = this.now();
@@ -222,18 +249,30 @@ export class LimiterCore {
     if (!g.watchdog && g.admitsSinceUsage.length >= this.limits.watchdogMessages && now - g.admitsSinceUsage[0] >= this.limits.watchdogWindowMs && now - g.lastUsageAt >= this.limits.watchdogWindowMs) {
       g.watchdog = true;
     }
+    // Usage that never arrives (a wrong secret, a WAF rule) would otherwise keep tracked spend at 0
+    // forever; after watchdogPauseMs with enough traffic, free accounts pause until usage returns.
+    g.admitCount = (g.admitCount ?? 0) + 1;
+    g.firstAdmitAt ??= now;
+    if (!g.watchdogPause && g.admitCount >= this.limits.watchdogPauseMessages && now - Math.max(g.lastUsageAt, g.firstAdmitAt) >= this.limits.watchdogPauseMs) {
+      g.watchdogPause = true;
+    }
     const transition = this.settle(g, "watchdog");
+    // this message is already admitted; a pause applies from the next one
     const after = this.budgetFor(who.tier);
-    return { ok: true, duplicate: false, budget: after.budget === "paused" ? "degrade" : after.budget, transition };
+    return { ok: true, kind: "new", budget: after.budget === "paused" ? "degrade" : after.budget, transition };
   }
 
   /** Session create: counts 1 message and turn 1. Session binding comes after eve answers. */
-  admitCreate(who: Who, clientMsgId?: string) {
-    return this.admitCommon(who, clientMsgId);
+  admitCreate(who: Who, clientMsgId?: string): Deny | Admitted | Replay {
+    const r = this.dedupe(who.uid, "create", clientMsgId);
+    if (r) return this.replay(r);
+    return this.admitCommon(who, "create", clientMsgId);
   }
 
+  /** Binds a new session to its owner. Never resets a session that already exists. */
   bindSession(uid: string, sessionId: string, entry: Entry): void {
     const now = this.now();
+    if (this.s.get<SessionRec>(`s:${sessionId}`)) return;
     this.s.put<SessionRec>(`s:${sessionId}`, { uid, entry, turns: 1, createdAt: now, lastActive: now, turnRunningSince: now, reportId: null, feedback: [], ended: false });
     const u = this.user(uid);
     u.sessions = [...u.sessions.filter((x) => x !== sessionId), sessionId].slice(-200);
@@ -247,18 +286,16 @@ export class LimiterCore {
     return { ok: true, entry: s.entry, turns: s.turns, reportId: s.reportId };
   }
 
-  /** Follow-up: owner check, 12-turn cap, one turn in flight, then the message limits. */
-  admitFollowup(who: Who, sessionId: string, clientMsgId?: string): Deny | { ok: true; duplicate: boolean; budget: "normal" | "degrade"; entry: Entry; turn: number; transition: BudgetTransition | null } {
+  /** Follow-up: owner check, then a repeat of this session's id replays; else 12 turns, one in flight, every limit. */
+  admitFollowup(who: Who, sessionId: string, clientMsgId?: string): Deny | Replay | (Admitted & { entry: Entry; turn: number }) {
     const s = this.s.get<SessionRec>(`s:${sessionId}`);
     if (!s || s.uid !== who.uid) return { ok: false, code: "not_owner" };
     const now = this.now();
-    if (this.seen(who.uid, clientMsgId)) {
-      const r = this.admitCommon(who, clientMsgId) as { ok: true; duplicate: boolean; budget: "normal" | "degrade"; transition: null };
-      return { ...r, entry: s.entry, turn: s.turns };
-    }
+    const d = this.dedupe(who.uid, sessionId, clientMsgId);
+    if (d) return this.replay(d);
     if (s.ended || s.turns >= this.limits.turnsPerChat) return { ok: false, code: "chat_full" };
     if (s.turnRunningSince !== null && now - s.turnRunningSince < TURN_RUNNING_MAX_MS) return { ok: false, code: "turn_running", retryAfter: 5 };
-    const r = this.admitCommon(who, clientMsgId);
+    const r = this.admitCommon(who, sessionId, clientMsgId);
     if (!r.ok) return r;
     s.turns += 1; s.lastActive = now; s.turnRunningSince = now;
     this.s.put(`s:${sessionId}`, s);
@@ -356,8 +393,11 @@ export class LimiterCore {
     const g = this.global();
     g.lastUsageAt = now;
     g.admitsSinceUsage = [];
-    const wasWatchdog = g.watchdog;
+    const wasWatchdog = g.watchdog || !!g.watchdogPause;
     g.watchdog = false;
+    g.watchdogPause = false;
+    g.admitCount = 0;
+    g.firstAdmitAt = undefined;
     if (this.s.get<number>(`gen:${u.generationId}`) !== undefined) {
       return { counted: false, transition: wasWatchdog ? this.settle(g, "spend") : (this.s.put("global", g), null) };
     }
@@ -421,6 +461,7 @@ export class LimiterCore {
     this.s.delete(`u:${uid}`);
     this.s.delete(`acct:${uid}`);
     for (const [k] of this.s.list(`dd:${uid}:`)) this.s.delete(k);
+    for (const [k, set] of this.s.list<string[]>("ip:")) if (set.includes(uid)) this.s.put(k, set.filter((x) => x !== uid));
     this.s.put(`tomb:${uid}`, this.now());
     return sessions;
   }
@@ -433,7 +474,7 @@ export class LimiterCore {
     for (const [k, u] of this.s.list<UserRec>("u:")) if (now - u.lastSeen > COUNTER_KEEP_MS) { this.s.delete(k); out.users++; }
     for (const [k, at] of this.s.list<number>("gen:")) if (now - at > GENERATION_KEEP_MS) { this.s.delete(k); out.generations++; }
     for (const [k, at] of this.s.list<number>("tomb:")) if (now - at > TOMBSTONE_MS) { this.s.delete(k); out.tombstones++; }
-    for (const [k, at] of this.s.list<number>("dd:")) if (now - at > DEDUPE_MS) { this.s.delete(k); out.other++; }
+    for (const [k, r] of this.s.list<DedupeRec | number>("dd:")) if (now - (typeof r === "number" ? r : r.at) > DEDUPE_MS) { this.s.delete(k); out.other++; }
     for (const [k, a] of this.s.list<AccountRec>("acct:")) if (now - a.at > COUNTER_KEEP_MS) { this.s.delete(k); out.other++; }
     const today = utcDay(now);
     for (const [k] of this.s.list("ip:")) if (k.slice(3, 13) !== today) { this.s.delete(k); out.other++; }

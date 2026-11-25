@@ -44,8 +44,10 @@ export async function authenticate(ctx: Ctx, request: Request): Promise<Caller |
       await ctx.limiter.call("setAccount", principal.uid, fresh.tier, fresh.createdAt);
       account = { ...fresh, at: Date.now() };
     } else {
-      // products-api unreachable: last known tier, else free (createdAt unknown → not counted as young)
+      // products-api unreachable: last known tier, else free (createdAt unknown → not counted as
+      // young), cached for 5 minutes so every request doesn't wait on the 10 s timeout again
       account = (await ctx.limiter.call("getStaleAccount", principal.uid)) ?? { tier: "free", createdAt: 0, at: 0 };
+      await ctx.limiter.call("setAccount", principal.uid, account.tier, account.createdAt, 5 * 60_000);
     }
   }
   const young = account.createdAt > 0 && Date.now() - account.createdAt < DAY;

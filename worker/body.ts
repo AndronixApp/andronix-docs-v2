@@ -93,7 +93,8 @@ export function parseTicket(body: unknown): Parsed<TicketBody> {
   if (b.sessionId !== undefined && !isShortId(b.sessionId)) return fail("bad_body");
   if (b.reportId !== undefined && !isShortId(b.reportId)) return fail("bad_body");
   if (b.orderId !== undefined && (typeof b.orderId !== "string" || !ORDER_ID_PATTERN.test(b.orderId))) return fail("bad_body");
-  if (b.note !== undefined && (typeof b.note !== "string" || [...b.note].length > 2000)) return fail("bad_body");
+  // UTF-16 units, the desk's unit (QA-1 S12)
+  if (b.note !== undefined && (typeof b.note !== "string" || b.note.length > 2000)) return fail("bad_body");
   return { ok: true, value: b as TicketBody };
 }
 
@@ -115,6 +116,15 @@ export function parseRedeem(body: unknown): Parsed<{ code: string; verifier: str
   const ok = (v: unknown) => typeof v === "string" && /^[A-Za-z0-9_-]{16,128}$/.test(v);
   if (!ok(body.code) || !ok(body.verifier)) return fail("bad_body");
   return { ok: true, value: body as { code: string; verifier: string } };
+}
+
+/** Cuts to at most `max` UTF-16 units without splitting a surrogate pair (the desk counts UTF-16). */
+export function cutUtf16(s: string, max: number): string {
+  if (s.length <= max) return s;
+  let cut = s.slice(0, max);
+  const last = cut.charCodeAt(cut.length - 1);
+  if (last >= 0xd800 && last <= 0xdbff) cut = cut.slice(0, -1);
+  return cut;
 }
 
 export function charsBucket(n: number): "<50" | "50-200" | "200-800" | "800+" {
