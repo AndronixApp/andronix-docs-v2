@@ -14,12 +14,13 @@
     "typecheck:worker": "tsc -p worker/tsconfig.json",
     "chat:emulator": "cd worker/dev && npx -y firebase-tools@14 emulators:start --only auth --project demo-andronix",
     "chat:fakes": "wrangler dev -c worker/dev/wrangler.fakes.toml --port 8790 --inspector-port 9238",
-    "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239",
+    "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239 --persist-to \"$(mktemp -d)\"",
     "test:chat-int": "node --test --test-concurrency=1 worker/dev/integration.test.mjs",
     "test:chat": "node --test worker/body.test.ts worker/limiter/core.test.ts components/chat/render.test.ts components/chat/filter.test.ts",
     "chat:page": "set -a && . ./.env.chat-dev && set +a && next dev -p 3312",
     "build:preview": "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=andronix-techriz.firebaseapp.com NEXT_PUBLIC_CHAT_ENTRY=1 pnpm build",
-    "deploy:preview": "node scripts/check-worker.mjs && wrangler deploy -c wrangler.toml --env preview"
+    "deploy:preview": "node scripts/check-worker.mjs && wrangler deploy -c wrangler.toml --env preview",
+    "chat:built": "wrangler dev -c worker/dev/wrangler.built.toml --port 8798 --inspector-port 9237 --persist-to \"$(mktemp -d)\""
   },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",

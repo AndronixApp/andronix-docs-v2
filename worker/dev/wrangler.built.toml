@@ -1,3 +1,4 @@
+# Dev only: like wrangler.dev.toml, but serving a built static export (.next-check) to check headers/CSP.
 # Dev only: the docs Worker against the Auth emulator and the fakes (worker/dev/wrangler.fakes.toml).
 # `pnpm chat:dev` serves the API on :8799; for the page, CHAT_ASSETS=out serves the static export.
 name = "andronix-docs-chat-dev-built"
