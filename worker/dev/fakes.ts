@@ -22,8 +22,9 @@ import f12 from "../../lib/chat-contract/fixtures/streams/12-idle-close.ndjson";
 import f13 from "../../lib/chat-contract/fixtures/streams/13-decline-offtopic.ndjson";
 import f14 from "../../lib/chat-contract/fixtures/streams/14-harmful-session-end.ndjson";
 import f15 from "../../lib/chat-contract/fixtures/streams/15-no-answer.ndjson";
+import f16 from "../../lib/chat-contract/fixtures/streams/16-gate-unavailable.ndjson";
 
-const FIXTURES: Record<string, string> = { "01": f01, "02": f02, "03": f03, "04": f04, "05": f05, "06": f06, "07": f07, "08": f08, "09": f09, "10": f10, "11": f11, "12": f12, "13": f13, "14": f14, "15": f15 };
+const FIXTURES: Record<string, string> = { "01": f01, "02": f02, "03": f03, "04": f04, "05": f05, "06": f06, "07": f07, "08": f08, "09": f09, "10": f10, "11": f11, "12": f12, "13": f13, "14": f14, "15": f15, "16": f16 };
 const EDGE = "dev-edge-secret";
 const SERVICE = "dev-service-secret";
 

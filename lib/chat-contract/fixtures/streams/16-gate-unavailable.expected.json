@@ -1,0 +1,33 @@
+{
+  "fixture": "16-gate-unavailable",
+  "title": "Gate classifier fails (error/timeout): fail closed with the fixed 'try again' reply + offer_handoff{stuck}, no answer model",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE16",
+  "lines": 11,
+  "ui": "Narration text GATE_REPLY.unavailable and the support form prefilled reason=stuck. The session stays usable; no feedback buttons.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "I can't answer right now. Try again in a minute, or send your question to our support team below and they'll reply by email."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": {
+        "reason": "stuck",
+        "topic": "other"
+      },
+      "decline": null,
+      "feedbackButtons": false,
+      "answerModelStarted": false,
+      "modelIds": [
+        "andronix/gate-unavailable"
+      ],
+      "error": null
+    }
+  ]
+}

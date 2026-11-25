@@ -503,7 +503,8 @@
                 "offtopic",
                 "jailbreak",
                 "harmful",
-                "no_answer"
+                "no_answer",
+                "unavailable"
               ]
             },
             "stage": {

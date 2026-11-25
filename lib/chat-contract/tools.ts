@@ -145,12 +145,18 @@ export const TOOL_UI = {
 
 export const MAX_SOURCE_CHIPS = 3;
 
-/** Fixed reply text for the money/account gate (no answer-model call). */
+/**
+ * Fixed reply text for gated turns (no answer-model call), rendered as
+ * narration + the offer_handoff form: money, account, and `unavailable`
+ * (the gate's classifier failed or timed out; fail closed, handoff reason stuck).
+ */
 export const GATE_REPLY = {
   money:
     "I can't help with payments, refunds or purchases here, but our support team can. Send them a message below and they'll reply by email.",
   account:
     "I can't help with account access or deletion here, but our support team can. Send them a message below and they'll reply by email.",
+  unavailable:
+    "I can't answer right now. Try again in a minute, or send your question to our support team below and they'll reply by email.",
 } as const;
 
 /**

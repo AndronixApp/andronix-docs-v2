@@ -67,5 +67,5 @@ CHAT_ROLLOUT = "all"
 FIREBASE_PROJECT_ID = "andronix-techriz"
 PRODUCTS_API_URL = "https://andronix-products-api-staging.up.railway.app"
 # A's Vercel preview (support-chat-status/A-preview.md); the URL changes on each A redeploy.
-EVE_ORIGIN = "https://andronix-support-agent-preview-1yvqxrlvy-prakhars.vercel.app"
+EVE_ORIGIN = "https://andronix-support-agent-preview-eg0q2k8uv-prakhars.vercel.app"
 # OPENPANEL_API_URL / OPENPANEL_CLIENT_ID = the dev project (unset: no server events)

@@ -109,3 +109,13 @@ test("guardrails fixtures: 13 decline card only, 14 session ended by turn-outcom
   assert.equal(t15.trim(), (await import("./refusals.ts")).REFUSAL_COPY.no_answer);
   assert.ok(a15.parts.some((x) => x.type === "tool" && x.name === "offer_handoff"));
 });
+
+test("fixture 16 (gate unavailable, fail-closed): GATE_REPLY.unavailable as text + stuck handoff, no decline", async () => {
+  const c = await conversationFor("16-gate-unavailable");
+  const a = c.messages.filter((m) => m.role === "assistant").at(-1)!;
+  const text = a.parts.filter((x) => x.type === "text").map((x) => x.text).join("").trim();
+  const { GATE_REPLY } = await import("../../lib/chat-contract/tools.ts");
+  assert.equal(text, (GATE_REPLY as Record<string, string>).unavailable);
+  assert.ok(a.parts.some((x) => x.type === "tool" && x.name === "offer_handoff"));
+  assert.ok(!a.parts.some((x) => x.type === "tool" && x.name === "decline"));
+});
