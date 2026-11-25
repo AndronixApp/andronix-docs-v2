@@ -107,7 +107,7 @@ const STRIKE_REASONS = ["offtopic", "jailbreak", "harmful"] as const;
 
 /**
  * eve's turn.settled hook reports a refused turn (guardrails §2):
- * {uid, sessionId, turnId, reason: offtopic | jailbreak | harmful}, de-duplicated on turnId.
+ * {uid, sessionId, turnId, reason: offtopic | jailbreak | harmful}, de-duplicated on (sessionId, turnId).
  * Answers 204. Reaching the longest step posts once to the ops
  * webhook, with the pid only.
  */

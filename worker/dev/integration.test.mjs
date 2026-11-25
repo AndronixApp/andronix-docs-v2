@@ -455,6 +455,18 @@ test("usage (contract/internal.ts): costMicros null counts estimatedCostMicros; 
   assert.equal((await json(await post_({ ...base, generationId: "x", costMicros: 1, estimatedCostMicros: 1, outcome: "done" }))).body.code, "bad_body");
 });
 
+test("QA-2 #8: a replayed stream read (startIndex=0 / follow=false) doesn't clear turn_running", async () => {
+  const a = await account({ staff: true });
+  const sid = (await create(a, "fixture:05 first")).body.sessionId;
+  await drain(a, sid); // turn 0 settles
+  assert.equal((await post(a, `/eve/v1/session/${sid}`, { message: "second [hold]", clientMsgId: uuid() })).status, 202);
+  assert.equal((await json(await post(a, `/eve/v1/session/${sid}`, { message: "third", clientMsgId: uuid() }))).body.code, "turn_running");
+  const replay = await fetch(`${W}/eve/v1/session/${sid}/stream?follow=false`, { headers: h(a) });
+  assert.match(await replay.text(), /turn\.settled/, "the replay carries turn 0's settle");
+  await new Promise((r) => setTimeout(r, 500));
+  assert.equal((await json(await post(a, `/eve/v1/session/${sid}`, { message: "third", clientMsgId: uuid() }))).body.code, "turn_running", "QA-2 #8: still running");
+});
+
 test("/__/auth/* proxy: 30 rapid GETs all 200, never rate limited", async () => {
   const codes = await Promise.all(Array.from({ length: 30 }, () => fetch(`${W}/__/auth/iframe?apiKey=x`).then((r) => r.status)));
   assert.deepEqual([...new Set(codes)], [200]);

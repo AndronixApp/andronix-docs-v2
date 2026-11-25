@@ -58,7 +58,17 @@ interface UserRec {
 interface SessionRec {
   uid: string; entry: Entry; turns: number; createdAt: number; lastActive: number;
   turnRunningSince: number | null; reportId: string | null; feedback: string[]; ended: boolean;
+  /** eve's deliveryId for the running turn (from its 202), then the turnId its turn.started names. */
+  runningDelivery?: string | null; runningTurn?: string | null;
+  /** The last few turn.started / turn.settled seen, for lines that arrive before eve's 202 does. */
+  seenStarts?: { deliveryId: string; turnId: string }[]; seenSettled?: string[];
 }
+
+/** What the Worker saw in one stream line (QA-2 #8): only these move turn_running. */
+export type TurnSignal =
+  | { kind: "started"; deliveryId: string; turnId: string }
+  | { kind: "settled"; turnId: string; at: number }
+  | { kind: "ended" };
 interface AccountRec { tier: "free" | "owner"; createdAt: number; at: number }
 export type BudgetState = "normal" | "degrade" | "free_paused" | "owners_paused" | "month_stop";
 interface GlobalRec {
@@ -308,11 +318,44 @@ export class LimiterCore {
     return { ...r, entry: s.entry, turn: s.turns };
   }
 
-  /** The Worker saw the turn end on the stream, or a cancel went through. */
+  /** eve accepted the running turn's message: remember its deliveryId. */
+  turnAccepted(sessionId: string, deliveryId: string | null) {
+    const s = this.s.get<SessionRec>(`s:${sessionId}`);
+    if (!s || s.turnRunningSince === null) return;
+    s.runningDelivery = deliveryId;
+    s.runningTurn = (deliveryId && s.seenStarts?.find((x) => x.deliveryId === deliveryId)?.turnId) || null;
+    this.s.put(`s:${sessionId}`, s);
+    // its turn may have settled before the 202 was recorded
+    if (s.runningTurn && s.seenSettled?.includes(s.runningTurn)) this.turnEnded(sessionId);
+  }
+
+  /**
+   * Stream lines move turn_running only for the running turn (QA-2 #8): its turn.started (by
+   * deliveryId) names the turnId, and only that turn's turn.settled / turn.paused clears it.
+   * A replayed read (startIndex=0, follow=false) carries old turns and changes nothing. Without
+   * a known deliveryId, only a settle written after the admission counts.
+   */
+  turnSignal(sessionId: string, sig: TurnSignal) {
+    const s = this.s.get<SessionRec>(`s:${sessionId}`);
+    if (!s) return;
+    if (sig.kind === "ended") { this.turnEnded(sessionId, true); return; }
+    if (sig.kind === "started") s.seenStarts = [...(s.seenStarts ?? []).filter((x) => x.turnId !== sig.turnId), { deliveryId: sig.deliveryId, turnId: sig.turnId }].slice(-5);
+    if (sig.kind === "settled") s.seenSettled = [...(s.seenSettled ?? []).filter((x) => x !== sig.turnId), sig.turnId].slice(-5);
+    this.s.put(`s:${sessionId}`, s);
+    if (s.turnRunningSince === null) return;
+    if (sig.kind === "started") {
+      if (s.runningDelivery && sig.deliveryId === s.runningDelivery) { s.runningTurn = sig.turnId; this.s.put(`s:${sessionId}`, s); }
+      return;
+    }
+    const mine = s.runningTurn ? sig.turnId === s.runningTurn : !s.runningDelivery && sig.at >= s.turnRunningSince;
+    if (mine) this.turnEnded(sessionId);
+  }
+
+  /** The running turn ended (its settle on the stream, or a cancel went through). */
   turnEnded(sessionId: string, sessionEnded = false) {
     const s = this.s.get<SessionRec>(`s:${sessionId}`);
     if (!s) return;
-    s.turnRunningSince = null; s.lastActive = this.now();
+    s.turnRunningSince = null; s.runningDelivery = null; s.runningTurn = null; s.lastActive = this.now();
     if (sessionEnded) s.ended = true;
     this.s.put(`s:${sessionId}`, s);
   }

@@ -147,6 +147,12 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     if (!keysExactly(body, ["message", "idempotencyKey"], ["message"])) return j({ ok: false, error: "fake eve: follow-up body must be {message, idempotencyKey?}" }, 400);
     const nextChannel = s.deliveries[s.next]?.source === "channel";
     const deliveryId = nextChannel ? releaseNext(s) : synthesizeTurn(s);
+    // "[hold]" in the message: the turn stays running (its settle line is withheld), for turn_running tests
+    if (String((body as { message?: string }).message ?? "").includes("[hold]")) {
+      const idx = s.lines.findIndex((l, i) => i >= s.released - 40 && l.includes('"turn.settled"') && l.includes(deliveryId));
+      const settleAt = s.lines.slice(0, s.released).map((l, i) => (l.includes('"turn.settled"') ? i : -1)).filter((i) => i >= 0).at(-1);
+      s.released = idx >= 0 ? idx : settleAt ?? s.released;
+    }
     return j({ ok: true, sessionId: s.id, deliveryId }, 202, { "x-eve-session-id": s.id });
   }
   if (m[2] === "/cancel" && req.method === "POST") {

@@ -3,6 +3,7 @@
 
 import { charsBucket, mask, parseCancel, parseCreate, parseFollowup, type Entry } from "./body.ts";
 import { authenticate, chatEnabled, reportTransition, type Caller, type Ctx } from "./context.ts";
+import type { TurnSignal } from "./limiter/core.ts";
 import { chatIdFor, sha256Hex } from "./crypto.ts";
 import { fail, readJson } from "./http.ts";
 import { track } from "./clients.ts";
@@ -89,6 +90,10 @@ export async function handleEve(ctx: Ctx, request: Request, url: URL): Promise<R
   return new Response("Not found", { status: 404 });
 }
 
+function deliveryIdOf(text: string): string | null {
+  try { const j = JSON.parse(text); return typeof j.deliveryId === "string" && j.deliveryId ? j.deliveryId : null; } catch { return null; }
+}
+
 /** The original eve answer, for a repeat of the same (session, clientMsgId): no eve call, no turn. */
 function replayed(r: { status: number; body: string; sessionId?: string }): Response {
   const h = new Headers({ "cache-control": "no-store", "content-type": "application/json", "x-andronix-replay": "1" });
@@ -121,6 +126,7 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
   try { const j = JSON.parse(text); if (typeof j.sessionId === "string") sessionId = j.sessionId; } catch {}
   if (!sessionId) { await release(); return fail("upstream"); }
   await ctx.limiter.call("bindSession", caller.who.uid, sessionId, entry);
+  await ctx.limiter.call("turnAccepted", sessionId, deliveryIdOf(text));
   if (clientMsgId) await ctx.limiter.call("recordResult", caller.who.uid, "create", clientMsgId, res.status, text, sessionId);
   ctx.exec.waitUntil(track(ctx.env, {
     name: "chat_message_sent", profileId: caller.pid,
@@ -157,6 +163,7 @@ async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<
     return res ? passthrough(res) : fail("upstream");
   }
   const text = await res.text();
+  await ctx.limiter.call("turnAccepted", sessionId, deliveryIdOf(text));
   if (clientMsgId) await ctx.limiter.call("recordResult", caller.who.uid, sessionId, clientMsgId, res.status, text, sessionId);
   ctx.exec.waitUntil(track(ctx.env, {
     name: "chat_message_sent", profileId: caller.pid,
@@ -201,7 +208,10 @@ async function stream(ctx: Ctx, request: Request, url: URL, sessionId: string): 
     ctx.exec.waitUntil(release());
     return res ? passthrough(res) : fail("upstream");
   }
-  const { readable, done } = sniffTurns(res.body, (ended) => ctx.exec.waitUntil(ctx.limiter.call("turnEnded", sessionId, ended)));
+  // signals go to the DO in stream order
+  let chain: Promise<unknown> = Promise.resolve();
+  const { readable, done } = sniffTurns(res.body, (sig) => { chain = chain.then(() => ctx.limiter.call("turnSignal", sessionId, sig)).catch(() => {}); });
+  ctx.exec.waitUntil(done.then(() => chain));
   // The pump runs whether or not the client reads, so the lease is released when eve ends the
   // stream (its 60 s lease) or the client goes away; the 90 s lease TTL covers anything else.
   ctx.exec.waitUntil(done.finally(release));
@@ -209,19 +219,27 @@ async function stream(ctx: Ctx, request: Request, url: URL, sessionId: string): 
 }
 
 /**
- * Passes NDJSON through unchanged while watching for turn ends, so the DO can clear
- * `turn_running` (turn.settled / turn.paused) and mark ended sessions (session.ended).
+ * Passes NDJSON through unchanged while reading the lines that matter to turn_running:
+ * turn.started (deliveryId → turnId), turn.settled / turn.paused (turnId, line time) and
+ * session.ended. The DO decides whether a line is about the running turn (QA-2 #8).
  */
-export function sniffTurns(body: ReadableStream<Uint8Array>, onTurnEnd: (sessionEnded: boolean) => void): { readable: ReadableStream<Uint8Array>; done: Promise<void> } {
+export function sniffTurns(body: ReadableStream<Uint8Array>, onSignal: (sig: TurnSignal) => void): { readable: ReadableStream<Uint8Array>; done: Promise<void> } {
   const decoder = new TextDecoder();
   let buf = "";
   const scan = (line: string) => {
     if (!line.includes("turn.") && !line.includes("session.ended")) return;
     try {
-      const v = JSON.parse(line) as { facts?: { type?: string }[]; progress?: { type?: string } };
-      const types = [...(v.facts ?? []), ...(v.progress ? [v.progress] : [])].map((f) => f?.type);
-      if (types.includes("session.ended")) onTurnEnd(true);
-      else if (types.includes("turn.settled") || types.includes("turn.paused")) onTurnEnd(false);
+      const v = JSON.parse(line) as { at?: string; facts?: { type?: string; data?: Record<string, any> }[]; progress?: { type?: string } };
+      const at = Date.parse(v.at ?? "") || 0;
+      for (const f of v.facts ?? []) {
+        if (f.type === "turn.started" && typeof f.data?.turnId === "string" && typeof f.data?.cause?.deliveryId === "string") {
+          onSignal({ kind: "started", deliveryId: f.data.cause.deliveryId, turnId: f.data.turnId });
+        } else if ((f.type === "turn.settled" || f.type === "turn.paused") && typeof f.data?.turnId === "string") {
+          onSignal({ kind: "settled", turnId: f.data.turnId, at });
+        } else if (f.type === "session.ended") {
+          onSignal({ kind: "ended" });
+        }
+      }
     } catch {}
   };
   const t = new TransformStream<Uint8Array, Uint8Array>({

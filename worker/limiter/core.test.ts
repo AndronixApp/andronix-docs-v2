@@ -370,3 +370,43 @@ test("guardrails: strikes de-dupe on (session, turn): turn_0 of two chats counts
   assert.equal(second.startedMs, 10 * MIN);
   assert.equal((core.strike("u1", "S2", "turn_0", "jailbreak") as { counted: boolean }).counted, false, "same session + turn again");
 });
+
+test("QA-2 #8: a replayed stream read (old turn.settled) doesn't clear turn_running; the running turn's own settle does", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "staff", staff: true });
+  ok(core.admitCreate(w)); core.bindSession("u1", "S1", "docs"); core.turnAccepted("S1", "d0");
+  core.turnSignal("S1", { kind: "started", deliveryId: "d0", turnId: "turn_0" });
+  core.turnSignal("S1", { kind: "settled", turnId: "turn_0", at: clock.now });
+  clock.now += MIN;
+  ok(core.admitFollowup(w, "S1", crypto.randomUUID())); core.turnAccepted("S1", "d1");
+  // a startIndex=0 / follow=false read replays turn_0 from the start
+  core.turnSignal("S1", { kind: "started", deliveryId: "d0", turnId: "turn_0" });
+  core.turnSignal("S1", { kind: "settled", turnId: "turn_0", at: clock.now - MIN });
+  assert.equal(code(core.admitFollowup(w, "S1", crypto.randomUUID())), "turn_running", "replay must not clear it");
+  core.turnSignal("S1", { kind: "started", deliveryId: "d1", turnId: "turn_1" });
+  core.turnSignal("S1", { kind: "settled", turnId: "turn_1", at: clock.now });
+  assert.equal(ok(core.admitFollowup(w, "S1", crypto.randomUUID())).kind, "new");
+});
+
+test("QA-2 #8: lines that arrive before eve's 202 is recorded still clear the running turn", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "staff", staff: true });
+  ok(core.admitCreate(w)); core.bindSession("u1", "S1", "docs");
+  core.turnSignal("S1", { kind: "started", deliveryId: "d0", turnId: "turn_0" });
+  core.turnSignal("S1", { kind: "settled", turnId: "turn_0", at: clock.now });
+  core.turnAccepted("S1", "d0"); // the 202 lands last
+  clock.now += MIN;
+  assert.equal(ok(core.admitFollowup(w, "S1", crypto.randomUUID())).kind, "new");
+});
+
+test("QA-2 #8: without a known deliveryId, only a settle written after the admission counts", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "staff", staff: true });
+  ok(core.admitCreate(w)); core.bindSession("u1", "S1", "docs"); core.turnSignal("S1", { kind: "settled", turnId: "turn_0", at: clock.now });
+  clock.now += MIN;
+  ok(core.admitFollowup(w, "S1", crypto.randomUUID())); core.turnAccepted("S1", null);
+  core.turnSignal("S1", { kind: "settled", turnId: "turn_0", at: clock.now - MIN });
+  assert.equal(code(core.admitFollowup(w, "S1", crypto.randomUUID())), "turn_running");
+  core.turnSignal("S1", { kind: "settled", turnId: "turn_1", at: clock.now + 1000 });
+  assert.equal(ok(core.admitFollowup(w, "S1", crypto.randomUUID())).kind, "new");
+});
