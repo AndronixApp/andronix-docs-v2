@@ -3,7 +3,7 @@
 // Fragment entries (#q, #src, #h) are read once, then cleared before anything else runs.
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { onIdTokenChanged, sendEmailVerification, signInWithCustomToken, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
+import { onIdTokenChanged, sendEmailVerification, signInWithCustomToken, signInWithEmailAndPassword, signOut, type Auth, type User } from "firebase/auth";
 import * as bridge from "@/lib/app-bridge";
 import { chatAuth, finishRedirect, friendlyAuthError, signInWithGoogle } from "./firebase";
 import { getMe, redeem, type Me } from "./api";
@@ -32,21 +32,24 @@ function readFragment(): Boot {
 
 export function ChatPage() {
   const [boot, setBoot] = useState<Boot | null>(null);
+  const [auth, setAuth] = useState<Auth | null>(null);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
     const b = readFragment();
     if (b.embed) document.documentElement.dataset.chatEmbed = "app";
     setBoot(b);
+    chatAuth(b.embed || bridge.isApp()).then(setAuth, () => setFailed(true));
   }, []);
-  if (!boot) return <div className="chat-shell" aria-busy="true" />;
-  return <ChatShell boot={boot} />;
+  if (failed) return <div className="chat-shell"><div className="chat-main"><p className="chat-error">The assistant can't load right now. Try again later.</p></div></div>;
+  if (!boot || !auth) return <div className="chat-shell" aria-busy="true" />;
+  return <ChatShell boot={boot} auth={auth} />;
 }
 
-function ChatShell({ boot }: { boot: Boot }) {
+function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {
   const inApp = bridge.isApp();
   const surface: Surface = inApp ? "app_webview" : "web";
   const [entry, setEntry] = useState<Entry>(boot.entry);
   const events = useChatEvents(entry, surface);
-  const auth = useRef(chatAuth(boot.embed || inApp)).current;
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [me, setMe] = useState<Me | null>(null);
   const [meError, setMeError] = useState("");

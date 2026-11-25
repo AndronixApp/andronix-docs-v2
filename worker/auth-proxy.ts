@@ -25,6 +25,8 @@ export async function firebaseAuthProxy(request: Request, projectId: string): Pr
   const target = new URL(url.pathname + url.search, `https://${projectId}.firebaseapp.com`);
   const headers = new Headers();
   for (const [k, v] of request.headers) if (FORWARD.has(k.toLowerCase())) headers.set(k, v);
+  // A client that accepts no compression gets none (the runtime would otherwise ask for gzip).
+  if (!headers.has("accept-encoding")) headers.set("accept-encoding", "identity");
   const hasBody = request.method !== "GET" && request.method !== "HEAD";
   let upstream: Response;
   try {

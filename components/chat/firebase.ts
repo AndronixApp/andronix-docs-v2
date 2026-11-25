@@ -9,25 +9,43 @@ import {
   inMemoryPersistence, initializeAuth, getRedirectResult, signInWithPopup, signInWithRedirect, type Auth,
 } from "firebase/auth";
 
-const config = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "fake-api-key",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "docs.andronix.app",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "andronix-techriz",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || undefined,
-};
 const EMULATOR = process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR;
 
-let auth: Auth | null = null;
+type WebConfig = { apiKey: string; authDomain: string; projectId: string; appId?: string };
 
-export function chatAuth(embed: boolean): Auth {
-  if (auth) return auth;
-  const app: FirebaseApp = getApps()[0] ?? initializeApp(config);
-  auth = initializeAuth(app, {
+/**
+ * The web config: from the build (NEXT_PUBLIC_FIREBASE_*) when set, otherwise Firebase's own
+ * public /__/firebase/init.json, which the Worker proxies on this origin. authDomain is the build's
+ * (docs.andronix.app in production) or this origin's default from init.json.
+ */
+async function webConfig(): Promise<WebConfig> {
+  const env = {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || undefined,
+  };
+  if (env.apiKey && env.projectId) return { ...env, authDomain: env.authDomain || location.host } as WebConfig;
+  const init = (await (await fetch("/__/firebase/init.json", { cache: "force-cache" })).json()) as Partial<WebConfig>;
+  if (!init.apiKey || !init.projectId) throw new Error("no firebase config");
+  return { apiKey: init.apiKey, projectId: init.projectId, appId: init.appId, authDomain: env.authDomain || init.authDomain || location.host };
+}
+
+let auth: Promise<Auth> | null = null;
+
+export function chatAuth(embed: boolean): Promise<Auth> {
+  if (!auth) auth = makeAuth(embed);
+  return auth;
+}
+
+async function makeAuth(embed: boolean): Promise<Auth> {
+  const app: FirebaseApp = getApps()[0] ?? initializeApp(await webConfig());
+  const a = initializeAuth(app, {
     persistence: embed ? [inMemoryPersistence] : [indexedDBLocalPersistence, browserLocalPersistence],
     popupRedirectResolver: browserPopupRedirectResolver,
   });
-  if (EMULATOR) connectAuthEmulator(auth, EMULATOR, { disableWarnings: true });
-  return auth;
+  if (EMULATOR) connectAuthEmulator(a, EMULATOR, { disableWarnings: true });
+  return a;
 }
 
 /** In-app browsers (Discord's, Instagram's, Android WebViews) can't open pop-ups: straight to a redirect. */
