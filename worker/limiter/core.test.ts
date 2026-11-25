@@ -319,3 +319,44 @@ test("QA-1 S7: no usage for 2 h while 60+ messages flow → free accounts pause 
   assert.equal(core.usage({ generationId: "g-s7", uid: "x", costMicros: 1 }).transition?.state, "normal");
   assert.equal(core.budgetFor("free").budget, "normal");
 });
+
+test("guardrails: 3 points → 10 min cooldown at admit (429 cooldown), 6 → 1 h, 10 → 24 h; turnId de-duped; staff exempt", () => {
+  const { core, clock } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  const st = (t: string, r: "offtopic" | "jailbreak" | "harmful" = "offtopic") => core.strike("u1", "S1", t, r) as Exclude<ReturnType<LimiterCore["strike"]>, { ok: false }>;
+  assert.equal(st("t1").total, 1);
+  assert.equal(st("t1").counted, false, "same turn twice");
+  assert.equal(st("t2").startedMs, 0);
+  const third = st("t3");
+  assert.equal(third.total, 3); assert.equal(third.startedMs, 10 * MIN);
+  clock.now += MIN;
+  const c = core.admitCreate(who());
+  assert.equal(code(c), "cooldown");
+  assert.ok(!c.ok && c.retryAfter! > 8 * 60 && c.retryAfter! <= 9 * 60);
+  assert.equal(code(core.admitFollowup(who(), "S1", crypto.randomUUID())), "cooldown");
+  ok(core.admitCreate(who({ tier: "staff", staff: true })));
+  assert.ok(core.me(who()).cooldownUntil);
+  clock.now += 10 * MIN;
+  ok(core.admitCreate(who()));
+  assert.equal(st("t4", "jailbreak").total, 5);
+  const six = st("t5");
+  assert.equal(six.total, 6); assert.equal(six.startedMs, 60 * MIN); assert.equal(six.longest, false);
+  clock.now += 61 * MIN;
+  st("t6", "harmful");
+  const ten = st("t7", "harmful");
+  assert.equal(ten.total, 10); assert.equal(ten.startedMs, 24 * 60 * MIN); assert.equal(ten.longest, true);
+  // the window is rolling: 24 h after the strikes, points are gone and the cooldown has ended
+  clock.now += 25 * 60 * MIN;
+  ok(core.admitCreate(who()));
+  assert.equal(st("t8").total, 1);
+});
+
+test("guardrails: a strike naming another uid's session is refused; erase clears strikes", () => {
+  const { core } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  assert.equal(code(core.strike("u2", "S1", "t1", "offtopic") as { ok: boolean; code?: string }), "not_owner");
+  for (const t of ["a", "b", "c"]) core.strike("u1", "S1", t, "offtopic");
+  assert.ok(core.cooldownLeft({ uid: "u1", tier: "free" }) > 0);
+  core.erase("u1");
+  assert.equal(core.cooldownLeft({ uid: "u1", tier: "free" }), 0);
+});

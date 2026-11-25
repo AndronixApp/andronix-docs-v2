@@ -22,6 +22,8 @@ export const HTTP_ERRORS = {
   budget_paused: { status: 503, error: "The assistant is paused for today." },
   disabled: { status: 503, error: "The assistant isn't available right now." },
   upstream: { status: 502, error: "Something went wrong. Try again." },
+  // guardrails §2: strikes for off-topic / jailbreak / harmful turns lead to a per-account pause
+  cooldown: { status: 429, error: "Let's pause here. This assistant only covers Andronix and the Linux systems it installs." },
 } as const;
 
 export type ErrorCode = keyof typeof HTTP_ERRORS;
@@ -30,7 +32,7 @@ export type ErrorBody = { ok: false; code: ErrorCode; error: string; retryAfter?
 
 export const LIMIT_CODES: readonly ErrorCode[] = [
   "rate_minute", "rate_day", "rate_month", "cost_day", "new_account", "new_ip", "ip",
-  "streams", "tickets", "handoff_rate", "budget_paused", "disabled",
+  "streams", "tickets", "handoff_rate", "budget_paused", "disabled", "cooldown",
 ];
 
 export function errorBody(code: ErrorCode, retryAfter?: number): ErrorBody {

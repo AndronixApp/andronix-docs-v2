@@ -2,7 +2,7 @@
 
 import { reportTransition, type Ctx } from "./context.ts";
 import { bearerMatches, pidFor, safeEqual } from "./crypto.ts";
-import { deskReport } from "./clients.ts";
+import { deskReport, opsNotify } from "./clients.ts";
 import { fail, json, noContent, readJson } from "./http.ts";
 
 const isStr = (v: unknown, max = 200): v is string => typeof v === "string" && v.length > 0 && v.length <= max;
@@ -20,6 +20,7 @@ export async function handleInternal(ctx: Ctx, request: Request, url: URL): Prom
   if (p === "/chat-api/internal/report" && request.method === "POST") return report(ctx, request);
   if (p === "/chat-api/internal/budget" && request.method === "GET") return json(await ctx.limiter.call("budgetReport"));
   if (p === "/chat-api/internal/budget" && request.method === "POST") return floor(ctx, request);
+  if (p === "/chat-api/internal/strike" && request.method === "POST") return strike(ctx, request);
   return new Response("Not found", { status: 404 });
 }
 
@@ -88,4 +89,25 @@ async function eveErase(ctx: Ctx, pid: string, sessionIds: string[]): Promise<bo
   } catch {
     return false;
   }
+}
+
+const STRIKE_REASONS = ["offtopic", "jailbreak", "harmful"] as const;
+
+/**
+ * eve's turn.settled hook reports a refused turn (guardrails §2):
+ * {uid, sessionId, turnId, reason: offtopic | jailbreak | harmful}, de-duplicated on turnId.
+ * Answers {counted, total, cooldownUntil}. Reaching the longest step posts once to the ops
+ * webhook, with the pid only.
+ */
+async function strike(ctx: Ctx, request: Request): Promise<Response> {
+  const b = (await readJson(request)) as Record<string, unknown> | undefined;
+  if (!b || !isStr(b.uid, 128) || !isStr(b.sessionId) || !isStr(b.turnId) || !(STRIKE_REASONS as readonly unknown[]).includes(b.reason)) return fail("bad_body");
+  if (Object.keys(b).some((k) => !["uid", "sessionId", "turnId", "reason"].includes(k))) return fail("bad_body");
+  const r = await ctx.limiter.call("strike", b.uid, b.sessionId, b.turnId, b.reason as (typeof STRIKE_REASONS)[number]);
+  if ("ok" in r) return fail(r.code);
+  if (r.longest) {
+    const pid = await pidFor(b.uid);
+    ctx.exec.waitUntil(opsNotify(ctx.env, `Support chat: account ${pid} reached ${r.total} strike points in 24 h; paused for 24 h.`));
+  }
+  return json({ counted: r.counted, total: r.total, cooldownUntil: r.cooldownUntil ? new Date(r.cooldownUntil).toISOString() : null });
 }

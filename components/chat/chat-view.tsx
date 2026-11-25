@@ -12,9 +12,10 @@ import { HTTP_ERRORS, isErrorCode } from "@/lib/chat-contract/http/http-errors";
 import * as bridge from "@/lib/app-bridge";
 import { newId } from "@/lib/app-bridge";
 import { AssistantHeader, Bubble, Markdown, SourceChips, turnFacts, type ToolPart } from "./message";
-import { AttachCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
+import { AttachCard, DeclineCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
 import { attachReport, chatIdFor, fileTicket, sendFeedback, type Me } from "./api";
 import { retrievedUnits } from "./verify";
+import { declineReason } from "./refusals";
 import { COMPOSER_NOTE, MONEY_FOLLOWUP, SOLVED_FOLLOWUP, STUCK_FOLLOWUP } from "./copy";
 import type { Entry, Surface } from "./events";
 import { useChatEvents } from "./events";
@@ -140,10 +141,12 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
     const last = [...turns].reverse().find((t) => !t.turnId.startsWith("local:"));
     if (!last) return null;
     const s = settledInfo(last);
-    if (!s.settled || s.outcome !== "completed" || last.tools.some((p) => p.name === "offer_handoff")) return null;
+    if (!s.settled || s.outcome !== "completed" || last.tools.some((p) => p.name === "offer_handoff" || p.name === "decline")) return null;
     const f = turnFacts(last.text, retrieved);
     return f.hasSteps || f.verifiedCode > 0 ? last.turnId : null;
   }, [turns, view, retrieved]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const endedByRefusal = ended && turns.some((t) => t.tools.some((p) => p.name === "decline"));
 
   const submitTicket = async (h: Handoff, v: { orderId?: string; note?: string; includeChat: boolean }) => {
     setFormBusy(true); setFormError("");
@@ -216,6 +219,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
         const handoffPart = t.tools.find((p) => p.name === "offer_handoff" && p.input && typeof p.input === "object");
         const hi = handoffPart?.input as { reason?: Handoff["reason"]; topic?: string } | undefined;
         const hKey = `tool:${t.turnId}`;
+        const declinePart = t.tools.find((p) => p.name === "decline");
         return (
           <div key={t.turnId} className="flex flex-col gap-3">
             {t.user.map((m) => (
@@ -226,10 +230,13 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
             {(t.assistant.length > 0 || (!s.settled && !t.turnId.startsWith("local:"))) && (
               <div className="flex flex-col gap-3">
                 <AssistantHeader />
-                {t.text ? <Markdown text={t.text} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
+                {/* a turn with `decline` shows only the fixed card; its text is dropped (guardrails §1, layer 4) */}
+                {declinePart
+                  ? <DeclineCard reason={declineReason(declinePart.input)} docsHref={docsHref} onSupport={() => setHandoff({ reason: "user_request", topic: "other", key: `decline:${t.turnId}` })} />
+                  : t.text ? <Markdown text={t.text} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
                 {s.settled && s.outcome === "failed" && !ended && <p className="chat-error">Something went wrong. Try again.</p>}
                 {s.settled && s.outcome === "cancelled" && <p className="chat-small">Stopped.</p>}
-                <SourceChips tools={t.tools} />
+                {!declinePart && <SourceChips tools={t.tools} />}
                 {handoffPart && hi?.reason && (sent[hKey]
                   ? <><SentCard ticketRef={sent[hKey].ticketRef} topic={sent[hKey].topic} email={user.email ?? ""} /><AssistantHeader /><p>{MONEY_FOLLOWUP}</p></>
                   : <HandoffForm reason={hi.reason} topic={hi.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId}
@@ -277,8 +284,9 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       {(ended || limit?.code === "chat_full") && (
         <div className="chat-card">
           {/* a model error ends the session too (spike C4): say what happened, not "full" */}
-          <p className="chat-card-title">{ended && sessionOf(view).outcome === "failed" ? "Something went wrong. Start a new chat." : "This chat is full. Start a new chat."}</p>
-          <Primary onClick={onNewChat}>New chat</Primary>
+          {/* jailbreak / harmful end the session after the card (guardrails §2): just offer a new chat */}
+          {endedByRefusal ? null : <p className="chat-card-title">{ended && sessionOf(view).outcome === "failed" ? "Something went wrong. Start a new chat." : "This chat is full. Start a new chat."}</p>}
+          <Primary onClick={onNewChat}>{endedByRefusal ? "Start a new chat" : "New chat"}</Primary>
         </div>
       )}
       {limit && limit.code !== "chat_full" && (

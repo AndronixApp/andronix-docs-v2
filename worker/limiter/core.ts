@@ -5,7 +5,7 @@
 
 import type { ErrorCode } from "../../lib/chat-contract/http/http-errors.ts";
 import type { Entry } from "../body.ts";
-import type { Limits, Tier } from "../env.ts";
+import type { Limits, StrikeReason, Tier } from "../env.ts";
 
 export interface Store {
   get<T>(key: string): T | undefined;
@@ -75,6 +75,8 @@ interface GlobalRec {
   firstAdmitAt?: number;
 }
 
+interface StrikeRec { events: { at: number; points: number; turnId: string }[]; cooldownUntil: number }
+export type StrikeResult = { counted: boolean; points: number; total: number; cooldownUntil: number; startedMs: number; longest: boolean };
 interface DedupeRec { at: number; state: "pending" | "done"; status?: number; body?: string; sessionId?: string }
 export type Admitted = { ok: true; kind: "new"; budget: "normal" | "degrade"; transition: BudgetTransition | null };
 export type Replay = { ok: true; kind: "replay"; status: number; body: string; sessionId?: string };
@@ -234,6 +236,8 @@ export class LimiterCore {
   releaseDedupe(uid: string, scope: string, clientMsgId: string) { this.s.delete(this.dedupeKey(uid, scope, clientMsgId)); }
 
   private admitCommon(who: Who, scope: string, clientMsgId: string | undefined): Deny | Admitted {
+    const cool = this.cooldownLeft(who);
+    if (cool > 0) return { ok: false, code: "cooldown", retryAfter: Math.ceil(cool / 1000) };
     const b = this.budgetFor(who.tier);
     if (b.budget === "paused") return { ok: false, code: "budget_paused", retryAfter: b.retryAfter };
     const u = this.user(who.uid);
@@ -293,6 +297,8 @@ export class LimiterCore {
     const now = this.now();
     const d = this.dedupe(who.uid, sessionId, clientMsgId);
     if (d) return this.replay(d);
+    const cool = this.cooldownLeft(who);
+    if (cool > 0) return { ok: false, code: "cooldown", retryAfter: Math.ceil(cool / 1000) };
     if (s.ended || s.turns >= this.limits.turnsPerChat) return { ok: false, code: "chat_full" };
     if (s.turnRunningSince !== null && now - s.turnRunningSince < TURN_RUNNING_MAX_MS) return { ok: false, code: "turn_running", retryAfter: 5 };
     const r = this.admitCommon(who, sessionId, clientMsgId);
@@ -442,7 +448,47 @@ export class LimiterCore {
       month: { used: u.month.count, max: l.month, resetAt: new Date(nextUtcMonth(now)).toISOString() },
       costDay: { usedMicros: u.costDay.micros, maxMicros: l.costDayMicros },
       budget: this.budgetFor(who.tier).budget,
+      cooldownUntil: this.cooldownLeft(who) > 0 ? new Date(now + this.cooldownLeft(who)).toISOString() : null,
     };
+  }
+
+  // ---- strikes and cooldown (guardrails §2) ----
+  /** ms of cooldown left for this caller; staff are exempt. */
+  cooldownLeft(who: Pick<Who, "uid" | "tier">): number {
+    if (who.tier === "staff") return 0;
+    const r = this.s.get<StrikeRec>(`strk:${who.uid}`);
+    return r ? Math.max(0, r.cooldownUntil - this.now()) : 0;
+  }
+
+  /**
+   * eve reports a refused turn. De-duplicated on turnId; weights and steps from LIMITS_JSON.abuse.
+   * Crossing a step (3 / 6 / 10 points in 24 h) starts its cooldown (10 min / 1 h / 24 h).
+   */
+  strike(uid: string, sessionId: string, turnId: string, reason: StrikeReason): StrikeResult | Deny {
+    const s = this.s.get<SessionRec>(`s:${sessionId}`);
+    if (s && s.uid !== uid) return { ok: false, code: "not_owner" };
+    const a = this.limits.abuse;
+    const now = this.now();
+    const key = `strk:${uid}`;
+    const r = this.s.get<StrikeRec>(key) ?? { events: [], cooldownUntil: 0 };
+    r.events = r.events.filter((e) => now - e.at < a.windowMs);
+    const before = r.events.reduce((n, e) => n + e.points, 0);
+    if (r.events.some((e) => e.turnId === turnId)) {
+      return { counted: false, points: 0, total: before, cooldownUntil: r.cooldownUntil, startedMs: 0, longest: false };
+    }
+    const points = a.weights[reason] ?? 1;
+    r.events.push({ at: now, points, turnId });
+    const total = before + points;
+    const stepOf = (n: number) => a.steps.filter((st) => n >= st.points).length; // 0 = none
+    const was = stepOf(before);
+    const step = stepOf(total);
+    let startedMs = 0;
+    if (step > was) {
+      startedMs = a.steps[step - 1].ms;
+      r.cooldownUntil = Math.max(r.cooldownUntil, now + startedMs);
+    }
+    this.s.put(key, r);
+    return { counted: true, points, total, cooldownUntil: r.cooldownUntil, startedMs, longest: step > was && step === a.steps.length };
   }
 
   // ---- erase ----
@@ -460,6 +506,7 @@ export class LimiterCore {
     for (const id of sessions) this.s.delete(`s:${id}`);
     this.s.delete(`u:${uid}`);
     this.s.delete(`acct:${uid}`);
+    this.s.delete(`strk:${uid}`);
     for (const [k] of this.s.list(`dd:${uid}:`)) this.s.delete(k);
     for (const [k, set] of this.s.list<string[]>("ip:")) if (set.includes(uid)) this.s.put(k, set.filter((x) => x !== uid));
     this.s.put(`tomb:${uid}`, this.now());
@@ -476,6 +523,9 @@ export class LimiterCore {
     for (const [k, at] of this.s.list<number>("tomb:")) if (now - at > TOMBSTONE_MS) { this.s.delete(k); out.tombstones++; }
     for (const [k, r] of this.s.list<DedupeRec | number>("dd:")) if (now - (typeof r === "number" ? r : r.at) > DEDUPE_MS) { this.s.delete(k); out.other++; }
     for (const [k, a] of this.s.list<AccountRec>("acct:")) if (now - a.at > COUNTER_KEEP_MS) { this.s.delete(k); out.other++; }
+    for (const [k, r] of this.s.list<StrikeRec>("strk:")) {
+      if (r.cooldownUntil <= now && r.events.every((e) => now - e.at >= this.limits.abuse.windowMs)) { this.s.delete(k); out.other++; }
+    }
     const today = utcDay(now);
     for (const [k] of this.s.list("ip:")) if (k.slice(3, 13) !== today) { this.s.delete(k); out.other++; }
     for (const [k, w] of this.s.list<Window>("rip:")) if (now - w.start > MIN) { this.s.delete(k); out.other++; }

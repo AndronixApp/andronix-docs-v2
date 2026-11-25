@@ -4,6 +4,7 @@
 
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ORDER_ID_HINT } from "./copy";
+import { cooldownText, REFUSAL_TEXT, type RefusalKey } from "./refusals";
 
 export function Card({ children, tone }: { children: ReactNode; tone?: "ok" | "warn" }) {
   return <div className={`chat-card ${tone ? `chat-card-${tone}` : ""}`}>{children}</div>;
@@ -82,6 +83,18 @@ const fmtWait = (s: number) => {
 export function LimitCard({ code, retryAfter, dayMax, onSupport, docsHref, inApp, onReport }: {
   code: string; retryAfter?: number; dayMax?: number; onSupport: () => void; docsHref: string; inApp: boolean; onReport?: () => void;
 }) {
+  if (code === "cooldown") {
+    return (
+      <Card>
+        <Pill tone="warn">Paused</Pill>
+        <p className="chat-muted">{cooldownText(retryAfter ?? 600)}</p>
+        <div className="flex flex-col gap-2">
+          <a className="chat-btn chat-btn-primary" href={docsHref}>Open the docs</a>
+          <Secondary onClick={onSupport}>Send to support team</Secondary>
+        </div>
+      </Card>
+    );
+  }
   if (code === "budget_paused" || code === "disabled") {
     return (
       <Card>
@@ -211,6 +224,20 @@ export function AttachCard({ onAttach, onDismiss, busy, error }: { onAttach: () 
         <Secondary onClick={onDismiss} disabled={busy}>Not now</Secondary>
       </div>
       {error && <p className="chat-error" role="alert">{error}</p>}
+    </Card>
+  );
+}
+
+// ---------- decline (guardrails §1): the fixed card replaces the turn's text ----------
+
+export function DeclineCard({ reason, docsHref, onSupport }: { reason: Exclude<RefusalKey, "cooldown" | "no_answer">; docsHref: string; onSupport: () => void }) {
+  return (
+    <Card>
+      <p className="chat-muted">{REFUSAL_TEXT[reason]}</p>
+      <div className="flex flex-col gap-2">
+        <a className="chat-btn chat-btn-primary" href={docsHref}>Open the docs</a>
+        {reason !== "harmful" && <Secondary onClick={onSupport}>Send to support team</Secondary>}
+      </div>
     </Card>
   );
 }

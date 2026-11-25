@@ -56,6 +56,16 @@ export interface Limits {
   watchdogWindowMs: number;
   watchdogPauseMessages: number;
   watchdogPauseMs: number;
+  /** Strikes and cooldowns (guardrails §2), per uid over a rolling window. */
+  abuse: AbuseLimits;
+}
+
+export type StrikeReason = "offtopic" | "jailbreak" | "harmful";
+export interface AbuseLimits {
+  windowMs: number;
+  weights: Record<StrikeReason, number>;
+  /** Ascending by points: reaching `points` within the window starts a cooldown of `ms`. */
+  steps: { points: number; ms: number }[];
 }
 
 export const DEFAULT_LIMITS: Limits = {
@@ -80,6 +90,11 @@ export const DEFAULT_LIMITS: Limits = {
   watchdogWindowMs: 15 * 60_000,
   watchdogPauseMessages: 60,
   watchdogPauseMs: 2 * 60 * 60_000,
+  abuse: {
+    windowMs: 24 * 60 * 60_000,
+    weights: { offtopic: 1, jailbreak: 2, harmful: 2 },
+    steps: [{ points: 3, ms: 10 * 60_000 }, { points: 6, ms: 60 * 60_000 }, { points: 10, ms: 24 * 60 * 60_000 }],
+  },
 };
 
 /** LIMITS_JSON overrides any subset of DEFAULT_LIMITS (tiers merge per tier). Bad JSON → defaults. */
@@ -89,7 +104,9 @@ export function parseLimits(json: string | undefined): Limits {
     const o = JSON.parse(json) as Partial<Limits> & { tiers?: Partial<Record<Tier, Partial<TierLimits>>> };
     const tiers = { ...DEFAULT_LIMITS.tiers };
     for (const t of Object.keys(tiers) as Tier[]) tiers[t] = { ...tiers[t], ...(o.tiers?.[t] ?? {}) };
-    return { ...DEFAULT_LIMITS, ...o, tiers };
+    const abuse = { ...DEFAULT_LIMITS.abuse, ...(o.abuse ?? {}), weights: { ...DEFAULT_LIMITS.abuse.weights, ...(o.abuse?.weights ?? {}) } };
+    abuse.steps = [...abuse.steps].sort((a, b) => a.points - b.points);
+    return { ...DEFAULT_LIMITS, ...o, tiers, abuse };
   } catch {
     return DEFAULT_LIMITS;
   }
