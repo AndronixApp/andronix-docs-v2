@@ -4,7 +4,7 @@
   "description": "Andronix Docs V2",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-shots.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs",
+    "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-shots.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs && node scripts/check-chat-events.mjs",
     "build": "next build",
     "postinstall": "fumadocs-mdx",
     "preview": "wrangler dev --port 8799",
@@ -15,7 +15,9 @@
     "chat:emulator": "cd worker/dev && npx -y firebase-tools@14 emulators:start --only auth --project demo-andronix",
     "chat:fakes": "wrangler dev -c worker/dev/wrangler.fakes.toml --port 8790 --inspector-port 9238",
     "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239",
-    "test:chat-int": "node --test --test-concurrency=1 worker/dev/integration.test.mjs"
+    "test:chat-int": "node --test --test-concurrency=1 worker/dev/integration.test.mjs",
+    "test:chat": "node --test worker/body.test.ts worker/limiter/core.test.ts components/chat/render.test.ts",
+    "chat:page": "set -a && . ./.env.chat-dev && set +a && next dev -p 3312"
   },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
@@ -24,6 +26,7 @@
     "@orama/tokenizers": "^3.1.15",
     "@tailwindcss/postcss": "^4.3.3",
     "axios": "^1.4.0",
+    "eve": "1.5.0",
     "firebase": "^12.19.0",
     "fumadocs-core": "16.15.14",
     "fumadocs-mdx": "15.4.5",

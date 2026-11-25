@@ -3,7 +3,10 @@ import { baseOptions } from '@/lib/layout.shared';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { TriangleAlert } from 'lucide-react';
+import { MessageCircle, TriangleAlert } from 'lucide-react';
+
+// The sidebar pill to /chat stays off until rollout reaches `all` (build plan 1.9, review 2 F15).
+const CHAT_ENTRY = process.env.NEXT_PUBLIC_CHAT_ENTRY === '1';
 import { SEASON } from '@/lib/season.mjs';
 import { SeasonBar, SeasonSidebarCard } from '@/components/season';
 
@@ -25,7 +28,19 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
       sidebar={{
         defaultOpenLevel: 1,
         banner: (
-          <div className="flex flex-col gap-2">
+          <div key="sidebar-banner" className="flex flex-col gap-2">
+          {CHAT_ENTRY && (
+            <Link
+              key="chat-pill"
+              href="/chat#src=docs"
+              data-chat-hide-in-app
+              className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-bold"
+              style={{ background: "var(--andronix-primary-container)", color: "var(--andronix-on-primary-container)", borderRadius: "var(--andronix-radius-full)" }}
+            >
+              <MessageCircle className="size-4 shrink-0" />
+              <span>Ask the assistant</span>
+            </Link>
+          )}
           {SEASON.active && <SeasonSidebarCard />}
           <Link
             key="signal-9-banner"

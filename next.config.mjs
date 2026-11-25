@@ -13,6 +13,11 @@ const config = {
   // (scripts/write-redirects.mjs, from lib/redirects.mjs).
   output: 'export',
   images: { unoptimized: true },
+  // Dev only (CHAT_DEV_PROXY=http://127.0.0.1:8799): `next dev` forwards the chat Worker's paths
+  // to a local `wrangler dev`, so /chat works same-origin. Never set for builds.
+  ...(process.env.CHAT_DEV_PROXY && process.env.NODE_ENV !== 'production'
+    ? { devIndicators: false, agentRules: false, async rewrites() { return ['/chat-api/:p*', '/eve/:p*', '/__/:p*'].map((source) => ({ source, destination: `${process.env.CHAT_DEV_PROXY}${source.replace(':p*', ':p*')}` })); } }
+    : {}),
 };
 
 export default withMDX(config);

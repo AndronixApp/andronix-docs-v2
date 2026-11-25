@@ -30,7 +30,12 @@ const sessions = new Map<string, Session>();
 const requests: unknown[] = [];
 const events: unknown[] = [];
 const accounts = new Map<string, { tier: "free" | "owner"; createdAt: string }>();
-const handoffs = new Map<string, { uid: string; entry: string; verifier: string; used: boolean; exp: number; reportId?: string }>();
+const handoffs = new Map<string, { uid: string; entry: string; verifierHash: string; used: boolean; exp: number; reportId?: string }>();
+/** PKCE S256, as products-api stores it: BASE64URL(SHA-256(verifier)), no padding. */
+async function s256(verifier: string) {
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
+  return btoa(String.fromCharCode(...d)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
 
 type Fact = { type: string; data?: Record<string, any>; scope?: Record<string, string> };
 /** Lines (no $eve transport records) and the delivery each request releases. */
@@ -194,7 +199,7 @@ async function fakeProducts(req: Request, url: URL): Promise<Response> {
     if (h.used) return j({ ok: false, code: "code_used" }, 410);
     if (Date.now() > h.exp) return j({ ok: false, code: "code_expired" }, 410);
     h.used = true; // a wrong verifier burns the code too
-    if (body.verifier !== h.verifier) return j({ ok: false, code: "verifier_mismatch" }, 403);
+    if ((await s256(String(body.verifier ?? ""))) !== h.verifierHash) return j({ ok: false, code: "verifier_mismatch" }, 403);
     return j({ customToken: unsignedCustomToken(h.uid, { chat_entry: h.entry }), uid: h.uid, entry: h.entry, ...(h.reportId ? { reportId: h.reportId } : {}) });
   }
   return j({ ok: false }, 404);
@@ -219,7 +224,7 @@ export default {
       // {uid, entry, code?, verifier?, ttlMs?, reportId?} → {code}; defaults dev-code / dev-verifier
       const b = await req.json() as { uid: string; entry: string; code?: string; verifier?: string; ttlMs?: number; reportId?: string };
       const code = b.code ?? "dev-code-0000000000000000";
-      handoffs.set(code, { uid: b.uid, entry: b.entry, verifier: b.verifier ?? "dev-verifier-000000000000000", used: false, exp: Date.now() + (b.ttlMs ?? 60_000), reportId: b.reportId });
+      handoffs.set(code, { uid: b.uid, entry: b.entry, verifierHash: await s256(b.verifier ?? "dev-verifier-000000000000000"), used: false, exp: Date.now() + (b.ttlMs ?? 60_000), reportId: b.reportId });
       return j({ code });
     }
     return j({ ok: false, error: "fakes: not found" }, 404);

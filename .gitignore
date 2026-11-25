@@ -16,3 +16,6 @@ cloudflare-env.d.ts
 # static export and its generated redirects
 /out
 /public/_redirects
+
+# support chat dev
+.env.chat-dev.local

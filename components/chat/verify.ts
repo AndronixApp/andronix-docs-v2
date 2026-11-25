@@ -1,0 +1,36 @@
+// Session-wide code verification (build plan 1.11, review 2 F6). A code block in a settled turn
+// is kept only when every non-empty, non-comment line, with whitespace collapsed, appears in
+// the text the session retrieved so far (every kb_search and kb_read output). The retrieved
+// text is derived from the session's own tool parts, so a resumed session rebuilds it.
+
+export const UNVERIFIED_TEXT = "I can't confirm this command. See the linked docs page.";
+
+const collapse = (s: string) => s.replace(/\s+/g, " ").trim();
+
+type ToolPartLike = { type: string; name?: string; output?: unknown; state?: string };
+type MessageLike = { role: string; parts: readonly ToolPartLike[] };
+
+/** All text the session retrieved: kb_search result texts and kb_read texts, collapsed. */
+export function retrievedText(messages: readonly MessageLike[]): string {
+  const chunks: string[] = [];
+  for (const m of messages) {
+    for (const p of m.parts) {
+      if (p.type !== "tool" || !p.output || typeof p.output !== "object") continue;
+      const o = p.output as { text?: unknown; results?: { text?: unknown }[] };
+      if (p.name === "kb_read" && typeof o.text === "string") chunks.push(o.text);
+      if (p.name === "kb_search" && Array.isArray(o.results)) for (const r of o.results) if (typeof r?.text === "string") chunks.push(r.text);
+    }
+  }
+  return collapse(chunks.join("\n"));
+}
+
+/** The lines a block must match: non-empty, not a comment, whitespace collapsed. */
+export function checkedLines(code: string): string[] {
+  return code.split("\n").map(collapse).filter((l) => l && !l.startsWith("#") && !l.startsWith("//"));
+}
+
+export function isVerified(code: string, retrieved: string): boolean {
+  const lines = checkedLines(code);
+  if (lines.length === 0) return true; // comments only: nothing to run
+  return lines.every((l) => retrieved.includes(l));
+}

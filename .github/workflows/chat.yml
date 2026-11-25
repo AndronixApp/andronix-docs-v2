@@ -1,0 +1,20 @@
+name: chat
+on:
+  pull_request:
+    paths: ["worker/**", "components/chat/**", "lib/chat-contract/**", "lib/app-bridge.ts", "scripts/*chat*", "wrangler.toml", "package.json"]
+  push:
+    branches: ["feat/support-chat"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/vendor-chat-contract.mjs --verify
+      - run: node scripts/check-chat-events.mjs
+      - run: pnpm typecheck:worker
+      - run: pnpm test:chat

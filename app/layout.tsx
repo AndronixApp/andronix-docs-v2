@@ -6,6 +6,7 @@ import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { SEASON, SALE } from "@/lib/season.mjs";
+import { CHAT_PAGE_EVENTS } from "@/lib/chat-contract/page-events.mjs";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -59,8 +60,21 @@ export const metadata: Metadata = {
 // cookies). Left out when the build has no client id. With Do Not Track or Global Privacy
 // Control on, the filter drops every event, so nothing is sent.
 const OPENPANEL_CLIENT_ID = process.env.OPENPANEL_WEB_CLIENT_ID;
-const RESPECT_OPT_OUT =
-  "function(){var n=navigator;return !(n.doNotTrack==='1'||window.doNotTrack==='1'||n.globalPrivacyControl===true)}";
+// The filter: with Do Not Track or Global Privacy Control on, nothing is sent. Under /chat it is
+// an allowlist (build plan 1.8, review 2 F4): only screen_view and the page's chat_* events pass
+// (no link_out, copy_code or anything else the SDK adds), __path and __referrer are cut to
+// origin + pathname, and a /chat screen_view within 3 s of the last one is dropped (clearing the
+// fragment makes a second view).
+const OPENPANEL_FILTER =
+  "function(e){var n=navigator;if(n.doNotTrack==='1'||window.doNotTrack==='1'||n.globalPrivacyControl===true)return false;" +
+  "var p=location.pathname;if(p!=='/chat'&&p.indexOf('/chat/')!==0)return true;" +
+  "if(!e||e.type!=='track')return !!e&&e.type==='identify';" +
+  "var name=e.payload&&e.payload.name;var ok=" + JSON.stringify(CHAT_PAGE_EVENTS) + ";" +
+  "if(name!=='screen_view'&&ok.indexOf(name)<0)return false;" +
+  "var pr=e.payload.properties||{};var cut=function(u){try{var x=new URL(u,location.origin);return x.origin+x.pathname}catch(_){return location.origin+location.pathname}};" +
+  "pr.__path=cut(pr.__path||location.href);if(pr.__referrer)pr.__referrer=cut(pr.__referrer);e.payload.properties=pr;" +
+  "if(name==='screen_view'){var t=Date.now();if(window.__chatView&&t-window.__chatView<3000)return false;window.__chatView=t}" +
+  "return true}";
 
 export const viewport = {
   themeColor: "#19120E",
@@ -85,7 +99,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               clientId={OPENPANEL_CLIENT_ID}
               trackScreenViews
               trackOutgoingLinks
-              filter={RESPECT_OPT_OUT}
+              filter={OPENPANEL_FILTER}
             />
             <DocsEvents />
           </>
