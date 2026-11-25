@@ -242,3 +242,14 @@ test("redeem: 10/min per IP", () => {
   assert.equal(code(core.admitRedeem("9.9.9.9")), "ip");
   ok(core.admitRedeem("8.8.8.8"));
 });
+
+test("erase prep: sessionsOf lists the uid's sessions; tombstone alone keeps them", () => {
+  const { core } = setup();
+  ok(core.admitCreate(who())); core.bindSession("u1", "S1", "docs");
+  ok(core.admitCreate(who())); core.bindSession("u1", "S2", "docs");
+  core.tombstone("u1");
+  assert.deepEqual(core.sessionsOf("u1"), ["S1", "S2"]);
+  assert.equal(core.isTombstoned("u1", T0 - MIN), true);
+  assert.equal(core.session("u1", "S1").ok, true, "still owned until eve confirms");
+  assert.deepEqual(core.sessionsOf("nobody"), []);
+});

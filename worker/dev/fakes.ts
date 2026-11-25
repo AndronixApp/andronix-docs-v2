@@ -106,8 +106,22 @@ function keysExactly(b: unknown, allowed: string[], required: string[]) {
   return required.every((r) => k.includes(r)) && k.every((x) => allowed.includes(x));
 }
 
+let eraseFails = 0;
+const erased: { pid: string; sessionIds: string[] }[] = [];
+
 async function fakeEve(req: Request, url: URL): Promise<Response> {
   const p = url.pathname;
+  if (p === "/eve/v1/andronix/erase" && req.method === "POST") {
+    // contract/erase.md: edge + internal secret, {pid, sessionIds}; `eraseFails` forces 502s
+    if (req.headers.get("x-eve-edge") !== EDGE || req.headers.get("x-chat-internal") !== "dev-internal-secret") return j({ ok: false, code: "auth" }, 401);
+    const body = await req.json().catch(() => null) as { pid?: string; sessionIds?: string[] } | null;
+    if (!keysExactly(body, ["pid", "sessionIds"], ["pid", "sessionIds"]) || !/^[0-9a-f]{32}$/.test(body!.pid!) || !Array.isArray(body!.sessionIds) || !body!.sessionIds.length || body!.sessionIds.length > 200) return j({ ok: false, code: "bad_body" }, 400);
+    const results = body!.sessionIds.map((sessionId) => ({ sessionId, result: eraseFails > 0 ? "failed" : sessions.has(sessionId) ? "ended" : "not_found" }));
+    if (eraseFails > 0) { eraseFails--; return j({ ok: false, results }, 502); }
+    for (const id of body!.sessionIds) sessions.delete(id);
+    erased.push({ pid: body!.pid!, sessionIds: body!.sessionIds });
+    return j({ ok: true, results });
+  }
   if (p === "/eve/v1/session" && req.method === "POST") {
     const body = await req.json().catch(() => null) as { message?: string } | null;
     const bad = checkEdge(req, "create", body); if (bad) return bad;
@@ -225,6 +239,8 @@ export default {
     if (p === "/openpanel/track") { events.push(await req.json().catch(() => null)); return new Response(null, { status: 202 }); }
     // test controls
     if (p === "/fake/requests") return j(req.method === "DELETE" ? (requests.length = 0, []) : requests);
+    if (p === "/fake/erase-fail" && req.method === "POST") { eraseFails = Number(url.searchParams.get("n") ?? 1); return j({ eraseFails }); }
+    if (p === "/fake/erased") return j(erased);
     if (p === "/fake/events") return j(req.method === "DELETE" ? (events.length = 0, []) : events);
     if (p === "/fake/accounts" && req.method === "POST") {
       const b = await req.json() as Record<string, { tier: "free" | "owner"; createdAt: string }>;

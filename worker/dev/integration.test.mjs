@@ -327,6 +327,28 @@ test("usage: same generationId once; erase → counters reset, sessions gone, ol
   assert.equal((await json(await fetch(`${W}/eve/v1/session/${body.sessionId}/stream`, { headers: h(a) }))).body.code, "not_owner");
 });
 
+test("erase: eve gets {pid, sessionIds} with edge + internal secret; eve 502 → 502, nothing forgotten; retry → 204", async () => {
+  const a = await account();
+  const s1 = (await create(a)).body.sessionId;
+  await advance(61_000);
+  const ERASE = { authorization: "Bearer dev-service-secret", "content-type": "application/json" };
+  await fetch(`${FAKES}/fake/erase-fail?n=1`, { method: "POST" });
+  const first = await fetch(`${W}/chat-api/internal/erase`, { method: "POST", headers: ERASE, body: JSON.stringify({ uid: a.uid }) });
+  assert.equal(first.status, 502);
+  assert.equal((await first.json()).code, "upstream");
+  // the uid stays queued on products-api; the DO still knows the session for the retry
+  assert.equal((await json(await fetch(`${W}/chat-api/me`, { headers: h(a) }))).body.code, "auth", "tombstoned at once");
+  const second = await fetch(`${W}/chat-api/internal/erase`, { method: "POST", headers: ERASE, body: JSON.stringify({ uid: a.uid }) });
+  assert.equal(second.status, 204);
+  const call = (await (await fetch(`${FAKES}/fake/erased`)).json()).at(-1);
+  const pid = (await import("node:crypto")).createHash("sha256").update(a.uid).digest("hex").slice(0, 32);
+  assert.deepEqual(call, { pid, sessionIds: [s1] });
+  // a third call: nothing left to end at eve → 204 without an eve call
+  const before = (await (await fetch(`${FAKES}/fake/erased`)).json()).length;
+  assert.equal((await fetch(`${W}/chat-api/internal/erase`, { method: "POST", headers: ERASE, body: JSON.stringify({ uid: a.uid }) })).status, 204);
+  assert.equal((await (await fetch(`${FAKES}/fake/erased`)).json()).length, before);
+});
+
 test("/__/auth/* proxy: 30 rapid GETs all 200, never rate limited", async () => {
   const codes = await Promise.all(Array.from({ length: 30 }, () => fetch(`${W}/__/auth/iframe?apiKey=x`).then((r) => r.status)));
   assert.deepEqual([...new Set(codes)], [200]);

@@ -19,3 +19,4 @@ cloudflare-env.d.ts
 
 # support chat dev
 .env.chat-dev.local
+worker/dev/*-debug.log

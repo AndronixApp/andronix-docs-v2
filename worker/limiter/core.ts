@@ -406,6 +406,13 @@ export class LimiterCore {
   }
 
   // ---- erase ----
+  /** The uid's sessions (newest last, ≤200), for eve's erase call before the DO forgets them. */
+  sessionsOf(uid: string): string[] {
+    return this.s.get<UserRec>(`u:${uid}`)?.sessions ?? [];
+  }
+  /** Refuses tokens issued before now for 1 h, before eve confirms the erase. */
+  tombstone(uid: string) { this.s.put(`tomb:${uid}`, this.now()); }
+
   /** Deletes the uid's counters, sessions and bindings; returns the sessions to end at eve. */
   erase(uid: string): string[] {
     const u = this.s.get<UserRec>(`u:${uid}`);

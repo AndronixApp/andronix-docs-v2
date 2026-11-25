@@ -1,7 +1,7 @@
 // /chat-api/internal/* (build plan 1.5): eve → usage, report, budget; products-api → erase.
 
 import { reportTransition, type Ctx } from "./context.ts";
-import { bearerMatches, safeEqual } from "./crypto.ts";
+import { bearerMatches, pidFor, safeEqual } from "./crypto.ts";
 import { deskReport } from "./clients.ts";
 import { fail, json, noContent, readJson } from "./http.ts";
 
@@ -48,18 +48,44 @@ async function floor(ctx: Ctx, request: Request): Promise<Response> {
   return noContent();
 }
 
+/**
+ * Account deletion (plan 1.5; eve side: andronix-support-agent contract/erase.md).
+ * 1. Tombstone the uid at once: tokens issued before now get 401 for an hour.
+ * 2. Ask eve to end the uid's sessions: POST /eve/v1/andronix/erase {pid, sessionIds}, with
+ *    x-eve-edge + x-chat-internal. eve ends only sessions whose creator hashes to pid.
+ * 3. Only after eve answers 200 does the DO forget the uid (counters, sessions, bindings).
+ *    eve 502 / unreachable → 502 here, nothing forgotten, so products-api keeps the uid queued
+ *    and the next sweep retries with the same session list.
+ */
 async function erase(ctx: Ctx, request: Request): Promise<Response> {
   const b = (await readJson(request)) as Record<string, unknown> | undefined;
   if (!b || !isStr(b.uid, 128)) return fail("bad_body");
-  const sessions = await ctx.limiter.call("erase", b.uid);
-  // End the uid's open eve sessions (best effort; eve's idle end and retention cover the rest).
-  if (ctx.env.EVE_ORIGIN && sessions.length) {
-    const origin = ctx.env.EVE_ORIGIN.replace(/\/$/, "");
-    const headers: Record<string, string> = { "content-type": "application/json", "x-eve-edge": ctx.env.EVE_EDGE_SECRET ?? "", "x-andronix-erase": "1" };
-    if (ctx.env.EVE_BYPASS_HEADER) headers["x-vercel-protection-bypass"] = ctx.env.EVE_BYPASS_HEADER;
-    ctx.exec.waitUntil(Promise.allSettled(sessions.map((id) =>
-      fetch(`${origin}/eve/v1/session/${encodeURIComponent(id)}/end`, { method: "POST", headers, body: JSON.stringify({ reason: "account_deleted" }), signal: AbortSignal.timeout(10_000) }),
-    )));
+  const uid = b.uid;
+  await ctx.limiter.call("tombstone", uid);
+  const sessionIds = (await ctx.limiter.call("sessionsOf", uid)).slice(-200);
+  if (sessionIds.length && ctx.env.EVE_ORIGIN) {
+    const ok = await eveErase(ctx, await pidFor(uid), sessionIds);
+    if (!ok) return fail("upstream");
   }
+  await ctx.limiter.call("erase", uid);
   return noContent();
+}
+
+async function eveErase(ctx: Ctx, pid: string, sessionIds: string[]): Promise<boolean> {
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+    "x-eve-edge": ctx.env.EVE_EDGE_SECRET ?? "",
+    "x-chat-internal": ctx.env.CHAT_INTERNAL_SECRET ?? "",
+  };
+  if (ctx.env.EVE_BYPASS_HEADER) headers["x-vercel-protection-bypass"] = ctx.env.EVE_BYPASS_HEADER;
+  try {
+    const res = await fetch(`${ctx.env.EVE_ORIGIN!.replace(/\/$/, "")}/eve/v1/andronix/erase`, {
+      method: "POST", headers, body: JSON.stringify({ pid, sessionIds }), signal: AbortSignal.timeout(20_000), redirect: "manual",
+    });
+    if (res.status !== 200) return false;
+    const body = (await res.json().catch(() => null)) as { ok?: boolean; results?: { result?: string }[] } | null;
+    return !!body?.ok && !(body.results ?? []).some((r) => r.result === "failed");
+  } catch {
+    return false;
+  }
 }
