@@ -29,7 +29,8 @@ const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
 export const DEDUPE_MS = 10 * MIN;
 export const TURN_RUNNING_MAX_MS = 3 * MIN;
-export const STREAM_LEASE_MS = 30 * MIN;
+/** eve ends a stream lease after 60 s and the client reconnects, so a lease the Worker never saw close frees itself after 90 s. */
+export const STREAM_LEASE_MS = 90_000;
 export const SESSION_IDLE_MS = 25 * HOUR;
 export const COUNTER_KEEP_MS = 35 * DAY;
 export const GENERATION_KEEP_MS = 48 * HOUR;

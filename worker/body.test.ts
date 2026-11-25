@@ -78,7 +78,7 @@ test("rollout: staff → owners → pct → all", () => {
 test("transcript from eve lines: user parts and replies, last 24, ≤4,000 each", () => {
   const lines = [];
   for (let i = 0; i < 15; i++) {
-    lines.push(JSON.stringify({ at: `2026-11-25T10:${String(i).padStart(2, "0")}:00Z`, facts: [{ type: "delivery.consumed", data: { deliveryId: `d${i}`, turnId: `t${i}`, parts: [{ type: "text", text: `q${i}` }] } }] }));
+    lines.push(JSON.stringify({ at: `2026-11-25T10:${String(i).padStart(2, "0")}:00Z`, facts: [{ type: "delivery.consumed", data: { deliveryId: `d${i}`, turnId: `t${i}`, parts: [{ kind: "text", text: `q${i}` }] } }] }));
     lines.push(JSON.stringify({ at: `2026-11-25T10:${String(i).padStart(2, "0")}:30Z`, facts: [{ type: "content.completed", data: { partId: `p${i}`, kind: "text", phase: "reply", value: "a".repeat(5000) } }] }));
     lines.push(JSON.stringify({ progress: { type: "content.delta", data: { partId: "x", delta: "zz" } } }));
   }

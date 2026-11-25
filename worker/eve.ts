@@ -14,6 +14,23 @@ const STREAM_PARAMS: Record<string, RegExp> = { startIndex: /^-?\d{1,9}$/, inclu
 /** Set from the spike (2A.1-2): whether eve's create accepts idempotencyKey. Follow-ups always send it. */
 const CREATE_SENDS_IDEMPOTENCY_KEY = false;
 
+/**
+ * The pinned useEveAgent builds the POST body itself ({message}, plus inbox/turnPolicy on some
+ * follow-ups), so the page can't put clientMsgId and entry in it. It sends them as per-send
+ * headers (prepareSend → headers); they're folded into the body before the 1.4 key check.
+ * Contract question raised with the lead (support-chat-status/B.md).
+ */
+async function bodyWithHeaders(request: Request, keys: ("clientMsgId" | "entry")[]): Promise<unknown> {
+  const body = await readJson(request);
+  if (!body || typeof body !== "object" || Array.isArray(body)) return body;
+  const b = body as Record<string, unknown>;
+  const msgId = request.headers.get("x-chat-client-msg-id");
+  const entry = request.headers.get("x-chat-entry");
+  if (keys.includes("clientMsgId") && msgId && b.clientMsgId === undefined) b.clientMsgId = msgId;
+  if (keys.includes("entry") && entry && b.entry === undefined) b.entry = entry;
+  return b;
+}
+
 const surfaceFor = (entry: Entry) => (entry === "app_help" || entry === "app_install_failed" ? "app_webview" : "web");
 
 async function eveHeaders(env: Env, request: Request, caller: Caller, entry: Entry, budget: "normal" | "degrade", sessionId?: string): Promise<Headers> {
@@ -77,7 +94,7 @@ export async function handleEve(ctx: Ctx, request: Request, url: URL): Promise<R
 async function create(ctx: Ctx, request: Request): Promise<Response> {
   const caller = await gate(ctx, request);
   if (caller instanceof Response) return caller;
-  const parsed = parseCreate(await readJson(request), ctx.limits.maxChars);
+  const parsed = parseCreate(await bodyWithHeaders(request, ["clientMsgId", "entry"]), ctx.limits.maxChars);
   if (!parsed.ok) return fail(parsed.code);
   const { message, clientMsgId, entry } = parsed.value;
   const admit = await ctx.limiter.call("admitCreate", caller.who, clientMsgId);
@@ -108,7 +125,7 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
 async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<Response> {
   const caller = await gate(ctx, request);
   if (caller instanceof Response) return caller;
-  const parsed = parseFollowup(await readJson(request), ctx.limits.maxChars);
+  const parsed = parseFollowup(await bodyWithHeaders(request, ["clientMsgId"]), ctx.limits.maxChars);
   if (!parsed.ok) return fail(parsed.code);
   const { message, clientMsgId } = parsed.value;
   const admit = await ctx.limiter.call("admitFollowup", caller.who, sessionId, clientMsgId);
@@ -175,49 +192,41 @@ async function stream(ctx: Ctx, request: Request, url: URL, sessionId: string): 
     ctx.exec.waitUntil(release());
     return res ? passthrough(res) : fail("upstream");
   }
-  return passthrough(res, sniffTurns(res.body, {
-    onTurnEnd: (ended) => ctx.exec.waitUntil(ctx.limiter.call("turnEnded", sessionId, ended)),
-    onClose: () => ctx.exec.waitUntil(release()),
-  }));
+  const { readable, done } = sniffTurns(res.body, (ended) => ctx.exec.waitUntil(ctx.limiter.call("turnEnded", sessionId, ended)));
+  // The pump runs whether or not the client reads, so the lease is released when eve ends the
+  // stream (its 60 s lease) or the client goes away; the 90 s lease TTL covers anything else.
+  ctx.exec.waitUntil(done.finally(release));
+  return passthrough(res, readable);
 }
 
 /**
  * Passes NDJSON through unchanged while watching for turn ends, so the DO can clear
  * `turn_running` (turn.settled / turn.paused) and mark ended sessions (session.ended).
- * Releases the stream lease when the body ends or the client goes away.
  */
-export function sniffTurns(body: ReadableStream<Uint8Array>, on: { onTurnEnd: (sessionEnded: boolean) => void; onClose: () => void }): ReadableStream<Uint8Array> {
-  const reader = body.getReader();
+export function sniffTurns(body: ReadableStream<Uint8Array>, onTurnEnd: (sessionEnded: boolean) => void): { readable: ReadableStream<Uint8Array>; done: Promise<void> } {
   const decoder = new TextDecoder();
   let buf = "";
-  let closed = false;
-  const close = () => { if (!closed) { closed = true; on.onClose(); } };
   const scan = (line: string) => {
     if (!line.includes("turn.") && !line.includes("session.ended")) return;
     try {
       const v = JSON.parse(line) as { facts?: { type?: string }[]; progress?: { type?: string } };
       const types = [...(v.facts ?? []), ...(v.progress ? [v.progress] : [])].map((f) => f?.type);
-      if (types.includes("session.ended")) on.onTurnEnd(true);
-      else if (types.includes("turn.settled") || types.includes("turn.paused")) on.onTurnEnd(false);
+      if (types.includes("session.ended")) onTurnEnd(true);
+      else if (types.includes("turn.settled") || types.includes("turn.paused")) onTurnEnd(false);
     } catch {}
   };
-  return new ReadableStream<Uint8Array>({
-    async pull(controller) {
-      try {
-        const { done, value } = await reader.read();
-        if (done) { if (buf) scan(buf); close(); controller.close(); return; }
-        controller.enqueue(value);
-        buf += decoder.decode(value, { stream: true });
-        let i;
-        while ((i = buf.indexOf("\n")) >= 0) { scan(buf.slice(0, i)); buf = buf.slice(i + 1); }
-        if (buf.length > 1_000_000) buf = "";
-      } catch (e) {
-        close();
-        controller.error(e);
-      }
+  const t = new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      controller.enqueue(chunk);
+      buf += decoder.decode(chunk, { stream: true });
+      let i;
+      while ((i = buf.indexOf("\n")) >= 0) { scan(buf.slice(0, i)); buf = buf.slice(i + 1); }
+      if (buf.length > 1_000_000) buf = "";
     },
-    cancel(reason) { close(); return reader.cancel(reason); },
-  });
+    flush() { if (buf) scan(buf); },
+  }, { highWaterMark: 64 }, { highWaterMark: 64 });
+  const done = body.pipeTo(t.writable).catch(() => {});
+  return { readable: t.readable, done };
 }
 
 export const _test = { surfaceFor, STREAM_PARAMS };

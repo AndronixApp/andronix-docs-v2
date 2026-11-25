@@ -1,0 +1,33 @@
+[debug] [2026-11-25T19:47:58.304Z] ----------------------------------------------------------------------
+[debug] [2026-11-25T19:47:58.305Z] Command:       /Users/prakharshukla/.hermes/node/bin/node /Users/prakharshukla/.npm/_npx/e05a72ff2428b88b/node_modules/.bin/firebase emulators:start --only auth --project demo-andronix
+[debug] [2026-11-25T19:47:58.306Z] CLI Version:   14.27.0
+[debug] [2026-11-25T19:47:58.306Z] Platform:      darwin
+[debug] [2026-11-25T19:47:58.306Z] Node Version:  v22.22.3
+[debug] [2026-11-25T19:47:58.306Z] Time:          Wed Nov 25 2026 20:47:58 GMT+0100 (Central European Standard Time)
+[debug] [2026-11-25T19:47:58.306Z] ----------------------------------------------------------------------
+[debug] 
+[info] i  emulators: Starting emulators: auth {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth"}}
+[info] i  emulators: Detected demo project ID "demo-andronix", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-andronix\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
+[warn] ⚠  hub: emulator hub unable to start on port 4400, starting on 4401 instead. {"metadata":{"emulator":{"name":"hub"},"message":"emulator hub unable to start on port 4400, starting on 4401 instead."}}
+[warn] ⚠  logging: Logging Emulator unable to start on port 4500, starting on 4501 instead. {"metadata":{"emulator":{"name":"logging"},"message":"Logging Emulator unable to start on port 4500, starting on 4501 instead."}}
+[debug] [2026-11-25T19:47:58.771Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-11-25T19:47:58.771Z] assigned listening specs for emulators {"user":{"auth":[{"address":"127.0.0.1","family":"IPv4","port":9199}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4401},{"address":"::1","family":"IPv6","port":4401}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4501}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-11-25T19:47:58.773Z] Emulator locator file path: /var/folders/d9/7nqz8qw13xq2wwy9vg12cd1r0000gn/T/hub-demo-andronix.json
+[debug] [2026-11-25T19:47:58.773Z] [hub] writing locator at /var/folders/d9/7nqz8qw13xq2wwy9vg12cd1r0000gn/T/hub-demo-andronix.json
+[warn] ⚠  emulators: The Emulator UI is not starting because none of the running emulators have a UI component. {"metadata":{"emulator":{"name":"hub"},"message":"The Emulator UI is not starting because none of the running emulators have a UI component."}}
+[debug] [2026-11-25T19:48:01.150Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┐
+│ Emulator       │ Host:Port      │
+├────────────────┼────────────────┤
+│ Authentication │ 127.0.0.1:9199 │
+└────────────────┴────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4401
+  Other reserved ports: 4501
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 

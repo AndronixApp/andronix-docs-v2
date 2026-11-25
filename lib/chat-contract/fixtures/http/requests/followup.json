@@ -1,0 +1,9 @@
+{
+  "method": "POST",
+  "path": "/eve/v1/session/:id",
+  "query": {},
+  "body": {
+    "message": "Same command again?"
+  },
+  "source": "PROVISIONAL: recorded by stream B from eve 1.5.0 (useEveAgent client) against a local mock agent; replaced by stream A's 2A.1 recording"
+}

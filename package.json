@@ -11,7 +11,11 @@
     "deploy": "node scripts/check-worker.mjs && node scripts/check-release-date.mjs && wrangler deploy",
     "upload": "node scripts/check-worker.mjs && wrangler versions upload",
     "test:worker": "node --test worker/body.test.ts worker/limiter/core.test.ts",
-    "typecheck:worker": "tsc -p worker/tsconfig.json"
+    "typecheck:worker": "tsc -p worker/tsconfig.json",
+    "chat:emulator": "cd worker/dev && npx -y firebase-tools@14 emulators:start --only auth --project demo-andronix",
+    "chat:fakes": "wrangler dev -c worker/dev/wrangler.fakes.toml --port 8790 --inspector-port 9238",
+    "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239",
+    "test:chat-int": "node --test --test-concurrency=1 worker/dev/integration.test.mjs"
   },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",

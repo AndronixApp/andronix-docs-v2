@@ -106,7 +106,8 @@ export function transcriptFromNdjson(text: string): { role: "user" | "assistant"
     for (const f of line.facts ?? []) {
       const d = f.data ?? {};
       if (f.type === "delivery.consumed" && Array.isArray(d.parts)) {
-        const t = (d.parts as { type?: string; text?: string }[]).filter((p) => p?.type === "text" && typeof p.text === "string").map((p) => p.text).join("\n");
+        // eve 1.5.0 user parts are {kind: "text", text}
+        const t = (d.parts as { kind?: string; type?: string; text?: string }[]).filter((p) => (p?.kind ?? p?.type) === "text" && typeof p.text === "string").map((p) => p.text).join("\n");
         if (t) out.push({ role: "user", text: t, at: line.at ?? "" });
       } else if (f.type === "content.completed" && d.kind === "text" && d.phase === "reply") {
         const t = typeof d.value === "string" ? d.value : typeof d.fallbackText === "string" ? d.fallbackText : "";

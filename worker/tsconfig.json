@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2023"],
+    "lib": [
+      "ES2023"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "types": ["@cloudflare/workers-types"],
+    "types": [
+      "@cloudflare/workers-types"
+    ],
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
@@ -12,6 +16,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["./**/*.ts", "../lib/chat-contract/**/*.ts"],
-  "exclude": ["./**/*.test.ts"]
+  "include": [
+    "./**/*.ts",
+    "../lib/chat-contract/**/*.ts"
+  ],
+  "exclude": [
+    "./**/*.test.ts"
+  ]
 }

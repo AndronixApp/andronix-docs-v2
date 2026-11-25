@@ -19,7 +19,7 @@ export default {
     const url = new URL(request.url);
     const p = url.pathname;
 
-    if (isFirebaseAuthPath(p)) return firebaseAuthProxy(request, env.FIREBASE_PROJECT_ID || "andronix-techriz");
+    if (isFirebaseAuthPath(p)) return firebaseAuthProxy(request, env.FIREBASE_AUTH_PROXY_PROJECT || env.FIREBASE_PROJECT_ID || "andronix-techriz");
 
     if (p.startsWith("/chat-api/") || p.startsWith("/eve/")) {
       const ctx = makeCtx(env, exec);

@@ -5,6 +5,8 @@ export interface Env {
   CHAT_LIMITER: DurableObjectNamespace;
 
   FIREBASE_PROJECT_ID?: string;
+  /** Project whose firebaseapp.com the /__/auth proxy targets (default FIREBASE_PROJECT_ID). */
+  FIREBASE_AUTH_PROXY_PROJECT?: string;
   /** Dev only: the Auth emulator ("127.0.0.1:9099"). Never set on a deployed Worker. */
   FIREBASE_AUTH_EMULATOR_HOST?: string;
 
