@@ -71,6 +71,20 @@ On some stock Android 12L and 13 phones, **Developer options › Feature flags**
 
 More install and desktop problems: [The install fails or stops](/termux/install-problems) and [The desktop is black, slow or closes](/termux/desktop-problems).
 
-Still stopping after the fix? [Report a problem](/troubleshooting/report-a-problem) from the Andronix app.
+## Still stopping, or can't use Developer options?
+
+The switch above stops Android's process limit. Android can still stop Linux when the phone runs low on memory, and on some phones Developer options are locked and can't be changed. Then lower what Linux uses:
+
+1. **Close other apps** from recent apps before you start the desktop.
+2. **Keep Andronix open** (or Termux) while the desktop runs, and don't swipe it away from recent apps.
+3. **Let Andronix run in the background.** In its **App info**, under **Battery**, choose **Unrestricted** (or **Don't optimize**). In the app, **Keep Linux running** does this for you.
+4. **Open fewer heavy apps at once.** A web browser with many tabs, VS Code or an office suite each use a lot of memory. KMail starts several background services (Akonadi) and is often stopped; a lighter mail app such as Claws Mail works better.
+5. **Use a lighter desktop.** KDE Plasma needs about 4 GB of RAM. XFCE or LXQt use less. To change the desktop, see [Changing your mind later](/install/choose#changing-your-mind-later).
+
+On Infinix, Tecno and itel phones, also open **Phone Master**, then **Auto-start Management**, and turn on Andronix. Then lock Andronix in recent apps, so clearing them doesn't close it.
+
+Your distro and files are safe when Android stops Linux. Start it again from Home or the notification.
+
+Still stopping? Tap **Report a problem** in the Andronix app right after it happens (or run `andronix report` in Termux). The report includes that Android stopped the desktop, with its log. See [Report a problem](/troubleshooting/report-a-problem).
 
 <Callout type="info">Source: agnostic-apollo's [Phantom, cached and empty processes](https://github.com/agnostic-apollo/Android-Docs/blob/master/en/docs/apps/processes/phantom-cached-and-empty-processes.md), which documents the killer and these settings for each Android version, and the Termux issue [Android 12 phantom processes killed](https://github.com/termux/termux-app/issues/2366).</Callout>

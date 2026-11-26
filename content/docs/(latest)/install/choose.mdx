@@ -6,7 +6,7 @@ description: Not sure what to install? Our pick for most people, and when to cho
 import Badge from "@/components/badge";
 import NextStep from "@/components/next-step";
 
-Andronix offers nine free distros and four desktops. If you're not sure, start with our pick; you can install another distro next to it later.
+Andronix offers nine free distros and four desktops. If you're not sure, start with our pick; you can install a different distro next to it later.
 
 <Callout type="info">**Our pick: Debian 13 with XFCE.** It's stable, runs on every CPU type, and XFCE is quick and easy to use. **Ubuntu 26.04 LTS with XFCE** is just as good if you prefer Ubuntu or follow Ubuntu guides.</Callout>
 
@@ -40,7 +40,9 @@ Screenshots of each: [Desktops](/reference/desktops).
 
 ## Changing your mind later
 
-- **Another distro:** install it next to the first one. Each has its own start script.
-- **Another desktop:** reinstall the distro with it, for example `andronix install debian --de lxqt --reinstall`. This deletes the distro first, so [back it up](/use/backups) or copy your files to `/sdcard` before.
+- **Another distro:** install it next to the first one, for example Debian next to Ubuntu.
+- **Another desktop or edition of the same distro:** Andronix keeps one install per distro, so it replaces the one you have, and everything inside it is deleted. That includes Modded OS editions: Ubuntu KDE and Ubuntu XFCE can't be installed at the same time, and a Modded Ubuntu replaces a free Ubuntu. Copy your files out first: see [Back up your files](/use/backups).
+  - **In the app:** install the distro again with the other desktop or edition; the app says it replaces the current one. A **Command line only** install can [add a desktop](/install/in-the-app#add-a-desktop-later) instead, and keeps your files.
+  - **In Termux:** `andronix install debian --de lxqt --reinstall` (with your distro and desktop).
 
 <NextStep href="/install/in-the-app" title="Install in the app" description="Pick your distro and desktop, and the app installs everything." />
