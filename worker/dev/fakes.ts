@@ -58,6 +58,15 @@ function parseFixture(text: string) {
   return { lines, deliveries };
 }
 
+/** Like eve, the first delivery.consumed carries the text that was actually sent (image markers included). */
+function echoUserText(lines: string[], message: string) {
+  const i = lines.findIndex((l) => l.includes('"delivery.consumed"'));
+  if (i < 0) return;
+  const v = JSON.parse(lines[i]) as { facts: Fact[] };
+  for (const f of v.facts) if (f.type === "delivery.consumed" && Array.isArray(f.data?.parts)) f.data!.parts = [{ kind: "text", text: message }];
+  lines[i] = JSON.stringify(v);
+}
+
 /** Releases lines up to the next channel/cancel delivery; control deliveries (end, reset) ride along. */
 function releaseNext(s: Session): string {
   const d = s.deliveries[s.next];
@@ -148,6 +157,7 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     if (!keysExactly(body, ["message", "operationId"], ["message"])) return j({ ok: false, error: "fake eve: create body must be {message, operationId?}" }, 400);
     const n = /fixture:(\d\d)/.exec(body!.message!)?.[1] ?? "01";
     const { lines, deliveries } = parseFixture(FIXTURES[n] ?? f01);
+    echoUserText(lines, body!.message!);
     const id = `wrun_fake_${n}_${crypto.randomUUID().slice(0, 8)}`;
     const s: Session = { id, lines, recorded: lines.length, deliveries, next: 0, released: 0, synth: 0 };
     sessions.set(id, s);
