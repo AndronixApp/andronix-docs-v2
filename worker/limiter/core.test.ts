@@ -234,6 +234,23 @@ test("floor POST raises month and day spend", () => {
   assert.equal(core.budgetReport().monthSpendMicros, 5_000_000);
 });
 
+test("floor: an over-count is corrected down to the billed value only once usage has settled", () => {
+  const { core, clock } = setup();
+  core.usage({ generationId: "g1", uid: "x", costMicros: 3_000_000 }); // e.g. an aborted call counted at its estimate
+  clock.now += 7 * MIN;
+  core.setFloor(2_000_000); // report lags: recent usage, nothing lowered
+  assert.equal(core.budgetReport().monthSpendMicros, 3_000_000);
+  clock.now += 2 * 60 * MIN; // no /usage for 2 h: the report has caught up
+  core.setFloor(2_000_000);
+  const r = core.budgetReport();
+  assert.equal(r.monthSpendMicros, 2_000_000);
+  assert.equal(r.daySpendMicros, 2_000_000);
+  core.usage({ generationId: "g2", uid: "x", costMicros: 500_000 }); // counting continues from the billed value
+  assert.equal(core.budgetReport().monthSpendMicros, 2_500_000);
+  core.setFloor(2_400_000); // recent usage again: never lowered
+  assert.equal(core.budgetReport().monthSpendMicros, 2_500_000);
+});
+
 test("usage: same generationId counted once; cost_day per account", () => {
   const { core } = setup();
   assert.equal(core.usage({ generationId: "g1", uid: "u1", costMicros: 200_000 }).counted, true);

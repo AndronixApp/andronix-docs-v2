@@ -35,6 +35,8 @@ export const SESSION_IDLE_MS = 25 * HOUR;
 export const COUNTER_KEEP_MS = 35 * DAY;
 export const GENERATION_KEEP_MS = 48 * HOUR;
 export const TOMBSTONE_MS = HOUR;
+/** No /usage for this long: the Gateway report has caught up, so its billed total is authoritative. */
+export const SETTLE_MS = 2 * HOUR;
 export const ACCOUNT_CACHE_MS = HOUR;
 
 export const utcDay = (t: number) => new Date(t).toISOString().slice(0, 10);
@@ -460,9 +462,24 @@ export class LimiterCore {
     return { counted: true, transition: this.settle(g, "spend") };
   }
 
+  /**
+   * The Gateway's billed month-to-date (eve's hourly reconcile). It raises the floor, so missed
+   * /usage posts still count. Once usage has settled (no /usage for SETTLE_MS, so the Gateway
+   * report has caught up), a month counted above the billed value is corrected down to it: that
+   * over-count is conservative estimates for aborted or unknown-cost calls. While usage is recent
+   * the report lags (2026-11-26 09:07Z: calls from 09:00 weren't in it yet), so nothing is lowered.
+   */
   setFloor(monthSpendMicrosFloor: number): BudgetTransition | null {
+    const now = this.now();
     const g = this.global();
-    g.floor = { ym: utcMonth(this.now()), micros: Math.max(g.floor.micros, Math.max(0, Math.round(monthSpendMicrosFloor))) };
+    const billed = Math.max(0, Math.round(monthSpendMicrosFloor));
+    g.floor = { ym: utcMonth(now), micros: Math.max(g.floor.micros, billed) };
+    if (g.lastUsageAt > 0 && now - g.lastUsageAt >= SETTLE_MS && billed < g.month.micros) {
+      const over = g.month.micros - billed;
+      g.month.micros = billed;
+      g.day.micros = Math.max(0, g.day.micros - over);
+      g.floor.micros = billed;
+    }
     return this.settle(g, "floor");
   }
 
