@@ -6,6 +6,8 @@ import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { parseBlocks, type Block, type Inline } from "./markdown";
 import { isAllowedLink, shortPath } from "./links";
 import { isVerified, UNVERIFIED_TEXT } from "./verify";
+import { snippetOf } from "./progress-logic";
+import { Appear, Presence } from "./motion";
 
 export type ToolPart = { type: "tool"; name: string; callId: string; state: string; input?: unknown; output?: unknown };
 
@@ -20,7 +22,8 @@ function Inlines({ c }: { c: Inline[] }) {
           case "em": return <em key={i}><Inlines c={x.c} /></em>;
           case "link": {
             const external = !x.href.startsWith("/") && !x.href.startsWith("https://docs.andronix.app");
-            return <a key={i} href={x.href} className="chat-link" {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}><Inlines c={x.c} /></a>;
+            // docs links read as inline source chips (Beautiful UI "Streaming Text"); others stay links
+            return <a key={i} href={x.href} className={external ? "chat-link" : "chat-inline-source"} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}><Inlines c={x.c} /></a>;
           }
         }
       })}
@@ -28,20 +31,29 @@ function Inlines({ c }: { c: Inline[] }) {
   );
 }
 
-function CodeBlock({ block, settled, verified }: { block: Extract<Block, { t: "code" }>; settled: boolean; verified: boolean }) {
+/** Copy button with a check that draws in on success (reduced motion: the check just appears). */
+export function CopyButton({ text, label = "Copy", className = "chat-code-copy" }: { text: string; label?: string; className?: string }) {
   const [copied, setCopied] = useState(false);
+  return (
+    <button type="button" className={`${className} ${copied ? "chat-copied" : ""}`} aria-live="polite" onClick={() => {
+      navigator.clipboard?.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600); }).catch(() => {});
+    }}>
+      {copied && <svg className="chat-check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" /></svg>}
+      <span>{copied ? "Copied" : label}</span>
+    </button>
+  );
+}
+
+function CodeBlock({ block, settled, verified }: { block: Extract<Block, { t: "code" }>; settled: boolean; verified: boolean }) {
   if (settled && !verified) return <p className="chat-unverified">{UNVERIFIED_TEXT}</p>;
+  const lines = block.text.split("\n");
   return (
     <div className={`chat-code ${settled ? "" : "chat-code-pending"}`}>
       <div className="chat-code-head">
-        <span>{block.lang || "shell"}</span>
-        {settled && (
-          <button type="button" className="chat-code-copy" onClick={() => {
-            navigator.clipboard?.writeText(block.text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); }).catch(() => {});
-          }}>{copied ? "Copied" : "Copy"}</button>
-        )}
+        <span className="chat-code-lang">{block.lang || "shell"}</span>
+        {settled && <CopyButton text={block.text} />}
       </div>
-      <pre><code>{block.text.split("\n").map((line, i) => (
+      <pre className={lines.length > 1 ? "chat-code-numbered" : ""}><code>{lines.map((line, i) => (
         <span key={i} className={line.trim().startsWith("#") ? "chat-code-comment" : "chat-code-line"}>{line}{"\n"}</span>
       ))}</code></pre>
     </div>
@@ -51,7 +63,8 @@ function CodeBlock({ block, settled, verified }: { block: Extract<Block, { t: "c
 export function Markdown({ text, settled, retrieved }: { text: string; settled: boolean; retrieved: Set<string> }) {
   const blocks = useMemo(() => parseBlocks(text, isAllowedLink), [text]);
   return (
-    <div className="chat-md">
+    // a soft caret after the last block while the answer streams, removed on settle (CSS)
+    <div className={`chat-md ${settled ? "" : "chat-md-streaming"}`}>
       {blocks.map((b, i) => {
         switch (b.t) {
           case "p": return <p key={i}><Inlines c={b.c} /></p>;
@@ -73,28 +86,38 @@ export function turnFacts(text: string, retrieved: Set<string>) {
   return { blocks: code.length, unverified: code.length - verifiedCode, verifiedCode, hasSteps: blocks.some((b) => b.t === "ol") };
 }
 
+/** Sources as context cards (title, path, one-line snippet), after Beautiful UI's "Context Cards". */
 export function SourceChips({ tools }: { tools: ToolPart[] }) {
   const seen = new Set<string>();
-  const chips: { url: string; title: string; known: boolean }[] = [];
+  const cards: { url: string; title: string; snippet: string; known: boolean }[] = [];
   let knownIssue = false;
   for (const t of tools) {
     if (t.name !== "kb_read" || !t.output || typeof t.output !== "object") continue;
-    const o = t.output as { url?: string; title?: string; kind?: string; status?: string };
+    const o = t.output as { url?: string; title?: string; kind?: string; status?: string; text?: string };
     if (o.kind === "known_issue" && (o.status === "investigating" || o.status === "fix_coming")) knownIssue = true;
     if (!o.url || !isAllowedLink(o.url) || seen.has(o.url)) continue;
     seen.add(o.url);
-    chips.push({ url: o.url, title: o.title || shortPath(o.url), known: o.kind === "known_issue" });
+    cards.push({ url: o.url, title: o.title || shortPath(o.url), snippet: snippetOf(o.text), known: o.kind === "known_issue" });
   }
-  if (!chips.length && !knownIssue) return null;
+  if (!cards.length && !knownIssue) return null;
   return (
-    <div className="flex flex-col items-start gap-2">
-      {knownIssue && <span className="chat-chip chat-chip-status">Known issue · our team is on it</span>}
-      {chips.slice(0, 3).map((c) => (
-        <a key={c.url} href={c.url} className="chat-chip">
-          <span className="chat-chip-title">{c.title}</span>
-          <span className="chat-chip-path">{shortPath(c.url)}</span>
-        </a>
-      ))}
+    <div className="flex flex-col gap-2">
+      {knownIssue && <span className="chat-chip chat-chip-status self-start">Known issue · our team is on it</span>}
+      {cards.length > 0 && (
+        <div className="chat-sources">
+          <Presence initial={false}>
+            {cards.slice(0, 3).map((c) => (
+              <Appear key={c.url} kind="up">
+                <a href={c.url} className="chat-source-card">
+                  <span className="chat-source-title">{c.title}</span>
+                  <span className="chat-source-path">{shortPath(c.url)}</span>
+                  {c.snippet && <span className="chat-source-snippet">{c.snippet}</span>}
+                </a>
+              </Appear>
+            ))}
+          </Presence>
+        </div>
+      )}
     </div>
   );
 }

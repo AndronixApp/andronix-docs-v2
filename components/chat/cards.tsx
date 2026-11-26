@@ -142,11 +142,34 @@ const TOPIC_LABEL: Record<string, string> = {
 };
 export const topicLabel = (t?: string) => (t && TOPIC_LABEL[t]) || "Support request";
 
-export function HandoffForm({ reason, topic, email, reportId, messages, canIncludeChat, imageCount = 0, onSubmit, busy, error }: {
+/** A button that shows a spinner while busy and a check when done (owner 2026-11-26). Reduced motion: static. */
+export function StateButton({ busy, done, label, busyLabel, doneLabel, className = "chat-btn chat-btn-primary", ...rest }:
+  { busy: boolean; done?: boolean; label: string; busyLabel: string; doneLabel: string } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button {...rest} className={`${className} chat-state-btn`} disabled={rest.disabled || busy || done} aria-busy={busy || undefined}>
+      {busy && <span className="chat-spinner" aria-hidden="true" />}
+      {done && <svg className="chat-check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" /></svg>}
+      <span>{done ? doneLabel : busy ? busyLabel : label}</span>
+    </button>
+  );
+}
+
+/** Card shell after Beautiful UI's "Approval Card": a small kicker, a title, body, actions row. */
+export function ApprovalCard({ kicker, title, children, className = "" }: { kicker?: string; title: string; children: ReactNode; className?: string }) {
+  return (
+    <div className={`chat-card chat-approval ${className}`}>
+      {kicker && <span className="chat-approval-kicker">{kicker}</span>}
+      <p className="chat-card-title">{title}</p>
+      {children}
+    </div>
+  );
+}
+
+export function HandoffForm({ reason, topic, email, reportId, messages, canIncludeChat, imageCount = 0, onSubmit, busy, done = false, error }: {
   reason: string; topic?: string; email: string; reportId?: string | null; messages: number; canIncludeChat: boolean;
   /** Screenshots sent in this chat that may go along; the box is off by default (lead decision 4). */
   imageCount?: number;
-  onSubmit: (v: { orderId?: string; note?: string; includeChat: boolean; includeImages: boolean }) => void; busy: boolean; error: string;
+  onSubmit: (v: { orderId?: string; note?: string; includeChat: boolean; includeImages: boolean }) => void; busy: boolean; done?: boolean; error: string;
 }) {
   const [orderId, setOrderId] = useState("");
   const [note, setNote] = useState("");
@@ -155,8 +178,7 @@ export function HandoffForm({ reason, topic, email, reportId, messages, canInclu
   const money = reason === "money";
   const orderOk = !orderId || /^GPA\.\d{4}-\d{4}-\d{4}-\d{5}(\.\.\d+)?$/.test(orderId.trim());
   return (
-    <Card>
-      <p className="chat-card-title">Send to support team</p>
+    <ApprovalCard kicker="Support team" title="Send to support team">
       <form className="flex flex-col gap-2.5" onSubmit={(e) => { e.preventDefault(); if (orderOk) onSubmit({ orderId: orderId.trim() || undefined, note: note.trim() || undefined, includeChat, includeImages: includeImages && imageCount > 0 }); }}>
         <dl className="chat-facts">
           <dt>Reply to</dt><dd>{email || "your account email"}</dd>
@@ -186,11 +208,13 @@ export function HandoffForm({ reason, topic, email, reportId, messages, canInclu
             <input type="checkbox" checked={includeImages} onChange={(e) => setIncludeImages(e.target.checked)} />
           </label>
         )}
-        <button type="submit" className="chat-btn chat-btn-primary" disabled={busy || !orderOk}>Send to support team</button>
+        <div className="chat-approval-actions">
+          <StateButton type="submit" busy={busy} done={done} disabled={!orderOk} label="Send to support team" busyLabel="Sending…" doneLabel="Sent" />
+        </div>
         {money && <p className="chat-small">{ORDER_ID_HINT}</p>}
         {error && <p className="chat-error" role="alert">{error}</p>}
       </form>
-    </Card>
+    </ApprovalCard>
   );
 }
 

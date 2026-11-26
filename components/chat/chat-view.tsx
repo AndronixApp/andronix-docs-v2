@@ -11,9 +11,11 @@ import type { User } from "firebase/auth";
 import { HTTP_ERRORS, isErrorCode } from "@/lib/chat-contract/http/http-errors";
 import * as bridge from "@/lib/app-bridge";
 import { newId } from "@/lib/app-bridge";
-import { AssistantHeader, Bubble, Markdown, SourceChips, turnFacts, type ToolPart } from "./message";
+import { AssistantHeader, Bubble, CopyButton, Markdown, SourceChips, turnFacts, type ToolPart } from "./message";
 import { ImageTile, ImageViewer } from "./image-viewer";
-import { AttachCard, DeclineCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
+import { Appear, Presence, useMotionReduced } from "./motion";
+import { ThinkingTrace } from "./progress";
+import { ApprovalCard, AttachCard, DeclineCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
 import { attachReport, chatIdFor, fileTicket, sendFeedback, type Me } from "./api";
 import { retrievedUnits } from "./verify";
 import { reportChip } from "./report-chip";
@@ -68,6 +70,11 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const [handoff, setHandoff] = useState<Handoff | null>(null);
   const [sent, setSent] = useState<Record<string, { ticketRef: string; topic?: string }>>({});
   const [formBusy, setFormBusy] = useState(false);
+  // the handoff button shows a check for a moment before the sent card replaces the form
+  const [formDone, setFormDone] = useState<string | null>(null);
+  // the Send button's spinner while the message POST is in flight
+  const [sending, setSending] = useState(false);
+  const reducedMotion = useMotionReduced();
   const [formError, setFormError] = useState("");
   const [feedback, setFeedback] = useState<Record<string, "solved" | "stuck">>({});
   const [rating, setRating] = useState<"hidden" | "shown" | "done">("hidden");
@@ -123,7 +130,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
     setInflightImages(ids);
     const restore = () => { if (!retryImages && ids.length) setAttachments(kept); };
     try {
-      await agent.send(message || IMAGE_ONLY_TEXT);
+      setSending(true);
+      await agent.send(message || IMAGE_ONLY_TEXT).finally(() => setSending(false));
       onLimitsChanged();
     } catch (e) {
       const code = (e as { code?: string }).code ?? "";
@@ -262,6 +270,9 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
         sessionId: sessionId ?? undefined, reason: h.reason, topic: h.topic, orderId: v.orderId, note: v.note, includeChat: v.includeChat && !!sessionId, reportId: reportId ?? undefined,
         ...(v.includeImages && sessionId ? { includeImages: true } : {}),
       });
+      setFormDone(h.key);
+      if (!reducedMotion) await new Promise((res) => setTimeout(res, 700));
+      setFormDone(null);
       setSent((s) => ({ ...s, [h.key]: { ticketRef: r.ticketRef, topic: h.topic } }));
       if (handoff?.key === h.key) setHandoff(null);
     } catch (e) {
@@ -315,16 +326,18 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
 
   return (
     <div className="chat-thread">
-      {chip && <div className="flex justify-end"><Pill tone={chip.tone}>{chip.text}</Pill></div>}
-      {messages.length === 0 && !limit && (
-        <div className="chat-empty">
-          <AssistantHeader />
-          <p>Ask about installing a distro, the desktop, Termux, or an error you see. Answers come from the Andronix docs.</p>
-        </div>
-      )}
-      {attachState === "offer" || attachState === "busy" ? (
-        <AttachCard onAttach={onAttach} onDismiss={() => setAttachState("dismissed")} busy={attachState === "busy"} error={attachError} />
-      ) : null}
+      <Presence initial={false}>
+        {chip && <Appear key={`chip-${chip.text}`} kind="fade" className="flex justify-end"><Pill tone={chip.tone}>{chip.text}</Pill></Appear>}
+        {messages.length === 0 && !limit && (
+          <Appear key="intro" kind="fade" className="chat-empty">
+            <AssistantHeader />
+            <p>Ask about installing a distro, the desktop, Termux, or an error you see. Answers come from the Andronix docs.</p>
+          </Appear>
+        )}
+        {(attachState === "offer" || attachState === "busy") && (
+          <Appear key="attach"><AttachCard onAttach={onAttach} onDismiss={() => setAttachState("dismissed")} busy={attachState === "busy"} error={attachError} /></Appear>
+        )}
+      </Presence>
 
       {turns.map((t) => {
         const s = settledInfo(t);
@@ -333,102 +346,118 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
         const hKey = `tool:${t.turnId}`;
         const declinePart = t.tools.find((p) => p.name === "decline");
         return (
-          <div key={t.turnId} className="flex flex-col gap-3">
+          // keyed by the first user message: its id survives optimistic → confirmed, the turn id doesn't
+          <div key={t.user[0]?.id ?? t.turnId} className="flex flex-col gap-3">
             {t.user.map((m) => {
               const u = splitUserText(m.parts.filter((p) => p.type === "text").map((p) => p.text).join("\n"));
               const ids = m.metadata?.optimistic ? inflightImages : u.imageIds;
               return (
-                <div key={m.id} className="flex flex-col items-end gap-1.5">
+                <Appear key={m.id} className="flex flex-col items-end gap-1.5">
                   {ids.length > 0 && (
                     <div className="chat-image-row">
                       {ids.map((id) => previews[id]?.thumb
-                        ? <ImageTile key={id} src={previews[id].thumb} label="Attached screenshot" onOpen={() => setViewer(previews[id].full || previews[id].thumb)} />
+                        ? <Appear key={id} kind="scale"><ImageTile src={previews[id].thumb} label="Attached screenshot" onOpen={() => setViewer(previews[id].full || previews[id].thumb)} /></Appear>
                         : <span key={id} className="chat-image-chip">Image</span>)}
                     </div>
                   )}
                   {u.text && <Bubble>{u.text}</Bubble>}
-                </div>
+                </Appear>
               );
             })}
             {(t.assistant.length > 0 || (!s.settled && !t.turnId.startsWith("local:"))) && (
-              <div className="flex flex-col gap-3">
+              // the answer container animates in once; streamed text updates inside it, never per token
+              <Appear className="flex flex-col gap-3">
                 <AssistantHeader />
+                {!declinePart && <ThinkingTrace tools={t.tools} working={!s.settled} hasText={!!t.text} />}
                 {/* a turn with `decline` shows only the fixed card; its text is dropped (guardrails §1, layer 4) */}
                 {declinePart
-                  ? <DeclineCard reason={refusalKey(declinePart.input)} docsHref={docsHref} onSupport={() => setHandoff({ reason: "user_request", topic: "other", key: `decline:${t.turnId}` })} />
-                  : t.text ? <Markdown text={maskAssistantText(t.text)} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
+                  ? <Appear key="decline"><DeclineCard reason={refusalKey(declinePart.input)} docsHref={docsHref} onSupport={() => setHandoff({ reason: "user_request", topic: "other", key: `decline:${t.turnId}` })} /></Appear>
+                  : t.text ? <Markdown text={maskAssistantText(t.text)} settled={s.settled} retrieved={retrieved} /> : null}
+                {s.settled && t.text && !declinePart && (
+                  <div className="chat-answer-actions"><CopyButton text={maskAssistantText(t.text)} label="Copy answer" className="chat-answer-copy" /></div>
+                )}
                 {s.settled && s.outcome === "failed" && !ended && <p className="chat-error">Something went wrong. Try again.</p>}
                 {s.settled && s.outcome === "cancelled" && <p className="chat-small">Stopped.</p>}
                 {!declinePart && <SourceChips tools={t.tools} />}
+                <Presence initial={false}>
                 {handoffPart && hi?.reason && (sent[hKey]
-                  ? <><SentCard ticketRef={sent[hKey].ticketRef} topic={sent[hKey].topic} email={user.email ?? ""} /><AssistantHeader /><p>{MONEY_FOLLOWUP}</p></>
-                  : <HandoffForm reason={hi.reason} topic={hi.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId} imageCount={ticketImageCount}
-                      busy={formBusy} error={handoff?.key === hKey || !handoff ? formError : ""}
-                      onSubmit={(v) => submitTicket({ reason: hi.reason!, topic: hi.topic, key: hKey }, v)} />)}
-                {feedbackTurn === t.turnId && (
-                  <div className="chat-card">
-                    <p className="chat-card-title">Did that fix it?</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button type="button" className={`chat-btn ${feedback[t.turnId] === "solved" ? "chat-btn-primary" : "chat-btn-secondary"}`} disabled={!!feedback[t.turnId]} onClick={() => onFeedback(t.turnId, "solved")}>Solved</button>
-                      <button type="button" className={`chat-btn ${feedback[t.turnId] === "stuck" ? "chat-btn-primary" : "chat-btn-secondary"}`} disabled={!!feedback[t.turnId]} onClick={() => onFeedback(t.turnId, "stuck")}>Still stuck</button>
-                    </div>
-                  </div>
+                  ? <Appear key="sent" className="flex flex-col gap-3"><SentCard ticketRef={sent[hKey].ticketRef} topic={sent[hKey].topic} email={user.email ?? ""} /><AssistantHeader /><p>{MONEY_FOLLOWUP}</p></Appear>
+                  : <Appear key="form"><HandoffForm reason={hi.reason} topic={hi.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId} imageCount={ticketImageCount}
+                      busy={formBusy && formDone !== hKey} done={formDone === hKey} error={handoff?.key === hKey || !handoff ? formError : ""}
+                      onSubmit={(v) => submitTicket({ reason: hi.reason!, topic: hi.topic, key: hKey }, v)} /></Appear>)}
+                {feedbackTurn === t.turnId && !feedback[t.turnId] && (
+                  <Appear key="feedback">
+                    <ApprovalCard kicker="Quick check" title="Did that fix it?">
+                      <div className="chat-approval-actions">
+                        <button type="button" className="chat-btn chat-btn-secondary" onClick={() => onFeedback(t.turnId, "stuck")}>Still stuck</button>
+                        <button type="button" className="chat-btn chat-btn-primary" onClick={() => onFeedback(t.turnId, "solved")}>Solved</button>
+                      </div>
+                    </ApprovalCard>
+                  </Appear>
                 )}
-                {feedback[t.turnId] === "solved" && <><AssistantHeader /><p>{SOLVED_FOLLOWUP}</p></>}
+                {feedback[t.turnId] === "solved" && <Appear key="solved" className="flex flex-col gap-3"><AssistantHeader /><p>{SOLVED_FOLLOWUP}</p></Appear>}
                 {feedback[t.turnId] === "solved" && rating === "shown" && (
-                  <RatingCard inApp={inApp}
+                  <Appear key="rating"><RatingCard inApp={inApp}
                     onRate={() => { setRating("done"); events.track("chat_rating_prompt", { action: "rate" }); if (inApp) bridge.openPlayRating().catch(() => {}); }}
-                    onDismiss={() => { setRating("done"); events.track("chat_rating_prompt", { action: "dismiss" }); }} />
+                    onDismiss={() => { setRating("done"); events.track("chat_rating_prompt", { action: "dismiss" }); }} /></Appear>
                 )}
-                {feedback[t.turnId] === "stuck" && <><AssistantHeader /><p>{STUCK_FOLLOWUP}</p></>}
-              </div>
+                {feedback[t.turnId] === "stuck" && <Appear key="stuck" className="flex flex-col gap-3"><AssistantHeader /><p>{STUCK_FOLLOWUP}</p></Appear>}
+                </Presence>
+              </Appear>
             )}
           </div>
         );
       })}
 
+      <Presence initial={false}>
       {handoff && !handoff.key.startsWith("tool:") && (sent[handoff.key]
-        ? <SentCard ticketRef={sent[handoff.key].ticketRef} topic={sent[handoff.key].topic} email={user.email ?? ""} />
-        : <HandoffForm reason={handoff.reason} topic={handoff.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId} imageCount={ticketImageCount}
-            busy={formBusy} error={formError} onSubmit={(v) => submitTicket(handoff, v)} />)}
+        ? <Appear key={`sent-${handoff.key}`}><SentCard ticketRef={sent[handoff.key].ticketRef} topic={sent[handoff.key].topic} email={user.email ?? ""} /></Appear>
+        : <Appear key={`form-${handoff.key}`}><HandoffForm reason={handoff.reason} topic={handoff.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId} imageCount={ticketImageCount}
+            busy={formBusy && formDone !== handoff.key} done={formDone === handoff.key} error={formError} onSubmit={(v) => submitTicket(handoff, v)} /></Appear>)}
       {Object.entries(sent).filter(([k]) => !k.startsWith("tool:") && handoff?.key !== k).map(([k, v]) => (
-        <SentCard key={k} ticketRef={v.ticketRef} topic={v.topic} email={user.email ?? ""} />
+        <Appear key={`sent-${k}`}><SentCard ticketRef={v.ticketRef} topic={v.topic} email={user.email ?? ""} /></Appear>
       ))}
 
       {agent.error && !failed && !limit && !ended && (
-        <p className="chat-error">{agent.error.message.includes("streams") || (agent.error as { code?: string }).code === "streams" ? "Too many chats open. Close another tab and try again." : "Something went wrong. Try again."}</p>
+        <Appear key="agent-error" kind="fade"><p className="chat-error">{agent.error.message.includes("streams") || (agent.error as { code?: string }).code === "streams" ? "Too many chats open. Close another tab and try again." : "Something went wrong. Try again."}</p></Appear>
       )}
       {failed && !cooling && (
-        <div className="flex items-center gap-3">
+        <Appear key="failed" kind="fade" className="flex items-center gap-3">
           <p className="chat-error">Something went wrong. Try again.</p>
           <Secondary className="!w-auto px-4" onClick={() => send(failed.text, failed.id, failed.images)}>Try again</Secondary>
-        </div>
+        </Appear>
       )}
       {(ended || limit?.code === "chat_full") && (
-        <div className="chat-card">
+        <Appear key="ended" className="chat-card">
           {/* a model error ends the session too (spike C4): say what happened, not "full" */}
           {/* jailbreak / harmful end the session after the card (guardrails §2): just offer a new chat */}
           {endedByRefusal ? null : <p className="chat-card-title">{ended && sessionOf(view).outcome === "failed" ? "Something went wrong. Start a new chat." : "This chat is full. Start a new chat."}</p>}
           <Primary onClick={onNewChat}>{endedByRefusal ? "Start a new chat" : "New chat"}</Primary>
-        </div>
+        </Appear>
       )}
       {limit && limit.code !== "chat_full" && (
-        <LimitCard code={limit.code} retryAfter={limit.retryAfter} dayMax={me.limits.day.max} docsHref={docsHref} inApp={inApp}
+        <Appear key={`limit-${limit.code}`}><LimitCard code={limit.code} retryAfter={limit.retryAfter} dayMax={me.limits.day.max} docsHref={docsHref} inApp={inApp}
           onSupport={() => setHandoff({ reason: "limit", topic: "other", key: `limit:${Date.now()}` })}
-          onReport={inApp ? () => bridge.createReport().catch(() => {}) : undefined} />
+          onReport={inApp ? () => bridge.createReport().catch(() => {}) : undefined} /></Appear>
       )}
+      </Presence>
 
       {/* the dock: sticky at the bottom with the page background; its height pads the list (CSS) */}
       <div className="chat-dock" ref={dockRef}>
       {attachments.length > 0 && (
         <div className="chat-attachments" aria-live="polite">
+          <Presence initial={false}>
           {attachments.map((a) => (
-            <div key={a.localId} className={`chat-attachment chat-attachment-${a.status}`}>
-              {a.preview ? <ImageTile src={a.preview} label="Your screenshot" onOpen={() => setViewer(a.full || a.preview)} /> : <span className="chat-attachment-blank" />}
-              <span className="chat-attachment-state">{a.status === "uploading" ? "Uploading…" : a.status === "failed" ? a.error : "Ready"}</span>
+            <Appear key={a.localId} kind="scale" className={`chat-attachment chat-attachment-${a.status}`}>
+              {/* while it re-encodes and uploads: a shimmer skeleton, or the preview under a shimmer */}
+              <span className={a.status === "uploading" ? "chat-skeleton-wrap chat-skeleton-on" : "chat-skeleton-wrap"}>
+                {a.preview ? <ImageTile src={a.preview} label="Your screenshot" onOpen={() => setViewer(a.full || a.preview)} /> : <span className="chat-attachment-blank" />}
+              </span>
+              <span className={`chat-attachment-state ${a.status === "uploading" ? "chat-shimmer" : ""}`}>{a.status === "uploading" ? "Uploading…" : a.status === "failed" ? a.error : "Ready"}</span>
               <button type="button" className="chat-link-btn" onClick={() => removeAttachment(a)}>Remove</button>
-            </div>
+            </Appear>
           ))}
+          </Presence>
           <p className="chat-small">{ATTACH_NOTICE}</p>
         </div>
       )}
@@ -453,18 +482,25 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
           rows={Math.min(5, Math.max(draft.split("\n").length, Math.ceil(draft.length / 48), 1))}
           disabled={ended}
         />
-        {running
-          ? <button type="button" className="chat-send chat-send-stop" onClick={() => agent.cancel().catch(() => {})}>Stop</button>
-          : <button type="submit" className="chat-send" disabled={(!draft.trim() && !attachments.some((a) => a.status === "ready")) || uploading || cooling || ended}>Send</button>}
+        <Presence mode="wait" initial={false}>
+        {running && !sending
+          ? <Appear key="stop" kind="scale" as="span" className="chat-send-slot"><button type="button" className="chat-send chat-send-stop" onClick={() => agent.cancel().catch(() => {})}>Stop</button></Appear>
+          : <Appear key="send" kind="scale" as="span" className="chat-send-slot"><button type="submit" className="chat-send chat-state-btn" aria-busy={sending || undefined} disabled={sending || (!draft.trim() && !attachments.some((a) => a.status === "ready")) || uploading || cooling || ended}>
+              {sending && <span className="chat-spinner" aria-hidden="true" />}<span>Send</span></button></Appear>}
+        </Presence>
       </form>
+      <Presence mode="wait" initial={false}>
+      <Appear key={cooling ? "cool" : limit ? "limit" : "note"} kind="fade" as="div">
       <p className={`chat-composer-note ${cooling ? "chat-composer-warn" : ""}`}>
         {cooling ? `One moment. You can send again in ${Math.ceil((cooldownUntil - now) / 1000)} s.`
           : limit ? "Limits are per account and reset at 00:00 UTC."
           : COMPOSER_NOTE}
         {!cooling && !limit && <span className="chat-mobile-only"> {left} left today.</span>}
       </p>
+      </Appear>
+      </Presence>
       </div>
-      {viewer && <ImageViewer src={viewer} onClose={() => setViewer(null)} />}
+      <Presence>{viewer && <ImageViewer key="viewer" src={viewer} onClose={() => setViewer(null)} />}</Presence>
     </div>
   );
 }

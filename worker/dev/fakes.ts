@@ -29,8 +29,20 @@ const EDGE = "dev-edge-secret";
 const SERVICE = "dev-service-secret";
 
 interface Delivery { id: string; source: "channel" | "cancel" | "control"; line: number }
-interface Session { id: string; lines: string[]; recorded: number; deliveries: Delivery[]; next: number; released: number; synth: number }
+interface Session { id: string; lines: string[]; recorded: number; deliveries: Delivery[]; next: number; released: number; synth: number; writtenAt: number[] }
+
+/**
+ * Like eve, a released turn is written line by line over time (lineDelay apart), and the stream's
+ * tail index is only what's written so far, so the hook renders it live instead of as catch-up.
+ */
+function stamp(s: Session) {
+  let t = Math.max(Date.now(), s.writtenAt.at(-1) ?? 0);
+  for (let i = s.writtenAt.length; i < s.released; i++) { t += lineDelay; s.writtenAt.push(t); }
+}
+const written = (s: Session) => { const now = Date.now(); let n = 0; while (n < s.released && (s.writtenAt[n] ?? Infinity) <= now) n++; return n; };
 const sessions = new Map<string, Session>();
+/** ms between replayed stream lines (FAKE_LINE_DELAY_MS; slower for screen recordings). */
+let lineDelay = 0;
 const requests: unknown[] = [];
 /** A valid 1×1 JPEG, the fake re-encode's output for PNG/WebP input. */
 const TINY_JPEG = Uint8Array.from(atob("/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA="), (c) => c.charCodeAt(0));
@@ -159,9 +171,11 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     const { lines, deliveries } = parseFixture(FIXTURES[n] ?? f01);
     echoUserText(lines, body!.message!);
     const id = `wrun_fake_${n}_${crypto.randomUUID().slice(0, 8)}`;
-    const s: Session = { id, lines, recorded: lines.length, deliveries, next: 0, released: 0, synth: 0 };
+    const s: Session = { id, lines, recorded: lines.length, deliveries, next: 0, released: 0, synth: 0, writtenAt: [] };
     sessions.set(id, s);
-    return j({ ok: true, sessionId: id, deliveryId: releaseNext(s) }, 202, { "x-eve-session-id": id });
+    const createdDelivery = releaseNext(s);
+    stamp(s);
+    return j({ ok: true, sessionId: id, deliveryId: createdDelivery }, 202, { "x-eve-session-id": id });
   }
   const m = /^\/eve\/v1\/session\/([^/]+)(\/stream|\/cancel|\/end)?$/.exec(p);
   if (!m) return j({ ok: false, error: "not found" }, 404);
@@ -179,6 +193,7 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
       const settleAt = s.lines.slice(0, s.released).map((l, i) => (l.includes('"turn.settled"') ? i : -1)).filter((i) => i >= 0).at(-1);
       s.released = idx >= 0 ? idx : settleAt ?? s.released;
     }
+    stamp(s);
     return j({ ok: true, sessionId: s.id, deliveryId }, 202, { "x-eve-session-id": s.id });
   }
   if (m[2] === "/cancel" && req.method === "POST") {
@@ -186,6 +201,7 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     const bad = checkEdge(req, "cancel", body); if (bad) return bad;
     if (!keysExactly(body, ["turnId"], [])) return j({ ok: false, error: "fake eve: cancel body must be {turnId?}" }, 400);
     const deliveryId = s.deliveries[s.next]?.source === "cancel" ? releaseNext(s) : crypto.randomUUID();
+    stamp(s);
     return j({ ok: true, sessionId: s.id, deliveryId }, 202);
   }
   if (m[2] === "/end" && req.method === "POST") {
@@ -198,22 +214,23 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     const follow = url.searchParams.get("follow") !== "false";
     const headers = {
       "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store", "x-eve-stream-format": "ndjson",
-      "x-eve-stream-version": "27", "x-eve-session-id": s.id, "x-eve-stream-tail-index": String(s.released - 1),
+      "x-eve-stream-version": "27", "x-eve-session-id": s.id, "x-eve-stream-tail-index": String(written(s) - 1),
     };
     const enc = new TextEncoder();
-    const delay = Number(url.searchParams.get("delay") ?? 60);
+    const delay = Number(url.searchParams.get("delay") ?? lineDelay);
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
         let sent = start;
         let closed = false;
+        // only lines already written (stamp); later ones arrive as eve would write them
         const push = async (upTo: number) => {
           while (sent < upTo && !closed) {
             controller.enqueue(enc.encode(s.lines[sent] + "\n"));
             sent++;
-            if (follow) await new Promise((r) => setTimeout(r, delay));
           }
         };
-        await push(s.released);
+        void delay;
+        await push(written(s));
         if (!follow) { controller.close(); return; }
         // follow: hold the lease and poll for released lines in this request's own context
         // (workerd won't let another request's timers write here); the lease ends after 12 s
@@ -221,7 +238,8 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
         let idleSince = Date.now();
         let lastBeat = Date.now();
         while (!closed) {
-          if (sent < s.released) { await push(s.released); idleSince = Date.now(); }
+          if (sent < written(s)) { await push(written(s)); idleSince = Date.now(); }
+          else if (sent < s.released) idleSince = Date.now(); // more lines are still being written
           if (Date.now() - idleSince > 12_000) break;
           if (Date.now() - lastBeat > 10_000) { lastBeat = Date.now(); try { controller.enqueue(enc.encode('{"$eve":"heartbeat"}\n')); } catch { break; } }
           await new Promise((r) => setTimeout(r, 100));
@@ -267,7 +285,8 @@ async function fakeProducts(req: Request, url: URL): Promise<Response> {
 }
 
 export default {
-  async fetch(req: Request): Promise<Response> {
+  async fetch(req: Request, env: { FAKE_LINE_DELAY_MS?: string } = {}): Promise<Response> {
+    lineDelay = Number(env.FAKE_LINE_DELAY_MS || 0); // 0: a turn is written at once (tests); recordings pass 260
     const url = new URL(req.url);
     const p = url.pathname;
     if (p.startsWith("/eve/")) return fakeEve(req, url);
