@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { searchQueryForAnalytics } from "@/lib/search-query";
 
 // The docs' own events, sent through the OpenPanel component in app/layout.tsx: docs_search,
-// copy_code and play_store_click (page views and link_out come from the component itself).
+// copy_code, play_store_click and chat_entry_click (page views and link_out come from the component itself).
 // Nothing typed into pages is sent except search queries.
 
 export function DocsEvents() {
@@ -43,6 +43,12 @@ export function DocsEvents() {
       op.track("play_store_click", { path: location.pathname, label: (a?.textContent || "").trim().slice(0, 60) });
     };
 
+    // chat_entry_click: a link into /chat marked data-chat-entry (the home card sends "home_card"); no PII
+    const onChatEntry = (e: MouseEvent) => {
+      const source = (e.target as Element | null)?.closest?.("a[data-chat-entry]")?.getAttribute("data-chat-entry");
+      if (source) op.track("chat_entry_click", { source: source.slice(0, 40) });
+    };
+
     // docs_search: the query once typing pauses (sanitized, lib/search-query.ts), with how many results showed
     let timer: ReturnType<typeof setTimeout> | undefined;
     let last = "";
@@ -62,10 +68,12 @@ export function DocsEvents() {
 
     document.addEventListener("click", onClick, true);
     document.addEventListener("click", onPlayClick, true);
+    document.addEventListener("click", onChatEntry, true);
     document.addEventListener("input", onInput, true);
     return () => {
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("click", onPlayClick, true);
+      document.removeEventListener("click", onChatEntry, true);
       document.removeEventListener("input", onInput, true);
       clearTimeout(timer);
     };
