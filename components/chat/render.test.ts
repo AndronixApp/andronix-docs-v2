@@ -123,3 +123,11 @@ test("fixture 16 (gate unavailable, fail-closed): GATE_REPLY.unavailable as text
   assert.ok(a.parts.some((x) => x.type === "tool" && x.name === "offer_handoff"));
   assert.ok(!a.parts.some((x) => x.type === "tool" && x.name === "decline"));
 });
+
+test("report chip shows as soon as the chat has a report, before the first message (mock 7)", async () => {
+  const { reportChip } = await import("./report-chip.ts");
+  assert.equal(reportChip({ bound: null, pending: null, failed: null }), null);
+  assert.deepEqual(reportChip({ bound: null, pending: "AX-653FWB", failed: null }), { text: "Report AX-653FWB attached", tone: "ok" }, "handoff report, no session yet");
+  assert.deepEqual(reportChip({ bound: "AX-653FWB", pending: null, failed: null }), { text: "Report AX-653FWB attached", tone: "ok" });
+  assert.deepEqual(reportChip({ bound: null, pending: "AX-653FWB", failed: "AX-653FWB" }), { text: "Report AX-653FWB couldn't be attached", tone: "warn" });
+});
