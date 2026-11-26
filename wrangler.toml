@@ -37,14 +37,14 @@ new_sqlite_classes = ["ChatLimiter"]
 binding = "CHAT_IMAGES"
 bucket_name = "andronix-chat-img"
 
-# Chat on since 2026-11-26 at the staff stage (build plan 4). Widen CHAT_ROLLOUT only with the owner's OK.
+# Chat on since 2026-11-26; public (CHAT_ROLLOUT=all) since 2026-11-26 on the owner's OK ("deploy everything").
 # Secrets (wrangler secret put): EVE_EDGE_SECRET, CHAT_INTERNAL_SECRET, CHAT_SERVICE_SECRET,
-# DESK_API_KEY, OPENPANEL_CLIENT_SECRET, OPS_WEBHOOK_URL.
+# DESK_API_KEY, OPENPANEL_API_URL, OPENPANEL_CLIENT_ID, OPENPANEL_CLIENT_SECRET ("chat-server" write client), OPS_WEBHOOK_URL.
 [vars]
 CHAT_ENABLED = "1"
-CHAT_ROLLOUT = "staff"
+CHAT_ROLLOUT = "all"
 # Image attachments (lead decision 2026-11-26): one stage behind CHAT_ROLLOUT, own flag. off | staff | owners | all.
-CHAT_IMAGES_ROLLOUT = "staff"
+CHAT_IMAGES_ROLLOUT = "all"
 FIREBASE_PROJECT_ID = "andronix-techriz"
 EVE_ORIGIN = "https://andronix-support-agent.vercel.app"
 PRODUCTS_API_URL = "https://api.andronix.app"
