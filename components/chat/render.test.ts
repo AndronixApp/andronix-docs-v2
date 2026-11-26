@@ -130,6 +130,8 @@ test("report chip shows as soon as the chat has a report, before the first messa
   assert.deepEqual(reportChip({ bound: null, pending: "AX-653FWB", failed: null }), { text: "Report AX-653FWB attached", tone: "ok" }, "handoff report, no session yet");
   assert.deepEqual(reportChip({ bound: "AX-653FWB", pending: null, failed: null }), { text: "Report AX-653FWB attached", tone: "ok" });
   assert.deepEqual(reportChip({ bound: null, pending: "AX-653FWB", failed: "AX-653FWB" }), { text: "Report AX-653FWB couldn't be attached", tone: "warn" });
+});
+
 test("images: page copies match the contract and the Worker", async () => {
   const page = await import("./images.ts");
   const contract = await import("../../lib/chat-contract/images.ts");
