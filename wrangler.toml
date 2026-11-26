@@ -38,6 +38,9 @@ new_sqlite_classes = ["ChatLimiter"]
 CHAT_ENABLED = "0"
 CHAT_ROLLOUT = "staff"
 FIREBASE_PROJECT_ID = "andronix-techriz"
+EVE_ORIGIN = "https://andronix-support-agent.vercel.app"
+PRODUCTS_API_URL = "https://api.andronix.app"
+DESK_API_URL = "https://support.andronix.app"
 
 [observability]
 enabled = true
