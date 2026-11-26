@@ -113,3 +113,96 @@ html[data-chat-embed="app"] .chat-shell { padding-top: .75rem; min-height: 100dv
 .chat-viewer-img { max-width: min(92vw, 900px); max-height: calc(100dvh - 120px); object-fit: contain; border-radius: 12px; background: #0b0908; }
 .chat-viewer-close { width: auto; padding: 0 1.4rem; }
 .chat-image-chip { font-size: 12.5px; padding: .25rem .6rem; border-radius: 999px; background: var(--andronix-surface-high); color: var(--andronix-on-surface-variant); }
+
+/* ---------- motion + AI primitives (owner 2026-11-26; patterns after beautifului.dev, written here) ---------- */
+.chat-view-slot { display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+
+/* thinking shimmer: a gradient sweep across the text, in the page palette */
+.chat-shimmer {
+  background: linear-gradient(90deg, var(--andronix-on-surface-variant) 0%, var(--andronix-on-surface-variant) 35%, var(--andronix-primary) 50%, var(--andronix-on-surface-variant) 65%, var(--andronix-on-surface-variant) 100%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: chat-shimmer 1.6s linear infinite;
+}
+@keyframes chat-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+
+/* thinking trace (steps) and its collapsed summary chip */
+.chat-trace { display: flex; flex-direction: column; gap: .4rem; font-size: 14px; }
+.chat-trace-line { display: flex; align-items: baseline; gap: .6rem; font-weight: 600; }
+.chat-trace-line .chat-shimmer { display: inline-block; }
+.chat-trace-elapsed { font-family: var(--andronix-font-mono, ui-monospace, monospace); font-size: 12px; font-weight: 500; color: var(--andronix-on-surface-variant); font-variant-numeric: tabular-nums; }
+.chat-steps { display: flex; flex-direction: column; gap: .3rem; margin: 0; padding: 0 0 0 .2rem; list-style: none; border-left: 1px solid var(--andronix-outline-variant, #3a2f29); }
+.chat-step { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem; padding-left: .7rem; position: relative; color: var(--andronix-on-surface-variant); }
+.chat-step-dot { position: absolute; left: -4px; top: .45em; width: 7px; height: 7px; border-radius: 999px; background: var(--andronix-outline-variant, #3a2f29); }
+.chat-step-done .chat-step-dot { background: var(--andronix-primary); }
+.chat-step-live .chat-step-dot { background: var(--andronix-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--andronix-primary) 25%, transparent); }
+.chat-step-path { font-size: 12px; color: var(--andronix-on-surface-variant); text-decoration: underline; text-underline-offset: 3px; opacity: .85; }
+.chat-trace-chip { align-self: flex-start; display: inline-flex; align-items: center; gap: .5rem; padding: .3rem .7rem; border-radius: 999px; background: var(--andronix-surface-high); color: var(--andronix-on-surface-variant); font-size: 13px; font-weight: 600; }
+.chat-trace-chip:hover { color: var(--andronix-on-surface); }
+.chat-trace-caret { width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .18s; }
+.chat-trace-caret-open { transform: rotate(45deg); }
+
+/* streaming caret after the last block, removed on settle */
+.chat-md-streaming > :last-child::after { content: ""; display: inline-block; width: .5ch; height: 1.05em; margin-left: 2px; vertical-align: -.15em; border-radius: 2px; background: var(--andronix-primary); animation: chat-caret 1s steps(1) infinite; }
+.chat-md-streaming > .chat-code:last-child::after { display: none; }
+@keyframes chat-caret { 50% { opacity: 0; } }
+
+/* inline source chips for docs links in the answer */
+.chat-inline-source { display: inline-flex; align-items: center; padding: 0 .5rem; margin: 0; border-radius: 999px; background: var(--andronix-surface-high); color: var(--andronix-primary); font-size: .88em; font-weight: 600; line-height: 1.6; text-decoration: none; white-space: nowrap; }
+.chat-inline-source:hover { background: var(--andronix-surface-highest); }
+
+/* answer actions */
+.chat-answer-actions { display: flex; gap: .5rem; }
+.chat-answer-copy { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .65rem; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--andronix-on-surface-variant); background: transparent; border: 1px solid var(--andronix-outline-variant, #3a2f29); }
+.chat-answer-copy:hover { color: var(--andronix-on-surface); }
+
+/* code block: language label, line numbers, copy with a drawn check */
+.chat-code-lang { font-family: var(--andronix-font-mono, ui-monospace, monospace); text-transform: lowercase; letter-spacing: .02em; }
+.chat-code-copy { display: inline-flex; align-items: center; gap: .3rem; }
+.chat-code-numbered code { counter-reset: chat-line; }
+.chat-code-numbered code > span::before { counter-increment: chat-line; content: counter(chat-line); display: inline-block; width: 2ch; margin-right: 1.2ch; text-align: right; color: var(--andronix-code-comment); opacity: .6; user-select: none; }
+.chat-check { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 16; stroke-dashoffset: 0; animation: chat-check-draw .28s ease-out both; }
+@keyframes chat-check-draw { from { stroke-dashoffset: 16; } to { stroke-dashoffset: 0; } }
+
+/* source context cards */
+.chat-sources { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .5rem; }
+.chat-source-card { display: flex; flex-direction: column; gap: .15rem; padding: .65rem .8rem; border-radius: 14px; background: var(--andronix-surface-high); border: 1px solid transparent; text-decoration: none; transition: border-color .15s; height: 100%; }
+.chat-source-card:hover { border-color: var(--andronix-outline-variant, #3a2f29); }
+.chat-source-title { color: var(--andronix-primary); font-weight: 700; font-size: 13.5px; }
+.chat-source-path { color: var(--andronix-on-surface-variant); font-size: 12px; font-family: var(--andronix-font-mono, ui-monospace, monospace); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-source-snippet { color: var(--andronix-on-surface-variant); font-size: 12.5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* approval card (handoff form, "Did that fix it?") */
+.chat-approval { border: 1px solid var(--andronix-outline-variant, #3a2f29); }
+.chat-approval-kicker { align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--andronix-primary); }
+.chat-approval-actions { display: flex; justify-content: flex-end; gap: .5rem; flex-wrap: wrap; }
+.chat-approval-actions .chat-btn { width: auto; padding-left: 1.2rem; padding-right: 1.2rem; }
+@media (max-width: 640px) { .chat-approval-actions .chat-btn { flex: 1; } }
+
+/* buttons with a spinner while busy, a check when done */
+.chat-state-btn { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; }
+.chat-spinner { width: 14px; height: 14px; border-radius: 999px; border: 2px solid currentColor; border-right-color: transparent; animation: chat-spin .7s linear infinite; }
+@keyframes chat-spin { to { transform: rotate(360deg); } }
+.chat-send-slot { display: inline-flex; }
+
+/* upload skeleton */
+.chat-skeleton-wrap { position: relative; display: block; border-radius: 12px; overflow: hidden; }
+.chat-skeleton-on::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--andronix-on-surface) 14%, transparent) 50%, transparent 80%); background-size: 200% 100%; animation: chat-skeleton 1.2s linear infinite; pointer-events: none; }
+.chat-skeleton-on .chat-attachment-blank { width: 72px; height: 72px; }
+@keyframes chat-skeleton { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+
+/* prompt bar (pill): focus ring around the whole pill */
+.chat-composer { border: 1px solid transparent; transition: border-color .15s, box-shadow .15s; }
+.chat-composer:focus-within { border-color: color-mix(in srgb, var(--andronix-primary) 55%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--andronix-primary) 18%, transparent); }
+.chat-add-image { align-self: center; padding: .35rem .7rem; border-radius: 999px; background: var(--andronix-surface-highest); color: var(--andronix-primary); font-weight: 600; font-size: 13.5px; }
+.chat-add-image:disabled { opacity: .5; }
+
+/* reduced motion: static labels and states, no shimmer, caret, spinner or sweep */
+@media (prefers-reduced-motion: reduce) {
+  .chat-shimmer { animation: none; background: none; color: var(--andronix-on-surface-variant); -webkit-background-clip: border-box; background-clip: border-box; }
+  .chat-md-streaming > :last-child::after { animation: none; }
+  .chat-spinner { animation: none; border-right-color: currentColor; opacity: .5; }
+  .chat-skeleton-on::after { animation: none; background: color-mix(in srgb, var(--andronix-on-surface) 8%, transparent); }
+  .chat-check { animation: none; }
+  .chat-trace-caret, .chat-composer, .chat-source-card { transition: none; }
+}
+.chat-chip-start { align-self: flex-start; }

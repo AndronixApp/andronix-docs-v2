@@ -7,8 +7,11 @@ import { MessageCircle, TriangleAlert } from 'lucide-react';
 
 // The sidebar pill to /chat stays off until rollout reaches `all` (build plan 1.9, review 2 F15).
 const CHAT_ENTRY = process.env.NEXT_PUBLIC_CHAT_ENTRY === '1';
+
 import { SEASON } from '@/lib/season.mjs';
 import { SeasonBar, SeasonSidebarCard } from '@/components/season';
+// "Ask the assistant about this" on selections; an empty module unless NEXT_PUBLIC_CHAT_ENTRY=1 (next.config).
+import { SelectionAskLoader } from '@/components/selection-ask-loader';
 
 export const metadata: Metadata = {
   title: {
@@ -62,6 +65,7 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
         ),
       }}
     >
+      {CHAT_ENTRY && SelectionAskLoader && <SelectionAskLoader />}
       {children}
     </DocsLayout>
     </>

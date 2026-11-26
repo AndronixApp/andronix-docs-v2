@@ -11,6 +11,7 @@ import { ChatView } from "./chat-view";
 import { SignInCard, VerifyEmailCard, Card, Primary } from "./cards";
 import { DISCLAIMER } from "./copy";
 import { useChatEvents, type Entry, type Surface } from "./events";
+import { Appear, ChatMotion, Presence, loadMotion, type MotionRuntime } from "./motion";
 
 type Boot = { q: string; entry: Entry; handoff: string | null; embed: boolean };
 
@@ -38,17 +39,20 @@ export function ChatPage() {
   const [boot, setBoot] = useState<Boot | null>(null);
   const [auth, setAuth] = useState<Auth | null>(null);
   const [failed, setFailed] = useState(false);
+  // Motion loads alongside auth (never blocks it for long: a failed load renders without animation)
+  const [rt, setRt] = useState<MotionRuntime | null | undefined>(undefined);
   useEffect(() => {
     const b = readFragment();
     if (b.embed) document.documentElement.dataset.chatEmbed = "app";
+    loadMotion().then(setRt);
     shimReady.then(() => {
       setBoot(b);
       return chatAuth(b.embed || bridge.isApp()).then(setAuth, () => setFailed(true));
     });
   }, []);
   if (failed) return <div className="chat-shell"><div className="chat-main"><p className="chat-error">The assistant can't load right now. Try again later.</p></div></div>;
-  if (!boot || !auth) return <div className="chat-shell" aria-busy="true" />;
-  return <ChatShell boot={boot} auth={auth} />;
+  if (!boot || !auth || rt === undefined) return <div className="chat-shell" aria-busy="true" />;
+  return <ChatMotion rt={rt}><ChatShell boot={boot} auth={auth} /></ChatMotion>;
 }
 
 function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {
@@ -148,33 +152,49 @@ function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {
   const left = me ? Math.max(0, me.limits.day.max - me.limits.day.used) : null;
   const embed = boot.embed || inApp;
 
+  // one keyed view at a time, so the sign-in panel enters and leaves on sign-in / sign-out
+  let mainKey: string;
   let main: React.ReactNode;
   if (user === undefined || (boot.handoff && inApp && busy && !user)) {
+    mainKey = "loading";
     main = <p className="chat-muted">Loading…</p>;
   } else if (!user) {
+    mainKey = "signin";
     main = (
       <div className="chat-center">
         <SignInCard question={boot.q || null} onGoogle={google} onEmail={email} busy={busy} error={error} footer={DISCLAIMER} />
       </div>
     );
   } else if (meError === "disabled" || (me && !me.rollout)) {
+    mainKey = "closed";
     main = <Card><p className="chat-card-title">The assistant isn't open yet</p><p className="chat-muted">It's being tested with a small group first. The docs and our support team are here meanwhile.</p><a className="chat-btn chat-btn-secondary" href="/">Open the docs</a></Card>;
   } else if (!me) {
+    mainKey = meError ? "error" : "loading";
     main = meError ? <Card><p className="chat-card-title">Something went wrong</p><Primary onClick={() => loadMe(true)}>Try again</Primary></Card> : <p className="chat-muted">Loading…</p>;
   } else {
+    mainKey = "chat";
     main = (
       <>
-        {!me.verified && user.email && user.providerData.some((p) => p.providerId === "password") && (
-          <VerifyEmailCard email={user.email} sent={verifySent}
-            onSend={() => sendEmailVerification(user).then(() => setVerifySent(true)).catch(() => setVerifySent(true))}
-            onRecheck={async () => { await user.reload(); await loadMe(true); }} />
-        )}
+        <Presence initial={false}>
+          {!me.verified && user.email && user.providerData.some((p) => p.providerId === "password") && (
+            <Appear key="verify">
+              <VerifyEmailCard email={user.email} sent={verifySent}
+                onSend={() => sendEmailVerification(user).then(() => setVerifySent(true)).catch(() => setVerifySent(true))}
+                onRecheck={async () => { await user.reload(); await loadMe(true); }} />
+            </Appear>
+          )}
+        </Presence>
         <ChatView key={chatKey} user={user} me={me} entry={entry} surface={surface} initialQuestion={boot.q}
           pendingReportId={reportId} onMeStale={() => loadMe(true)} onLimitsChanged={() => loadMe()}
           onNewChat={() => { setChatKey((k) => k + 1); setReportId(null); }} />
       </>
     );
   }
+  const view = (
+    <Presence mode="wait">
+      <Appear key={mainKey} kind={mainKey === "signin" ? "scale" : "fade"} className="chat-view-slot">{main}</Appear>
+    </Presence>
+  );
 
   return (
     <div className={`chat-shell ${embed ? "chat-embed" : ""}`}>
@@ -189,7 +209,7 @@ function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {
             {user && me && <button type="button" className={`chat-link-btn ${embed ? "" : "chat-header-new"}`} onClick={() => { setChatKey((k) => k + 1); setReportId(null); }}>New chat</button>}
           </div>
         </header>
-        {main}
+        {view}
       </div>
       {!embed && user && me && (
         <aside className="chat-rail" aria-label="Your account">
