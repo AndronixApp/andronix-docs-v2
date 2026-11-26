@@ -15,6 +15,7 @@ import { AssistantHeader, Bubble, Markdown, SourceChips, turnFacts, type ToolPar
 import { AttachCard, DeclineCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
 import { attachReport, chatIdFor, fileTicket, sendFeedback, type Me } from "./api";
 import { retrievedUnits } from "./verify";
+import { reportChip } from "./report-chip";
 import { refusalKey } from "./refusals";
 import { COMPOSER_NOTE, MONEY_FOLLOWUP, SOLVED_FOLLOWUP, STUCK_FOLLOWUP } from "./copy";
 import type { Entry, Surface } from "./events";
@@ -69,11 +70,13 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const messages = agent.messages as readonly Msg[];
   const retrieved = useMemo(() => retrievedUnits(messages as never), [messages]);
 
-  // the report the app handed over (failed-install entry) binds to the session once it exists
+  // the report the app handed over (failed-install entry) binds to the session once it exists;
+  // the chip shows it from the start (reportChip)
+  const [reportFailed, setReportFailed] = useState<string | null>(null);
   useEffect(() => {
-    if (!sessionId || !pendingReportId || reportId) return;
-    user.getIdToken().then((t) => attachReport(t, sessionId, pendingReportId)).then(() => setReportId(pendingReportId)).catch(() => {});
-  }, [sessionId, pendingReportId, reportId, user]);
+    if (!sessionId || !pendingReportId || reportId || reportFailed) return;
+    user.getIdToken().then((t) => attachReport(t, sessionId, pendingReportId)).then(() => setReportId(pendingReportId)).catch(() => setReportFailed(pendingReportId));
+  }, [sessionId, pendingReportId, reportId, reportFailed, user]);
 
   useEffect(() => { if (cooldownUntil > Date.now()) { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); } }, [cooldownUntil]);
 
@@ -214,9 +217,10 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   };
   useEffect(() => {
     if (!sessionId || !pendingAttach) return;
-    user.getIdToken().then((t) => attachReport(t, sessionId, pendingAttach)).then(() => { setReportId(pendingAttach); setPendingAttach(null); }).catch(() => {});
+    user.getIdToken().then((t) => attachReport(t, sessionId, pendingAttach)).then(() => { setReportId(pendingAttach); setPendingAttach(null); }).catch(() => { setReportFailed(pendingAttach); setPendingAttach(null); });
   }, [sessionId, pendingAttach, user]);
 
+  const chip = reportChip({ bound: reportId, pending: reportId ? null : pendingAttach ?? pendingReportId, failed: reportFailed });
   const cooling = cooldownUntil > now;
   const docsHref = inApp ? "/?embed=app" : "/";
   const userMessages = messages.filter((m) => m.role === "user").length;
@@ -224,7 +228,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
 
   return (
     <div className="chat-thread">
-      {reportId && <div className="flex justify-end"><Pill tone="ok">Report {reportId} attached</Pill></div>}
+      {chip && <div className="flex justify-end"><Pill tone={chip.tone}>{chip.text}</Pill></div>}
       {messages.length === 0 && !limit && (
         <div className="chat-empty">
           <AssistantHeader />
