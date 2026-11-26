@@ -63,7 +63,14 @@
 .chat-chip-title { color: var(--andronix-primary); font-weight: 600; }
 .chat-chip-path { color: var(--andronix-on-surface-variant); overflow: hidden; text-overflow: ellipsis; }
 .chat-chip-status { font-weight: 600; color: var(--andronix-on-surface); background: var(--andronix-surface-highest); }
-.chat-composer { position: sticky; bottom: .5rem; display: flex; align-items: flex-end; gap: .5rem; background: var(--andronix-surface-high); border-radius: 26px; padding: .4rem .4rem .4rem 1rem; margin-top: auto; }
+/* The dock (attachments, composer, note) sticks to the bottom on the page background, with a short
+   fade above it, so the end of an answer never shows through or under it. Its measured height
+   (--chat-dock-h, set by the page) pads the list's scroll area so scrolling keeps text above it. */
+.chat-dock { position: sticky; bottom: 0; margin-top: auto; display: flex; flex-direction: column; gap: .5rem; padding: .5rem 0 .5rem; background: var(--andronix-bg, #19120e); z-index: 5; }
+.chat-dock::before { content: ""; position: absolute; left: 0; right: 0; top: -24px; height: 24px; background: linear-gradient(to bottom, transparent, var(--andronix-bg, #19120e)); pointer-events: none; }
+html:has(.chat-dock) { scroll-padding-bottom: calc(var(--chat-dock-h, 120px) + 16px); }
+.chat-thread { scroll-padding-bottom: var(--chat-dock-h, 120px); }
+.chat-composer { position: relative; display: flex; align-items: flex-end; gap: .5rem; background: var(--andronix-surface-high); border-radius: 26px; padding: .4rem .4rem .4rem 1rem; }
 .chat-composer textarea { flex: 1; background: transparent; outline: none; resize: none; font-size: 15.5px; padding: .45rem 0; max-height: 9rem; color: var(--andronix-on-surface); }
 .chat-send { min-height: 40px; padding: 0 1.1rem; border-radius: 999px; background: var(--andronix-primary); color: var(--andronix-on-primary); font-weight: 700; font-size: 15px; }
 .chat-send:disabled { opacity: .5; }
@@ -94,8 +101,15 @@ html[data-chat-embed="app"] .chat-shell { padding-top: .75rem; min-height: 100dv
 .chat-attachments { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-start; }
 .chat-attachments .chat-small { flex-basis: 100%; }
 .chat-attachment { display: flex; align-items: center; gap: .5rem; background: var(--andronix-surface-high); border-radius: 14px; padding: .35rem .6rem .35rem .35rem; font-size: 13px; }
-.chat-attachment img, .chat-attachment-blank { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; background: var(--andronix-code-bg); display: block; }
+.chat-attachment-blank { width: 72px; height: 72px; border-radius: 10px; background: var(--andronix-code-bg); display: block; }
 .chat-attachment-failed .chat-attachment-state { color: var(--andronix-error, #b3261e); }
 .chat-image-row { display: flex; gap: .4rem; }
-.chat-image-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
+/* Tiles show the whole screenshot (contain on a dark tile): a crop of a tall phone screenshot's
+   top is just its black status bar. Click opens the viewer. */
+.chat-image-tile { display: block; padding: 0; border: 1px solid var(--andronix-outline-variant, #3a2f29); border-radius: 12px; background: #0b0908; cursor: zoom-in; overflow: hidden; }
+.chat-image-tile:focus-visible { outline: 2px solid var(--andronix-primary); outline-offset: 2px; }
+.chat-image-thumb { width: 72px; height: 72px; object-fit: contain; background: #0b0908; display: block; }
+.chat-viewer { position: fixed; inset: 0; z-index: 60; background: rgba(8, 6, 5, .92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 16px; }
+.chat-viewer-img { max-width: min(92vw, 900px); max-height: calc(100dvh - 120px); object-fit: contain; border-radius: 12px; background: #0b0908; }
+.chat-viewer-close { width: auto; padding: 0 1.4rem; }
 .chat-image-chip { font-size: 12.5px; padding: .25rem .6rem; border-radius: 999px; background: var(--andronix-surface-high); color: var(--andronix-on-surface-variant); }

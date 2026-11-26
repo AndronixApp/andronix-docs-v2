@@ -31,8 +31,10 @@ export function maskAssistantText(text: string): string {
 export type Attachment = {
   localId: string;
   status: "uploading" | "ready" | "failed";
-  /** data: URL (the CSP allows data: images, not blob:). */
+  /** data: URL (the CSP allows data: images, not blob:): the small tile. */
   preview: string;
+  /** data: URL of the larger in-memory copy the viewer opens (local only; nothing serves images back). */
+  full?: string;
   imageId?: string;
   error?: string;
 };
@@ -58,11 +60,22 @@ function readAsDataUrl(blob: Blob): Promise<string> {
   });
 }
 
+/** Width and height scaled to fit `max` on the long edge, aspect kept, never upscaled. */
+export function fitWithin(w: number, h: number, max: number): { w: number; h: number } {
+  const s = Math.min(1, max / Math.max(w, h, 1));
+  return { w: Math.max(1, Math.round(w * s)), h: Math.max(1, Math.round(h * s)) };
+}
+
+/** Long edge of the tile preview and of the viewer copy. */
+export const THUMB_EDGE = 192;
+export const VIEW_EDGE = 1280;
+
 /**
- * Downsizes to ≤1568 px on a canvas and returns JPEG bytes plus a 64 px preview. Falls back to
+ * Downsizes to ≤1568 px on a canvas and returns JPEG bytes, a small tile preview and a larger
+ * viewer copy (both data: URLs, kept in memory only). Falls back to
  * the original file when the canvas can't decode it (the server still checks and re-encodes).
  */
-export async function prepareImage(file: Blob): Promise<{ body: Blob; preview: string }> {
+export async function prepareImage(file: Blob): Promise<{ body: Blob; preview: string; full: string }> {
   const original = await readAsDataUrl(file);
   try {
     const img = await loadImage(original);
@@ -76,13 +89,17 @@ export async function prepareImage(file: Blob): Promise<{ body: Blob; preview: s
     g.fillStyle = "#fff"; g.fillRect(0, 0, w, h);
     g.drawImage(img, 0, 0, w, h);
     const body = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
-    const p = Math.min(1, 128 / Math.max(w, h));
-    const pc = document.createElement("canvas");
-    pc.width = Math.max(1, Math.round(w * p)); pc.height = Math.max(1, Math.round(h * p));
-    pc.getContext("2d")?.drawImage(canvas, 0, 0, pc.width, pc.height);
-    return { body: body && body.size > 0 ? body : file, preview: pc.toDataURL("image/jpeg", 0.7) };
+    const scaled = (edge: number, q: number) => {
+      const d = fitWithin(w, h, edge);
+      const c = document.createElement("canvas");
+      c.width = d.w; c.height = d.h;
+      c.getContext("2d")?.drawImage(canvas, 0, 0, d.w, d.h);
+      return c.toDataURL("image/jpeg", q);
+    };
+    return { body: body && body.size > 0 ? body : file, preview: scaled(THUMB_EDGE, 0.75), full: scaled(VIEW_EDGE, 0.85) };
   } catch {
-    return { body: file, preview: original.length < 200_000 ? original : "" };
+    const small = original.length < 200_000 ? original : "";
+    return { body: file, preview: small, full: original.length < 4_000_000 ? original : small };
   }
 }
 

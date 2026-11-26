@@ -12,6 +12,7 @@ import { HTTP_ERRORS, isErrorCode } from "@/lib/chat-contract/http/http-errors";
 import * as bridge from "@/lib/app-bridge";
 import { newId } from "@/lib/app-bridge";
 import { AssistantHeader, Bubble, Markdown, SourceChips, turnFacts, type ToolPart } from "./message";
+import { ImageTile, ImageViewer } from "./image-viewer";
 import { AttachCard, DeclineCard, HandoffForm, LimitCard, Pill, RatingCard, Secondary, SentCard, Primary } from "./cards";
 import { attachReport, chatIdFor, fileTicket, sendFeedback, type Me } from "./api";
 import { retrievedUnits } from "./verify";
@@ -43,7 +44,20 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const [failed, setFailed] = useState<{ text: string; id: string; images?: string[] } | null>(null);
   // image attachments (support-chat-images.md §4): chips in the composer, previews kept by image id
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [previews, setPreviews] = useState<Record<string, string>>({});
+  const [previews, setPreviews] = useState<Record<string, { thumb: string; full: string }>>({});
+  // the image viewer: the full in-memory copy, opened from a tile (local only)
+  const [viewer, setViewer] = useState<string | null>(null);
+  // the composer dock's height, for the message list's bottom padding / scroll padding
+  const dockRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = dockRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const set = () => document.documentElement.style.setProperty("--chat-dock-h", `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => { ro.disconnect(); document.documentElement.style.removeProperty("--chat-dock-h"); };
+  }, []);
   const [inflightImages, setInflightImages] = useState<string[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const imagesRef = useRef<string[]>([]);
@@ -144,10 +158,10 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       }
       setAttachments((a) => [...a, { localId, status: "uploading", preview: "" }]);
       try {
-        const { body, preview } = await prepareImage(file);
-        setAttachments((a) => a.map((x) => (x.localId === localId ? { ...x, preview } : x)));
+        const { body, preview, full } = await prepareImage(file);
+        setAttachments((a) => a.map((x) => (x.localId === localId ? { ...x, preview, full } : x)));
         const r = await uploadImage(await user.getIdToken(), body);
-        setPreviews((p) => ({ ...p, [r.imageId]: preview }));
+        setPreviews((p) => ({ ...p, [r.imageId]: { thumb: preview, full } }));
         setAttachments((a) => {
           if (!a.some((x) => x.localId === localId)) { user.getIdToken().then((t) => deleteImage(t, r.imageId)); return a; } // removed while uploading
           return a.map((x) => (x.localId === localId ? { ...x, status: "ready", imageId: r.imageId } : x));
@@ -327,8 +341,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
                 <div key={m.id} className="flex flex-col items-end gap-1.5">
                   {ids.length > 0 && (
                     <div className="chat-image-row">
-                      {ids.map((id) => previews[id]
-                        ? <img key={id} className="chat-image-thumb" src={previews[id]} alt="Attached screenshot" width={64} height={64} />
+                      {ids.map((id) => previews[id]?.thumb
+                        ? <ImageTile key={id} src={previews[id].thumb} label="Attached screenshot" onOpen={() => setViewer(previews[id].full || previews[id].thumb)} />
                         : <span key={id} className="chat-image-chip">Image</span>)}
                     </div>
                   )}
@@ -404,11 +418,13 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
           onReport={inApp ? () => bridge.createReport().catch(() => {}) : undefined} />
       )}
 
+      {/* the dock: sticky at the bottom with the page background; its height pads the list (CSS) */}
+      <div className="chat-dock" ref={dockRef}>
       {attachments.length > 0 && (
         <div className="chat-attachments" aria-live="polite">
           {attachments.map((a) => (
             <div key={a.localId} className={`chat-attachment chat-attachment-${a.status}`}>
-              {a.preview ? <img src={a.preview} alt="" width={64} height={64} /> : <span className="chat-attachment-blank" />}
+              {a.preview ? <ImageTile src={a.preview} label="Your screenshot" onOpen={() => setViewer(a.full || a.preview)} /> : <span className="chat-attachment-blank" />}
               <span className="chat-attachment-state">{a.status === "uploading" ? "Uploading…" : a.status === "failed" ? a.error : "Ready"}</span>
               <button type="button" className="chat-link-btn" onClick={() => removeAttachment(a)}>Remove</button>
             </div>
@@ -447,6 +463,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
           : COMPOSER_NOTE}
         {!cooling && !limit && <span className="chat-mobile-only"> {left} left today.</span>}
       </p>
+      </div>
+      {viewer && <ImageViewer src={viewer} onClose={() => setViewer(null)} />}
     </div>
   );
 }
