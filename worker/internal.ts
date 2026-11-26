@@ -26,7 +26,7 @@ export async function handleInternal(ctx: Ctx, request: Request, url: URL): Prom
 
 /**
  * POST /chat-api/internal/usage (contract/internal.ts, QA-1 S2): one call per provider call.
- * `costMicros` is null when OpenRouter's cost is unknown; the Worker then counts eve's
+ * `costMicros` is null when the AI Gateway's cost is unknown; the Worker then counts eve's
  * `estimatedCostMicros` ceiling. Exact key set; ints ≥ 0.
  */
 const USAGE_KEYS = ["generationId", "uid", "sessionId", "turnId", "model", "inputTokens", "outputTokens", "cachedTokens", "costMicros", "estimatedCostMicros", "outcome"];

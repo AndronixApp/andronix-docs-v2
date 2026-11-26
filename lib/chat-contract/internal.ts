@@ -6,8 +6,9 @@ import { z } from "zod";
 
 /**
  * POST /chat-api/internal/usage, one per provider call (QA-1 S2).
- * - `costMicros` is OpenRouter's own cost, or **null when unknown** (missing
- *   `usage.cost`, an aborted or failed stream). Never 0 for unknown.
+ * - `costMicros` is the AI Gateway's own cost (`providerMetadata.gateway.cost`),
+ *   or **null when unknown** (missing cost, an aborted or failed stream).
+ *   Never 0 for unknown.
  * - `estimatedCostMicros` is eve's conservative ceiling for that call
  *   (tokens × list price, or a per-model worst case when tokens are unknown).
  *   The Worker counts `costMicros ?? estimatedCostMicros`.
