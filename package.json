@@ -16,7 +16,7 @@
     "chat:fakes": "wrangler dev -c worker/dev/wrangler.fakes.toml --port 8790 --inspector-port 9238",
     "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239 --persist-to \"$(mktemp -d)\"",
     "test:chat-int": "CHAT_WORKER_STAFF_ONLY=${CHAT_WORKER_STAFF_ONLY:-http://127.0.0.1:8797} node --test --test-concurrency=1 worker/dev/integration.test.mjs",
-    "test:chat": "node --test worker/body.test.ts worker/limiter/core.test.ts components/chat/render.test.ts components/chat/filter.test.ts components/chat/ui.test.ts components/chat/motion.test.ts",
+    "test:chat": "node --test worker/body.test.ts worker/gap.test.ts worker/limiter/core.test.ts components/chat/render.test.ts components/chat/filter.test.ts components/chat/ui.test.ts components/chat/motion.test.ts",
     "chat:page": "set -a && . ./.env.chat-dev && set +a && next dev -p 3312",
     "build:preview": "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=andronix-techriz.firebaseapp.com NEXT_PUBLIC_CHAT_ENTRY=1 pnpm build",
     "deploy:preview": "node scripts/check-worker.mjs && wrangler deploy -c wrangler.toml --env preview",

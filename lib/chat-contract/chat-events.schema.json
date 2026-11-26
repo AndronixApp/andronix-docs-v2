@@ -18,6 +18,7 @@
     "chat_report_attached",
     "chat_image_attached",
     "chat_image_rejected",
+    "chat_gap_reported",
     "chat_rating_prompt",
     "chat_budget",
     "chat_link_sent"
@@ -61,6 +62,9 @@
     },
     {
       "$ref": "#/$defs/chat_image_rejected"
+    },
+    {
+      "$ref": "#/$defs/chat_gap_reported"
     },
     {
       "$ref": "#/$defs/chat_rating_prompt"
@@ -875,6 +879,57 @@
                 "owner",
                 "staff"
               ]
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_gap_reported": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_gap_reported"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "reason",
+            "auto",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "no_docs",
+                "partial",
+                "outdated",
+                "conflict",
+                "unclear_question"
+              ]
+            },
+            "auto": {
+              "type": "boolean"
             },
             "__timestamp": {
               "type": "string",

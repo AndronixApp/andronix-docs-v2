@@ -67,6 +67,8 @@ interface SessionRec {
   runningDelivery?: string | null; runningTurn?: string | null;
   /** The last few turn.started / turn.settled seen, for lines that arrive before eve's 202 does. */
   seenStarts?: { deliveryId: string; turnId: string }[]; seenSettled?: string[];
+  /** Knowledge gaps already taken for this session, as `<turnId>:<source>` (worker/gap.ts). */
+  gaps?: string[];
 }
 
 /** What the Worker saw in one stream line (QA-2 #8): only these move turn_running. */
@@ -318,6 +320,20 @@ export class LimiterCore {
     const u = this.user(uid);
     u.sessions = [...u.sessions.filter((x) => x !== sessionId), sessionId].slice(-200);
     this.saveUser(uid, u);
+  }
+
+  /**
+   * Knowledge gaps (contract v4, worker/gap.ts): one per (session, turn, source). Owner check only: a gap never
+   * touches the user's counters, limits or budget.
+   */
+  gap(uid: string, sessionId: string, turnId: string, source: string): Deny | { ok: true; first: boolean; entry: Entry } {
+    const s = this.s.get<SessionRec>(`s:${sessionId}`);
+    if (!s || s.uid !== uid) return { ok: false, code: "not_owner" };
+    const key = `${turnId}:${source}`;
+    if ((s.gaps ?? []).includes(key)) return { ok: true, first: false, entry: s.entry };
+    s.gaps = [...(s.gaps ?? []), key].slice(-60);
+    this.s.put(`s:${sessionId}`, s);
+    return { ok: true, first: true, entry: s.entry };
   }
 
   /** Owner check for every route that takes a sessionId. */

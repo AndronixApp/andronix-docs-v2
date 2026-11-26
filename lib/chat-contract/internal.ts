@@ -52,3 +52,46 @@ export const strikeBody = z
   .strict();
 
 export type StrikeBody = z.infer<typeof strikeBody>;
+
+/**
+ * POST /chat-api/internal/gap (contract v4, knowledge gaps). Never carries the
+ * user's message: `topic` and `summary` are the model's own words or the gate's
+ * English search query, with emails, non-docs URLs, order ids, AX ids and long
+ * digit runs stripped by eve (agent/lib/gap.ts). The Worker de-duplicates on
+ * (sessionId, turnId, source), adds the entry and forwards to the desk action
+ * `kb-gap`. Not counted against the user's limits. Answer 204.
+ * - source `model`: the report_gap tool;
+ * - `no_answer`: the no-answer fallback fired (auto, reason no_docs);
+ * - `still_stuck`: the user tapped "Still stuck" (auto, reason partial; built
+ *   by eve's `/eve/v1/andronix/gap-stuck` and sent by the Worker itself).
+ */
+export const GapSource = z.enum(["model", "no_answer", "still_stuck"]);
+export const gapBody = z
+  .object({
+    uid: z.string().min(1).max(128),
+    sessionId: z.string().min(1).max(128),
+    turnId: z.string().min(1).max(64),
+    reason: z.enum(["no_docs", "partial", "outdated", "conflict", "unclear_question"]),
+    topic: z.string().min(1).max(80),
+    summary: z.string().min(1).max(300),
+    pagesTried: z.array(z.string().min(1).max(200)).max(5),
+    source: GapSource,
+    auto: z.boolean(),
+  })
+  .strict();
+export type GapBody = z.infer<typeof gapBody>;
+
+/**
+ * POST /eve/v1/andronix/gap-stuck (Worker → eve, edge + internal secret), sent
+ * when the user taps "Still stuck" on a turn. eve answers 200
+ * `{gap: GapBody | null}` (null: not the pid's session, no such turn, or nothing
+ * to report); the Worker then handles the gap like POST /gap.
+ */
+export const gapStuckRequest = z
+  .object({
+    pid: z.string().regex(/^[0-9a-f]{32}$/),
+    sessionId: z.string().min(1).max(128),
+    turnId: z.string().min(1).max(64),
+  })
+  .strict();
+export type GapStuckRequest = z.infer<typeof gapStuckRequest>;

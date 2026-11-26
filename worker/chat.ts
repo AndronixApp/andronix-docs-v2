@@ -7,6 +7,7 @@ import { fail, json, noContent, readJson, clientIp } from "./http.ts";
 import { deskHandoff, deskReport, redeemHandoff, track } from "./clients.ts";
 import { handleImageApi, imagesEnabledFor, ticketImages } from "./images.ts";
 import { IMAGE_MARKER } from "../lib/chat-contract/images.ts";
+import { stuckGap } from "./gap.ts";
 
 const surfaceFor = (entry: Entry) => (entry === "app_help" || entry === "app_install_failed" ? "app_webview" : "web");
 
@@ -104,6 +105,8 @@ async function feedback(ctx: Ctx, request: Request): Promise<Response> {
     const s = await ctx.limiter.call("session", caller.who.uid, sessionId);
     const entry = s.ok ? s.entry : "docs";
     ctx.exec.waitUntil(track(ctx.env, { name: "chat_feedback", profileId: caller.pid, properties: { chat_id: await chatIdFor(sessionId), value, turn: r.turns, entry, surface: surfaceFor(entry) } }));
+    // "Still stuck" is a knowledge gap (reason partial): eve builds it from the turn, worker/gap.ts sends it on.
+    if (value === "stuck") ctx.exec.waitUntil(stuckGap(ctx, caller.who.uid, sessionId, turnId).then(() => undefined));
   }
   return noContent();
 }
