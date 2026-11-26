@@ -67,4 +67,20 @@ A Bluetooth or USB mouse works as on a computer: moving, left, middle and right 
 
 In **full screen**, the app captures the mouse, so it moves only inside Linux (handy for games and 3D apps). Press **Ctrl + Alt** to release it; the app says "Mouse released. Click the desktop to capture it again."
 
+## Use the desktop from a computer (VNC)
+
+The app shows the desktop on the phone. To use Linux from a computer on the same Wi-Fi as well, start a second desktop over VNC. In the distro's terminal, run:
+
+```bash copy
+vncserver-start 1280x720 2 --lan
+```
+
+- **Use display 2.** The app's own desktop uses display 1.
+- **Password:** if you haven't set a desktop password yet, it asks for one (6 to 8 characters).
+- **Connect:** on the computer, point a VNC viewer at the phone's IP address and display 2, for example `192.168.1.20:2` (port 5902). The IP is in Android's Wi-Fi settings, under the network's details.
+- **Sound** from that desktop plays on the phone, not the computer, and only while the app's desktop is running. See [Sound](/use/sound).
+- **Stop it** with `vncserver-stop 2`.
+
+<Callout type="warning">With `--lan`, anyone on the same network who knows your desktop password can connect, and VNC traffic isn't encrypted. Use it only on networks you trust, and stop it when you're done.</Callout>
+
 <NextStep href="/use/android-files" title="Android files in Linux" description="Move files between Android and Linux." />

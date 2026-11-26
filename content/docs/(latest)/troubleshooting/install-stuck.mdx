@@ -6,6 +6,8 @@ description: 'What to do when an Andronix install stops or hangs at "Finding the
 
 These three steps are where most installs stop. All three download something, so the cause is almost always the connection, not your phone or the distro. This page is for installs in the app and in Termux.
 
+Stopped later, at **Updating**, **Installing the basics**, **Installing the desktop** or **Setting up**? See [The install fails at a later step](/troubleshooting/install-later-steps).
+
 ## What each step does
 
 | Step | What it downloads | If it stops |
@@ -24,7 +26,7 @@ These three steps are where most installs stop. All three download something, so
 4. **Allow data for Andronix.** If your phone can block Wi-Fi or mobile data per app (some Xiaomi phones do, under **Restricted data usage**), allow both for Andronix (and for Termux, if you use it).
 5. **Check the date and time.** Turn on automatic date and time in Android's settings. Secure downloads fail when the clock is wrong.
 6. **Keep the app open** until the install finishes: the Andronix app (or Termux) on screen, and the screen on. See [Keep the install running](#keep-the-install-running).
-7. **Try again.** In the app, tap **Try again**. In Termux, run the same install command again.
+7. **Try again.** In the app, tap **Try again**. In Termux, run the same install command again. Either way, steps that finished are kept; see [What "Try again" picks up](/troubleshooting/install-later-steps#what-try-again-picks-up).
 
 <Callout type="info">Private DNS itself is fine: Andronix looks up servers through Android, so it uses your Private DNS. It only gets in the way when that DNS blocks some addresses, as ad-blocking ones do.</Callout>
 

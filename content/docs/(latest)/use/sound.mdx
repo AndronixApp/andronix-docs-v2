@@ -5,7 +5,16 @@ description: Sound from your Andronix distro plays in the app, through the phone
 
 import NextStep from "@/components/next-step";
 
-Sound is built in: the desktop's sound plays in the Andronix app, and keeps playing when you leave the app. **Mute** is on the desktop's toolbar and in the **Linux is running** notification. There's no microphone yet.
+Sound is built in: the desktop's sound plays through the phone's speakers or headphones. It starts with the app's desktop, keeps playing when you leave the app, and ends when you stop Linux. **Mute** is on the desktop's toolbar and in the **Linux is running** notification. There's no microphone yet.
+
+## No sound?
+
+- **Check Mute** on the toolbar and in the notification, and the phone's media volume.
+- **Another app is playing sound:** Linux pauses while another app has the audio. Close or pause it.
+- **Sound stopped after you left and reopened the app:** stop the desktop, then open it again.
+- **A command-line install** has no desktop, so it has no sound.
+- **VNC from a computer:** sound plays on the phone, not the computer, and only while the app's desktop is running. See [Use the desktop from a computer](/desktop/in-the-app#use-the-desktop-from-a-computer-vnc).
+- **Still nothing?** [Report a problem](/troubleshooting/report-a-problem) from the app.
 
 In Termux, sound works differently: see [Sound in Termux](/termux/sound).
 

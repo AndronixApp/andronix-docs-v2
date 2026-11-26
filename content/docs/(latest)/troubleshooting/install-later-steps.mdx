@@ -1,0 +1,98 @@
+---
+title: The Install Fails at a Later Step
+metaTitle: 'Andronix Install Failed at "Updating", "Installing the basics", "Installing the desktop" or "Setting up" - Andronix Docs'
+description: 'What to do when an Andronix install fails after the download, at "Updating", "Installing the basics", "Installing the desktop" or "Setting up": the causes we see, the fix for each, and what Try again picks up.'
+---
+
+These steps come after the download. They install packages from the distro's own servers, so the connection still matters, but Android, free space and the phone's kernel can stop them too. This page is for installs in the app and in Termux.
+
+Stopped at **Finding the best download**, **Downloading** or **Refreshing package lists**? See [The install stops at a download step](/troubleshooting/install-stuck).
+
+## What each step does
+
+| Step | What it does |
+|---|---|
+| **Unpacking** | Unpacks the downloaded distro onto your phone. |
+| **Setting up** (for example **Setting up Debian**) | Writes the distro's settings, checks that Linux programs can start on your phone, and applies fixes for it. |
+| **Updating** (for example **Updating Debian**) | Upgrades the distro's packages with its own package manager. It's skipped when there's nothing to upgrade. |
+| **Installing the basics** | Installs the base packages every install needs. |
+| **Installing the desktop** | Installs XFCE, LXQt, MATE or KDE Plasma. This is the biggest download after the distro itself. |
+| **Installing a web browser** | Installs Firefox. If it fails, the install goes on without it; add it later from [Install apps](/use/apps). |
+| **Setting up the desktop**, **Setting up your user** | Sets up the desktop session and the user you chose. |
+
+## What the installer already tries
+
+Before it shows an error, the installer fixes the common problems by itself:
+
+- **Network errors:** it waits and tries again, then switches to another mirror of the distro's servers.
+- **An interrupted package install:** it runs `dpkg --configure -a` and repairs half-installed packages.
+- **Arch and Manjaro signing keys:** it rebuilds them once.
+- **A wrong clock:** it works around it.
+
+So when the install does stop, it's usually one of the causes below. The error on the failed screen (or in Termux) says which.
+
+## Causes and fixes
+
+### Unable to locate package, unable to fetch, no installation candidate
+
+Messages like `Unable to locate package`, `Unable to fetch some archives` or `has no installation candidate` mean the distro's servers didn't answer, or sent only part of the package lists. It's the connection, not your phone.
+
+Follow [Try these, in order](/troubleshooting/install-stuck#try-these-in-order): switch networks, turn off a VPN, ad blocker or ad-blocking Private DNS, then **Try again**.
+
+### Android stopped the install
+
+**Killed**, **signal 9**, or the app says **Keep the install running**: Android closed the install in the background. Keep the app on screen until it finishes, set its battery use to **Unrestricted**, and on Android 12 and newer, turn off the child process limit. See [Keep the install running](/troubleshooting/install-stuck#keep-the-install-running) and [Process completed (signal 9)](/troubleshooting/signal-9). Then **Try again**.
+
+### Not enough space
+
+The packages for a desktop need room too, on top of the unpacked distro. Free up what it asks for, or pick a smaller desktop (XFCE or LXQt) or **Command line only**. See [Not enough space](/troubleshooting/install-stuck#not-enough-space).
+
+### Arch: "invalid or corrupted package (PGP signature)"
+
+This happens at **Updating** or later when an earlier Arch install was stopped half-way and then started again. Every later try fails the same way. A fix is coming in an Andronix update. Until then:
+
+1. Remove Arch: in the app, **⋮ › Remove**; in Termux, `andronix remove arch`.
+2. Install it again, and keep the app (or Termux) open until it finishes.
+
+### Kali on an older phone: "dpkg returned an error code (1)"
+
+On phones with a Linux kernel older than 4.8, Kali can stop at **Installing the basics** with `Sub-process /usr/bin/dpkg returned an error code (1)`. One of Kali's basic packages can't set itself up on these kernels. Trying again fails the same way, and we have no workaround yet.
+
+- Install Debian or Ubuntu instead.
+- [Send a report](/troubleshooting/report-a-problem), so we see your phone's details.
+
+To check your kernel in Termux, run `uname -r`. See [Older Linux kernels](/start-here/requirements#older-linux-kernels).
+
+### Older kernels at "Installing the desktop"
+
+On kernels older than 4.8, a desktop install can also stop with a dpkg error. Try again once. If it fails again, pick LXQt or **Command line only**, or try Debian. See [The installer warns about an old kernel](/termux/install-problems#the-installer-warns-about-an-old-kernel).
+
+### Linux crashes on some new phones
+
+On some newer phones (mostly Samsung, Android 15 and newer, kernel 6.6 or newer), the layer that runs Linux can crash during **Updating** or **Refreshing package lists**, with a signal such as 11. Storage and the connection aren't the cause, and trying again is unlikely to help. We're looking into it.
+
+- If you installed in Termux, install in the Andronix app instead, if your phone can. See [Coming from Termux](/install/standalone-and-termux).
+- [Send a report](/troubleshooting/report-a-problem), and say whether you used the app or Termux.
+
+### Termux: an old Termux or an old installer
+
+- **"Setting up" fails on a 32-bit phone:** Termux from the Play Store may be too old there. Install the current Termux: see [Install Termux](/termux/install-termux).
+- **Another install still holds the lock** (`Could not get lock`): an earlier run is still going. Close Termux from its notification (**Exit**), open it again, and run the same command.
+- **Update the installer:** run `andronix update --self`, then run the install command again.
+
+## What "Try again" picks up
+
+**In the app**, **Try again** runs the same install again. It doesn't start from zero:
+
+- **Once "Setting up" has finished,** the downloaded distro is kept. Download, unpacking and setup are skipped.
+- **Updating, Installing the basics and Installing the desktop** run again, but skip what's already done: packages that installed stay installed, and Updating is skipped when nothing is left to upgrade.
+- **If it failed while unpacking or at "Setting up",** the distro is unpacked again.
+- **Try again in the notification** works while the app is still running. If the app was closed, it opens the distro list instead: pick the same distro and desktop to continue.
+
+**In Termux,** run the same `andronix install` command again; it continues the same way. Don't add `--reinstall`: that deletes the distro and starts over.
+
+## Still failing?
+
+Send a report **right after** it fails, so the install's log is attached: **Report a problem** on the failed screen in the app, or `andronix report` in Termux. See [Report a problem](/troubleshooting/report-a-problem).
+
+More for installs in the app: [Linux in the app: limits and problems](/troubleshooting/in-the-app). More for Termux: [The install fails or stops](/termux/install-problems).

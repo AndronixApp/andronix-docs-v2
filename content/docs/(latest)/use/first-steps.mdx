@@ -1,0 +1,71 @@
+---
+title: First Steps After the Install
+description: Your distro is installed. What to do first in Andronix - open the desktop and a terminal, update packages, install apps, share files with Android, and start and stop Linux.
+---
+
+import NextStep from "@/components/next-step";
+
+Your distro is installed. This page is the short tour: the first things to do, and where to read more. It is written for Linux in the app; the Termux way is at the end of each section.
+
+## Open the desktop and a terminal
+
+- **Open the desktop:** on Home, under **Your Linux**, tap the distro's row. The first start can take a minute.
+- **Open a terminal:** tap the terminal button at the end of the distro's row on Home (or **⋮ › Open the terminal** while it runs). On the desktop, a terminal is also in the desktop's app menu.
+- **Type, click and scroll:** the toolbar over the desktop has the keyboard, extra keys like **Ctrl** and **Esc**, and the mouse modes. See [The desktop in the app](/desktop/in-the-app).
+
+Most of the steps below happen in a terminal. Nothing shows while you type a password there; that's normal.
+
+**In Termux:** `andronix start <distro>` opens a terminal in the distro, and `andronix desktop <distro>` opens the desktop in Termux:X11. See [The desktop in Termux:X11](/termux/termux-x11).
+
+## Update the packages
+
+Do this once after the install, then every so often. Use your password from **Set up your user** when `sudo` asks for it.
+
+| Distro | Command |
+|---|---|
+| Debian, Ubuntu, Kali Linux | `sudo apt update && sudo apt upgrade` |
+| Fedora | `sudo dnf upgrade` |
+| Arch | `sudo pacman -Syu` |
+| Alpine | `sudo apk update && sudo apk upgrade` |
+| Void Linux | `sudo xbps-install -Su` |
+
+On Manjaro in the app, `sudo` doesn't work yet; see [Manjaro ARM](/reference/distros#manjaro-arm). More in [Keep it updated](/use/updates).
+
+## Install apps
+
+Install apps with the distro's package manager, the same way as updates. For example, on Debian or Ubuntu:
+
+```bash copy
+sudo apt install gimp
+```
+
+- Browsers, VS Code, IntelliJ IDEA, LibreOffice and GIMP: see [Install apps](/use/apps).
+- Python, Node.js, Java, Go or PostgreSQL: one command each with [dev packs](/use/dev-packs).
+- An app that won't open, or won't install: see [Apps that won't open or can't run](/use/apps-that-wont-run). Linux on your phone runs arm64 programs only, and Snap, Flatpak, Docker and `systemctl` don't work.
+
+## Share files with Android
+
+- In Linux, `~/Android/Download` and `~/Android/Documents` are the **Download/Andronix** and **Documents/Andronix** folders on your phone. Save there to see a file in Android.
+- To bring a file into Linux, share it from any app and pick **Send to Linux**, or use **Import** in **Settings › Linux › Android files in Linux**.
+- Your Linux home also shows in Android's **Files** app, under **Andronix**.
+
+See [Android files in Linux](/use/android-files).
+
+**In Termux:** see [Phone storage in Termux](/termux/storage).
+
+## Leave, stop and start again
+
+- **Leave the desktop:** press Back. Linux keeps running in the background, with the **Linux is running** notification.
+- **Stop Linux:** tap **Stop** on the toolbar, on Home or in the notification. Apps on the desktop close and anything unsaved is lost, so save first.
+- **Start again:** tap the distro on Home. Your files and apps are where you left them.
+- **One distro runs at a time.** Stop the running one before you open another.
+
+If Android stops Linux by itself, see [Process completed (signal 9)](/troubleshooting/signal-9). More in [Your Linux on Home](/use/your-linux).
+
+**In Termux:** stop the desktop with `andronix desktop stop`, and type `exit` to leave the distro.
+
+## Keep your work safe
+
+Removing a distro or uninstalling Andronix deletes everything inside it. Keep copies of important files in **Download/Andronix** or **Documents/Andronix**, or [back the distro up](/use/backups).
+
+<NextStep href="/use/apps" title="Install apps" description="Browsers, IDEs, LibreOffice and GIMP, with the command for each distro." />
