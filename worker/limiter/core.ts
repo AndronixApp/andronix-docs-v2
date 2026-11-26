@@ -56,6 +56,9 @@ interface UserRec {
   streamOpens: Window;
   sessions: string[];
   lastSeen: number;
+  /** Image uploads today and in the last minute (optional: older records lack them). */
+  imagesDay?: { date: string; count: number };
+  imageUploads?: Window;
 }
 interface SessionRec {
   uid: string; entry: Entry; turns: number; createdAt: number; lastActive: number;
@@ -86,6 +89,20 @@ interface GlobalRec {
   admitCount?: number;
   firstAdmitAt?: number;
 }
+
+/** One attached image (support-chat-images.md §1). Bytes live in R2 under `key`. */
+export interface ImageRec {
+  uid: string; key: string; bytes: number; width: number; height: number; createdAt: number;
+  /** null until a message carrying it is admitted; then the session it belongs to. */
+  sessionId: string | null;
+  /** eve turn index (turn_N) of the message that carried it. */
+  turnIndex?: number;
+  /** Sent in a turn that was refused (decline): never offered to the desk. */
+  declined?: boolean;
+  /** Reserved by an admitted message whose eve call hasn't answered yet. */
+  pending?: boolean;
+}
+export type ImageDeny = { ok: false; code: ErrorCode; retryAfter?: number; reason?: "limit" | "tier" };
 
 interface StrikeRec { events: { at: number; points: number; turnId: string }[]; cooldownUntil: number }
 export type StrikeResult = { counted: boolean; points: number; total: number; cooldownUntil: number; startedMs: number; longest: boolean };
@@ -198,9 +215,13 @@ export class LimiterCore {
   // ---- messages ----
   private limitsFor(tier: Tier) { return this.limits.tiers[tier]; }
 
-  private checkUserLimits(who: Who, u: UserRec): Deny | null {
+  private checkUserLimits(who: Who, u: UserRec, cost = 1): Deny | null {
     const now = this.now();
     const l = this.limitsFor(who.tier);
+    // an image counts as one extra message (support-chat-images.md §2): text + 2 images = 3
+    if (cost > 1 && (u.day.count + cost > l.day || u.month.count + cost > l.month)) {
+      return { ok: false, code: "image_limit", retryAfter: Math.ceil((nextUtcMidnight(now) - now) / 1000) };
+    }
     if (u.minute.count >= l.minute) return { ok: false, code: "rate_minute", retryAfter: Math.ceil((u.minute.start + MIN - now) / 1000) };
     if (u.day.count >= l.day) return { ok: false, code: who.tier === "new" ? "new_account" : "rate_day", retryAfter: Math.ceil((nextUtcMidnight(now) - now) / 1000) };
     if (u.month.count >= l.month) return { ok: false, code: "rate_month", retryAfter: Math.ceil((nextUtcMonth(now) - now) / 1000) };
@@ -247,15 +268,15 @@ export class LimiterCore {
   /** eve refused or failed: a retry with the same id is admitted (and counted) as a new message. */
   releaseDedupe(uid: string, scope: string, clientMsgId: string) { this.s.delete(this.dedupeKey(uid, scope, clientMsgId)); }
 
-  private admitCommon(who: Who, scope: string, clientMsgId: string | undefined): Deny | Admitted {
+  private admitCommon(who: Who, scope: string, clientMsgId: string | undefined, cost = 1): Deny | Admitted {
     const cool = this.cooldownLeft(who);
     if (cool > 0) return { ok: false, code: "cooldown", retryAfter: Math.ceil(cool / 1000) };
     const b = this.budgetFor(who.tier);
     if (b.budget === "paused") return { ok: false, code: "budget_paused", retryAfter: b.retryAfter };
     const u = this.user(who.uid);
-    const deny = this.checkUserLimits(who, u) ?? this.checkNewIp(who);
+    const deny = this.checkUserLimits(who, u, cost) ?? this.checkNewIp(who);
     if (deny) return deny;
-    u.minute.count++; u.day.count++; u.month.count++;
+    u.minute.count++; u.day.count += cost; u.month.count += cost;
     this.saveUser(who.uid, u);
     if (clientMsgId) this.s.put<DedupeRec>(this.dedupeKey(who.uid, scope, clientMsgId), { at: this.now(), state: "pending" });
     // watchdog: messages flow but no usage arrives
@@ -279,10 +300,14 @@ export class LimiterCore {
   }
 
   /** Session create: counts 1 message and turn 1. Session binding comes after eve answers. */
-  admitCreate(who: Who, clientMsgId?: string): Deny | Admitted | Replay {
+  admitCreate(who: Who, clientMsgId?: string, images: readonly string[] = []): Deny | Admitted | Replay {
     const r = this.dedupe(who.uid, "create", clientMsgId);
     if (r) return this.replay(r);
-    return this.admitCommon(who, "create", clientMsgId);
+    const bad = this.checkImages(who.uid, null, images);
+    if (bad) return bad;
+    const a = this.admitCommon(who, "create", clientMsgId, 1 + images.length);
+    if (a.ok) this.reserveImages(images, true);
+    return a;
   }
 
   /** Binds a new session to its owner. Never resets a session that already exists. */
@@ -303,7 +328,7 @@ export class LimiterCore {
   }
 
   /** Follow-up: owner check, then a repeat of this session's id replays; else 12 turns, one in flight, every limit. */
-  admitFollowup(who: Who, sessionId: string, clientMsgId?: string): Deny | Replay | (Admitted & { entry: Entry; turn: number }) {
+  admitFollowup(who: Who, sessionId: string, clientMsgId?: string, images: readonly string[] = []): Deny | Replay | (Admitted & { entry: Entry; turn: number }) {
     const s = this.s.get<SessionRec>(`s:${sessionId}`);
     if (!s || s.uid !== who.uid) return { ok: false, code: "not_owner" };
     const now = this.now();
@@ -313,8 +338,11 @@ export class LimiterCore {
     if (cool > 0) return { ok: false, code: "cooldown", retryAfter: Math.ceil(cool / 1000) };
     if (s.ended || s.turns >= this.limits.turnsPerChat) return { ok: false, code: "chat_full" };
     if (s.turnRunningSince !== null && now - s.turnRunningSince < TURN_RUNNING_MAX_MS) return { ok: false, code: "turn_running", retryAfter: 5 };
-    const r = this.admitCommon(who, sessionId, clientMsgId);
+    const bad = this.checkImages(who.uid, sessionId, images);
+    if (bad) return bad;
+    const r = this.admitCommon(who, sessionId, clientMsgId, 1 + images.length);
     if (!r.ok) return r;
+    this.reserveImages(images, true);
     s.turns += 1; s.lastActive = now; s.turnRunningSince = now;
     this.s.put(`s:${sessionId}`, s);
     return { ...r, entry: s.entry, turn: s.turns };
@@ -360,6 +388,8 @@ export class LimiterCore {
     s.turnRunningSince = null; s.runningDelivery = null; s.runningTurn = null; s.lastActive = this.now();
     if (sessionEnded) s.ended = true;
     this.s.put(`s:${sessionId}`, s);
+    // a chat that ended keeps no images (support-chat-images.md §1)
+    if (sessionEnded) this.dropSessionImages(sessionId);
   }
 
   /** Undo the turn mark when eve refused the message (no turn started). The message stays counted. */
@@ -389,6 +419,135 @@ export class LimiterCore {
     u.streams = u.streams.filter((l) => l.id !== leaseId);
     this.s.put(`u:${uid}`, u);
   }
+
+  // ---- images (support-chat-images.md) ----
+  private img(id: string): ImageRec | undefined { return this.s.get<ImageRec>(`img:${id}`); }
+  private queueDelete(keys: string[]) {
+    if (!keys.length) return;
+    const q = this.s.get<string[]>("imgdel") ?? [];
+    this.s.put("imgdel", [...new Set([...q, ...keys])].slice(-5000));
+  }
+  private dropImage(id: string, r: ImageRec) { this.s.delete(`img:${id}`); this.queueDelete([r.key]); }
+  /** R2 keys waiting for deletion (the DO deletes them, then calls imageDeletesDone). */
+  pendingImageDeletes(): string[] { return this.s.get<string[]>("imgdel") ?? []; }
+  imageDeletesDone(keys: string[]) {
+    const left = (this.s.get<string[]>("imgdel") ?? []).filter((k) => !keys.includes(k));
+    if (left.length) this.s.put("imgdel", left); else this.s.delete("imgdel");
+  }
+
+  /** Upload admission: per-day cap by tier (new/unverified 0), per-minute cap. Counts the upload. */
+  admitImageUpload(who: Who): ImageDeny | { ok: true; dayUsed: number; dayMax: number } {
+    const now = this.now();
+    const max = this.limits.images.perDay[who.tier] ?? 0;
+    if (max <= 0) return { ok: false, code: "image_limit", retryAfter: Math.ceil((nextUtcMidnight(now) - now) / 1000), reason: "tier" };
+    const cool = this.cooldownLeft(who);
+    if (cool > 0) return { ok: false, code: "cooldown", retryAfter: Math.ceil(cool / 1000) };
+    const u = this.user(who.uid);
+    const day = u.imagesDay && u.imagesDay.date === utcDay(now) ? u.imagesDay : { date: utcDay(now), count: 0 };
+    let minute = u.imageUploads && now - u.imageUploads.start < MIN ? u.imageUploads : { start: now, count: 0 };
+    if (day.count >= max) return { ok: false, code: "image_limit", retryAfter: Math.ceil((nextUtcMidnight(now) - now) / 1000), reason: "limit" };
+    if (minute.count >= this.limits.images.uploadsPerMinute) return { ok: false, code: "rate_minute", retryAfter: Math.ceil((minute.start + MIN - now) / 1000), reason: "limit" };
+    day.count++; minute = { ...minute, count: minute.count + 1 };
+    u.imagesDay = day; u.imageUploads = minute;
+    this.saveUser(who.uid, u);
+    return { ok: true, dayUsed: day.count, dayMax: max };
+  }
+  /** The upload failed after admission (re-encode refused, R2 error): give the slot back. */
+  refundImageUpload(uid: string) {
+    const u = this.user(uid);
+    if (u.imagesDay && u.imagesDay.date === utcDay(this.now()) && u.imagesDay.count > 0) { u.imagesDay.count--; this.saveUser(uid, u); }
+  }
+  /** The re-encoded image is in R2: record it, unsent. */
+  registerImage(uid: string, imageId: string, meta: { key: string; bytes: number; width: number; height: number }) {
+    this.s.put<ImageRec>(`img:${imageId}`, { uid, ...meta, createdAt: this.now(), sessionId: null });
+  }
+  /** Before admitting a message: every id is this uid's, unsent, and the chat stays within its cap. */
+  private checkImages(uid: string, sessionId: string | null, images: readonly string[]): Deny | null {
+    if (!images.length) return null;
+    if (images.length > this.limits.images.perMessage) return { ok: false, code: "image_limit", retryAfter: 60 };
+    for (const id of images) {
+      const r = this.img(id);
+      if (!r || r.uid !== uid) return { ok: false, code: "not_owner" };
+      if (r.sessionId !== null || r.pending) return { ok: false, code: "bad_body" };
+    }
+    const inChat = sessionId ? this.imagesOfSession(sessionId).length : 0;
+    if (inChat + images.length > this.limits.images.perChat) return { ok: false, code: "image_limit", retryAfter: 60 };
+    return null;
+  }
+  private reserveImages(images: readonly string[], pending: boolean) {
+    for (const id of images) { const r = this.img(id); if (r) this.s.put<ImageRec>(`img:${id}`, { ...r, pending }); }
+  }
+  /** eve refused or failed the message: its images can be sent again. */
+  releaseImages(images: readonly string[]) { this.reserveImages(images, false); }
+  /** eve accepted the message: its images belong to the session and that turn. */
+  attachImages(uid: string, sessionId: string, images: readonly string[]): number {
+    const s = this.s.get<SessionRec>(`s:${sessionId}`);
+    const turnIndex = s ? s.turns - 1 : 0;
+    let bytes = 0;
+    for (const id of images) {
+      const r = this.img(id);
+      if (r && r.uid === uid) { this.s.put<ImageRec>(`img:${id}`, { ...r, sessionId, turnIndex, pending: false }); bytes += r.bytes; }
+    }
+    return bytes;
+  }
+  private imagesOfSession(sessionId: string): [string, ImageRec][] {
+    return [...this.s.list<ImageRec>("img:")].filter(([, r]) => r.sessionId === sessionId).map(([k, r]) => [k.slice(4), r]);
+  }
+  /** eve's internal fetch: only an image of this uid, sent in this session. */
+  imageFor(uid: string, sessionId: string, imageId: string): { key: string } | null {
+    const r = this.img(imageId);
+    if (!r || r.uid !== uid || r.sessionId !== sessionId) return null;
+    if (this.now() - r.createdAt > this.limits.images.maxAgeMs) return null;
+    return { key: r.key };
+  }
+  /** The user removed an image: unsent → slot given back; sent → deleted too. */
+  removeImage(uid: string, imageId: string): { ok: true } | Deny {
+    const r = this.img(imageId);
+    if (!r || r.uid !== uid) return { ok: false, code: "not_owner" };
+    this.dropImage(imageId, r);
+    if (r.sessionId === null && !r.pending) this.refundImageUpload(uid);
+    return { ok: true };
+  }
+  /** Images a desk ticket may carry: sent in this session, not from a refused turn, still stored. */
+  ticketImages(uid: string, sessionId: string): { id: string; key: string }[] {
+    const now = this.now();
+    return this.imagesOfSession(sessionId)
+      .filter(([, r]) => r.uid === uid && !r.declined && now - r.createdAt <= this.limits.images.maxAgeMs)
+      .sort(([, a], [, b]) => a.createdAt - b.createdAt)
+      .slice(0, this.limits.images.perChat)
+      .map(([id, r]) => ({ id, key: r.key }));
+  }
+  private dropSessionImages(sessionId: string) { for (const [id, r] of this.imagesOfSession(sessionId)) this.dropImage(id, r); }
+  /** /me.images */
+  imageQuota(who: Who): { dayUsed: number; dayMax: number } {
+    const u = this.user(who.uid);
+    return { dayUsed: u.imagesDay?.date === utcDay(this.now()) ? u.imagesDay.count : 0, dayMax: this.limits.images.perDay[who.tier] ?? 0 };
+  }
+  /** Earliest moment an image must go (for the DO alarm), or null. */
+  nextImageDeadline(): number | null {
+    let next: number | null = null;
+    const l = this.limits.images;
+    for (const [, r] of this.s.list<ImageRec>("img:")) {
+      const t = r.sessionId === null && !r.pending ? r.createdAt + l.unsentMs : r.createdAt + l.maxAgeMs;
+      if (next === null || t < next) next = t;
+    }
+    if ((this.s.get<string[]>("imgdel") ?? []).length) next = this.now();
+    return next;
+  }
+  /** Unsent after 15 min, anything after 48 h, and images of sessions that are gone. */
+  private sweepImages(): number {
+    const now = this.now();
+    const l = this.limits.images;
+    let n = 0;
+    for (const [k, r] of this.s.list<ImageRec>("img:")) {
+      const unsentOld = r.sessionId === null && now - r.createdAt > (r.pending ? DEDUPE_MS : l.unsentMs);
+      const sessionGone = r.sessionId !== null && !this.s.get<SessionRec>(`s:${r.sessionId}`);
+      if (unsentOld || sessionGone || now - r.createdAt > l.maxAgeMs) { this.dropImage(k.slice(4), r); n++; }
+    }
+    return n;
+  }
+  /** Runs often (DO alarm), unlike the daily sweep. */
+  sweepImagesNow(): number { return this.sweepImages(); }
 
   // ---- tickets, feedback, reports ----
   admitTicket(uid: string, key: string): Deny | { ok: true; repeat: boolean } {
@@ -538,6 +697,13 @@ export class LimiterCore {
     if (r.events.some((e) => e.turnId === turnKey)) {
       return { counted: false, points: 0, total: before, cooldownUntil: r.cooldownUntil, startedMs: 0, longest: false };
     }
+    // images of a refused turn are never offered to the desk; a harmful verdict deletes the chat's images at once
+    const idx = Number(/(\d+)$/.exec(turnId)?.[1] ?? NaN);
+    for (const [id, img] of this.imagesOfSession(sessionId)) {
+      if (img.uid !== uid) continue;
+      if (reason === "harmful") this.dropImage(id, img);
+      else if (img.turnIndex === idx) this.s.put<ImageRec>(`img:${id}`, { ...img, declined: true });
+    }
     const points = a.weights[reason] ?? 1;
     r.events.push({ at: now, points, turnId: turnKey });
     const total = before + points;
@@ -565,6 +731,7 @@ export class LimiterCore {
   erase(uid: string): string[] {
     const u = this.s.get<UserRec>(`u:${uid}`);
     const sessions = u?.sessions ?? [];
+    for (const [k, r] of this.s.list<ImageRec>("img:")) if (r.uid === uid) this.dropImage(k.slice(4), r);
     for (const id of sessions) this.s.delete(`s:${id}`);
     this.s.delete(`u:${uid}`);
     this.s.delete(`acct:${uid}`);
@@ -580,6 +747,7 @@ export class LimiterCore {
     const now = this.now();
     const out = { sessions: 0, users: 0, generations: 0, tombstones: 0, other: 0 };
     for (const [k, s] of this.s.list<SessionRec>("s:")) if (now - s.lastActive > SESSION_IDLE_MS) { this.s.delete(k); out.sessions++; }
+    out.other += this.sweepImages();
     for (const [k, u] of this.s.list<UserRec>("u:")) if (now - u.lastSeen > COUNTER_KEEP_MS) { this.s.delete(k); out.users++; }
     for (const [k, at] of this.s.list<number>("gen:")) if (now - at > GENERATION_KEEP_MS) { this.s.delete(k); out.generations++; }
     for (const [k, at] of this.s.list<number>("tomb:")) if (now - at > TOMBSTONE_MS) { this.s.delete(k); out.tombstones++; }

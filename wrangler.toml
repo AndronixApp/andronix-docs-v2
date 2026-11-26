@@ -31,12 +31,20 @@ class_name = "ChatLimiter"
 tag = "v1"
 new_sqlite_classes = ["ChatLimiter"]
 
+# Chat images (support-chat-images.md): re-encoded JPEGs, `<pid>/<imageId>.jpg`, deleted within 48 h by the
+# ChatLimiter; the bucket's lifecycle rule deletes anything older than 2 days as a backstop.
+[[r2_buckets]]
+binding = "CHAT_IMAGES"
+bucket_name = "andronix-chat-img"
+
 # Chat on since 2026-11-26 at the staff stage (build plan 4). Widen CHAT_ROLLOUT only with the owner's OK.
 # Secrets (wrangler secret put): EVE_EDGE_SECRET, CHAT_INTERNAL_SECRET, CHAT_SERVICE_SECRET,
 # DESK_API_KEY, OPENPANEL_CLIENT_SECRET, OPS_WEBHOOK_URL.
 [vars]
 CHAT_ENABLED = "1"
 CHAT_ROLLOUT = "staff"
+# Image attachments (lead decision 2026-11-26): one stage behind CHAT_ROLLOUT, own flag. off | staff | owners | all.
+CHAT_IMAGES_ROLLOUT = "staff"
 FIREBASE_PROJECT_ID = "andronix-techriz"
 EVE_ORIGIN = "https://andronix-support-agent.vercel.app"
 PRODUCTS_API_URL = "https://api.andronix.app"
@@ -64,9 +72,14 @@ watch_dir = ["app", "components", "content", "lib", "worker"]
 name = "CHAT_LIMITER"
 class_name = "ChatLimiter"
 
+[[env.preview.r2_buckets]]
+binding = "CHAT_IMAGES"
+bucket_name = "andronix-chat-img-preview"
+
 [env.preview.vars]
 CHAT_ENABLED = "1"
 CHAT_ROLLOUT = "all"
+CHAT_IMAGES_ROLLOUT = "all"
 FIREBASE_PROJECT_ID = "andronix-techriz"
 PRODUCTS_API_URL = "https://andronix-products-api-staging.up.railway.app"
 # A's Vercel preview (support-chat-status/A-preview.md); the URL changes on each A redeploy.

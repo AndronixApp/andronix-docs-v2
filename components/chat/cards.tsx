@@ -142,19 +142,22 @@ const TOPIC_LABEL: Record<string, string> = {
 };
 export const topicLabel = (t?: string) => (t && TOPIC_LABEL[t]) || "Support request";
 
-export function HandoffForm({ reason, topic, email, reportId, messages, canIncludeChat, onSubmit, busy, error }: {
+export function HandoffForm({ reason, topic, email, reportId, messages, canIncludeChat, imageCount = 0, onSubmit, busy, error }: {
   reason: string; topic?: string; email: string; reportId?: string | null; messages: number; canIncludeChat: boolean;
-  onSubmit: (v: { orderId?: string; note?: string; includeChat: boolean }) => void; busy: boolean; error: string;
+  /** Screenshots sent in this chat that may go along; the box is off by default (lead decision 4). */
+  imageCount?: number;
+  onSubmit: (v: { orderId?: string; note?: string; includeChat: boolean; includeImages: boolean }) => void; busy: boolean; error: string;
 }) {
   const [orderId, setOrderId] = useState("");
   const [note, setNote] = useState("");
   const [includeChat, setIncludeChat] = useState(canIncludeChat);
+  const [includeImages, setIncludeImages] = useState(false);
   const money = reason === "money";
   const orderOk = !orderId || /^GPA\.\d{4}-\d{4}-\d{4}-\d{5}(\.\.\d+)?$/.test(orderId.trim());
   return (
     <Card>
       <p className="chat-card-title">Send to support team</p>
-      <form className="flex flex-col gap-2.5" onSubmit={(e) => { e.preventDefault(); if (orderOk) onSubmit({ orderId: orderId.trim() || undefined, note: note.trim() || undefined, includeChat }); }}>
+      <form className="flex flex-col gap-2.5" onSubmit={(e) => { e.preventDefault(); if (orderOk) onSubmit({ orderId: orderId.trim() || undefined, note: note.trim() || undefined, includeChat, includeImages: includeImages && imageCount > 0 }); }}>
         <dl className="chat-facts">
           <dt>Reply to</dt><dd>{email || "your account email"}</dd>
           {reportId && (<><dt>Report</dt><dd>{reportId}</dd></>)}
@@ -175,6 +178,12 @@ export function HandoffForm({ reason, topic, email, reportId, messages, canInclu
           <label className="chat-toggle">
             <span>Include this chat</span>
             <input type="checkbox" checked={includeChat} onChange={(e) => setIncludeChat(e.target.checked)} />
+          </label>
+        )}
+        {canIncludeChat && imageCount > 0 && (
+          <label className="chat-toggle">
+            <span>Attach my screenshots ({imageCount})</span>
+            <input type="checkbox" checked={includeImages} onChange={(e) => setIncludeImages(e.target.checked)} />
           </label>
         )}
         <button type="submit" className="chat-btn chat-btn-primary" disabled={busy || !orderOk}>Send to support team</button>

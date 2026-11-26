@@ -5,6 +5,8 @@ import { authenticate, chatEnabled, type Caller, type Ctx } from "./context.ts";
 import { chatIdFor } from "./crypto.ts";
 import { fail, json, noContent, readJson, clientIp } from "./http.ts";
 import { deskHandoff, deskReport, redeemHandoff, track } from "./clients.ts";
+import { handleImageApi, imagesEnabledFor, ticketImages } from "./images.ts";
+import { IMAGE_MARKER } from "../lib/chat-contract/images.ts";
 
 const surfaceFor = (entry: Entry) => (entry === "app_help" || entry === "app_install_failed" ? "app_webview" : "web");
 
@@ -16,6 +18,7 @@ export async function handleChatApi(ctx: Ctx, request: Request, url: URL): Promi
   if (p === "/chat-api/ticket" && request.method === "POST") return ticket(ctx, request);
   if (p === "/chat-api/feedback" && request.method === "POST") return feedback(ctx, request);
   if (p === "/chat-api/csp-report" && request.method === "POST") return cspReport(request);
+  if (p.startsWith("/chat-api/image")) { const r = await handleImageApi(ctx, request, url); if (r) return r; }
   return new Response("Not found", { status: 404 });
 }
 
@@ -42,7 +45,15 @@ async function me(ctx: Ctx, request: Request): Promise<Response> {
     budget: m.budget,
     cooldownUntil: m.cooldownUntil,
     rollout: caller.rollout,
+    images: await imagesInfo(ctx, caller),
   });
+}
+
+/** /me.images: whether the page offers "Add image", and the caps it shows. */
+async function imagesInfo(ctx: Ctx, caller: Caller) {
+  const on = imagesEnabledFor(ctx, caller);
+  const q = on ? await ctx.limiter.call("imageQuota", caller.who) : { dayUsed: 0, dayMax: 0 };
+  return { enabled: on && q.dayMax > 0, perMessage: ctx.limits.images.perMessage, perChat: ctx.limits.images.perChat, day: { used: q.dayUsed, max: q.dayMax } };
 }
 
 async function redeem(ctx: Ctx, request: Request): Promise<Response> {
@@ -112,7 +123,8 @@ export function transcriptFromNdjson(text: string): { role: "user" | "assistant"
       const d = f.data ?? {};
       if (f.type === "delivery.consumed" && Array.isArray(d.parts)) {
         // eve 1.5.0 user parts are {kind: "text", text}
-        const t = (d.parts as { kind?: string; type?: string; text?: string }[]).filter((p) => (p?.kind ?? p?.type) === "text" && typeof p.text === "string").map((p) => p.text).join("\n");
+        // image markers → "[screenshot]" (the desk gets the images themselves only through the opt-in box)
+        const t = (d.parts as { kind?: string; type?: string; text?: string }[]).filter((p) => (p?.kind ?? p?.type) === "text" && typeof p.text === "string").map((p) => p.text!.replace(IMAGE_MARKER, "[screenshot]")).join("\n").trim();
         if (t) out.push({ role: "user", text: t, at: line.at ?? "" });
       } else if (f.type === "content.completed" && d.kind === "text" && (d.phase === "reply" || d.phase === "narration")) {
         // narration carries the money gate's fixed reply (spike C3)
@@ -166,16 +178,19 @@ async function ticket(ctx: Ctx, request: Request): Promise<Response> {
     const t = await fetchTranscript(ctx, request, b.sessionId);
     if (t) transcript = t; else transcriptExpired = true;
   }
+  // screenshots go to the desk only when the user ticked the box (lead decision 4), never from a refused turn
+  const images = b.includeImages && b.sessionId ? await ticketImages(ctx, caller.who.uid, b.sessionId) : [];
   const res = await deskHandoff(ctx.env, {
     idempotencyKey, uid: caller.who.uid, email: caller.principal.email ?? "", emailVerified: caller.principal.emailVerified,
     reason: b.reason, topic: b.topic, reportId, orderId: b.orderId, note: b.note, transcript, pid: caller.pid, entry,
+    ...(images.length ? { images } : {}),
   });
   const chatId = b.sessionId ? await chatIdFor(b.sessionId) : undefined;
   ctx.exec.waitUntil(track(ctx.env, {
     name: "chat_handoff", profileId: caller.pid,
     properties: {
       ...(chatId ? { chat_id: chatId } : {}), reason: b.reason, with_report: !!reportId, with_chat: !!transcript,
-      transcript_expired: transcriptExpired, verified: caller.principal.emailVerified, ok: !!res, entry, surface: surfaceFor(entry),
+      transcript_expired: transcriptExpired, verified: caller.principal.emailVerified, ok: !!res, with_images: images.length > 0, entry, surface: surfaceFor(entry),
     },
   }));
   if (!res) {

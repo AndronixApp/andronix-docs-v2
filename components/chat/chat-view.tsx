@@ -18,6 +18,7 @@ import { retrievedUnits } from "./verify";
 import { reportChip } from "./report-chip";
 import { refusalKey } from "./refusals";
 import { COMPOSER_NOTE, MONEY_FOLLOWUP, SOLVED_FOLLOWUP, STUCK_FOLLOWUP } from "./copy";
+import { ATTACH_NOTICE, IMAGE_ACCEPT, IMAGE_ONLY_TEXT, PER_MESSAGE, deleteImage, isAcceptedType, maskAssistantText, prepareImage, splitUserText, uploadErrorText, uploadImage, type Attachment, type UploadError } from "./images";
 import type { Entry, Surface } from "./events";
 import { useChatEvents } from "./events";
 
@@ -39,7 +40,15 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const awaitEndRef = useRef(false);
   const [sessionGone, setSessionGone] = useState(false);
   const [draft, setDraft] = useState(initialQuestion);
-  const [failed, setFailed] = useState<{ text: string; id: string } | null>(null);
+  const [failed, setFailed] = useState<{ text: string; id: string; images?: string[] } | null>(null);
+  // image attachments (support-chat-images.md §4): chips in the composer, previews kept by image id
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [previews, setPreviews] = useState<Record<string, string>>({});
+  const [inflightImages, setInflightImages] = useState<string[]>([]);
+  const [dragOver, setDragOver] = useState(false);
+  const imagesRef = useRef<string[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const imagesOn = !!me.images?.enabled && (!inApp || bridge.appCaps().includes("file"));
   const [limit, setLimit] = useState<Limit | null>(null);
   const [cooldownUntil, setCooldownUntil] = useState(0);
   const [handoff, setHandoff] = useState<Handoff | null>(null);
@@ -60,7 +69,13 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
     // idle → close the stream; but after a jailbreak/harmful decline eve ends the session on the
     // next line (turn-outcome hook), so keep reading until that session.ended arrives
     followWhile: (view) => !idle(view) || awaitEndRef.current,
-    prepareSend: (input) => ({ ...input, headers: { ...(input.headers ?? {}), "x-andronix-client-msg-id": msgIdRef.current, "x-andronix-entry": entry } }),
+    prepareSend: (input) => ({
+      ...input,
+      headers: {
+        ...(input.headers ?? {}), "x-andronix-client-msg-id": msgIdRef.current, "x-andronix-entry": entry,
+        ...(imagesRef.current.length ? { "x-andronix-images": imagesRef.current.join(",") } : {}),
+      },
+    }),
     onFinish: () => onLimitsChanged(),
   });
   const view = agent.view;
@@ -80,14 +95,21 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
 
   useEffect(() => { if (cooldownUntil > Date.now()) { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); } }, [cooldownUntil]);
 
-  const send = useCallback(async (text: string, retryId?: string) => {
+  const uploading = attachments.some((a) => a.status === "uploading");
+  const send = useCallback(async (text: string, retryId?: string, retryImages?: string[]) => {
     const message = text.trim();
-    if (!message || running || ended) return;
+    const kept = attachments;
+    const ids = retryImages ?? attachments.filter((a) => a.status === "ready" && a.imageId).map((a) => a.imageId!);
+    if ((!message && ids.length === 0) || running || ended || uploading) return;
     msgIdRef.current = retryId ?? newId();
+    imagesRef.current = ids;
     setLimit(null); setFailed(null);
     setDraft("");
+    if (!retryImages) setAttachments([]);
+    setInflightImages(ids);
+    const restore = () => { if (!retryImages && ids.length) setAttachments(kept); };
     try {
-      await agent.send(message);
+      await agent.send(message || IMAGE_ONLY_TEXT);
       onLimitsChanged();
     } catch (e) {
       const code = (e as { code?: string }).code ?? "";
@@ -96,14 +118,60 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       if (code === "chat_full") { setLimit({ code }); return; }
       // eve ended the session without a card we saw (e.g. its output guard): offer a new chat
       if (code === "session_not_active" || (e as { name?: string }).name === "SessionNotActiveError") { setSessionGone(true); setDraft(message); return; }
-      if (code === "auth") { onMeStale(); setFailed({ text: message, id: msgIdRef.current }); setDraft(message); return; }
-      if (code === "rate_minute") { setCooldownUntil(Date.now() + (retryAfter ?? 20) * 1000); setDraft(message); setFailed({ text: message, id: msgIdRef.current }); return; }
+      if (code === "auth") { onMeStale(); setFailed({ text: message, id: msgIdRef.current, images: ids }); setDraft(message); return; }
+      if (code === "rate_minute") { setCooldownUntil(Date.now() + (retryAfter ?? 20) * 1000); setDraft(message); restore(); return; }
+      if (code === "image_limit") { setLimit({ code, retryAfter }); setDraft(message); onLimitsChanged(); return; }
       if (isErrorCode(code) && (HTTP_ERRORS[code].status === 429 || HTTP_ERRORS[code].status === 503)) {
-        setLimit({ code, retryAfter }); setDraft(message); onLimitsChanged(); return;
+        setLimit({ code, retryAfter }); setDraft(message); restore(); onLimitsChanged(); return;
       }
-      setFailed({ text: message, id: msgIdRef.current });
+      setFailed({ text: message, id: msgIdRef.current, images: ids });
+    } finally {
+      imagesRef.current = [];
     }
-  }, [agent, running, ended, onMeStale, onLimitsChanged]);
+  }, [agent, running, ended, uploading, attachments, onMeStale, onLimitsChanged]);
+
+  // ---- attachments ----
+  const chatImageCount = useMemo(() => messages.filter((m) => m.role === "user").reduce((n, m) => n + splitUserText(m.parts.filter((p) => p.type === "text").map((p) => p.text).join("\n")).imageIds.length, 0), [messages]);
+  const perChat = me.images?.perChat ?? 4;
+  const addFiles = useCallback(async (files: File[]) => {
+    if (!imagesOn || ended) return;
+    const room = Math.max(0, Math.min(PER_MESSAGE - attachments.length, perChat - chatImageCount - attachments.length));
+    for (const file of files.slice(0, room)) {
+      const localId = newId();
+      if (!isAcceptedType(file.type)) {
+        setAttachments((a) => [...a, { localId, status: "failed", preview: "", error: uploadErrorText({ code: "image_type" }) }]);
+        continue;
+      }
+      setAttachments((a) => [...a, { localId, status: "uploading", preview: "" }]);
+      try {
+        const { body, preview } = await prepareImage(file);
+        setAttachments((a) => a.map((x) => (x.localId === localId ? { ...x, preview } : x)));
+        const r = await uploadImage(await user.getIdToken(), body);
+        setPreviews((p) => ({ ...p, [r.imageId]: preview }));
+        setAttachments((a) => {
+          if (!a.some((x) => x.localId === localId)) { user.getIdToken().then((t) => deleteImage(t, r.imageId)); return a; } // removed while uploading
+          return a.map((x) => (x.localId === localId ? { ...x, status: "ready", imageId: r.imageId } : x));
+        });
+        onLimitsChanged();
+      } catch (e) {
+        setAttachments((a) => a.map((x) => (x.localId === localId ? { ...x, status: "failed", error: uploadErrorText(e as UploadError) } : x)));
+      }
+    }
+  }, [imagesOn, ended, attachments.length, perChat, chatImageCount, user, onLimitsChanged]);
+  const removeAttachment = (a: Attachment) => {
+    setAttachments((list) => list.filter((x) => x.localId !== a.localId));
+    if (a.imageId) user.getIdToken().then((t) => deleteImage(t, a.imageId!)).then(() => onLimitsChanged());
+  };
+  const imageFiles = (list: FileList | DataTransferItemList | null | undefined): File[] => {
+    if (!list) return [];
+    const out: File[] = [];
+    for (const it of Array.from(list as ArrayLike<File | DataTransferItem>)) {
+      const f = it instanceof File ? it : it.kind === "file" ? it.getAsFile() : null;
+      if (f && f.type.startsWith("image/")) out.push(f);
+    }
+    return out;
+  };
+  const canAddMore = imagesOn && !ended && attachments.length < PER_MESSAGE && chatImageCount + attachments.length < perChat;
 
   // A question pre-filled from #q is never auto-sent; the box just holds it.
 
@@ -172,11 +240,14 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
   const endedByRefusal = sessionGone || ended && (agent.events as readonly { type: string; data?: { cause?: { hook?: string } } }[])
     .some((e) => e.type === "session.ended" && e.data?.cause?.hook === "turn-outcome");
 
-  const submitTicket = async (h: Handoff, v: { orderId?: string; note?: string; includeChat: boolean }) => {
+  const submitTicket = async (h: Handoff, v: { orderId?: string; note?: string; includeChat: boolean; includeImages?: boolean }) => {
     setFormBusy(true); setFormError("");
     try {
       const token = await user.getIdToken();
-      const r = await fileTicket(token, { sessionId: sessionId ?? undefined, reason: h.reason, topic: h.topic, orderId: v.orderId, note: v.note, includeChat: v.includeChat && !!sessionId, reportId: reportId ?? undefined });
+      const r = await fileTicket(token, {
+        sessionId: sessionId ?? undefined, reason: h.reason, topic: h.topic, orderId: v.orderId, note: v.note, includeChat: v.includeChat && !!sessionId, reportId: reportId ?? undefined,
+        ...(v.includeImages && sessionId ? { includeImages: true } : {}),
+      });
       setSent((s) => ({ ...s, [h.key]: { ticketRef: r.ticketRef, topic: h.topic } }));
       if (handoff?.key === h.key) setHandoff(null);
     } catch (e) {
@@ -222,6 +293,8 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
 
   const chip = reportChip({ bound: reportId, pending: reportId ? null : pendingAttach ?? pendingReportId, failed: reportFailed });
   const cooling = cooldownUntil > now;
+  const ticketImageCount = turns.filter((t) => !t.tools.some((p) => p.name === "decline"))
+    .reduce((n, t) => n + t.user.reduce((k, m) => k + splitUserText(m.parts.filter((p) => p.type === "text").map((p) => p.text).join("\n")).imageIds.length, 0), 0);
   const docsHref = inApp ? "/?embed=app" : "/";
   const userMessages = messages.filter((m) => m.role === "user").length;
   const left = Math.max(0, me.limits.day.max - me.limits.day.used);
@@ -247,24 +320,35 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
         const declinePart = t.tools.find((p) => p.name === "decline");
         return (
           <div key={t.turnId} className="flex flex-col gap-3">
-            {t.user.map((m) => (
-              <div key={m.id} className="flex justify-end">
-                <Bubble>{m.parts.filter((p) => p.type === "text").map((p) => p.text).join("\n")}</Bubble>
-              </div>
-            ))}
+            {t.user.map((m) => {
+              const u = splitUserText(m.parts.filter((p) => p.type === "text").map((p) => p.text).join("\n"));
+              const ids = m.metadata?.optimistic ? inflightImages : u.imageIds;
+              return (
+                <div key={m.id} className="flex flex-col items-end gap-1.5">
+                  {ids.length > 0 && (
+                    <div className="chat-image-row">
+                      {ids.map((id) => previews[id]
+                        ? <img key={id} className="chat-image-thumb" src={previews[id]} alt="Attached screenshot" width={64} height={64} />
+                        : <span key={id} className="chat-image-chip">Image</span>)}
+                    </div>
+                  )}
+                  {u.text && <Bubble>{u.text}</Bubble>}
+                </div>
+              );
+            })}
             {(t.assistant.length > 0 || (!s.settled && !t.turnId.startsWith("local:"))) && (
               <div className="flex flex-col gap-3">
                 <AssistantHeader />
                 {/* a turn with `decline` shows only the fixed card; its text is dropped (guardrails §1, layer 4) */}
                 {declinePart
                   ? <DeclineCard reason={refusalKey(declinePart.input)} docsHref={docsHref} onSupport={() => setHandoff({ reason: "user_request", topic: "other", key: `decline:${t.turnId}` })} />
-                  : t.text ? <Markdown text={t.text} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
+                  : t.text ? <Markdown text={maskAssistantText(t.text)} settled={s.settled} retrieved={retrieved} /> : !s.settled ? <p className="chat-thinking">Looking in the docs…</p> : null}
                 {s.settled && s.outcome === "failed" && !ended && <p className="chat-error">Something went wrong. Try again.</p>}
                 {s.settled && s.outcome === "cancelled" && <p className="chat-small">Stopped.</p>}
                 {!declinePart && <SourceChips tools={t.tools} />}
                 {handoffPart && hi?.reason && (sent[hKey]
                   ? <><SentCard ticketRef={sent[hKey].ticketRef} topic={sent[hKey].topic} email={user.email ?? ""} /><AssistantHeader /><p>{MONEY_FOLLOWUP}</p></>
-                  : <HandoffForm reason={hi.reason} topic={hi.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId}
+                  : <HandoffForm reason={hi.reason} topic={hi.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId} imageCount={ticketImageCount}
                       busy={formBusy} error={handoff?.key === hKey || !handoff ? formError : ""}
                       onSubmit={(v) => submitTicket({ reason: hi.reason!, topic: hi.topic, key: hKey }, v)} />)}
                 {feedbackTurn === t.turnId && (
@@ -291,7 +375,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
 
       {handoff && !handoff.key.startsWith("tool:") && (sent[handoff.key]
         ? <SentCard ticketRef={sent[handoff.key].ticketRef} topic={sent[handoff.key].topic} email={user.email ?? ""} />
-        : <HandoffForm reason={handoff.reason} topic={handoff.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId}
+        : <HandoffForm reason={handoff.reason} topic={handoff.topic} email={user.email ?? ""} reportId={reportId} messages={userMessages * 2} canIncludeChat={!!sessionId} imageCount={ticketImageCount}
             busy={formBusy} error={formError} onSubmit={(v) => submitTicket(handoff, v)} />)}
       {Object.entries(sent).filter(([k]) => !k.startsWith("tool:") && handoff?.key !== k).map(([k, v]) => (
         <SentCard key={k} ticketRef={v.ticketRef} topic={v.topic} email={user.email ?? ""} />
@@ -303,7 +387,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
       {failed && !cooling && (
         <div className="flex items-center gap-3">
           <p className="chat-error">Something went wrong. Try again.</p>
-          <Secondary className="!w-auto px-4" onClick={() => send(failed.text, failed.id)}>Try again</Secondary>
+          <Secondary className="!w-auto px-4" onClick={() => send(failed.text, failed.id, failed.images)}>Try again</Secondary>
         </div>
       )}
       {(ended || limit?.code === "chat_full") && (
@@ -320,8 +404,31 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
           onReport={inApp ? () => bridge.createReport().catch(() => {}) : undefined} />
       )}
 
-      <form className="chat-composer" onSubmit={(e) => { e.preventDefault(); if (!cooling) send(draft, failed && failed.text === draft.trim() ? failed.id : undefined); }}>
+      {attachments.length > 0 && (
+        <div className="chat-attachments" aria-live="polite">
+          {attachments.map((a) => (
+            <div key={a.localId} className={`chat-attachment chat-attachment-${a.status}`}>
+              {a.preview ? <img src={a.preview} alt="" width={64} height={64} /> : <span className="chat-attachment-blank" />}
+              <span className="chat-attachment-state">{a.status === "uploading" ? "Uploading…" : a.status === "failed" ? a.error : "Ready"}</span>
+              <button type="button" className="chat-link-btn" onClick={() => removeAttachment(a)}>Remove</button>
+            </div>
+          ))}
+          <p className="chat-small">{ATTACH_NOTICE}</p>
+        </div>
+      )}
+      <form className={`chat-composer ${dragOver ? "chat-composer-drop" : ""}`}
+        onSubmit={(e) => { e.preventDefault(); if (!cooling) send(draft, failed && failed.text === draft.trim() ? failed.id : undefined, failed && failed.text === draft.trim() ? failed.images : undefined); }}
+        onDragOver={(e) => { if (imagesOn && e.dataTransfer.types.includes("Files")) { e.preventDefault(); setDragOver(true); } }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => { if (!imagesOn) return; e.preventDefault(); setDragOver(false); addFiles(imageFiles(e.dataTransfer.files)); }}>
+        {imagesOn && (
+          <>
+            <input ref={fileRef} type="file" accept={IMAGE_ACCEPT} multiple hidden onChange={(e) => { addFiles(imageFiles(e.target.files)); e.target.value = ""; }} />
+            <button type="button" className="chat-add-image" disabled={!canAddMore || running} onClick={() => fileRef.current?.click()}>Add image</button>
+          </>
+        )}
         <textarea
+          onPaste={(e) => { const files = imageFiles(e.clipboardData?.items); if (files.length && imagesOn) { e.preventDefault(); addFiles(files); } }}
           aria-label="Your question"
           value={draft}
           onChange={(e) => setDraft(e.target.value.slice(0, 2000))}
@@ -332,7 +439,7 @@ export function ChatView({ user, me, entry, surface, initialQuestion, pendingRep
         />
         {running
           ? <button type="button" className="chat-send chat-send-stop" onClick={() => agent.cancel().catch(() => {})}>Stop</button>
-          : <button type="submit" className="chat-send" disabled={!draft.trim() || cooling || ended}>Send</button>}
+          : <button type="submit" className="chat-send" disabled={(!draft.trim() && !attachments.some((a) => a.status === "ready")) || uploading || cooling || ended}>Send</button>}
       </form>
       <p className={`chat-composer-note ${cooling ? "chat-composer-warn" : ""}`}>
         {cooling ? `One moment. You can send again in ${Math.ceil((cooldownUntil - now) / 1000)} s.`

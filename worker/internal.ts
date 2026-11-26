@@ -4,6 +4,7 @@ import { reportTransition, type Ctx } from "./context.ts";
 import { bearerMatches, pidFor, safeEqual } from "./crypto.ts";
 import { deskReport, opsNotify } from "./clients.ts";
 import { fail, json, noContent, readJson } from "./http.ts";
+import { eraseImagePrefix, internalImage } from "./images.ts";
 
 const isStr = (v: unknown, max = 200): v is string => typeof v === "string" && v.length > 0 && v.length <= max;
 const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v) && v >= 0;
@@ -21,6 +22,7 @@ export async function handleInternal(ctx: Ctx, request: Request, url: URL): Prom
   if (p === "/chat-api/internal/budget" && request.method === "GET") return json(await ctx.limiter.call("budgetReport"));
   if (p === "/chat-api/internal/budget" && request.method === "POST") return floor(ctx, request);
   if (p === "/chat-api/internal/strike" && request.method === "POST") return strike(ctx, request);
+  if (p === "/chat-api/internal/image" && request.method === "POST") return internalImage(ctx, request);
   return new Response("Not found", { status: 404 });
 }
 
@@ -81,6 +83,8 @@ async function erase(ctx: Ctx, request: Request): Promise<Response> {
     if (!ok) return fail("upstream");
   }
   await ctx.limiter.call("erase", uid);
+  // the DO's erase queues the uid's known images; the prefix sweep catches anything else
+  try { await eraseImagePrefix(ctx, await pidFor(uid)); } catch { return fail("upstream"); }
   return noContent();
 }
 

@@ -35,6 +35,7 @@ const files = [
   ['contract/internal.ts', 'internal.ts'],
   ['contract/erase.ts', 'erase.ts'],
   ['contract/verify.ts', 'verify.ts'],
+  ['contract/images.ts', 'images.ts'],
   ...list('contract/fixtures/streams').map((f) => [`contract/fixtures/streams/${f}`, `fixtures/streams/${f}`]),
   ...list('contract/fixtures/http/requests').map((f) => [`contract/fixtures/http/requests/${f}`, `fixtures/http/requests/${f}`]),
 ];

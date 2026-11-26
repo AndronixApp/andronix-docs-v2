@@ -501,3 +501,74 @@ test("budget: day spend at 45% of the allowance → follow-ups carry x-andronix-
   const seen = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((x) => x.kind === "create").at(-1);
   assert.equal(seen.headers["x-andronix-budget"], "degrade");
 });
+
+// ---- images (support-chat-images.md) ----
+const PNG = Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="), (c) => c.charCodeAt(0));
+const upload = (a, bytes, type = "image/png") => fetch(`${W}/chat-api/image`, { method: "POST", headers: { authorization: `Bearer ${a.token}`, "content-type": type, "cf-connecting-ip": a.ip }, body: bytes });
+
+test("images: upload → {imageId}; GIF 415; >4 MB 413; re-encode 413; unverified → image_limit; /me.images", async () => {
+  const a = await account();
+  const m = await me(a);
+  assert.deepEqual(m.images, { enabled: true, perMessage: 2, perChat: 4, day: { used: 0, max: 4 } });
+  const r = await json(await upload(a, PNG));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.match(r.body.imageId, /^[0-9a-f-]{36}$/);
+  assert.equal(r.body.width, 705);
+  assert.equal((await json(await upload(a, new TextEncoder().encode("GIF89a....")))).body.code, "image_type");
+  assert.equal((await upload(a, new Uint8Array(4 * 1024 * 1024 + 1))).status, 413);
+  const big = new Uint8Array([...PNG, ...new TextEncoder().encode("TOO-LARGE")]);
+  assert.equal((await json(await upload(a, big))).body.code, "image_too_large");
+  assert.equal((await me(a)).images.day.used, 1); // refused re-encodes give the slot back
+  const u = await account({ verified: false });
+  assert.equal((await me(u)).images.enabled, false);
+  assert.equal((await json(await upload(u, PNG))).body.code, "image_limit");
+});
+
+test("images: create with x-andronix-images → markers after the masked text; 1 image = 1 extra message; eve fetch bound to uid + session", async () => {
+  await fetch(`${FAKES}/fake/requests`, { method: "DELETE" });
+  const a = await account();
+  const b = await account();
+  const id1 = (await json(await upload(a, PNG))).body.imageId;
+  const idB = (await json(await upload(b, PNG))).body.imageId;
+  assert.equal((await create(a, "fixture:01 hi", { images: [idB] })).body.code, "not_owner");
+  const r = await json(await post(a, "/eve/v1/session", { message: "fixture:01 see [[img:00000000-0000-4000-8000-000000000000]] this", entry: "docs" }, { "x-andronix-images": id1 }));
+  assert.equal(r.status, 202, JSON.stringify(r.body));
+  const seen = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((x) => x.kind === "create");
+  assert.equal(seen.at(-1).body.message, `fixture:01 see  this\n[[img:${id1}]]`.replace("see  this", "see  this"));
+  assert.equal((await me(a)).limits.day.used, 2);
+  const sid = r.body.sessionId;
+  const get = (body, secret = true) => fetch(`${W}/chat-api/internal/image`, { method: "POST", headers: secret ? INTERNAL : { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const ok = await json(await get({ uid: a.uid, sessionId: sid, imageId: id1 }));
+  assert.equal(ok.status, 200);
+  assert.equal(ok.body.mediaType, "image/jpeg");
+  assert.ok(ok.body.dataB64.startsWith("/9j/"));
+  assert.equal((await get({ uid: b.uid, sessionId: sid, imageId: id1 })).status, 404);
+  assert.equal((await get({ uid: a.uid, sessionId: "wrun_other", imageId: id1 })).status, 404);
+  assert.equal((await get({ uid: a.uid, sessionId: sid, imageId: id1 }, false)).status, 401);
+  // a sent image can't ride again
+  await drain(a, sid);
+  assert.equal((await json(await post(a, `/eve/v1/session/${sid}`, { message: "again" }, { "x-andronix-images": id1 }))).body.code, "bad_body");
+});
+
+test("images: image-only message; files part still rejected; ticket opt-in → chat_handoff with_images; delete → 404 for eve", async () => {
+  await fetch(`${FAKES}/fake/requests`, { method: "DELETE" });
+  await fetch(`${FAKES}/fake/events`, { method: "DELETE" });
+  const a = await account();
+  const id = (await json(await upload(a, PNG))).body.imageId;
+  assert.equal((await create(a, "hi", { files: [{ mediaType: "image/png", data: "x" }] })).body.code, "bad_body");
+  const r = await json(await post(a, "/eve/v1/session", { message: "⁣", entry: "docs" }, { "x-andronix-images": id }));
+  assert.equal(r.status, 202, JSON.stringify(r.body));
+  const seen = (await (await fetch(`${FAKES}/fake/requests`)).json()).filter((x) => x.kind === "create");
+  assert.equal(seen.at(-1).body.message, `[[img:${id}]]`);
+  const sid = r.body.sessionId;
+  await drain(a, sid);
+  const t = await json(await post(a, "/chat-api/ticket", { sessionId: sid, reason: "money", includeChat: false, includeImages: true }));
+  assert.equal(t.status, 200, JSON.stringify(t.body));
+  await new Promise((res) => setTimeout(res, 300));
+  const ev = (await (await fetch(`${FAKES}/fake/events`)).json()).filter((e) => e?.payload?.name === "chat_handoff" || e?.payload?.name === "chat_image_attached");
+  assert.equal(ev.find((e) => e.payload.name === "chat_handoff").payload.properties.with_images, true);
+  assert.deepEqual(Object.keys(ev.find((e) => e.payload.name === "chat_image_attached").payload.properties).sort(), ["__timestamp", "bytes_bucket", "count", "entry", "surface", "tier"]);
+  const del = await fetch(`${W}/chat-api/image/${id}`, { method: "DELETE", headers: h(a) });
+  assert.equal(del.status, 204);
+  assert.equal((await fetch(`${W}/chat-api/internal/image`, { method: "POST", headers: INTERNAL, body: JSON.stringify({ uid: a.uid, sessionId: sid, imageId: id }) })).status, 404);
+});

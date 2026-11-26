@@ -24,6 +24,10 @@ export const HTTP_ERRORS = {
   upstream: { status: 502, error: "Something went wrong. Try again." },
   // guardrails §2: strikes for off-topic / jailbreak / harmful turns lead to a per-account pause
   cooldown: { status: 429, error: "Let's pause here. This assistant only covers Andronix and the Linux systems it installs." },
+  // image attachments (support-chat-images.md §5)
+  image_type: { status: 415, error: "Attach a PNG, JPEG or WebP screenshot." },
+  image_too_large: { status: 413, error: "That image is too large. Attach a screenshot under 4 MB." },
+  image_limit: { status: 429, error: "You've reached the image limit. You can still send text." },
 } as const;
 
 export type ErrorCode = keyof typeof HTTP_ERRORS;

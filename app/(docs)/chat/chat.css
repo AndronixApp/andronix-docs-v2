@@ -86,3 +86,16 @@
 html[data-chat-embed="app"] #nd-sidebar, html[data-chat-embed="app"] #nd-nav, html[data-chat-embed="app"] #nd-subnav,
 html[data-chat-embed="app"] [data-chat-hide-in-app], html[data-chat-embed="app"] .season-bar { display: none !important; }
 html[data-chat-embed="app"] .chat-shell { padding-top: .75rem; min-height: 100dvh; }
+
+/* image attachments */
+.chat-add-image { align-self: center; padding: 0 .6rem; min-height: 40px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--andronix-primary); white-space: nowrap; }
+.chat-add-image:disabled { opacity: .45; }
+.chat-composer-drop { outline: 2px dashed var(--andronix-primary); outline-offset: 2px; }
+.chat-attachments { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-start; }
+.chat-attachments .chat-small { flex-basis: 100%; }
+.chat-attachment { display: flex; align-items: center; gap: .5rem; background: var(--andronix-surface-high); border-radius: 14px; padding: .35rem .6rem .35rem .35rem; font-size: 13px; }
+.chat-attachment img, .chat-attachment-blank { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; background: var(--andronix-code-bg); display: block; }
+.chat-attachment-failed .chat-attachment-state { color: var(--andronix-error, #b3261e); }
+.chat-image-row { display: flex; gap: .4rem; }
+.chat-image-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
+.chat-image-chip { font-size: 12.5px; padding: .25rem .6rem; border-radius: 999px; background: var(--andronix-surface-high); color: var(--andronix-on-surface-variant); }

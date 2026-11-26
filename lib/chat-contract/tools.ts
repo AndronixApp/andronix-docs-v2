@@ -9,7 +9,7 @@
  */
 import { z } from "zod";
 
-export const CONTRACT_VERSION = 2 as const; // v2: guardrails (decline tool, REFUSAL_COPY)
+export const CONTRACT_VERSION = 3 as const; // v2: guardrails (decline tool, REFUSAL_COPY); v3: kind internal (no url), status by_design
 
 /** eve version the fixtures were recorded with. Both repos pin exactly this. */
 export const EVE_VERSION = "1.5.0" as const;
@@ -18,8 +18,13 @@ export const EVE_VERSION = "1.5.0" as const;
 export const TOOL_NAMES = ["kb_search", "kb_read", "get_report", "offer_handoff", "decline"] as const;
 export type ToolName = (typeof TOOL_NAMES)[number];
 
-export const KbKind = z.enum(["doc", "known_issue"]);
-export const KnownIssueStatus = z.enum(["investigating", "fix_coming", "fixed"]);
+/**
+ * internal: an agent-only note (knowledge/internal-notes.md). Its results carry
+ * no url, so nothing can link or chip it; the page skips chips without a url.
+ */
+export const KbKind = z.enum(["doc", "known_issue", "internal"]);
+/** by_design: how Andronix works today, not a bug (no "our team is on it" chip). */
+export const KnownIssueStatus = z.enum(["investigating", "fix_coming", "fixed", "by_design"]);
 
 // ---------------------------------------------------------------- kb_search
 
@@ -29,7 +34,8 @@ export const kbSearchInput = z.object({
 
 export const kbSearchResult = z.object({
   id: z.string(),
-  url: z.string().url(),
+  /** Absent for kind internal. */
+  url: z.string().url().optional(),
   title: z.string(),
   section: z.string(),
   kind: KbKind,
@@ -51,7 +57,8 @@ export const kbReadInput = z.object({
 
 export const kbReadOutput = z.object({
   id: z.string(),
-  url: z.string().url(),
+  /** Absent for kind internal. */
+  url: z.string().url().optional(),
   title: z.string(),
   kind: KbKind,
   status: KnownIssueStatus.optional(),
@@ -127,8 +134,8 @@ export const toolSchemas = {
  * UI rules per tool (plan 1.11), for the page:
  * - kb_search: not shown; output text feeds session-wide code verification.
  * - kb_read: one source chip per distinct url (max 3); known-issue chip when
- *   kind=known_issue and status is investigating or fix_coming. Output text
- *   feeds code verification.
+ *   kind=known_issue and status is investigating or fix_coming. No chip for an
+ *   output without a url (kind internal). Output text feeds code verification.
  * - get_report: never rendered (streams, but the log is never displayed).
  * - offer_handoff: renders the "Send to support team" form card, prefilled
  *   from input.reason / input.topic.

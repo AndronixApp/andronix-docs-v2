@@ -427,3 +427,155 @@ test("QA-2 #8: without a known deliveryId, only a settle written after the admis
   core.turnSignal("S1", { kind: "settled", turnId: "turn_1", at: clock.now + 1000 });
   assert.equal(ok(core.admitFollowup(w, "S1", crypto.randomUUID())).kind, "new");
 });
+
+// ---- images (support-chat-images.md) ----
+const IMG = (n: number) => `0b6f6f4e-2a5c-4c4e-9a7e-${String(n).padStart(12, "0")}`;
+function upload(core: LimiterCore, w: Who, n: number) {
+  ok(core.admitImageUpload(w));
+  core.registerImage(w.uid, IMG(n), { key: `pid/${IMG(n)}.jpg`, bytes: 1000, width: 705, height: 1568 });
+}
+
+test("images: per-day caps by tier; new/unverified 0; per-minute 6", () => {
+  const { core, clock } = setup();
+  const r = core.admitImageUpload(who({ tier: "new" }));
+  assert.equal(code(r), "image_limit");
+  assert.equal(!r.ok && r.reason, "tier");
+  for (let i = 0; i < 4; i++) { clock.now += MIN; ok(core.admitImageUpload(who())); }
+  clock.now += MIN;
+  assert.equal(code(core.admitImageUpload(who())), "image_limit");
+  const owner = who({ uid: "o1", tier: "owner" });
+  for (let i = 0; i < 6; i++) ok(core.admitImageUpload(owner));
+  assert.equal(code(core.admitImageUpload(owner)), "rate_minute");
+  clock.now += MIN;
+  for (let i = 0; i < 6; i++) ok(core.admitImageUpload(owner));
+  clock.now += MIN;
+  assert.equal(code(core.admitImageUpload(owner)), "image_limit"); // 12/day
+  const staff = who({ uid: "s1", tier: "staff", staff: true });
+  assert.equal(core.imageQuota(staff).dayMax, 50);
+});
+
+test("images: each image counts as one extra message; text + 2 images = 3", () => {
+  const { core } = setup();
+  const w = who();
+  upload(core, w, 1); upload(core, w, 2);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1), IMG(2)]));
+  assert.equal(core.me(w).day.used, 3);
+});
+
+test("images: not enough day messages left for the images → image_limit, nothing counted", () => {
+  const { core, clock } = setup();
+  const w = who();
+  sendSpread(core, clock, w, 8);
+  upload(core, w, 1); upload(core, w, 2);
+  clock.now += MIN;
+  assert.equal(code(core.admitCreate(w, crypto.randomUUID(), [IMG(1), IMG(2)])), "image_limit");
+  assert.equal(core.me(w).day.used, 8);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1)])); // 8 + 2 = 10
+});
+
+test("images: another uid's image → not_owner; a sent image can't be sent again; 4 per chat", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "owner" });
+  for (let i = 1; i <= 6; i++) upload(core, w, i);
+  upload(core, who({ uid: "u2" }), 9);
+  assert.equal(code(core.admitCreate(w, crypto.randomUUID(), [IMG(9)])), "not_owner");
+  assert.equal(code(core.admitCreate(w, crypto.randomUUID(), [IMG(77)])), "not_owner");
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1), IMG(2)]));
+  core.bindSession(w.uid, "s1", "docs");
+  core.attachImages(w.uid, "s1", [IMG(1), IMG(2)]);
+  core.turnEnded("s1");
+  clock.now += MIN;
+  assert.equal(code(core.admitFollowup(w, "s1", crypto.randomUUID(), [IMG(1)])), "bad_body");
+  ok(core.admitFollowup(w, "s1", crypto.randomUUID(), [IMG(3), IMG(4)]));
+  core.attachImages(w.uid, "s1", [IMG(3), IMG(4)]);
+  core.turnEnded("s1");
+  clock.now += MIN;
+  assert.equal(code(core.admitFollowup(w, "s1", crypto.randomUUID(), [IMG(5)])), "image_limit");
+});
+
+test("images: eve fetch only for the same uid and session", () => {
+  const { core } = setup();
+  const w = who();
+  upload(core, w, 1);
+  assert.equal(core.imageFor(w.uid, "s1", IMG(1)), null); // not sent yet
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1)]));
+  core.bindSession(w.uid, "s1", "docs");
+  core.attachImages(w.uid, "s1", [IMG(1)]);
+  assert.deepEqual(core.imageFor(w.uid, "s1", IMG(1)), { key: `pid/${IMG(1)}.jpg` });
+  assert.equal(core.imageFor("u2", "s1", IMG(1)), null);
+  assert.equal(core.imageFor(w.uid, "s2", IMG(1)), null);
+});
+
+test("images: deleted on remove (slot back), unsent 15 min, chat end, harmful strike, erase, 48 h", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "owner" });
+  upload(core, w, 1);
+  ok(core.removeImage(w.uid, IMG(1)));
+  assert.deepEqual(core.pendingImageDeletes(), [`pid/${IMG(1)}.jpg`]);
+  assert.equal(core.imageQuota(w).dayUsed, 0);
+  core.imageDeletesDone(core.pendingImageDeletes());
+  upload(core, w, 2);
+  clock.now += 16 * MIN;
+  core.sweepImagesNow();
+  assert.deepEqual(core.pendingImageDeletes(), [`pid/${IMG(2)}.jpg`]);
+  core.imageDeletesDone(core.pendingImageDeletes());
+  // chat end
+  upload(core, w, 3);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(3)]));
+  core.bindSession(w.uid, "s1", "docs");
+  core.attachImages(w.uid, "s1", [IMG(3)]);
+  core.turnSignal("s1", { kind: "ended" });
+  assert.deepEqual(core.pendingImageDeletes(), [`pid/${IMG(3)}.jpg`]);
+  core.imageDeletesDone(core.pendingImageDeletes());
+  // harmful
+  clock.now += MIN;
+  upload(core, w, 4);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(4)]));
+  core.bindSession(w.uid, "s2", "docs");
+  core.attachImages(w.uid, "s2", [IMG(4)]);
+  core.strike(w.uid, "s2", "turn_0", "harmful");
+  assert.deepEqual(core.pendingImageDeletes(), [`pid/${IMG(4)}.jpg`]);
+  core.imageDeletesDone(core.pendingImageDeletes());
+  // 48 h
+  clock.now += MIN;
+  upload(core, w, 5);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(5)]));
+  core.bindSession(w.uid, "s3", "docs");
+  core.attachImages(w.uid, "s3", [IMG(5)]);
+  assert.ok(core.nextImageDeadline()! > clock.now);
+  clock.now += 49 * 60 * MIN;
+  assert.equal(core.imageFor(w.uid, "s3", IMG(5)), null);
+  core.sweepImagesNow();
+  assert.ok(core.pendingImageDeletes().includes(`pid/${IMG(5)}.jpg`));
+  core.imageDeletesDone(core.pendingImageDeletes());
+  // erase
+  upload(core, w, 6);
+  core.erase(w.uid);
+  assert.deepEqual(core.pendingImageDeletes(), [`pid/${IMG(6)}.jpg`]);
+});
+
+test("images: ticket gets sent images, not those of a refused turn", () => {
+  const { core, clock } = setup();
+  const w = who({ tier: "owner" });
+  upload(core, w, 1); upload(core, w, 2);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1)]));
+  core.bindSession(w.uid, "s1", "docs");
+  core.attachImages(w.uid, "s1", [IMG(1)]);
+  core.turnEnded("s1");
+  clock.now += MIN;
+  ok(core.admitFollowup(w, "s1", crypto.randomUUID(), [IMG(2)]));
+  core.attachImages(w.uid, "s1", [IMG(2)]);
+  core.strike(w.uid, "s1", "turn_1", "offtopic");
+  assert.deepEqual(core.ticketImages(w.uid, "s1").map((x) => x.id), [IMG(1)]);
+  assert.deepEqual(core.ticketImages("u2", "s1"), []);
+});
+
+test("images: eve refused the message → images can be sent again", () => {
+  const { core } = setup();
+  const w = who();
+  upload(core, w, 1);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1)]));
+  assert.equal(code(core.admitCreate(w, crypto.randomUUID(), [IMG(1)])), "bad_body"); // reserved
+  core.releaseImages([IMG(1)]);
+  ok(core.admitCreate(w, crypto.randomUUID(), [IMG(1)]));
+});

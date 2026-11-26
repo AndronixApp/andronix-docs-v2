@@ -88,3 +88,45 @@ test("transcript from eve lines: user parts and replies, last 24, ≤4,000 each"
   assert.equal(t[0].text, "q3");
   assert.equal(t[1].text.length, 4000);
 });
+
+test("images: ≤2 uuid-v4 ids, image-only allowed, typed markers stripped, files still rejected", async () => {
+  const { imagesHeader, withImageMarkers, IMAGE_ONLY_TEXT } = await import("./body.ts");
+  const a = "0b6f6f4e-2a5c-4c4e-9a7e-1c2d3e4f5a6b";
+  const b = "1c7a7a5f-3b6d-4d5f-8b8f-2d3e4f5a6b7c";
+  assert.equal(code(parseCreate({ message: "hi", entry: "docs", images: [a, b] }, 2000)), "ok");
+  assert.equal(code(parseCreate({ message: "hi", entry: "docs", images: [a, b, "2c7a7a5f-3b6d-4d5f-8b8f-2d3e4f5a6b7c"] }, 2000)), "image_limit");
+  assert.equal(code(parseCreate({ message: "hi", entry: "docs", images: [a, a] }, 2000)), "bad_body");
+  assert.equal(code(parseCreate({ message: "hi", entry: "docs", images: ["../x"] }, 2000)), "bad_body");
+  assert.equal(code(parseCreate({ message: "hi", entry: "docs", images: [] }, 2000)), "bad_body");
+  assert.equal(code(parseCreate({ message: IMAGE_ONLY_TEXT, entry: "docs", images: [a] }, 2000)), "ok");
+  assert.equal(code(parseCreate({ message: IMAGE_ONLY_TEXT, entry: "docs" }, 2000)), "bad_body");
+  assert.equal(code(parseFollowup({ message: " ", images: [a] }, 2000)), "ok");
+  assert.equal(code(parseCreate({ message: "hi", entry: "docs", files: [{ data: "x" }] }, 2000)), "bad_body");
+  const typed = parseCreate({ message: `see [[img:${b}]] [[ img: evil ]]`, entry: "docs" }, 2000);
+  assert.ok(typed.ok && typed.value.message === "see", JSON.stringify(typed));
+  assert.deepEqual(imagesHeader(` ${a.toUpperCase()}, ${b} `), [a, b]);
+  assert.equal(imagesHeader(""), undefined);
+  assert.equal(withImageMarkers("text", [a]), `text\n[[img:${a}]]`);
+  assert.equal(withImageMarkers("", [a, b]), `[[img:${a}]][[img:${b}]]`);
+  assert.equal(withImageMarkers("text", []), "text");
+});
+
+test("ticket: includeImages is an optional boolean", () => {
+  assert.equal(code(parseTicket({ reason: "money", includeChat: true, includeImages: true })), "ok");
+  assert.equal(code(parseTicket({ reason: "money", includeChat: true, includeImages: "yes" })), "bad_body");
+});
+
+test("transcript: image markers become [screenshot]", () => {
+  const line = JSON.stringify({ at: "2026-11-26T10:00:00Z", facts: [{ type: "delivery.consumed", data: { parts: [{ kind: "text", text: "help\n[[img:0b6f6f4e-2a5c-4c4e-9a7e-1c2d3e4f5a6b]]" }] } }] });
+  assert.deepEqual(transcriptFromNdjson(line).map((e) => e.text), ["help\n[screenshot]"]);
+});
+
+test("images rollout: off by default; one stage behind the chat", async () => {
+  const { inImagesRollout } = await import("./env.ts");
+  assert.equal(inImagesRollout(undefined, true, "staff"), false);
+  assert.equal(inImagesRollout("staff", true, "staff"), true);
+  assert.equal(inImagesRollout("staff", true, "owner"), false);
+  assert.equal(inImagesRollout("owners", true, "owner"), true);
+  assert.equal(inImagesRollout("all", false, "free"), false);
+  assert.equal(inImagesRollout("all", true, "free"), true);
+});

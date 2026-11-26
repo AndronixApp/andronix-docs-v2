@@ -16,6 +16,8 @@
     "chat_feedback",
     "chat_handoff",
     "chat_report_attached",
+    "chat_image_attached",
+    "chat_image_rejected",
     "chat_rating_prompt",
     "chat_budget",
     "chat_link_sent"
@@ -53,6 +55,12 @@
     },
     {
       "$ref": "#/$defs/chat_report_attached"
+    },
+    {
+      "$ref": "#/$defs/chat_image_attached"
+    },
+    {
+      "$ref": "#/$defs/chat_image_rejected"
     },
     {
       "$ref": "#/$defs/chat_rating_prompt"
@@ -307,7 +315,8 @@
                 "handoff_rate",
                 "budget_paused",
                 "disabled",
-                "upstream"
+                "upstream",
+                "image_limit"
               ]
             },
             "tier": {
@@ -451,6 +460,9 @@
               "type": "integer",
               "minimum": 1
             },
+            "had_image": {
+              "type": "boolean"
+            },
             "__timestamp": {
               "type": "string",
               "format": "date-time"
@@ -516,6 +528,9 @@
                 "retrieval",
                 "output"
               ]
+            },
+            "had_image": {
+              "type": "boolean"
             },
             "__timestamp": {
               "type": "string",
@@ -688,6 +703,9 @@
               "type": "string",
               "pattern": "^[0-9a-f]{16}$"
             },
+            "with_images": {
+              "type": "boolean"
+            },
             "__timestamp": {
               "type": "string",
               "format": "date-time"
@@ -740,6 +758,123 @@
             },
             "ok": {
               "type": "boolean"
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_image_attached": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_image_attached"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "count",
+            "bytes_bucket",
+            "tier",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2
+            },
+            "bytes_bucket": {
+              "type": "string",
+              "enum": [
+                "<100k",
+                "100-300k",
+                "300k+"
+              ]
+            },
+            "tier": {
+              "type": "string",
+              "enum": [
+                "free",
+                "owner",
+                "staff"
+              ]
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_image_rejected": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_image_rejected"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "reason",
+            "tier",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "type",
+                "size",
+                "pixels",
+                "limit",
+                "tier",
+                "decode"
+              ]
+            },
+            "tier": {
+              "type": "string",
+              "enum": [
+                "free",
+                "owner",
+                "staff"
+              ]
             },
             "__timestamp": {
               "type": "string",
