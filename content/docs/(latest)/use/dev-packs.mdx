@@ -29,7 +29,7 @@ sudo andronix pack add python
 
 You can add several packs at once. Andronix checks your free space first, installs the packages in one go, and then checks that the tools actually work. If the check fails, the pack is marked as failed and `pack add` tries again next time.
 
-<Callout type="info">On Manjaro, `sudo` doesn't work yet: use the root terminal for admin work.</Callout>
+<Callout type="info">On Manjaro, `sudo` doesn't work yet. For Manjaro in Termux, run the pack command in the Termux shell instead: `andronix pack add manjaro python`. In the app there's no root terminal, so packs can't be added to Manjaro there yet.</Callout>
 
 In Termux, name the distro first, for example `andronix pack add debian python node`.
 

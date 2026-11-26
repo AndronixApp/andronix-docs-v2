@@ -113,7 +113,14 @@ Update with `sudo pacman -Syu` before installing anything, and avoid `pacman -Sy
 
 Manjaro ARM, an Arch-based distro. Only available on arm64 and x86_64.
 
-<Callout type="warning">`sudo` doesn't work on Manjaro ARM in Andronix yet. For admin tasks such as installing packages, use the root terminal (in Termux: `andronix start manjaro --root`).</Callout>
+<Callout type="warning">
+
+`sudo` doesn't work on Manjaro ARM in Andronix yet: it says your user "is not in the sudoers file". Your user is fine.
+
+- **In Termux:** for admin tasks such as installing packages, open a root shell with `andronix start manjaro --root` and leave out `sudo`.
+- **In the app:** there's no root terminal, so admin commands such as `pacman -S` can't run in Manjaro yet. If you need them, install Arch Linux (it uses the same `pacman`), Debian or Ubuntu, where `sudo` works.
+
+</Callout>
 
 | | |
 |---|---|
@@ -152,7 +159,7 @@ Void Linux (glibc), an independent rolling distro with its own package manager, 
 
 ## Installing software
 
-Inside the distro, use its package manager with `sudo` (on Manjaro, use a root shell from `andronix start manjaro --root` and leave out `sudo`):
+Inside the distro, use its package manager with `sudo` (on Manjaro in Termux, use a root shell from `andronix start manjaro --root` and leave out `sudo`; see [Manjaro ARM](#manjaro-arm)):
 
 | Distro | Update everything | Install a program |
 |---|---|---|

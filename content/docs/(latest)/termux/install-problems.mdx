@@ -25,22 +25,24 @@ Also disable battery optimization for Termux in your phone's settings.
 
 ## Not enough storage
 
-The installer checks your free space before it starts, and warns you if it looks too low. Roughly how much a distro takes once installed:
+The installer checks your free space before it starts, and stops with **Not enough space** if there's too little, saying how much to free up. It asks for more than the distro takes once installed, because the download and the unpacked system are on the phone at the same time. Roughly how much free space it asks for:
 
-| Install | Space used |
+| Install | Free space needed |
 |---|---|
-| Command line only | 250 to 400 MB |
-| XFCE or LXQt desktop | 0.8 to 1.6 GB |
-| MATE desktop | 1.5 to 1.9 GB |
-| KDE Plasma desktop | about 2.5 GB |
+| Command line only | up to 0.5 GB (Arch about 0.9 GB, Manjaro about 1.4 GB) |
+| XFCE desktop | 1.2 to 1.8 GB (Arch and Manjaro about 3 GB) |
+| LXQt desktop | 1.5 to 2.2 GB (Arch and Manjaro 3.3 to 3.6 GB) |
+| MATE desktop | 1.8 to 2.5 GB (Arch and Manjaro 3.6 to 4 GB) |
+| KDE Plasma desktop | 2.8 to 3.5 GB |
 
-Leave some extra room for the download while it unpacks. If you're short on space, free some up, pick a smaller desktop, or use the command line only. Use `andronix list` to see what's installed, and [remove](/install/uninstall) distros you don't use.
+The installer works out the exact number for your distro and desktop. If you're short on space, free some up, pick a smaller desktop, or use the command line only. Use `andronix list` to see what's installed, and [remove](/install/uninstall) distros you don't use.
 
 <Callout type="info">Distros can only be installed on your phone's internal storage, not on an SD card. See [Limitations](/reference/limitations#hardware-limitations).</Callout>
 
 ## Download errors
 
 - **The download failed or timed out:** check your connection and run the same command again. The download resumes instead of starting over.
+- **It stopped at Finding the best download, Downloading or Refreshing package lists:** see [The install stops at a download step](/troubleshooting/install-stuck).
 - **The installer says your network hit the limit:** the fallback download source limits how many downloads come from one network. Wait a while and try again, or switch between Wi-Fi and mobile data.
 
 ## The installer warns about an old kernel
@@ -90,7 +92,7 @@ andronix start debian --root
 passwd alex
 ```
 
-Replace `debian` with your distro and `alex` with your username. To reset the desktop (VNC) password, see [Changing the desktop password](/termux/vnc#changing-the-desktop-password).
+Replace `debian` with your distro and `alex` with your username. Nothing shows while you type the new password; that's normal. Type it, press Enter, then type it again. For a distro in the app, see [I forgot my Linux password](/troubleshooting/in-the-app#i-forgot-my-linux-password). To reset the desktop (VNC) password, see [Changing the desktop password](/termux/vnc#changing-the-desktop-password).
 
 ## sudo prints "unable to send audit message"
 

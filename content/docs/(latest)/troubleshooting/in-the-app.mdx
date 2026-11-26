@@ -1,6 +1,6 @@
 ---
 title: "Linux in the App: Limits and Problems"
-description: Known limits of Linux in the app, fixes for common problems, and how to report a problem with the logs attached.
+description: Known limits of Linux in the app, fixes for common problems, forgotten Linux passwords, and how to report a problem with the logs attached.
 ---
 
 
@@ -21,13 +21,35 @@ description: Known limits of Linux in the app, fixes for common problems, and ho
 | Problem | What to do |
 |---|---|
 | The app says Linux in the app isn't available on this phone | It says why, and installs in Termux instead. See [How the app checks](/start-here/requirements#how-the-app-checks). |
-| The install stopped | Tap **Try again**. If it says "Not enough space", free up a few GB first. |
+| The install stopped | Tap **Try again**. If it says "Not enough space", free up a few GB first. Stopped at **Finding the best download**, **Downloading** or **Refreshing package lists**? See [The install stops at a download step](/troubleshooting/install-stuck). |
 | The desktop stays black | Andronix fixes it by itself. See [Black screen and safe mode](/troubleshooting/black-screen). |
 | A Linux command says to run it in Termux | Commands that manage installs (install, start, remove, update, backup) are done with the app's buttons here. Dev packs work inside: `sudo andronix pack add python`. Update packages with the distro's own manager; see [Keep it updated](/use/updates). |
-| **No connection** | The device couldn't reach the download server. Check Wi-Fi or mobile data, then tap **Try again**. Private DNS can stay on: Linux in the app looks up websites with it (since 10.1). |
-| **The download stopped** | Tap **Try again**; the download continues where it stopped. |
+| **No connection** | The device couldn't reach the download server. Check Wi-Fi or mobile data, switch networks, and turn off any VPN or ad blocker. If you use a Private DNS that blocks ads, set Private DNS to **Automatic** or **Off**. Then tap **Try again**. See [The install stops at a download step](/troubleshooting/install-stuck). |
+| **The download stopped** | Check your connection (or switch networks), keep the app open, then tap **Try again**. See [The install stops at a download step](/troubleshooting/install-stuck). |
 | **This device's date and time are off** | Turn on automatic date and time in Android's settings, then tap **Try again**. |
+| Installing a distro you already have replaces it | Andronix keeps one install per distro. Another desktop or edition of the same distro (for example Ubuntu KDE when you have Ubuntu XFCE) replaces the one you have, and everything inside it is deleted. Different distros (for example Ubuntu and Debian) can be installed side by side. |
 | Opening another distro shows the one that's running | One distro runs at a time. Stop the running one first: **Stop** on its row or in the notification. |
+
+## Passwords
+
+### Nothing shows when I type my password
+
+That's normal. In a Linux terminal, a password prompt shows nothing while you type: no letters, no dots, no stars. Your keys still go in. Type the password and press **Enter**. If it asks again to confirm, type it the same way and press **Enter**.
+
+Passwords are case-sensitive. Your Linux password is the one you chose under **Set up your user**. It isn't your Andronix or Google account password.
+
+### I forgot my Linux password
+
+You can set a new one without reinstalling (Andronix 10.2.3 and newer):
+
+1. On Home, under **Your Linux**, tap **⋮** next to the distro.
+2. Tap **Reset Linux password**, then **Reset password**. If its terminal is open, it closes first.
+3. A terminal opens as root. Type the new password, press **Enter**, then type it again and press **Enter**. Nothing shows as you type.
+4. When it says **Password changed**, press **Enter** to close it.
+
+Your files stay as they are. Don't see **Reset Linux password**? Update Andronix from Google Play.
+
+For a distro in Termux, see [I forgot my password](/termux/install-problems#i-forgot-my-password).
 
 ## Report a problem
 
