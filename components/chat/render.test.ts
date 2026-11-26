@@ -13,12 +13,16 @@ test("links: exact hosts only", () => {
     "https://github.com/termux/termux-x11/releases", "https://github.com/termux/termux-x11",
     "https://github.com/AndronixApp/andronix-distros/blob/master/README.md",
     "https://github.com/termux/termux-x11/releases/download/nightly/app-arm64-v8a-debug.apk",
+    "https://dl.andronix.app/get.sh", "https://f-droid.org/packages/com.termux/", "https://f-droid.org/en/packages/com.termux/",
+    "https://github.com/termux/termux-app/releases", "https://github.com/termux/termux-app/releases/tag/v0.118.3",
   ]) assert.equal(isAllowedLink(ok), true, ok);
   for (const bad of [
     "https://evil.example/login", "http://docs.andronix.app/x", "https://docs.andronix.app.evil.com/",
     "https://play.google.com/store/apps/details?id=com.other", "https://github.com/termux/termux-app",
     "https://github.com/termux/termux-x11/issues/1", "javascript:alert(1)", "//evil.example/x",
     "https://user@docs.andronix.app/", "data:text/html,hi",
+    "https://f-droid.org/packages/com.evil/", "https://f-droid.org/packages/com.termux/?x=1", "https://github.com/termux/termux-app/issues",
+    "https://github.com/termux/termux-app/blob/master/README.md", "https://dl.andronix.app.evil.com/get.sh",
   ]) assert.equal(isAllowedLink(bad), false, bad);
 });
 
