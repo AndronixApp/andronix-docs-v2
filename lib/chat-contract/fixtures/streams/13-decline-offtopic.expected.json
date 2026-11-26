@@ -1,0 +1,30 @@
+{
+  "fixture": "13-decline-offtopic",
+  "title": "Off-topic: the gate (Haiku stage) declines; only `decline`, no text, no answer model (guardrails §1)",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE13",
+  "lines": 9,
+  "ui": "Only the fixed refusal card REFUSAL_COPY.offtopic with Open the docs / Send to support team. Drop any text of the turn. The session stays usable.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "decline": {
+        "reason": "offtopic"
+      },
+      "feedbackButtons": false,
+      "answerModelStarted": false,
+      "modelIds": [
+        "andronix/decline-offtopic"
+      ],
+      "error": null
+    }
+  ]
+}

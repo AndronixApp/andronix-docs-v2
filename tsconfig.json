@@ -27,7 +27,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "allowImportingTsExtensions": true
   },
   "include": [
     "next-env.d.ts",
@@ -38,6 +39,8 @@
   ],
   "exclude": [
     "node_modules",
-    "lib/**/*.test.ts"
+    "lib/**/*.test.ts",
+    "worker",
+    "**/*.test.ts"
   ]
 }

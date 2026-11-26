@@ -1,0 +1,38 @@
+# Dev only: like wrangler.dev.toml, but serving a built static export (.next-check) to check headers/CSP.
+# Dev only: the docs Worker against the Auth emulator and the fakes (worker/dev/wrangler.fakes.toml).
+# `pnpm chat:dev` serves the API on :8799; for the page, CHAT_ASSETS=out serves the static export.
+name = "andronix-docs-chat-dev-built"
+main = "../index.ts"
+compatibility_date = "2025-03-25"
+compatibility_flags = ["enable_request_signal"]
+
+[assets]
+directory = "../../.next-check"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"
+run_worker_first = ["/eve/*", "/chat-api/*", "/__/auth/*", "/__/firebase/*"]
+
+[[durable_objects.bindings]]
+name = "CHAT_LIMITER"
+class_name = "ChatLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ChatLimiter"]
+
+[vars]
+CHAT_ENABLED = "1"
+CHAT_ROLLOUT = "all"
+CHAT_DEV = "1"
+FIREBASE_PROJECT_ID = "demo-andronix"
+FIREBASE_AUTH_PROXY_PROJECT = "andronix-techriz"
+FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9199"
+EVE_ORIGIN = "http://127.0.0.1:8790"
+EVE_EDGE_SECRET = "dev-edge-secret"
+CHAT_INTERNAL_SECRET = "dev-internal-secret"
+PRODUCTS_API_URL = "http://127.0.0.1:8790/products-api"
+CHAT_SERVICE_SECRET = "dev-service-secret"
+OPENPANEL_API_URL = "http://127.0.0.1:8790/openpanel"
+OPENPANEL_CLIENT_ID = "dev"
+OPENPANEL_CLIENT_SECRET = "dev"

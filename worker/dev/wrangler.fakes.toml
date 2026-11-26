@@ -1,0 +1,9 @@
+# Dev only: fake eve, fake products-api and an OpenPanel sink for the chat Worker. Never deployed.
+name = "andronix-docs-chat-fakes"
+main = "fakes.ts"
+compatibility_date = "2025-03-25"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.ndjson"]
+fallthrough = false

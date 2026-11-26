@@ -4,12 +4,24 @@
   "description": "Andronix Docs V2",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-shots.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs",
+    "prebuild": "node scripts/app-shots-manifest.mjs && node scripts/check-shots.mjs && node scripts/check-latest-links.mjs && node scripts/write-redirects.mjs && node scripts/check-chat-events.mjs",
     "build": "next build",
     "postinstall": "fumadocs-mdx",
     "preview": "wrangler dev --port 8799",
-    "deploy": "node scripts/check-release-date.mjs && wrangler deploy",
-    "upload": "wrangler versions upload"
+    "deploy": "node scripts/check-worker.mjs && node scripts/check-release-date.mjs && wrangler deploy -c wrangler.toml",
+    "upload": "node scripts/check-worker.mjs && wrangler versions upload -c wrangler.toml",
+    "test:worker": "node --test worker/body.test.ts worker/limiter/core.test.ts",
+    "typecheck:worker": "tsc -p worker/tsconfig.json",
+    "chat:emulator": "cd worker/dev && npx -y firebase-tools@14 emulators:start --only auth --project demo-andronix",
+    "chat:fakes": "wrangler dev -c worker/dev/wrangler.fakes.toml --port 8790 --inspector-port 9238",
+    "chat:dev": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8799 --inspector-port 9239 --persist-to \"$(mktemp -d)\"",
+    "test:chat-int": "CHAT_WORKER_STAFF_ONLY=${CHAT_WORKER_STAFF_ONLY:-http://127.0.0.1:8797} node --test --test-concurrency=1 worker/dev/integration.test.mjs",
+    "test:chat": "node --test worker/body.test.ts worker/limiter/core.test.ts components/chat/render.test.ts components/chat/filter.test.ts",
+    "chat:page": "set -a && . ./.env.chat-dev && set +a && next dev -p 3312",
+    "build:preview": "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=andronix-techriz.firebaseapp.com NEXT_PUBLIC_CHAT_ENTRY=1 pnpm build",
+    "deploy:preview": "node scripts/check-worker.mjs && wrangler deploy -c wrangler.toml --env preview",
+    "chat:built": "wrangler dev -c worker/dev/wrangler.built.toml --port 8798 --inspector-port 9237 --persist-to \"$(mktemp -d)\"",
+    "chat:dev-staff": "wrangler dev -c worker/dev/wrangler.dev.toml --port 8797 --inspector-port 9236 --var CHAT_ROLLOUT:staff --persist-to \"$(mktemp -d)\""
   },
   "author": "Andronix <hello@andronix.app>",
   "license": "MIT",
@@ -18,9 +30,12 @@
     "@orama/tokenizers": "^3.1.15",
     "@tailwindcss/postcss": "^4.3.3",
     "axios": "^1.4.0",
+    "eve": "1.5.0",
+    "firebase": "^12.19.0",
     "fumadocs-core": "16.15.14",
     "fumadocs-mdx": "15.4.5",
     "fumadocs-ui": "16.15.14",
+    "jose": "^6.2.18",
     "lucide-react": "0.544.0",
     "next": "16.3.6",
     "react": "^19.3.0",
@@ -31,6 +46,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261125.1",
     "@opennextjs/cloudflare": "^1.20.6",
     "@tailwindcss/typography": "^0.5.19",
     "@types/mdx": "^2.0.13",
@@ -41,6 +57,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
-    "wrangler": "^4.140.0"
+    "wrangler": "^4.140.0",
+    "zod": "4.6.7"
   }
 }

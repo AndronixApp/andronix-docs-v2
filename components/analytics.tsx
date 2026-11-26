@@ -14,6 +14,8 @@ export function DocsEvents() {
   const path = usePathname();
 
   useEffect(() => {
+    // /chat sends only its own chat_* events (build plan 1.8)
+    if (path === "/chat" || path.startsWith("/chat/")) return;
     // copy_code: which page, which code block on it, and its first line
     const onClick = (e: MouseEvent) => {
       const button = (e.target as Element | null)?.closest?.("figure.shiki button");

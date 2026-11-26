@@ -1,0 +1,31 @@
+{
+  "fixture": "09-cancelled",
+  "title": "Stop mid-stream: cancel {turnId} → turn.settled cancelled",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE09",
+  "lines": 26,
+  "ui": "Partial text stays, marked stopped. Composer re-enabled. No feedback buttons.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "cancelled",
+      "text": [
+        "Step 1: this is a long explanation that streams slowly so Stop can land mid-reply.\nStep 2: this is a long explanation that streams slowly so Stop can land mid-reply.\nStep 3: this is a long explanation that streams slowly so Stop can land mid-reply.\nStep 4: this is a long explanation that streams slowly so Stop can land mid-reply.\nStep 5: this is a long explanation that streams slowly so Stop can land mid-reply.\nStep 6: this is a long explanation that streams slowly so Stop can land mid-reply.\nStep 7: this is a long explanation that streams slowly so Stop"
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "decline": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/ground-search",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}

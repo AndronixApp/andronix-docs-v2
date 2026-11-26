@@ -1,2 +1,11 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
+
+# Support chat (build plan B0.3, QA-1 S13): enforced; violations go to the Worker's
+# /chat-api/csp-report, which logs only the directive and the blocked origin.
+/chat
+  Content-Security-Policy: connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://events.andronix.app; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; report-uri /chat-api/csp-report
+  Referrer-Policy: strict-origin-when-cross-origin
+/chat/*
+  Content-Security-Policy: connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://events.andronix.app; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; report-uri /chat-api/csp-report
+  Referrer-Policy: strict-origin-when-cross-origin

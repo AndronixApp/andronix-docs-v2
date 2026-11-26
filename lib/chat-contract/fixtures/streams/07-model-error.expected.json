@@ -1,0 +1,39 @@
+{
+  "fixture": "07-model-error",
+  "title": "turn.settled failed, MODEL_CALL_FAILED",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE07",
+  "lines": 11,
+  "ui": "\"Something went wrong. Try again.\" The session stays usable.",
+  "sessionEnded": {
+    "cause": {
+      "turnId": "turn_0"
+    },
+    "error": {
+      "code": "MODEL_CALL_FAILED",
+      "id": "4e8db932-393b-483d-92aa-87db8d4d0d7c",
+      "message": "stub 400"
+    },
+    "outcome": "failed"
+  },
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "cancelled",
+      "text": [],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": null,
+      "decline": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/ground-search",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}

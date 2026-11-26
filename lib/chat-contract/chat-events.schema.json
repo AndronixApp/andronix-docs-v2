@@ -1,0 +1,902 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://andronix.app/schemas/chat-events.schema.json",
+  "title": "Andronix support chat analytics events (plan 1.10)",
+  "description": "One sender per event (x-sender). Values are enums, numbers and booleans only, plus pid (profile id, never a property) and chat_id. No text, URL, email, order id or report id. Unknown keys fail validation.",
+  "x-contract-version": 1,
+  "x-event-names": [
+    "chat_opened",
+    "chat_signin_shown",
+    "chat_signin_completed",
+    "chat_message_sent",
+    "chat_rate_limited",
+    "chat_answer_completed",
+    "chat_gate",
+    "chat_code_check",
+    "chat_feedback",
+    "chat_handoff",
+    "chat_report_attached",
+    "chat_rating_prompt",
+    "chat_budget",
+    "chat_link_sent"
+  ],
+  "oneOf": [
+    {
+      "$ref": "#/$defs/chat_opened"
+    },
+    {
+      "$ref": "#/$defs/chat_signin_shown"
+    },
+    {
+      "$ref": "#/$defs/chat_signin_completed"
+    },
+    {
+      "$ref": "#/$defs/chat_message_sent"
+    },
+    {
+      "$ref": "#/$defs/chat_rate_limited"
+    },
+    {
+      "$ref": "#/$defs/chat_answer_completed"
+    },
+    {
+      "$ref": "#/$defs/chat_gate"
+    },
+    {
+      "$ref": "#/$defs/chat_code_check"
+    },
+    {
+      "$ref": "#/$defs/chat_feedback"
+    },
+    {
+      "$ref": "#/$defs/chat_handoff"
+    },
+    {
+      "$ref": "#/$defs/chat_report_attached"
+    },
+    {
+      "$ref": "#/$defs/chat_rating_prompt"
+    },
+    {
+      "$ref": "#/$defs/chat_budget"
+    },
+    {
+      "$ref": "#/$defs/chat_link_sent"
+    }
+  ],
+  "$defs": {
+    "entry": {
+      "type": "string",
+      "enum": [
+        "docs",
+        "discord",
+        "app_help",
+        "app_install_failed"
+      ]
+    },
+    "surface": {
+      "type": "string",
+      "enum": [
+        "web",
+        "app_webview"
+      ]
+    },
+    "chat_opened": {
+      "type": "object",
+      "x-sender": "page",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_opened"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "signed_in"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "signed_in": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_signin_shown": {
+      "type": "object",
+      "x-sender": "page",
+      "x-profile": false,
+      "properties": {
+        "name": {
+          "const": "chat_signin_shown"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "had_query"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "had_query": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_signin_completed": {
+      "type": "object",
+      "x-sender": "page",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_signin_completed"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "method"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "method": {
+              "type": "string",
+              "enum": [
+                "google",
+                "email",
+                "handoff"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_message_sent": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_message_sent"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "chat_id",
+            "tier",
+            "turn",
+            "chars_bucket",
+            "masked",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "tier": {
+              "type": "string",
+              "enum": [
+                "free",
+                "owner",
+                "staff"
+              ]
+            },
+            "turn": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "chars_bucket": {
+              "type": "string",
+              "enum": [
+                "<50",
+                "50-200",
+                "200-800",
+                "800+"
+              ]
+            },
+            "masked": {
+              "type": "boolean"
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_rate_limited": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_rate_limited"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "scope",
+            "tier",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "cooldown",
+                "auth",
+                "not_owner",
+                "bad_body",
+                "message_too_long",
+                "chat_full",
+                "turn_running",
+                "rate_minute",
+                "rate_day",
+                "rate_month",
+                "cost_day",
+                "new_account",
+                "new_ip",
+                "ip",
+                "streams",
+                "tickets",
+                "handoff_rate",
+                "budget_paused",
+                "disabled",
+                "upstream"
+              ]
+            },
+            "tier": {
+              "type": "string",
+              "enum": [
+                "free",
+                "owner",
+                "staff"
+              ]
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_answer_completed": {
+      "type": "object",
+      "x-sender": "eve",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_answer_completed"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "chat_id",
+            "model",
+            "latency_ms",
+            "first_token_ms",
+            "input_tokens",
+            "output_tokens",
+            "cost_micros",
+            "cost_bucket",
+            "model_calls",
+            "sources_count",
+            "outcome",
+            "budget",
+            "known_issue",
+            "tier",
+            "turn",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "model": {
+              "type": "string",
+              "enum": [
+                "sonnet",
+                "haiku"
+              ]
+            },
+            "latency_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "first_token_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cost_micros": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cost_bucket": {
+              "type": "string",
+              "enum": [
+                "<0.5c",
+                "0.5-1c",
+                "1-2c",
+                "2-5c",
+                "5-10c",
+                "10c+"
+              ]
+            },
+            "model_calls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sources_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "answered",
+                "handoff_offered",
+                "declined",
+                "error",
+                "cancelled"
+              ]
+            },
+            "budget": {
+              "type": "string",
+              "enum": [
+                "normal",
+                "degrade"
+              ]
+            },
+            "known_issue": {
+              "type": "boolean"
+            },
+            "tier": {
+              "type": "string",
+              "enum": [
+                "free",
+                "owner",
+                "staff"
+              ]
+            },
+            "turn": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_gate": {
+      "type": "object",
+      "x-sender": "eve",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_gate"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "chat_id",
+            "result",
+            "stage",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "result": {
+              "type": "string",
+              "enum": [
+                "ok",
+                "money",
+                "account",
+                "offtopic",
+                "jailbreak",
+                "harmful",
+                "no_answer",
+                "unavailable"
+              ]
+            },
+            "stage": {
+              "type": "string",
+              "enum": [
+                "keyword",
+                "haiku",
+                "model",
+                "retrieval",
+                "output"
+              ]
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_code_check": {
+      "type": "object",
+      "x-sender": "page",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_code_check"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "chat_id",
+            "blocks",
+            "unverified"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "blocks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unverified": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_feedback": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_feedback"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "chat_id",
+            "value",
+            "turn",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "value": {
+              "type": "string",
+              "enum": [
+                "solved",
+                "stuck"
+              ]
+            },
+            "turn": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_handoff": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_handoff"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "reason",
+            "with_report",
+            "with_chat",
+            "transcript_expired",
+            "verified",
+            "ok",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "money",
+                "account",
+                "stuck",
+                "user_request",
+                "limit"
+              ]
+            },
+            "with_report": {
+              "type": "boolean"
+            },
+            "with_chat": {
+              "type": "boolean"
+            },
+            "transcript_expired": {
+              "type": "boolean"
+            },
+            "verified": {
+              "type": "boolean"
+            },
+            "ok": {
+              "type": "boolean"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_report_attached": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_report_attached"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "chat_id",
+            "via",
+            "ok",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "chat_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{16}$"
+            },
+            "via": {
+              "type": "string",
+              "enum": [
+                "install_failed",
+                "assistant_ask"
+              ]
+            },
+            "ok": {
+              "type": "boolean"
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_rating_prompt": {
+      "type": "object",
+      "x-sender": "page",
+      "x-profile": true,
+      "properties": {
+        "name": {
+          "const": "chat_rating_prompt"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "action"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "shown",
+                "rate",
+                "dismiss"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_budget": {
+      "type": "object",
+      "x-sender": "worker",
+      "x-profile": false,
+      "properties": {
+        "name": {
+          "const": "chat_budget"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "state",
+            "cause",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/entry"
+            },
+            "surface": {
+              "$ref": "#/$defs/surface"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "normal",
+                "degrade",
+                "free_paused",
+                "owners_paused",
+                "month_stop"
+              ]
+            },
+            "cause": {
+              "type": "string",
+              "enum": [
+                "spend",
+                "watchdog",
+                "floor"
+              ]
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "chat_link_sent": {
+      "type": "object",
+      "x-sender": "products-api",
+      "x-profile": false,
+      "properties": {
+        "name": {
+          "const": "chat_link_sent"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "surface",
+            "kind",
+            "had_query",
+            "__timestamp"
+          ],
+          "properties": {
+            "entry": {
+              "const": "discord"
+            },
+            "surface": {
+              "const": "web"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "slash",
+                "mod_command"
+              ]
+            },
+            "had_query": {
+              "type": "boolean"
+            },
+            "__timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

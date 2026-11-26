@@ -6,6 +6,8 @@ import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { SEASON, SALE } from "@/lib/season.mjs";
+import { CHAT_PAGE_EVENTS } from "@/lib/chat-contract/page-events.mjs";
+import { openPanelFilter } from "@/lib/openpanel-filter.mjs";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -59,8 +61,8 @@ export const metadata: Metadata = {
 // cookies). Left out when the build has no client id. With Do Not Track or Global Privacy
 // Control on, the filter drops every event, so nothing is sent.
 const OPENPANEL_CLIENT_ID = process.env.OPENPANEL_WEB_CLIENT_ID;
-const RESPECT_OPT_OUT =
-  "function(){var n=navigator;return !(n.doNotTrack==='1'||window.doNotTrack==='1'||n.globalPrivacyControl===true)}";
+// The OpenPanel filter (lib/openpanel-filter.mjs): DNT/GPC opt-out, plus the /chat allowlist.
+const OPENPANEL_FILTER = openPanelFilter(CHAT_PAGE_EVENTS);
 
 export const viewport = {
   themeColor: "#19120E",
@@ -85,7 +87,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               clientId={OPENPANEL_CLIENT_ID}
               trackScreenViews
               trackOutgoingLinks
-              filter={RESPECT_OPT_OUT}
+              filter={OPENPANEL_FILTER}
             />
             <DocsEvents />
           </>

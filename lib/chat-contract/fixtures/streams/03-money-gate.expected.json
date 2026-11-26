@@ -1,0 +1,33 @@
+{
+  "fixture": "03-money-gate",
+  "title": "Money gate: fixed reply + offer_handoff{money, purchase_locked}; no answer-model model.started (mock 9)",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE03",
+  "lines": 11,
+  "ui": "The fixed reply text (phase narration, turn.settled has no reply ids: render narration text too) and the support form card prefilled reason=money topic=purchase_locked. No feedback buttons. model.started.modelId is andronix/gate-money.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "I can't help with payments, refunds or purchases here, but our support team can. Send them a message below and they'll reply by email."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": {
+        "reason": "money",
+        "topic": "purchase_locked"
+      },
+      "decline": null,
+      "feedbackButtons": false,
+      "answerModelStarted": false,
+      "modelIds": [
+        "andronix/gate-money"
+      ],
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "fixture": "06-stuck-handoff",
+  "title": "Stuck: offer_handoff{stuck, install} (mock 10 right)",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE06",
+  "lines": 17,
+  "ui": "Narration sentence + support form prefilled reason=stuck topic=install. No feedback buttons.",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "I couldn't find a fix for this in the docs. The support team can look at your install log."
+      ],
+      "codeBlocks": [],
+      "sourceChips": [],
+      "knownIssueChip": null,
+      "handoff": {
+        "reason": "stuck",
+        "topic": "install"
+      },
+      "decline": null,
+      "feedbackButtons": false,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/ground-search",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ]
+}
