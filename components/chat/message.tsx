@@ -102,7 +102,7 @@ export function SourceChips({ tools }: { tools: ToolPart[] }) {
   if (!cards.length && !knownIssue) return null;
   return (
     <div className="flex flex-col gap-2">
-      {knownIssue && <span className="chat-chip chat-chip-status self-start">Known issue · our team is on it</span>}
+      {knownIssue && <span className="chat-chip chat-chip-status chat-chip-start">Known issue · our team is on it</span>}
       {cards.length > 0 && (
         <div className="chat-sources">
           <Presence initial={false}>

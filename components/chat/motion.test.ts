@@ -76,12 +76,12 @@ test("selection action: the passage becomes a prefilled question, never auto-sen
   assert.ok(decodeURIComponent(askHref("x".repeat(1000)).split("#q=")[1]).length < 460);
 });
 
-test("motion stays on /chat: only components/chat imports motion; features load lazily", async () => {
+test("motion stays on /chat and out of first JS: only motion-runtime imports it, loaded with import()", async () => {
   const { execSync } = await import("node:child_process");
-  const hits = execSync("grep -rl --include=*.ts --include=*.tsx \"from \\\"motion/react\\\"\" app components lib || true", { cwd: new URL("../..", import.meta.url).pathname, encoding: "utf8" }).trim().split("\n").filter(Boolean);
-  assert.ok(hits.length > 0);
-  for (const h of hits) assert.match(h, /^components\/chat\//, h);
+  const hits = execSync("grep -rlE --include=*.ts --include=*.tsx \"from \\\"motion/\" app components lib || true", { cwd: new URL("../..", import.meta.url).pathname, encoding: "utf8" }).trim().split("\n").filter(Boolean);
+  assert.deepEqual(hits.filter((h) => !h.endsWith("motion-variants.ts")), ["components/chat/motion-runtime.ts"]);
+  assert.match(readFileSync(new URL("./motion-variants.ts", import.meta.url), "utf8"), /import type \{[^}]+\} from "motion\/react"/);
   const motion = readFileSync(new URL("./motion.tsx", import.meta.url), "utf8");
-  assert.match(motion, /LazyMotion features=\{loadFeatures\} strict/);
-  assert.match(motion, /import\("\.\/motion-features"\)/);
+  assert.match(motion, /import\("\.\/motion-runtime"\)/);
+  assert.doesNotMatch(motion, /^import [^t].*from "\.\/motion-runtime"/m);
 });

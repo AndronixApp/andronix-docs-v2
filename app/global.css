@@ -442,8 +442,3 @@ html[data-sale] .season-bar a.sale-on { display: inline !important; white-space:
 .mark-season { display: none; }
 html[data-season="halloween"] .mark-season { display: inline-block; }
 html[data-season="halloween"] .mark-regular { display: none; }
-
-/* "Ask the assistant about this" on docs selections (components/selection-ask.tsx, behind NEXT_PUBLIC_CHAT_ENTRY) */
-.selection-ask { position: absolute; z-index: 50; transform: translateX(-50%); padding: .35rem .8rem; border-radius: 999px; background: var(--andronix-primary); color: var(--andronix-on-primary); font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; box-shadow: 0 4px 14px rgb(0 0 0 / .35); animation: selection-ask-in .15s ease-out both; }
-@keyframes selection-ask-in { from { opacity: 0; transform: translate(-50%, 4px); } }
-@media (prefers-reduced-motion: reduce) { .selection-ask { animation: none; } }

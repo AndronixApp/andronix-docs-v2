@@ -7,11 +7,11 @@ import { MessageCircle, TriangleAlert } from 'lucide-react';
 
 // The sidebar pill to /chat stays off until rollout reaches `all` (build plan 1.9, review 2 F15).
 const CHAT_ENTRY = process.env.NEXT_PUBLIC_CHAT_ENTRY === '1';
-// "Ask the assistant about this" on selections: a build-time branch, so with the flag off none of
-// its code (not even the dynamic loader) is in the docs bundle.
-const SelectionAskLoader = CHAT_ENTRY ? require('@/components/selection-ask-loader').SelectionAskLoader : null;
+
 import { SEASON } from '@/lib/season.mjs';
 import { SeasonBar, SeasonSidebarCard } from '@/components/season';
+// "Ask the assistant about this" on selections; an empty module unless NEXT_PUBLIC_CHAT_ENTRY=1 (next.config).
+import { SelectionAskLoader } from '@/components/selection-ask-loader';
 
 export const metadata: Metadata = {
   title: {
@@ -65,7 +65,7 @@ export default function RootDocsLayout({ children }: { children: React.ReactNode
         ),
       }}
     >
-      {SelectionAskLoader && <SelectionAskLoader />}
+      {CHAT_ENTRY && SelectionAskLoader && <SelectionAskLoader />}
       {children}
     </DocsLayout>
     </>

@@ -13,6 +13,14 @@ const config = {
   // (scripts/write-redirects.mjs, from lib/redirects.mjs).
   output: 'export',
   images: { unoptimized: true },
+  // only /chat imports motion; this lets the bundler keep just the parts it uses
+  experimental: { optimizePackageImports: ['motion'] },
+  // "Ask the assistant about this" (components/selection-ask*) is off until the chat entry ships:
+  // the loader is a client module, so even an unused import would add next/dynamic to every docs
+  // page. With the flag off it resolves to an empty server module instead.
+  ...(process.env.NEXT_PUBLIC_CHAT_ENTRY === '1'
+    ? {}
+    : { turbopack: { resolveAlias: { '@/components/selection-ask-loader': './components/selection-ask-off.ts' } } }),
   // Dev only (CHAT_DEV_PROXY=http://127.0.0.1:8799): `next dev` forwards the chat Worker's paths
   // to a local `wrangler dev`, so /chat works same-origin. Never set for builds.
   ...(process.env.CHAT_DEV_PROXY && process.env.NODE_ENV !== 'production'

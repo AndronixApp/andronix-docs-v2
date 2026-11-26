@@ -11,7 +11,7 @@ import { ChatView } from "./chat-view";
 import { SignInCard, VerifyEmailCard, Card, Primary } from "./cards";
 import { DISCLAIMER } from "./copy";
 import { useChatEvents, type Entry, type Surface } from "./events";
-import { Appear, ChatMotion, Presence } from "./motion";
+import { Appear, ChatMotion, Presence, loadMotion, type MotionRuntime } from "./motion";
 
 type Boot = { q: string; entry: Entry; handoff: string | null; embed: boolean };
 
@@ -39,17 +39,20 @@ export function ChatPage() {
   const [boot, setBoot] = useState<Boot | null>(null);
   const [auth, setAuth] = useState<Auth | null>(null);
   const [failed, setFailed] = useState(false);
+  // Motion loads alongside auth (never blocks it for long: a failed load renders without animation)
+  const [rt, setRt] = useState<MotionRuntime | null | undefined>(undefined);
   useEffect(() => {
     const b = readFragment();
     if (b.embed) document.documentElement.dataset.chatEmbed = "app";
+    loadMotion().then(setRt);
     shimReady.then(() => {
       setBoot(b);
       return chatAuth(b.embed || bridge.isApp()).then(setAuth, () => setFailed(true));
     });
   }, []);
   if (failed) return <div className="chat-shell"><div className="chat-main"><p className="chat-error">The assistant can't load right now. Try again later.</p></div></div>;
-  if (!boot || !auth) return <div className="chat-shell" aria-busy="true" />;
-  return <ChatMotion><ChatShell boot={boot} auth={auth} /></ChatMotion>;
+  if (!boot || !auth || rt === undefined) return <div className="chat-shell" aria-busy="true" />;
+  return <ChatMotion rt={rt}><ChatShell boot={boot} auth={auth} /></ChatMotion>;
 }
 
 function ChatShell({ boot, auth }: { boot: Boot; auth: Auth }) {

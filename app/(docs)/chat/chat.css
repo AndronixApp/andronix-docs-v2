@@ -205,3 +205,4 @@ html[data-chat-embed="app"] .chat-shell { padding-top: .75rem; min-height: 100dv
   .chat-check { animation: none; }
   .chat-trace-caret, .chat-composer, .chat-source-card { transition: none; }
 }
+.chat-chip-start { align-self: flex-start; }

@@ -6,6 +6,7 @@
 
 import { useEffect, useState } from "react";
 import { askHref, SELECTION_MIN as MIN } from "./selection-ask-href";
+import "./selection-ask.css";
 
 
 export default function SelectionAsk() {
