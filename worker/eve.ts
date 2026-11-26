@@ -1,7 +1,8 @@
 // /eve/v1/* (4 routes, build plan 1.4): the Worker builds eve's body itself, adds x-eve-edge and
 // the x-andronix-* headers, and passes eve's answers through. Any other /eve/* path → 404.
 
-import { charsBucket, mask, parseCancel, parseCreate, parseFollowup, type Entry } from "./body.ts";
+import { charsBucket, imagesHeader, mask, parseCancel, parseCreate, parseFollowup, withImageMarkers, type Entry } from "./body.ts";
+import { imageAttachedEvent, imagesEnabledFor } from "./images.ts";
 import { authenticate, chatEnabled, reportTransition, type Caller, type Ctx } from "./context.ts";
 import type { TurnSignal } from "./limiter/core.ts";
 import { chatIdFor, sha256Hex } from "./crypto.ts";
@@ -19,14 +20,17 @@ const STREAM_PARAMS: Record<string, RegExp> = { startIndex: /^-?\d{1,9}$/, inclu
  * `x-andronix-entry` (A's C1 proposal). They're folded into the body before the 1.4 key check
  * and never forwarded: the Worker builds every x-andronix-* header toward eve itself.
  */
-async function bodyWithHeaders(request: Request, keys: ("clientMsgId" | "entry")[]): Promise<unknown> {
+async function bodyWithHeaders(request: Request, keys: ("clientMsgId" | "entry" | "images")[]): Promise<unknown> {
   const body = await readJson(request);
   if (!body || typeof body !== "object" || Array.isArray(body)) return body;
   const b = body as Record<string, unknown>;
   const msgId = request.headers.get("x-andronix-client-msg-id");
   const entry = request.headers.get("x-andronix-entry");
+  // image ids ride as a per-send header too (`x-andronix-images: id1,id2`), like clientMsgId
+  const images = imagesHeader(request.headers.get("x-andronix-images"));
   if (keys.includes("clientMsgId") && msgId && b.clientMsgId === undefined) b.clientMsgId = msgId;
   if (keys.includes("entry") && entry && b.entry === undefined) b.entry = entry;
+  if (keys.includes("images") && images && b.images === undefined) b.images = images;
   return b;
 }
 
@@ -104,16 +108,20 @@ function replayed(r: { status: number; body: string; sessionId?: string }): Resp
 async function create(ctx: Ctx, request: Request): Promise<Response> {
   const caller = await gate(ctx, request);
   if (caller instanceof Response) return caller;
-  const parsed = parseCreate(await bodyWithHeaders(request, ["clientMsgId", "entry"]), ctx.limits.maxChars);
+  const parsed = parseCreate(await bodyWithHeaders(request, ["clientMsgId", "entry", "images"]), ctx.limits.maxChars, ctx.limits.images.perMessage);
   if (!parsed.ok) return fail(parsed.code);
-  const { message, clientMsgId, entry } = parsed.value;
-  const admit = await ctx.limiter.call("admitCreate", caller.who, clientMsgId);
+  const { message, clientMsgId, entry, images } = parsed.value;
+  if (images.length && !imagesEnabledFor(ctx, caller)) return fail("image_limit", 86400);
+  const admit = await ctx.limiter.call("admitCreate", caller.who, clientMsgId, images);
   if (!admit.ok) { if (admit.code !== "turn_running") rateLimited(ctx, caller, admit.code, entry); return fail(admit.code, admit.retryAfter); }
   if (admit.kind === "replay") return replayed(admit);
   reportTransition(ctx, admit.transition);
-  const release = () => (clientMsgId ? ctx.limiter.call("releaseDedupe", caller.who.uid, "create", clientMsgId) : undefined);
+  const release = async () => {
+    if (clientMsgId) await ctx.limiter.call("releaseDedupe", caller.who.uid, "create", clientMsgId);
+    if (images.length) await ctx.limiter.call("releaseImages", images);
+  };
   const masked = mask(message);
-  const body: Record<string, string> = { message: masked.text };
+  const body: Record<string, string> = { message: withImageMarkers(masked.text, images) };
   // eve's create takes operationId for retry-safe creates (not idempotencyKey; spike C2)
   if (clientMsgId) body.operationId = await sha256Hex(`${caller.who.uid}:${clientMsgId}`);
   const headers = await eveHeaders(ctx.env, request, caller, entry, admit.budget);
@@ -126,6 +134,10 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
   try { const j = JSON.parse(text); if (typeof j.sessionId === "string") sessionId = j.sessionId; } catch {}
   if (!sessionId) { await release(); return fail("upstream"); }
   await ctx.limiter.call("bindSession", caller.who.uid, sessionId, entry);
+  if (images.length) {
+    const bytes = await ctx.limiter.call("attachImages", caller.who.uid, sessionId, images);
+    imageAttachedEvent(ctx, caller, images.length, bytes, entry, surfaceFor(entry));
+  }
   await ctx.limiter.call("turnAccepted", sessionId, deliveryIdOf(text));
   if (clientMsgId) await ctx.limiter.call("recordResult", caller.who.uid, "create", clientMsgId, res.status, text, sessionId);
   ctx.exec.waitUntil(track(ctx.env, {
@@ -138,10 +150,11 @@ async function create(ctx: Ctx, request: Request): Promise<Response> {
 async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<Response> {
   const caller = await gate(ctx, request);
   if (caller instanceof Response) return caller;
-  const parsed = parseFollowup(await bodyWithHeaders(request, ["clientMsgId"]), ctx.limits.maxChars);
+  const parsed = parseFollowup(await bodyWithHeaders(request, ["clientMsgId", "images"]), ctx.limits.maxChars, ctx.limits.images.perMessage);
   if (!parsed.ok) return fail(parsed.code);
-  const { message, clientMsgId } = parsed.value;
-  const admit = await ctx.limiter.call("admitFollowup", caller.who, sessionId, clientMsgId);
+  const { message, clientMsgId, images } = parsed.value;
+  if (images.length && !imagesEnabledFor(ctx, caller)) return fail("image_limit", 86400);
+  const admit = await ctx.limiter.call("admitFollowup", caller.who, sessionId, clientMsgId, images);
   if (!admit.ok) {
     if (admit.code !== "not_owner" && admit.code !== "turn_running" && admit.code !== "chat_full") {
       const s = await ctx.limiter.call("session", caller.who.uid, sessionId);
@@ -152,7 +165,7 @@ async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<
   if (admit.kind === "replay") return replayed({ ...admit, sessionId });
   reportTransition(ctx, admit.transition);
   const masked = mask(message);
-  const body: Record<string, string> = { message: masked.text };
+  const body: Record<string, string> = { message: withImageMarkers(masked.text, images) };
   if (clientMsgId) body.idempotencyKey = await sha256Hex(`${caller.who.uid}:${clientMsgId}`);
   const headers = await eveHeaders(ctx.env, request, caller, admit.entry, admit.budget, sessionId);
   headers.set("content-type", "application/json");
@@ -160,9 +173,14 @@ async function followup(ctx: Ctx, request: Request, sessionId: string): Promise<
   if (!res || !res.ok) {
     await ctx.limiter.call("turnRejected", sessionId);
     if (clientMsgId) await ctx.limiter.call("releaseDedupe", caller.who.uid, sessionId, clientMsgId);
+    if (images.length) await ctx.limiter.call("releaseImages", images);
     return res ? passthrough(res) : fail("upstream");
   }
   const text = await res.text();
+  if (images.length) {
+    const bytes = await ctx.limiter.call("attachImages", caller.who.uid, sessionId, images);
+    imageAttachedEvent(ctx, caller, images.length, bytes, admit.entry, surfaceFor(admit.entry));
+  }
   await ctx.limiter.call("turnAccepted", sessionId, deliveryIdOf(text));
   if (clientMsgId) await ctx.limiter.call("recordResult", caller.who.uid, sessionId, clientMsgId, res.status, text, sessionId);
   ctx.exec.waitUntil(track(ctx.env, {

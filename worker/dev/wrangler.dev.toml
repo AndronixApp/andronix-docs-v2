@@ -20,9 +20,14 @@ class_name = "ChatLimiter"
 tag = "v1"
 new_sqlite_classes = ["ChatLimiter"]
 
+[[r2_buckets]]
+binding = "CHAT_IMAGES"
+bucket_name = "andronix-chat-img-dev"
+
 [vars]
 CHAT_ENABLED = "1"
 CHAT_ROLLOUT = "all"
+CHAT_IMAGES_ROLLOUT = "all"
 CHAT_DEV = "1"
 FIREBASE_PROJECT_ID = "demo-andronix"
 FIREBASE_AUTH_PROXY_PROJECT = "andronix-techriz"

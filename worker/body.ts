@@ -2,6 +2,7 @@
 // The Worker builds the eve body itself; the client can't set eve's other fields.
 
 import type { ErrorCode } from "../lib/chat-contract/http/http-errors.ts";
+import { MARKER_LIKE } from "../lib/chat-contract/images.ts";
 
 export const ENTRIES = ["docs", "discord", "app_help", "app_install_failed"] as const;
 export type Entry = (typeof ENTRIES)[number];
@@ -30,12 +31,36 @@ function exactKeys(body: unknown, required: string[], optional: string[]): body 
   return keys.every((k) => required.includes(k) || optional.includes(k));
 }
 
-function message(v: unknown, maxChars: number): Parsed<string> {
+/** The page's text for an image-only message (eve's client won't send an empty message); never forwarded. */
+export const IMAGE_ONLY_TEXT = "\u2063";
+const IMAGE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+
+/**
+ * User-typed image markers are removed (only the Worker adds them). Empty text is allowed when
+ * the message carries images (image-only messages, lead decision 6).
+ */
+function message(v: unknown, maxChars: number, hasImages = false): Parsed<string> {
   if (typeof v !== "string") return fail("bad_body");
-  const t = v.trim();
-  if (t.length === 0) return fail("bad_body");
+  const t = v.replaceAll(IMAGE_ONLY_TEXT, "").replace(MARKER_LIKE, "").trim();
+  if (t.length === 0 && !hasImages) return fail("bad_body");
   if ([...t].length > maxChars) return fail("message_too_long");
   return { ok: true, value: t };
+}
+
+/** ≤ perMessage distinct lowercase uuid-v4 image ids (folded from the `x-andronix-images` header). */
+function imageIds(v: unknown, perMessage: number): Parsed<string[]> {
+  if (v === undefined) return { ok: true, value: [] };
+  if (!Array.isArray(v) || v.length === 0) return fail("bad_body");
+  if (v.length > perMessage) return fail("image_limit");
+  if (!v.every((x) => typeof x === "string" && IMAGE_ID.test(x))) return fail("bad_body");
+  if (new Set(v).size !== v.length) return fail("bad_body");
+  return { ok: true, value: v as string[] };
+}
+
+/** `x-andronix-images: id1,id2` → array; undefined when absent or empty. */
+export function imagesHeader(h: string | null): string[] | undefined {
+  if (!h || !h.trim()) return undefined;
+  return h.split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
 }
 
 function clientMsgId(v: unknown): Parsed<string | undefined> {
@@ -43,27 +68,37 @@ function clientMsgId(v: unknown): Parsed<string | undefined> {
   return typeof v === "string" && UUID.test(v) ? { ok: true, value: v.toLowerCase() } : fail("bad_body");
 }
 
-export type CreateBody = { message: string; clientMsgId?: string; entry: Entry };
-export type FollowupBody = { message: string; clientMsgId?: string };
+export type CreateBody = { message: string; clientMsgId?: string; entry: Entry; images: string[] };
+export type FollowupBody = { message: string; clientMsgId?: string; images: string[] };
 export type CancelBody = { turnId?: string };
 
-export function parseCreate(body: unknown, maxChars: number): Parsed<CreateBody> {
-  if (!exactKeys(body, ["message", "entry"], ["clientMsgId"])) return fail("bad_body");
+export function parseCreate(body: unknown, maxChars: number, perMessage = 2): Parsed<CreateBody> {
+  if (!exactKeys(body, ["message", "entry"], ["clientMsgId", "images"])) return fail("bad_body");
   if (!isEntry(body.entry)) return fail("bad_body");
-  const m = message(body.message, maxChars);
+  const i = imageIds(body.images, perMessage);
+  if (!i.ok) return i;
+  const m = message(body.message, maxChars, i.value.length > 0);
   if (!m.ok) return m;
   const c = clientMsgId(body.clientMsgId);
   if (!c.ok) return c;
-  return { ok: true, value: { message: m.value, clientMsgId: c.value, entry: body.entry } };
+  return { ok: true, value: { message: m.value, clientMsgId: c.value, entry: body.entry, images: i.value } };
 }
 
-export function parseFollowup(body: unknown, maxChars: number): Parsed<FollowupBody> {
-  if (!exactKeys(body, ["message"], ["clientMsgId"])) return fail("bad_body");
-  const m = message(body.message, maxChars);
+export function parseFollowup(body: unknown, maxChars: number, perMessage = 2): Parsed<FollowupBody> {
+  if (!exactKeys(body, ["message"], ["clientMsgId", "images"])) return fail("bad_body");
+  const i = imageIds(body.images, perMessage);
+  if (!i.ok) return i;
+  const m = message(body.message, maxChars, i.value.length > 0);
   if (!m.ok) return m;
   const c = clientMsgId(body.clientMsgId);
   if (!c.ok) return c;
-  return { ok: true, value: { message: m.value, clientMsgId: c.value } };
+  return { ok: true, value: { message: m.value, clientMsgId: c.value, images: i.value } };
+}
+
+/** The text eve gets: masked user text, then one marker per admitted image. */
+export function withImageMarkers(masked: string, images: readonly string[]): string {
+  const markers = images.map((id) => `[[img:${id}]]`).join("");
+  return masked ? (markers ? `${masked}\n${markers}` : masked) : markers;
 }
 
 export function parseCancel(body: unknown): Parsed<CancelBody> {
@@ -80,16 +115,19 @@ export const TICKET_TOPICS = ["purchase_locked", "refund", "billing_other", "acc
 export type TicketBody = {
   sessionId?: string; reason: (typeof TICKET_REASONS)[number]; topic?: (typeof TICKET_TOPICS)[number];
   orderId?: string; note?: string; includeChat: boolean; reportId?: string;
+  /** Opt-in box "Attach my screenshots", off by default (lead decision 4). */
+  includeImages?: boolean;
 };
 
 const isShortId = (v: unknown) => typeof v === "string" && v.length > 0 && v.length <= 200;
 
 export function parseTicket(body: unknown): Parsed<TicketBody> {
-  if (!exactKeys(body, ["reason", "includeChat"], ["sessionId", "topic", "orderId", "note", "reportId"])) return fail("bad_body");
+  if (!exactKeys(body, ["reason", "includeChat"], ["sessionId", "topic", "orderId", "note", "reportId", "includeImages"])) return fail("bad_body");
   const b = body as Record<string, unknown>;
   if (!(TICKET_REASONS as readonly unknown[]).includes(b.reason)) return fail("bad_body");
   if (b.topic !== undefined && !(TICKET_TOPICS as readonly unknown[]).includes(b.topic)) return fail("bad_body");
   if (typeof b.includeChat !== "boolean") return fail("bad_body");
+  if (b.includeImages !== undefined && typeof b.includeImages !== "boolean") return fail("bad_body");
   if (b.sessionId !== undefined && !isShortId(b.sessionId)) return fail("bad_body");
   if (b.reportId !== undefined && !isShortId(b.reportId)) return fail("bad_body");
   if (b.orderId !== undefined && (typeof b.orderId !== "string" || !ORDER_ID_PATTERN.test(b.orderId))) return fail("bad_body");

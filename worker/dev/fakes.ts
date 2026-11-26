@@ -32,6 +32,8 @@ interface Delivery { id: string; source: "channel" | "cancel" | "control"; line:
 interface Session { id: string; lines: string[]; recorded: number; deliveries: Delivery[]; next: number; released: number; synth: number }
 const sessions = new Map<string, Session>();
 const requests: unknown[] = [];
+/** A valid 1×1 JPEG, the fake re-encode's output for PNG/WebP input. */
+const TINY_JPEG = Uint8Array.from(atob("/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA="), (c) => c.charCodeAt(0));
 const events: unknown[] = [];
 const accounts = new Map<string, { tier: "free" | "owner"; createdAt: string }>();
 const handoffs = new Map<string, { uid: string; entry: string; verifierHash: string; used: boolean; exp: number; reportId?: string }>();
@@ -125,6 +127,20 @@ async function fakeEve(req: Request, url: URL): Promise<Response> {
     for (const id of body!.sessionIds) sessions.delete(id);
     erased.push({ pid: body!.pid!, sessionIds: body!.sessionIds });
     return j({ ok: true, results });
+  }
+  if (p === "/eve/v1/andronix/image-reencode" && req.method === "POST") {
+    // A's sharp route (contract/images.ts): edge + internal secret, raw bytes → JPEG. The fake
+    // echoes a JPEG and turns PNG/WebP into a fixed tiny JPEG; "TOO-LARGE" inside → 413.
+    if (req.headers.get("x-eve-edge") !== EDGE || req.headers.get("x-chat-internal") !== "dev-internal-secret") return j({ ok: false, code: "auth" }, 401);
+    const b = new Uint8Array(await req.arrayBuffer());
+    requests.push({ kind: "reencode", path: p, query: {}, body: { bytes: b.byteLength }, headers: {}, problems: [] });
+    if (new TextDecoder().decode(b).includes("TOO-LARGE")) return j({ ok: false, code: "image_too_large" }, 413);
+    const isJpeg = b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+    const isPng = b[0] === 0x89 && b[1] === 0x50;
+    const isWebp = b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50;
+    if (!isJpeg && !isPng && !isWebp) return j({ ok: false, code: "image_type" }, 415);
+    const out = isJpeg ? b : TINY_JPEG;
+    return new Response(out, { status: 200, headers: { "content-type": "image/jpeg", "x-image-width": "705", "x-image-height": "1568" } });
   }
   if (p === "/eve/v1/session" && req.method === "POST") {
     const body = await req.json().catch(() => null) as { message?: string } | null;

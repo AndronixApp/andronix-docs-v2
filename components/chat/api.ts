@@ -7,6 +7,8 @@ export type Me = {
   tier: "free" | "owner" | "staff"; pid: string; verified: boolean; newAccount: boolean;
   limits: { minute: Quota; day: Quota; month: Quota; costDay: { usedMicros: number; maxMicros: number } };
   budget: "normal" | "degrade" | "paused"; rollout: boolean; cooldownUntil?: string | null;
+  /** Image attachments (absent on older Workers). */
+  images?: { enabled: boolean; perMessage: number; perChat: number; day: { used: number; max: number } };
 };
 type Quota = { used: number; max: number; resetAt?: string };
 
@@ -41,7 +43,7 @@ export const attachReport = (token: string, sessionId: string, reportId: string)
   call<{ ok: true }>("/chat-api/report-attach", token, { method: "POST", body: JSON.stringify({ sessionId, reportId }) });
 export const sendFeedback = (token: string, sessionId: string, turnId: string, value: "solved" | "stuck") =>
   call<void>("/chat-api/feedback", token, { method: "POST", body: JSON.stringify({ sessionId, turnId, value }) });
-export type TicketInput = { sessionId?: string; reason: "money" | "account" | "stuck" | "user_request" | "limit"; topic?: string; orderId?: string; note?: string; includeChat: boolean; reportId?: string };
+export type TicketInput = { sessionId?: string; reason: "money" | "account" | "stuck" | "user_request" | "limit"; topic?: string; orderId?: string; note?: string; includeChat: boolean; reportId?: string; includeImages?: boolean };
 export const fileTicket = (token: string, t: TicketInput) => call<{ ticketRef: string }>("/chat-api/ticket", token, { method: "POST", body: JSON.stringify(t) });
 
 /** chat_id = sha256("chat:" + sessionId)[:16], the same value the Worker sends. */

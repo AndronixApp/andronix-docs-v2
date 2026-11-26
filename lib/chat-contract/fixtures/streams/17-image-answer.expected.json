@@ -1,0 +1,46 @@
+{
+  "fixture": "17-image-answer",
+  "title": "Image answer: user text + one [[img:…]] marker; same answer as fixture 01",
+  "eveVersion": "1.5.0",
+  "streamVersion": 27,
+  "sessionId": "wrun_FIXTURE17",
+  "lines": 26,
+  "ui": "Two code blocks, both verified (Copy shown after turn.settled). Source chips for reference/andronix-command and termux/install-problems. Solved / Still stuck under the turn. The user bubble shows the text without the marker plus one \"Image\" chip (no picture after a reload).",
+  "sessionEnded": null,
+  "turns": [
+    {
+      "turnId": "turn_0",
+      "outcome": "completed",
+      "text": [
+        "In Termux, one command installs Debian with the XFCE desktop:\n\n```bash\nandronix install debian --de xfce\n```\n\nWhen it finishes, open the desktop full screen in Termux:X11:\n\n```bash\nandronix desktop debian\n```\n\n1. Keep Termux open while it installs.\n2. If the install stops halfway, run the same install command again. It picks up where it stopped.\n\nSources: [The andronix command](https://docs.andronix.app/reference/andronix-command) and [Install problems](https://docs.andronix.app/termux/install-problems)."
+      ],
+      "codeBlocks": [
+        {
+          "code": "andronix install debian --de xfce",
+          "verified": true
+        },
+        {
+          "code": "andronix desktop debian",
+          "verified": true
+        }
+      ],
+      "sourceChips": [
+        "https://docs.andronix.app/reference/andronix-command",
+        "https://docs.andronix.app/termux/install-problems"
+      ],
+      "knownIssueChip": null,
+      "handoff": null,
+      "decline": null,
+      "feedbackButtons": true,
+      "answerModelStarted": true,
+      "modelIds": [
+        "andronix/ground-search",
+        "andronix/stub",
+        "andronix/stub",
+        "andronix/stub"
+      ],
+      "error": null
+    }
+  ],
+  "userImages": 1
+}

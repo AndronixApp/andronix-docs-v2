@@ -3,6 +3,8 @@
 export interface Env {
   ASSETS: Fetcher;
   CHAT_LIMITER: DurableObjectNamespace;
+  /** Re-encoded chat images, `<pid>/<imageId>.jpg`, ≤48 h (bucket lifecycle: 2 days). */
+  CHAT_IMAGES?: R2Bucket;
 
   FIREBASE_PROJECT_ID?: string;
   /** Project whose firebaseapp.com the /__/auth proxy targets (default FIREBASE_PROJECT_ID). */
@@ -24,6 +26,8 @@ export interface Env {
   OPS_WEBHOOK_URL?: string;
   CHAT_ENABLED?: string;
   CHAT_ROLLOUT?: string;
+  /** Image attachments: off | staff | owners | all (default off). One stage behind CHAT_ROLLOUT. */
+  CHAT_IMAGES_ROLLOUT?: string;
   LIMITS_JSON?: string;
   /** Dev and tests only: a fixed "now" (ms) offset for alarm and expiry tests. */
   DEV_CLOCK?: string;
@@ -58,6 +62,20 @@ export interface Limits {
   watchdogPauseMs: number;
   /** Strikes and cooldowns (guardrails §2), per uid over a rolling window. */
   abuse: AbuseLimits;
+  /** Image attachments (support-chat-images.md §1-2). */
+  images: ImageLimits;
+}
+
+export interface ImageLimits {
+  perMessage: number;
+  perChat: number;
+  /** Uploads per uid per UTC day, by limits tier (`new` = new or unverified: 0). */
+  perDay: Record<Tier, number>;
+  uploadsPerMinute: number;
+  /** An upload never sent is deleted after this. */
+  unsentMs: number;
+  /** Every image is deleted after this, whatever happens. */
+  maxAgeMs: number;
 }
 
 export type StrikeReason = "offtopic" | "jailbreak" | "harmful";
@@ -95,6 +113,14 @@ export const DEFAULT_LIMITS: Limits = {
     weights: { offtopic: 1, jailbreak: 2, harmful: 2 },
     steps: [{ points: 3, ms: 10 * 60_000 }, { points: 6, ms: 60 * 60_000 }, { points: 10, ms: 24 * 60 * 60_000 }],
   },
+  images: {
+    perMessage: 2,
+    perChat: 4,
+    perDay: { free: 4, owner: 12, staff: 50, new: 0 },
+    uploadsPerMinute: 6,
+    unsentMs: 15 * 60_000,
+    maxAgeMs: 48 * 60 * 60_000,
+  },
 };
 
 /** LIMITS_JSON overrides any subset of DEFAULT_LIMITS (tiers merge per tier). Bad JSON → defaults. */
@@ -106,7 +132,8 @@ export function parseLimits(json: string | undefined): Limits {
     for (const t of Object.keys(tiers) as Tier[]) tiers[t] = { ...tiers[t], ...(o.tiers?.[t] ?? {}) };
     const abuse = { ...DEFAULT_LIMITS.abuse, ...(o.abuse ?? {}), weights: { ...DEFAULT_LIMITS.abuse.weights, ...(o.abuse?.weights ?? {}) } };
     abuse.steps = [...abuse.steps].sort((a, b) => a.points - b.points);
-    return { ...DEFAULT_LIMITS, ...o, tiers, abuse };
+    const images = { ...DEFAULT_LIMITS.images, ...(o.images ?? {}), perDay: { ...DEFAULT_LIMITS.images.perDay, ...(o.images?.perDay ?? {}) } };
+    return { ...DEFAULT_LIMITS, ...o, tiers, abuse, images };
   } catch {
     return DEFAULT_LIMITS;
   }
@@ -130,5 +157,24 @@ export function inRollout(r: Rollout, tier: Tier, pid: string): boolean {
     case "staff": return false;
     case "owners": return tier === "owner";
     case "pct": return tier === "owner" || parseInt(pid.slice(0, 8), 16) % 100 < r.pct;
+  }
+}
+
+export type ImagesRollout = "off" | "staff" | "owners" | "all";
+export function parseImagesRollout(v: string | undefined): ImagesRollout {
+  return v === "staff" || v === "owners" || v === "all" ? v : "off";
+}
+
+/**
+ * Image attachments for this caller: only inside the chat rollout, then by CHAT_IMAGES_ROLLOUT
+ * (lead decision 2026-11-26: images stay one stage behind the chat).
+ */
+export function inImagesRollout(v: string | undefined, chatRollout: boolean, tier: "free" | "owner" | "staff"): boolean {
+  if (!chatRollout) return false;
+  switch (parseImagesRollout(v)) {
+    case "off": return false;
+    case "staff": return tier === "staff";
+    case "owners": return tier === "staff" || tier === "owner";
+    case "all": return true;
   }
 }

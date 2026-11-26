@@ -42,7 +42,35 @@ export class ChatLimiter extends DurableObject<Env> {
   /** Single RPC entry point: the Worker calls `limiter.call("admitCreate", who, id)`. */
   call<M extends CoreMethod>(method: M, ...args: Parameters<LimiterCore[M]>): ReturnType<LimiterCore[M]> {
     const fn = this.core[method] as (...a: unknown[]) => ReturnType<LimiterCore[M]>;
-    return fn.apply(this.core, args);
+    const out = fn.apply(this.core, args);
+    // Image bytes: deletes queued by the core (remove, chat end, harmful, erase, expiry) go to R2
+    // right away; an unsent upload or a sent image needs the alarm sooner than the daily sweep.
+    if (this.core.pendingImageDeletes().length) this.ctx.waitUntil(this.flushImageDeletes());
+    if (method === "registerImage" || method === "attachImages") this.ctx.waitUntil(this.scheduleImageAlarm());
+    return out;
+  }
+
+  /** Core time (dev clock offset applied) → wall time for setAlarm. */
+  private realTime(coreMs: number) { return coreMs - (this.clockOffset || Number(this.env.DEV_CLOCK || 0)); }
+
+  private async flushImageDeletes() {
+    const keys = this.core.pendingImageDeletes().slice(0, 1000);
+    if (!keys.length || !this.env.CHAT_IMAGES) return;
+    try {
+      await this.env.CHAT_IMAGES.delete(keys);
+      this.core.imageDeletesDone(keys);
+    } catch {
+      // kept in the queue; the alarm retries (and the bucket's 2-day lifecycle is the backstop)
+      await this.scheduleImageAlarm(5 * 60_000);
+    }
+  }
+
+  private async scheduleImageAlarm(minDelayMs = 0) {
+    const deadline = this.core.nextImageDeadline();
+    if (deadline === null) return;
+    const at = Math.max(Date.now() + 1000, this.realTime(deadline) + minDelayMs);
+    const current = await this.ctx.storage.getAlarm();
+    if (current === null || at < current) await this.ctx.storage.setAlarm(at);
   }
 
   /** Dev and tests only (guarded in the Worker): move the DO clock forward. */
@@ -51,10 +79,21 @@ export class ChatLimiter extends DurableObject<Env> {
     this.ctx.storage.kv.put("devclock", this.clockOffset);
     return this.clockOffset;
   }
-  devSweep() { return this.core.sweep(); }
+  devSweep() { const r = this.core.sweep(); this.ctx.waitUntil(this.flushImageDeletes()); return r; }
 
+  /** Daily sweep when due; image expiry and R2 deletes every time. */
   async alarm() {
-    this.core.sweep();
-    await this.ctx.storage.setAlarm(Date.now() + DAY);
+    const lastSweep = this.ctx.storage.kv.get<number>("lastSweep") ?? 0;
+    if (Date.now() - lastSweep >= DAY - 60_000) {
+      this.core.sweep();
+      this.ctx.storage.kv.put("lastSweep", Date.now());
+    } else {
+      this.core.sweepImagesNow();
+    }
+    await this.flushImageDeletes();
+    const ni = this.core.nextImageDeadline();
+    const nextImage = ni === null ? null : this.realTime(ni);
+    const nextDaily = (this.ctx.storage.kv.get<number>("lastSweep") ?? Date.now()) + DAY;
+    await this.ctx.storage.setAlarm(Math.max(Date.now() + 1000, Math.min(nextDaily, nextImage ?? nextDaily)));
   }
 }

@@ -130,4 +130,23 @@ test("report chip shows as soon as the chat has a report, before the first messa
   assert.deepEqual(reportChip({ bound: null, pending: "AX-653FWB", failed: null }), { text: "Report AX-653FWB attached", tone: "ok" }, "handoff report, no session yet");
   assert.deepEqual(reportChip({ bound: "AX-653FWB", pending: null, failed: null }), { text: "Report AX-653FWB attached", tone: "ok" });
   assert.deepEqual(reportChip({ bound: null, pending: "AX-653FWB", failed: "AX-653FWB" }), { text: "Report AX-653FWB couldn't be attached", tone: "warn" });
+test("images: page copies match the contract and the Worker", async () => {
+  const page = await import("./images.ts");
+  const contract = await import("../../lib/chat-contract/images.ts");
+  const body = await import("../../worker/body.ts");
+  assert.equal(page.PER_MESSAGE, contract.IMAGE_LIMITS.perMessage);
+  assert.equal(page.MAX_EDGE, contract.IMAGE_LIMITS.maxEdge);
+  assert.equal(page.MAX_INPUT_BYTES, contract.IMAGE_LIMITS.maxInputBytes);
+  assert.equal(page.IMAGE_ONLY_TEXT, body.IMAGE_ONLY_TEXT);
+  const id = "0b6f6f4e-2a5c-4c4e-9a7e-1c2d3e4f5a6b";
+  const text = body.withImageMarkers("what is this", [id]);
+  assert.deepEqual(page.splitUserText(text), { text: "what is this", imageIds: [id] });
+  assert.deepEqual(contract.imageIdsIn(text), [id]);
+  assert.deepEqual(page.splitUserText(page.IMAGE_ONLY_TEXT + `[[img:${id}]]`), { text: "", imageIds: [id] });
+});
+
+test("images: assistant text masks emails and order ids read off a screenshot", async () => {
+  const { maskAssistantText } = await import("./images.ts");
+  assert.equal(maskAssistantText("Your account user@example.com, order GPA.3391-1234-5678-90123."), "Your account [email], order [order id].");
+  assert.equal(maskAssistantText("Write to support@andronix.app"), "Write to support@andronix.app");
 });

@@ -59,6 +59,8 @@ export interface HandoffTicket {
   idempotencyKey: string; uid: string; email: string; emailVerified: boolean;
   reason: "money" | "account" | "stuck" | "user_request" | "limit"; topic?: string; reportId?: string;
   orderId?: string; note?: string; transcript?: { role: string; text: string; at: string }[]; pid: string; entry: string;
+  /** ≤4 re-encoded screenshots, only with the user's opt-in (desk stores them as ticket attachments). */
+  images?: { mediaType: "image/jpeg"; dataB64: string }[];
 }
 
 export type ChatReport = { distro: string; de: string; step: string; outcome: string; phone: string; android: string; appVersion: string; installerVersion: string; log: string };

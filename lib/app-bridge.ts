@@ -19,7 +19,7 @@ type Native = {
   onmessage: ((event: { data: unknown }) => void) | null;
   addEventListener?(type: "message", fn: (event: { data: unknown }) => void): void;
 };
-type AppGlobals = { __ANDRONIX_APP__?: { v?: number; version?: string }; AndronixNative?: Native };
+type AppGlobals = { __ANDRONIX_APP__?: { v?: number; version?: string; caps?: unknown }; AndronixNative?: Native };
 
 const TIMEOUT_MS = 10_000;
 const CREATE_REPORT_TIMEOUT_MS = 10 * 60_000;
@@ -43,6 +43,15 @@ const globals = (): AppGlobals => (typeof window === "undefined" ? {} : (window 
 export function isApp(): boolean {
   const g = globals();
   return !!g.__ANDRONIX_APP__ && g.__ANDRONIX_APP__.v === 1 && !!g.AndronixNative && typeof g.AndronixNative.postMessage === "function";
+}
+
+/**
+ * What this app build can do for the page (stream E's start script sets `caps`). `"file"`: the
+ * WebView answers file inputs (onShowFileChooser), so "Add image" works. Builds before E: [].
+ */
+export function appCaps(): string[] {
+  const c = globals().__ANDRONIX_APP__?.caps;
+  return isApp() && Array.isArray(c) ? c.filter((x): x is string => typeof x === "string").slice(0, 16) : [];
 }
 
 export function appVersion(): string | null {
