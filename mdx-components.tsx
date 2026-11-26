@@ -6,6 +6,7 @@ import { Callout } from '@/components/callout';
 import AppShot from '@/components/app-shot';
 import TerminalDemo from '@/components/terminal-demo';
 import PlayLink from '@/components/play-link';
+import AskAssistantCard from '@/components/ask-assistant-card';
 import DiscordBetaLink from '@/components/discord-beta-link';
 import { SalePrice, SaleOnly, SaleFootnote } from '@/components/sale';
 
@@ -18,6 +19,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     AppShot,
     TerminalDemo,
     PlayLink,
+    AskAssistantCard,
     DiscordBetaLink,
     SalePrice,
     SaleOnly,
