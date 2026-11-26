@@ -57,12 +57,12 @@ aarch64, armv8, arm64, arm, armv7, arm32, etc.
 
 ## Linux in the app
 
-Distros you install in the app have the same proot limits as above, plus:
+Distros you install in the app have the same proot limits as above (for apps that fail because of them, see [Apps that won't open or can't run](/use/apps-that-wont-run)), plus:
 
 - **One distro runs at a time.**
 - **No microphone** yet; sound output works.
 - **No backup inside the app** yet. See [Back up and restore](/use/backups).
-- **No VNC from another device.** The desktop shows in the app only. In Termux, [VNC](/termux/vnc) still works.
+- **VNC from another device needs display 2,** because the app's desktop uses display 1: `vncserver-start 1280x720 2 --lan`. See [Use the desktop from a computer](/desktop/in-the-app#use-the-desktop-from-a-computer-vnc).
 - **SSH isn't supported** in 10.1. See [SSH](/termux/ssh).
 - **arm64 with Android 8 or newer only**; other devices use Termux. See [Requirements](/start-here/requirements).
 

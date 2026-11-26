@@ -2,8 +2,10 @@
   "title": "Step 4 · Use it",
   "defaultOpen": true,
   "pages": [
+    "first-steps",
     "your-linux",
     "apps",
+    "apps-that-wont-run",
     "android-files",
     "shortcuts",
     "gpu",

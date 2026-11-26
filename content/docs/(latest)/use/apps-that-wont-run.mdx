@@ -1,0 +1,96 @@
+---
+title: Apps That Won't Open or Can't Run
+metaTitle: 'Chrome, Electron Apps, AppImages and x86 Apps in Andronix: Why They Fail and What Works - Andronix Docs'
+description: 'Why some Linux apps fail in Andronix and what to do: Chrome and Chromium with --no-sandbox, Electron apps like VS Code, AppImages without FUSE, x86-only programs, and systemd, Snap and app stores that need it.'
+---
+
+import NextStep from "@/components/next-step";
+
+Most Linux apps work in Andronix. The ones that fail usually fail for one of a few reasons, because Linux runs inside an Android app (with proot) and not on its own kernel:
+
+- **No sandbox:** browsers and apps built on them can't use their security sandbox.
+- **arm64 only:** your phone runs programs built for its processor (arm64 on most phones), not for x86 PCs.
+- **No FUSE, no systemd:** AppImages can't mount themselves, and there are no system services, Snaps or Flatpaks.
+
+Find your app's case below. Run the commands in the distro's terminal.
+
+## Chrome and Chromium
+
+Chromium can't use its sandbox in Andronix, so it closes right away or doesn't open from the menu. Start it with `--no-sandbox`:
+
+```bash copy
+chromium --no-sandbox
+```
+
+- **Install Chromium, not Google Chrome.** Chromium comes from your distro's packages; see [Install apps](/use/apps#chromium) for the command per distro.
+- **Ubuntu:** Ubuntu's `chromium` package is a placeholder for a Snap, and Snaps don't work in Andronix, so it won't install. Use Firefox, which comes preinstalled, or Debian, where `sudo apt install chromium` works.
+- **Modded OS** editions already start Chromium with `--no-sandbox` from the menu.
+
+## VS Code and other Electron apps
+
+VS Code, VSCodium and many other desktop apps are built on Electron, which is Chromium inside. They need `--no-sandbox` too:
+
+```bash copy
+code --no-sandbox
+```
+
+For VSCodium, run `codium --no-sandbox`. Other Electron apps take the same flag after their command.
+
+To make the menu entry work, copy it to your own menu folder and add the flag. For VS Code:
+
+```bash copy
+mkdir -p ~/.local/share/applications && cp /usr/share/applications/code.desktop ~/.local/share/applications/ && sed -i 's|^Exec=\([^ ]*\)|Exec=\1 --no-sandbox|' ~/.local/share/applications/code.desktop
+```
+
+These apps use a lot of memory. If one opens and then the desktop closes, Android stopped Linux: see [Process completed (signal 9)](/troubleshooting/signal-9).
+
+## AppImages
+
+AppImages need FUSE to run, and FUSE doesn't work in Andronix. Unpack the AppImage and run it from the folder instead:
+
+```bash copy
+chmod +x ./YourApp.AppImage
+./YourApp.AppImage --appimage-extract
+./squashfs-root/AppRun
+```
+
+If the app is built on Electron, add `--no-sandbox`: `./squashfs-root/AppRun --no-sandbox`.
+
+- **Check it's an arm64 AppImage.** Most AppImages are built for x86_64 PCs and can't run on a phone. File names usually say `x86_64` or `amd64` for PCs, and `aarch64` or `arm64` for your phone.
+- **If `--appimage-extract` fails too** (for example with `Bus error`), the file is for another processor, or the download didn't finish. Check with `file ./YourApp.AppImage`, and compare its size with the download page.
+- **Prefer a package.** If the app has an arm64 `.deb` (Debian, Ubuntu, Kali) or a package in your distro, install that instead.
+
+## Apps made only for x86 PCs
+
+Linux in Andronix runs programs built for your phone's processor. To check it, run:
+
+```bash copy
+uname -m
+```
+
+`aarch64` means arm64. Look for an arm64 (or `aarch64`) Linux download of the app. If it's only made for x86_64 or amd64, it can't run in Andronix. Andronix doesn't include an x86 emulator such as Box64 or QEMU, and Wine, Steam and PC games don't run. See [Limitations](/reference/limitations#gaming).
+
+## systemctl, services and app stores
+
+There's no systemd in Andronix, so `systemctl` fails with "System has not been booted with systemd as init system", and system services don't start by themselves.
+
+- **Start the program directly** instead of with `systemctl`. For PostgreSQL, the `db` dev pack has a helper: see [PostgreSQL](/use/dev-packs#postgresql).
+- **App stores such as KDE Discover and GNOME Software** need system services that don't run, so they can't install apps. Install with the package manager instead, for example `sudo apt update && sudo apt install <package>`.
+- **Synaptic** doesn't open from the menu. Start it from a terminal with `sudo synaptic`.
+
+## Snap, Flatpak and Docker
+
+Snap, Flatpak and Docker need kernel features that proot doesn't have, so they don't work. Install the app from your distro's own packages instead. On Ubuntu, Andronix blocks Snaps, and some Ubuntu packages (such as `thunderbird` and `chromium`) are only placeholders for a Snap and won't install. Use Debian for those, or a similar app that isn't a Snap. See [Limitations](/reference/limitations#container-applications).
+
+## Antigravity, Artcraft and other new apps
+
+We haven't tested these, so we can't promise they run. Check them like any other app:
+
+1. Is there a Linux download for **arm64** (`aarch64`)? If there's only x86_64, it can't run.
+2. Is it an **AppImage**? Unpack it as in [AppImages](#appimages).
+3. Is it built on **Electron** or Chromium, as many code editors are? Start it with `--no-sandbox`.
+4. Does it need **systemd**, Snap or Docker? Then it won't run in Andronix.
+
+If an app still won't start, start it from a terminal so you can see its error, and ask on our [Discord](https://chat.andronix.app) with that error.
+
+<NextStep href="/use/android-files" title="Android files in Linux" description="Move files between Android and Linux." />

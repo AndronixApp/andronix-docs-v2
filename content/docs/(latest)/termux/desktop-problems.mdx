@@ -31,6 +31,18 @@ If Termux shows `[Process completed (signal 9) - press Enter]`, Android 12 or ne
 - **Old kernels:** on kernels older than 4.8 (run `uname -r` in Termux to check), the desktop may stay black. Try `andronix desktop --legacy-drawing`, then VNC; the command line always works. See [The installer warns about an old kernel](/termux/install-problems#the-installer-warns-about-an-old-kernel).
 - **Installed before an update:** run `andronix update` in Termux. It applies Andronix's latest fixes to the desktop session.
 
+## KDE Plasma stays black or freezes in Termux:X11
+
+With KDE Plasma, mostly Modded Ubuntu KDE, Termux:X11 can show only a pointer on a black screen, say the X server stalled, or freeze soon after the desktop starts. We're still looking into it. On many newer phones it came from a crash that current installers avoid. Try these in order:
+
+1. **Update Andronix in Termux:** run `andronix update`, then start the desktop again with `andronix desktop`.
+2. **Turn off Android's process limit.** A KDE desktop starts many processes: see [Process completed (signal 9)](/troubleshooting/signal-9).
+3. **Allow Termux:X11's notifications** if it asks, and keep Termux:X11 up to date from its [nightly release](https://github.com/termux/termux-x11/releases/tag/nightly).
+4. **Less than 4 GB of RAM?** KDE Plasma is too heavy there. Install XFCE or LXQt instead.
+5. **Install Linux in the Andronix app instead**, if your phone can run it (Android 8 or newer, arm64). This has fixed it for people with this problem. See [Install in the app](/install/in-the-app).
+
+If it still stays black, run `andronix report` in Termux right after it fails, so we get the desktop's log. See [Report a problem](/troubleshooting/report-a-problem).
+
 ## The desktop didn't start (VNC)
 
 If `vncserver-start` says **The desktop didn't start**, stop it and start it again:

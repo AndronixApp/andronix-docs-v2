@@ -7,6 +7,8 @@ import NextStep from "@/components/next-step";
 
 Your distro can install thousands of Linux apps with its own package manager. This page covers the ones people ask about most: browsers, IDEs, LibreOffice and GIMP.
 
+An app won't open, or won't install? See [Apps that won't open or can't run](/use/apps-that-wont-run): Chrome, Electron apps, AppImages, x86-only apps and systemd.
+
 <Callout type="info">Run these commands **inside the distro** (not in the Termux shell). Andronix 2.0 logs you in as your own user, so the commands use `sudo`. On Manjaro, where `sudo` doesn't work yet, open a root shell from Termux with `andronix start manjaro --root` and leave out `sudo`.</Callout>
 
 <Callout type="info">To open graphical apps, start the desktop first. See [Start the desktop](/termux/termux-x11).</Callout>
@@ -35,6 +37,7 @@ If you skipped it, or you're on an install from before Andronix 2.0:
 | Distro | Command |
 |---|---|
 | Debian, Kali Linux | `sudo apt install chromium` |
+| Ubuntu | Not available: Ubuntu's package is a Snap. Use Firefox, or Chromium on Debian. |
 | Fedora | `sudo dnf install chromium` |
 | Arch, Manjaro | `sudo pacman -S chromium` |
 | Alpine | `sudo apk add chromium` |
@@ -46,7 +49,7 @@ Chromium can't use its sandbox in Andronix. If it doesn't open from the app menu
 chromium --no-sandbox
 ```
 
-{/* TODO(docs): Ubuntu's chromium package is a Snap too; check whether a non-snap source works on 26.04/24.04 before listing Ubuntu. The old ubchromiumfix.sh script was written for the pre-2.0 root installs. */}
+More on why, and on Electron apps: [Apps that won't open or can't run](/use/apps-that-wont-run#chrome-and-chromium).
 
 <Callout type="warning">On 32-bit (armv7) phones, browsers may fail to start.</Callout>
 
