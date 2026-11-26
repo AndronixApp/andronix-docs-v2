@@ -9,13 +9,13 @@
  */
 import { z } from "zod";
 
-export const CONTRACT_VERSION = 3 as const; // v2: guardrails (decline tool, REFUSAL_COPY); v3: kind internal (no url), status by_design
+export const CONTRACT_VERSION = 4 as const; // v2: guardrails (decline tool, REFUSAL_COPY); v3: kind internal (no url), status by_design; v4: images + report_gap (6 tools)
 
 /** eve version the fixtures were recorded with. Both repos pin exactly this. */
 export const EVE_VERSION = "1.5.0" as const;
 
 /** Tool names the agent exposes. Nothing else may appear in `/eve/v1/info`. */
-export const TOOL_NAMES = ["kb_search", "kb_read", "get_report", "offer_handoff", "decline"] as const;
+export const TOOL_NAMES = ["kb_search", "kb_read", "get_report", "offer_handoff", "decline", "report_gap"] as const;
 export type ToolName = (typeof TOOL_NAMES)[number];
 
 /**
@@ -120,6 +120,34 @@ export const DeclineReason = z.enum(["offtopic", "jailbreak", "harmful"]);
 export const declineInput = z.object({ reason: DeclineReason });
 export const declineOutput = z.object({ shown: z.literal(true) });
 
+// ---------------------------------------------------------------- report_gap
+
+/**
+ * Silent knowledge-gap report (contract v4): the model calls it when the docs
+ * didn't answer the question (no_docs), answered it only partly (partial), look
+ * outdated (outdated) or contradict each other (conflict), or when it couldn't
+ * tell what the user needed (unclear_question). Renders nothing.
+ * At most GAP_LIMITS.perTurn per turn and GAP_LIMITS.perSession per session
+ * (extra calls return ok without sending). eve strips personal data from
+ * topic and summary before anything leaves it (agent/lib/gap.ts).
+ */
+export const GapReason = z.enum(["no_docs", "partial", "outdated", "conflict", "unclear_question"]);
+export const GAP_TOPIC_MAX = 80;
+export const GAP_SUMMARY_MAX = 300;
+export const GAP_PAGES_MAX = 5;
+export const GAP_LIMITS = { perTurn: 1, perSession: 3 } as const;
+
+export const reportGapInput = z.object({
+  reason: GapReason,
+  /** A short neutral label, e.g. "AppImage on arm64". */
+  topic: z.string().min(1).max(GAP_TOPIC_MAX),
+  /** The model's own paraphrase of what the user needed. No personal data. */
+  summary: z.string().min(1).max(GAP_SUMMARY_MAX),
+  /** KB ids or docs paths the model tried. */
+  pagesTried: z.array(z.string().min(1).max(200)).max(GAP_PAGES_MAX),
+});
+export const reportGapOutput = z.object({ ok: z.literal(true) });
+
 // ---------------------------------------------------------------- registry
 
 export const toolSchemas = {
@@ -128,6 +156,7 @@ export const toolSchemas = {
   get_report: { input: getReportInput, output: getReportOutput },
   offer_handoff: { input: offerHandoffInput, output: offerHandoffOutput },
   decline: { input: declineInput, output: declineOutput },
+  report_gap: { input: reportGapInput, output: reportGapOutput },
 } as const satisfies Record<ToolName, { input: z.ZodTypeAny; output: z.ZodTypeAny }>;
 
 /**
@@ -141,6 +170,8 @@ export const toolSchemas = {
  *   from input.reason / input.topic.
  * - decline: renders only the fixed refusal card REFUSAL_COPY[refusalKey(reason)]
  *   with its buttons, and drops every text part of that turn.
+ * - report_gap: never rendered, never in the thinking trace or activity; the
+ *   turn renders exactly as if the call weren't there.
  */
 export const TOOL_UI = {
   kb_search: "verify-only",
@@ -148,6 +179,7 @@ export const TOOL_UI = {
   get_report: "hidden",
   offer_handoff: "handoff-form",
   decline: "refusal-card",
+  report_gap: "hidden",
 } as const satisfies Record<ToolName, string>;
 
 export const MAX_SOURCE_CHIPS = 3;
@@ -205,3 +237,5 @@ export type KbReadOutput = z.infer<typeof kbReadOutput>;
 export type GetReportOutput = z.infer<typeof getReportOutput>;
 export type OfferHandoffInput = z.infer<typeof offerHandoffInput>;
 export type DeclineInput = z.infer<typeof declineInput>;
+export type ReportGapInput = z.infer<typeof reportGapInput>;
+export type GapReasonT = z.infer<typeof GapReason>;
