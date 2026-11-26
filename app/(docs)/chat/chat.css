@@ -130,7 +130,7 @@ html[data-chat-embed="app"] .chat-shell { padding-top: .75rem; min-height: 100dv
 .chat-trace-line { display: flex; align-items: baseline; gap: .6rem; font-weight: 600; }
 .chat-trace-line .chat-shimmer { display: inline-block; }
 .chat-trace-elapsed { font-family: var(--andronix-font-mono, ui-monospace, monospace); font-size: 12px; font-weight: 500; color: var(--andronix-on-surface-variant); font-variant-numeric: tabular-nums; }
-.chat-steps { display: flex; flex-direction: column; gap: .3rem; margin: 0; padding: 0 0 0 .2rem; list-style: none; border-left: 1px solid var(--andronix-outline-variant, #3a2f29); }
+.chat-steps { display: flex; flex-direction: column; gap: .3rem; margin: 0 0 0 .25rem; padding: 0; list-style: none; border-left: 1px solid var(--andronix-outline-variant, #3a2f29); }
 .chat-step { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem; padding-left: .7rem; position: relative; color: var(--andronix-on-surface-variant); }
 .chat-step-dot { position: absolute; left: -4px; top: .45em; width: 7px; height: 7px; border-radius: 999px; background: var(--andronix-outline-variant, #3a2f29); }
 .chat-step-done .chat-step-dot { background: var(--andronix-primary); }
