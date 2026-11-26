@@ -31,11 +31,11 @@ class_name = "ChatLimiter"
 tag = "v1"
 new_sqlite_classes = ["ChatLimiter"]
 
-# Chat stays off until launch (build plan 4): CHAT_ENABLED=1 and CHAT_ROLLOUT=staff then.
+# Chat on since 2026-11-26 at the staff stage (build plan 4). Widen CHAT_ROLLOUT only with the owner's OK.
 # Secrets (wrangler secret put): EVE_EDGE_SECRET, CHAT_INTERNAL_SECRET, CHAT_SERVICE_SECRET,
 # DESK_API_KEY, OPENPANEL_CLIENT_SECRET, OPS_WEBHOOK_URL.
 [vars]
-CHAT_ENABLED = "0"
+CHAT_ENABLED = "1"
 CHAT_ROLLOUT = "staff"
 FIREBASE_PROJECT_ID = "andronix-techriz"
 EVE_ORIGIN = "https://andronix-support-agent.vercel.app"
